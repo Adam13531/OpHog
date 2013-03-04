@@ -23,7 +23,6 @@
     var pinchZoomStart;
     var ctxOrigZoom;
 
-
     // Time (in MS) of the last update.
     var lastUpdate;
 
@@ -37,11 +36,6 @@
 
     // PgUp(33), PgDn(34), End(35), Home(36), Left(37), Up(38), Right(39), Down(40)
     var browserKeysToStop = new Array(33, 34, 35, 36, 37, 38, 39, 40);
-
-    var angle = 0;
-    var scale = 1.0;
-    var scaleDir = 1;
-    var graphicToUse = 0;
 
     // This is a dictionary of keycode --> boolean representing whether it is held.
     var keysDown = {};
@@ -95,25 +89,9 @@
         });
 
         var $canvas = $('#canvas');
-
-
-        // $canvas.hammer().bind('tap', function(e) {
-            // $('#testeroo').text('hhhhhhh');
-        // });
-        
-        // $canvas.hammer().bind('tap', function(event) {
-//  
-            // var output = '';
-            // for (property in event) {
-                // output += property + ': ' + event[property] + '; ';
-            // }
-            // alert(output); 
-        // });
         
         // Look at https://github.com/EightMedia/hammer.js/blob/master/hammer.js to figure out what's in the event.
         // You get scale, rotation, distance, etc.
-        // 
-        // 
         // 
         // Pretty sure you should only call this once. Calling it multiple times will result in multiple events being fired.
         $canvas.hammer({prevent_default:true});
@@ -125,12 +103,6 @@
         });
         
         $canvas.bind('transform', function(event) {
-
-            // var output = '';
-            // for (property in event) {
-                // output += property + ': ' + event[property] + '; ';
-            // }
-            // alert(output); 
             ctxZoom = ctxOrigZoom + (event.scale - pinchZoomStart) / 2.0;
             if ( ctxZoom < 1.0 ) 
             {
@@ -141,12 +113,6 @@
             {
                 ctxZoom = 10.0
             }
-            // $('#testeroo').text('posx: ' + event.position.x);
-            // $('#testeroo2').text('posy: ' + event.position.y);
-            // $('#testeroo3').text('scale: ' + event.scale);
-            // $('#testeroo4').text('dstx: ' + event.distanceX);
-            // $('#testeroo5').text('dist: ' + event.distance);
-            
         });
         $canvas.bind('transformend', function(event) {
         });
@@ -161,42 +127,9 @@
 
         });
         $canvas.bind('drag', function(event) {
-
-                
-                // var mouseXDifference = scrollPos.x - event.pageX;
-                // var mouseYDifference = scrollPos.y - event.pageY;
-
                 charX = scrollPos.charX + event.distanceX;
                 charY = scrollPos.charY + event.distanceY;
-
-                // // The mouse is the desired X
-                // var distX = event.originalEvent.pageX - 400;
-                // var distY = event.originalEvent.pageY - 300;
-                // var angle = Math.atan2(distY, distX);
-                // $('#testeroo2').text("Angle: " + angle);
-                // $('#testeroo3').text("diff: (" + distX + ", " + distY + ")");
-                
-                // $('#testeroo').text('posx: ' + event.distanceX);
-                // $('#testeroo2').text('charx: ' + scrollPos.charX);
         });
-
-        
-        // $canvas.bind('pinch',function(e,o)
-            // {
-//                     
-                // alert("hi" + e + o);
-            // });
-        // $('#testeroo').bind('pinch',function(e,o)
-            // {
-                // alert("hi" + e + o);
-            // });
-        // $canvas.bind('swipeone',function(e,o)
-            // {
-                // alert("hi" + e + o);
-                // e.stopPropagation();
-                // e.originalEvent.stopPropagation();
-            // });
-//                 
 
         $canvas.mousewheel(function(event, delta) {
             if (delta > 0 ) {
@@ -295,12 +228,6 @@
     function initSettings() {
         ctx = $('#canvas')[0].getContext('2d');
 
-        $('#container').mousemove(function(e) {
-            // I'd need to subtract the canvas X/Y here since these are in page coordinates.
-            // charX = e.pageX;
-            // charY = e.pageY;
-        });
-
         var canvasPos = $('#canvas').position();
 
         //Calculate screen height and width
@@ -363,7 +290,6 @@
                 gameUnits.push(newUnit);
             }
 
-
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
                     var newUnit = new game.Unit(1,9,0,true);
@@ -397,10 +323,6 @@
 
         var deltaAsSec = delta / 1000;
 
-        // 37: left
-        // 38: up
-        // 39: right
-        // 40: down
         if (keysDown[game.Key.DOM_VK_RIGHT]) {
             charX += speed * deltaAsSec;
         } else if (keysDown[game.Key.DOM_VK_LEFT]) {
@@ -419,12 +341,6 @@
             particleSystem.x = charX;
             particleSystem.y = charY;
         }
-
-        // Sets the canvas to transparent
-        ctx.clearRect(0, 0, screenWidth, screenHeight);
-
-        ctx.fillStyle = '#373737';
-        ctx.fillRect(0, 0, screenWidth, screenHeight);
 
         ctx.save();
         ctx.scale(ctxZoom, ctxZoom);
@@ -465,40 +381,6 @@
 
         ctx.restore();
 
-        ctx.save();
-        ctx.translate(charX, charY);
-        var halfTile = charSheet.tileSize / 2;
-
-        angle += .1;
-
-        if (scaleDir == 1) {
-            scale += .02;
-            if (scale > 8) {
-                scaleDir = 0;
-            }
-        } else {
-            scale -= .02;
-            if (scale < .5) {
-                scaleDir = 1;
-            }
-        }
-
-        graphicToUse += .01;
-        // graphicToUse = 2;
-        // angle = 3;
-        // angle = 0;
-        // scale = 6;
-        ctx.imageSmoothingEnabled = false;
-        ctx.mozImageSmoothingEnabled = false;
-        ctx.webkitImageSmoothingEnabled = false;
-
-        // ctx.rotate(angle);
-        // ctx.scale(scale, scale);
-
-        // charSheet.drawSprite(ctx, Math.floor(graphicToUse), -halfTile, -halfTile);
-
-        ctx.restore();
-        // charSheet.drawSprite(ctx, 0, 400 - halfTile, 300 - halfTile);
         charSheet.drawSprite(ctx, 0, charX, charY);
 
         ctx.save();
@@ -536,37 +418,6 @@
         game.TextManager.draw(ctx);
 
         ctx.restore();
-
-        /*
-        ctx.save();
-        var font = "120px Futura, Helvetica, sans-serif"
-        ctx.font = font;
-        var text = "Hello world!";
-        var blur = 5;
-        var width = ctx.measureText(text).width + blur * 2;
-
-        var gradient = ctx.createLinearGradient(0, 0, 630, 0);
-        gradient.addColorStop(0, "rgba(255, 0, 0, 1)");
-        gradient.addColorStop(0.15, "rgba(255, 255, 0, 1)");
-        gradient.addColorStop(0.3, "rgba(0, 255, 0, 1)");
-        gradient.addColorStop(0.5, "rgba(0, 255, 255, 1)");
-        gradient.addColorStop(0.65, "rgba(0, 0, 255, 1)");
-        gradient.addColorStop(0.8, "rgba(255, 0, 255, 1)");
-        gradient.addColorStop(1, "rgba(255, 0, 0, 1)");
-
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, 630, 120);
-
-        ctx.textBaseline = "top";
-        ctx.shadowColor = "#fff";
-        ctx.shadowOffsetX = width;
-        ctx.shadowOffsetY = 0;
-        ctx.shadowBlur = blur;
-        ctx.fillStyle = "#f00";
-        ctx.fillText(text, width * -1, 0);
-        ctx.restore();
-        */
-
     }
 
     function doneLoadingEverything() {

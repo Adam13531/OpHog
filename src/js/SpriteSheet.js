@@ -76,6 +76,10 @@
             hFlip = false;
         }
 
+        ctx.imageSmoothingEnabled = false;
+        ctx.mozImageSmoothingEnabled = false;
+        ctx.webkitImageSmoothingEnabled = false;
+
         var startX = (graphicIndex % this.numCols) * this.tileSize;
         var imageToUse = this.image;
         if ( hFlip === true ) {
