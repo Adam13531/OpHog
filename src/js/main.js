@@ -3,9 +3,6 @@
     // Global
     tileSize = 32;
 
-    // The character sprite sheet (global)
-    charSheet = null;
-
     var gameloopId;
     var screenWidth;
     var screenHeight;
@@ -15,9 +12,6 @@
     // This is global so that units can summon more units in a battle.
     gameUnits = new Array();
 
-    var charX = 0;
-    var charY = 0;
-
     var ctxZoom = 1;
     
     var pinchZoomStart;
@@ -26,16 +20,11 @@
     // Time (in MS) of the last update.
     var lastUpdate;
 
-    // The environment sprite sheet
-    var envSheet;
-
-    var particleSystem;
-
-    // Get a reference to the canvas
+    // The canvas context
     var ctx = null;
 
-    // PgUp(33), PgDn(34), End(35), Home(36), Left(37), Up(38), Right(39), Down(40)
-    var browserKeysToStop = new Array(33, 34, 35, 36, 37, 38, 39, 40);
+    // Prevent these keys from doing their default action.
+    var browserKeysToStop = new Array(game.Key.DOM_VK_PAGE_UP, game.Key.DOM_VK_PAGE_DOWN, game.Key.DOM_VK_END, game.Key.DOM_VK_HOME, game.Key.DOM_VK_LEFT, game.Key.DOM_VK_UP, game.Key.DOM_VK_RIGHT, game.Key.DOM_VK_DOWN);
 
     // This is a dictionary of keycode --> boolean representing whether it is held.
     var keysDown = {};
@@ -57,9 +46,6 @@
                 charSheet = new game.SpriteSheet(game.imagePath + '/char_32.png', tileSize, doneLoadingEverything);
             });
         });
-
-        particleSystem = new game.ParticleSystem(400,300);
-        particleSystem.spawnedAll = true;
     }
 
     function doneLoadingImages() {
@@ -120,15 +106,12 @@
                 // TODO: this is a global now. It shouldn't be a global.
                 scrollPos = {
                     x : event.pageX,
-                    y : event.pageY,
-                    charX: charX,
-                    charY: charY
+                    y : event.pageY
                 };
 
         });
         $canvas.bind('drag', function(event) {
-                charX = scrollPos.charX + event.distanceX;
-                charY = scrollPos.charY + event.distanceY;
+            // Drag code goes here
         });
 
         $canvas.mousewheel(function(event, delta) {
@@ -162,18 +145,6 @@
             position : 'absolute',
             top : (equipPanePos.top + equipPaneHeight + 5) + 'px',
             left : (canvasPos.left + width + 5) + 'px'
-        });
-
-        $('#scrollValues').css({
-            position : 'absolute',
-            top : (canvasPos.top + 300) + 'px',
-            left : (canvasPos.left + width + 5) + 'px'
-        });
-
-        $('#scrollValues2').css({
-            position : 'absolute',
-            top : (canvasPos.top + 300) + 'px',
-            left : (canvasPos.left + width + 50) + 'px'
         });
 
         $('#war-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite war32-png' + '"/>');
@@ -233,9 +204,6 @@
         //Calculate screen height and width
         screenWidth = parseInt($('#canvas').attr('width'));
         screenHeight = parseInt($('#canvas').attr('height'));
-
-        charX = screenWidth / 2;
-        charY = screenHeight / 2;
 
         addKeyboardListeners();
     }
@@ -303,12 +271,6 @@
                 };
             }
 
-            // 't' for text
-            if (evt.keyCode == game.Key.DOM_VK_T) {
-                var textObj = new game.TextObj(300,200,"Hello world!");
-                game.TextManager.addTextObj(textObj);
-            }
-
             keysDown[evt.keyCode] = false;
         });
     }
@@ -318,29 +280,13 @@
         var delta = Date.now() - lastUpdate;
         lastUpdate = Date.now();
 
-        // Slow down the whole game (debug)
-        // delta /= 5;
-
         var deltaAsSec = delta / 1000;
 
-        if (keysDown[game.Key.DOM_VK_RIGHT]) {
-            charX += speed * deltaAsSec;
-        } else if (keysDown[game.Key.DOM_VK_LEFT]) {
-            charX -= speed * deltaAsSec;
-        }
-
-        if (keysDown[game.Key.DOM_VK_UP]) {
-            charY -= speed * deltaAsSec;
-        } else if (keysDown[game.Key.DOM_VK_DOWN]) {
-            charY += speed * deltaAsSec;
-        }
-
-        // When you press 'space', allow the particle system to spawn more
-        if (keysDown[game.Key.DOM_VK_SPACE]) {
-            particleSystem.spawnedAll = false;
-            particleSystem.x = charX;
-            particleSystem.y = charY;
-        }
+        // Draw a solid background on the canvas in case anything is transparent
+        // This should eventually be unnecessary - we should instead draw a
+        // parallax background or not have a transparent map.
+        ctx.fillStyle = '#373737';
+        ctx.fillRect(0, 0, screenWidth, screenHeight);
 
         ctx.save();
         ctx.scale(ctxZoom, ctxZoom);
@@ -380,19 +326,7 @@
         }
 
         ctx.restore();
-
-        charSheet.drawSprite(ctx, 0, charX, charY);
-
         ctx.save();
-        particleSystem.update(delta);
-        particleSystem.draw(ctx);
-
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.restore();
-
-
-        ctx.save();
-        $('#testeroo').text(gameUnits.length);
         for (var i = 0; i < gameUnits.length; i++) {
             // Remove units that died in battle
             if (gameUnits[i].removeFromGame) {
@@ -408,7 +342,7 @@
         game.BattleManager.checkForBattles(gameUnits);
         game.BattleManager.update(delta);
 
-        game.BattleManager.debugDrawBattleBackground(ctx);
+        // game.BattleManager.debugDrawBattleBackground(ctx);
         game.BattleManager.draw(ctx);
 
         game.ParticleManager.update(delta);
@@ -426,7 +360,6 @@
         // This will wipe out the timer (if it's non-null)
         clearInterval(gameloopId);
         gameloopId = setInterval(gameLoop, 15);
-        // gameloopId = setInterval(gameLoop, 50);
     }
 
 }());

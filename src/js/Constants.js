@@ -17,7 +17,7 @@
     /**
      * The relative path from Javascript files to the image folder.
      */
-    window.game.imagePath = "../res/img";
+    window.game.imagePath = window.game.resourcePath + "/img";
 
 
 }());

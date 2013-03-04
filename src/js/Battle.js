@@ -623,9 +623,6 @@
             this.repositionUnits(false);
         }
 
-        // Debug
-        $('#scrollValues').text("#Projectiles: " + this.projectiles.length);
-
         // Update projectiles
         for (var i = 0; i < this.projectiles.length; i++) {
             if ( !this.projectiles[i].isLiving() ) {
