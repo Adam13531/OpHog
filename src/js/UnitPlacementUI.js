@@ -8,7 +8,6 @@
          * Sets up the entire unit placement UI.
          */
         setupUI: function() {
-        	window.game.util.debugDisplayText("In UnitPlacementUI::setupUI");
 
         	// HTML div help: http://www.w3schools.com/html/html_layout.asp
 			// TODO: 
@@ -23,6 +22,13 @@
 													'<img id="header2" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite redCube-png' + '" />' +
 													'<img id="header3" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite purpleCube-png' + '" />' +
 													'<img id="header4" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite greenCube-png' + '" />' +
+												'</div>' +
+												'<br>' +
+												'<div id="unit1" style="cursor:none; width:200px; height:32px;">' +
+													'<img id="unitImage1" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '" />' +
+													'<span id="unitCost1" style="font-weight: bold; font-size: 20px">50</span>' +
+													'<span id="unitLevel1" style="font-weight: bold; font-size: 20px">50</span>' +
+													'<span id="unitExperience1" style="font-weight: bold; font-size: 20px">50</span>' +
 												'</div>');
 
 			// TODO: Put these in a loop
@@ -39,6 +45,21 @@
 				"margin-right" : rightMargin
 			});
 
+			// Numbers need more spacing than images because they're not as wide
+			var unitMargin = '25px';
+			$('#unitImage1').css({
+				"margin-right" : unitMargin
+			});
+			$('#unitCost1').css({
+				"margin-right" : unitMargin
+			});
+			$('#unitLevel1').css({
+				"margin-right" : unitMargin
+			});
+			$('#unitExperience1').css({
+				"margin-right" : unitMargin
+			});
+
 			// $('#buyingScreenContainer').append('<img src="img/img_trans.png" class="' + 'char-sprite arch32-png' + '" />');
 
 			var $canvas = $('#canvas');
@@ -50,6 +71,13 @@
 				top : canvasPos.top + 'px',
 				left : (canvasPos.left + width + 5) + 'px'
 			});
+
+			// var buyingScreen = new Image();
+			// buyingScreen.src = game.imagePath + '/buying_screen.PNG';
+			// // window.game.util.debugDisplayText(buyingScreen.src);
+			// buyingScreen.onload = function() {
+				
+			// }
 
 
 			// draw the characters
