@@ -1,14 +1,6 @@
 ( function() {
 
     /**
-     * Util.js is the first file to be included from index.html, so it will
-     * contain our top-level objects, e.g. the game.
-     */
-    window.game = {};
-    window.ui = {};
-    window.game.util = {};
-
-    /**
      * Calculate the distance between two sets of coordinates.
      *
      * The units are simply numbers (not pixels or tiles).

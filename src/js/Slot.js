@@ -34,7 +34,7 @@
         $(domSelector).append(
             '<span style="display:inline-block;margin:1px;width:32px;height:32px">' +
             '<img style="z-index:5" src="' + this.getBackImage() + '" width="32" height="32"/>' +
-            '<img style="display:block;z-index:10" src="img/black_slot.png" width="32" height="32"/>' +
+            '<img style="display:block;z-index:10" src="'+game.imagePath+'/black_slot.png" width="32" height="32"/>' +
             '</span>');
             
         // Get the span we just added
@@ -104,7 +104,7 @@
         if (this.itemIndex == null) {
             this.$itemImage.hide();
         } else {
-            var img = 'img/img_trans.png';
+            var img = game.imagePath + '/img_trans.png';
             var clazz = 'item-sprite gem32-png';
             if (itemIndex == 1) {
                 clazz = 'item-sprite shield32-png';
@@ -148,22 +148,22 @@
         var img;
         switch(this.slotType) {
             case window.game.SlotTypes.EQUIP:
-                img = 'img/blue_slot.png';
+                img = game.imagePath + '/blue_slot.png';
                 break;
             case window.game.SlotTypes.USABLE:
-                img = 'img/red_slot.png';
+                img = game.imagePath + '/red_slot.png';
                 break;
             case window.game.SlotTypes.WAR:
-                img = 'img/black_slot.png';
+                img = game.imagePath + '/black_slot.png';
                 break;
             case window.game.SlotTypes.WIZ:
-                img = 'img/purple_slot.png';
+                img = game.imagePath + '/purple_slot.png';
                 break;
             case window.game.SlotTypes.ARCH:
-                img = 'img/green_slot.png';
+                img = game.imagePath + '/green_slot.png';
                 break;
             default:
-                img = 'img/black_slot.png'; break;
+                img = game.imagePath + '/black_slot.png'; break;
         }
 
         return img;

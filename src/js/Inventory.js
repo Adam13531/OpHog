@@ -36,7 +36,7 @@
             // Select only the current one
             this.selectedSlot = slot;
 
-            slot.$bgImage.attr('src', 'img/slot2.png');
+            slot.$bgImage.attr('src', game.imagePath + '/slot2.png');
             this.updateDescription();
         },
         

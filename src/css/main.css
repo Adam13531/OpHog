@@ -121,10 +121,11 @@ textarea {
 
 
 /*Using a sprite creator might be nice (we could also make our own): http://draeton.github.com/stitches/*/
+/*I'm not sure how to prevent having to hard-code the image path*/
 .char-sprite {
     width: 32px;
     height: 32px;
-    background: url(../img/char_32.png) 0 0 no-repeat;
+    background: url(../../res/img/char_32.png) 0 0 no-repeat;
 }
 
 .arch32-png {
@@ -140,7 +141,7 @@ textarea {
 .item-sprite {
     width: 32px;
     height: 32px;
-    background: url(../img/obj_32.png) 0 0 no-repeat;
+    background: url(../../res/img/obj_32.png) 0 0 no-repeat;
 }
 
 .gem32-png {

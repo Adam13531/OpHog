@@ -58,9 +58,9 @@
 
         loadImages();
 
-        envSheet = new game.SpriteSheet('img/env_32.png', tileSize, function() {
-            objSheet = new game.SpriteSheet('img/obj_32.png', tileSize, function() {
-                charSheet = new game.SpriteSheet('img/char_32.png', tileSize, doneLoadingEverything);
+        envSheet = new game.SpriteSheet(game.imagePath + '/env_32.png', tileSize, function() {
+            objSheet = new game.SpriteSheet(game.imagePath + '/obj_32.png', tileSize, function() {
+                charSheet = new game.SpriteSheet(game.imagePath + '/char_32.png', tileSize, doneLoadingEverything);
             });
         });
 
@@ -73,7 +73,7 @@
     }
 
     function loadImages() {
-        slotImage.src = 'img/archer.png';
+        slotImage.src = game.imagePath + '/archer.png';
         slotImage.onload = doneLoadingImages;
     }
 
@@ -243,7 +243,7 @@
             left : (canvasPos.left + width + 50) + 'px'
         });
 
-        $('#war-section').append('<img src="img/img_trans.png" class="' + 'char-sprite war32-png' + '"/>');
+        $('#war-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite war32-png' + '"/>');
         $('#war-section').css({
            position: 'absolute',
            top: (equipPanePos.top) + 'px',
@@ -252,7 +252,7 @@
         
         var warPos = $('#war-section').position();
         var warHeight = $('#war-section').height();
-        $('#wiz-section').append('<img src="img/img_trans.png" class="' + 'char-sprite wiz32-png' + '"/>');
+        $('#wiz-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite wiz32-png' + '"/>');
         $('#wiz-section').css({
            position: 'absolute',
            top: (warPos.top + warHeight + 5) + 'px',
@@ -261,7 +261,7 @@
         
         var wizPos = $('#wiz-section').position();
         var wizHeight = $('#wiz-section').height();
-        $('#arch-section').append('<img src="img/img_trans.png" class="' + 'char-sprite arch32-png' + '"/>');
+        $('#arch-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '"/>');
         $('#arch-section').css({
            position: 'absolute',
            top: (wizPos.top + wizHeight + 5) + 'px',
