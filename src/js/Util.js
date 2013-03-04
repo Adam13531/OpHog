@@ -53,4 +53,30 @@
         return newArray;
     };
 
+    /**
+     * Sometimes, you want to output some text to the page without using
+     * console.log. In that case, you should use this function, which will add a
+     * div to the page (if it doesn't already exist), then set the text of that
+     * div.
+     * @param  {String} text                  The text to display.
+     * @param  {Number} labelIdentifierNumber A number corresponding to debug
+     * text. Specifying this argument will let you put multiple debug outputs on
+     * the same page.
+     */
+    window.game.util.debugDisplayText = function(text, labelIdentifierNumber) {
+        // If you didn't supply an argument, set the ID to 1
+        if ( typeof labelIdentifierNumber === "undefined" ) labelIdentifierNumber = "1";
+
+        var divID = 'debugOutput' + labelIdentifierNumber;
+
+        // See if the div already exists
+        var debugDiv = $('#' + divID);
+        if ( debugDiv.length == 0 ) {
+            // It didn't, so add it before the canvas
+            debugDiv = $('#canvas').before('<div id="' + divID +'"></div>');
+        }
+
+        debugDiv.text(text);
+    };
+
 }());
