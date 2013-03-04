@@ -19,5 +19,10 @@
      */
     window.game.imagePath = window.game.resourcePath + "/img";
 
+    /**
+     * One thousand divided by this number is the target framerate.
+     * @type {Number}
+     */
+    window.game.msPerFrame = 16;
 
 }());
