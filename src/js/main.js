@@ -113,6 +113,8 @@
             } else if ( ctxZoom > 1 ) {
                 ctxZoom -= .5;
             }
+
+            event.originalEvent.preventDefault();
         });
 
         game.Inventory.setupUI();
