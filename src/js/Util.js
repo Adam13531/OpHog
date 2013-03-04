@@ -73,7 +73,10 @@
         var debugDiv = $('#' + divID);
         if ( debugDiv.length == 0 ) {
             // It didn't, so add it before the canvas
-            debugDiv = $('#canvas').before('<div id="' + divID +'"></div>');
+            $('#canvas').before('<div id="' + divID +'"></div>');
+
+            // Obtain the div now that it exists
+            debugDiv = $('#' + divID);
         }
 
         debugDiv.text(text);
