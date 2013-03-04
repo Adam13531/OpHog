@@ -338,10 +338,6 @@
                 }
             }
         }
-        // Debug code to draw a "battle marker" (this is stupid)
-        // if ( this.isInBattle() ) {
-        //     charSheet.drawSprite(ctx, 188, this.battleData.battle.centerX, this.battleData.battle.centerY);
-        // }
     };
 
 }());

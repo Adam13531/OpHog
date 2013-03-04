@@ -62,14 +62,11 @@
 
         gradient.addColorStop(0, 'rgba(0,255,255,'+alpha+')');
         gradient.addColorStop(0.4, 'rgba(0,0,255,'+alpha+')');
-        // gradient.addColorStop(0.45, 'rgba(255,0,255,'+alpha+')');
-        // gradient.addColorStop(0.5, 'rgba(0,0,255,'+alpha+')');
         gradient.addColorStop(1, 'rgba(0,0,0,'+alpha+')');
         
         ctx.fillStyle = gradient;
         ctx.arc(this.x, this.y, radius, Math.PI * 2, false);
         ctx.fill();
-        ctx.closePath();
 
         ctx.restore();
     };

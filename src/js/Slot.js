@@ -163,7 +163,8 @@
                 img = game.imagePath + '/green_slot.png';
                 break;
             default:
-                img = game.imagePath + '/black_slot.png'; break;
+                img = game.imagePath + '/black_slot.png';
+                break;
         }
 
         return img;

@@ -596,7 +596,6 @@
         ctx.beginPath();
         ctx.arc(this.playerCenterX, this.playerCenterY, this.playerJoinRadius, 0, 2 * Math.PI, false);
         ctx.fillStyle = 'green';
-        // ctx.fill();
         ctx.lineWidth = 5;
         ctx.strokeStyle = '#00ff00';
         ctx.stroke();
@@ -604,7 +603,6 @@
         ctx.beginPath();
         ctx.arc(this.enemyCenterX, this.enemyCenterY, this.enemyJoinRadius, 0, 2 * Math.PI, false);
         ctx.fillStyle = 'green';
-        // ctx.fill();
         ctx.lineWidth = 5;
         ctx.strokeStyle = '#ff0000';
         ctx.stroke();

@@ -19,7 +19,6 @@
         // 300 pixels / second
         this.speed = 300;
 
-
         // This is here just as a hack for now. "Melee projectiles" may still
         // need to spawn particle systems when they hit, so I'll leave this
         // functionality here.
