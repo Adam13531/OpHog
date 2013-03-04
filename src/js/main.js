@@ -118,6 +118,7 @@
         });
 
         game.Inventory.setupUI();
+        game.UnitPlacementUI.setupUI();
     }
 
     function initSettings() {

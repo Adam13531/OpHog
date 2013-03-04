@@ -138,6 +138,22 @@ textarea {
     background-position: -64px -0px;
 }
 
+.smallDiamond-png {
+    background-position: -352px -288px;
+}
+
+.redCube-png {
+    background-position: -384px -352px;
+}
+
+.purpleCube-png {
+    background-position: -416px -352px;
+}
+
+.greenCube-png {
+    background-position: -448px -352px;
+}
+
 .item-sprite {
     width: 32px;
     height: 32px;
