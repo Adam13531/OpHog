@@ -9,9 +9,6 @@
 
     var slotImage = new Image();
 
-    // This is global so that units can summon more units in a battle.
-    gameUnits = new Array();
-
     var ctxZoom = 1;
     
     var pinchZoomStart;
@@ -60,11 +57,11 @@
     function makeUI() {
         $('#createPlayer').click(function() {
             var newUnit = new game.Unit(1,9,0,true);
-            gameUnits.push(newUnit);
+            game.UnitManager.addUnit(newUnit);
         });
         $('#createEnemy').click(function() {
             var newUnit = new game.Unit(24,9,0,false);
-            gameUnits.push(newUnit);
+            game.UnitManager.addUnit(newUnit);
         });
 
         var $canvas = $('#canvas');
@@ -117,8 +114,9 @@
             event.originalEvent.preventDefault();
         });
 
-        game.Inventory.setupUI();
-        game.UnitPlacementUI.setupUI();
+		// Commenting this out for now due to our ghetto branch structure
+        // game.Inventory.setupUI();
+        // game.UnitPlacementUI.setupUI();
     }
 
     function initSettings() {
@@ -162,7 +160,7 @@
             }
             if ( unitType != null ) {
                 var newUnit = new game.Unit(1,9,unitType,true);
-                gameUnits.push(newUnit);
+                game.UnitManager.addUnit(newUnit);
             }
 
             var enemyUnitType = null;
@@ -180,19 +178,19 @@
             }
             if ( enemyUnitType != null ) {
                 var newUnit = new game.Unit(24,9,enemyUnitType,false);
-                gameUnits.push(newUnit);
+                game.UnitManager.addUnit(newUnit);
             }
 
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
                     var newUnit = new game.Unit(1,9,0,true);
-                    gameUnits.push(newUnit);
+                    game.UnitManager.addUnit(newUnit);
                 };
             }
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
                     var newUnit = new game.Unit(24,9,0,false);
-                    gameUnits.push(newUnit);
+                    game.UnitManager.addUnit(newUnit);
                 };
             }
 
@@ -262,19 +260,10 @@
 
         ctx.restore();
         ctx.save();
-        for (var i = 0; i < gameUnits.length; i++) {
-            // Remove units that died in battle
-            if (gameUnits[i].removeFromGame) {
-                gameUnits.splice(i, 1);
-                i--;
-                continue;
-            }
 
-            gameUnits[i].update(delta);
-            gameUnits[i].draw(ctx);
-        };
+        game.UnitManager.update(delta);
+        game.UnitManager.draw(ctx);
 
-        game.BattleManager.checkForBattles(gameUnits);
         game.BattleManager.update(delta);
 
         // game.BattleManager.debugDrawBattleBackground(ctx);
