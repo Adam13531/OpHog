@@ -116,7 +116,7 @@
 
 		// Commenting this out for now due to our ghetto branch structure
         // game.Inventory.setupUI();
-        // game.UnitPlacementUI.setupUI();
+        game.UnitPlacementUI.setupUI();
     }
 
     function initSettings() {
