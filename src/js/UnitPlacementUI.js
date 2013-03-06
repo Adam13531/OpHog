@@ -17,28 +17,12 @@
 			var rightMargin = '18px';
 			var buyingScreenContainer = $('<div id="buyingScreenContainer" style="border:1px solid; cursor:none;"></div>');
 			$('body').append(buyingScreenContainer);
-			$('#buyingScreenContainer').append('<div id="headers" style="border:1px solid; cursor:none; width:200px; height:32px;">' +
+			$('#buyingScreenContainer').append('<div id="headers" style="cursor:none; width:200px; height:32px;">' +
 													'<img id="header1" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite smallDiamond-png' + '" />' +
 													'<img id="header2" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite redCube-png' + '" />' +
 													'<img id="header3" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite purpleCube-png' + '" />' +
 													'<img id="header4" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite greenCube-png' + '" />' +
-												'</div>' +
-												'<br>' +
-												'<div id="unit1" style="cursor:none; width:200px; height:32px;">' +
-													'<img id="unitImage1" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '" />' +
-													'<span id="unitCost1" style="font-weight: bold; font-size: 20px">50</span>' +
-													'<span id="unitLevel1" style="font-weight: bold; font-size: 20px">50</span>' +
-													'<span id="unitExperience1" style="font-weight: bold; font-size: 20px">50</span>' +
-												'</div>' +
-												'<br>' +
-												'<div id="unit2" style="cursor:none; width:200px; height:32px;">' +
-													'<img id="unitImage2" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '" />' +
-													'<span id="unitCost2" style="font-weight: bold; font-size: 20px">50</span>' +
-													'<span id="unitLevel2" style="font-weight: bold; font-size: 20px">50</span>' +
-													'<span id="unitExperience2" style="font-weight: bold; font-size: 20px">50</span>' +
 												'</div>');
-
-			// TODO: Put these in a loop
 			$('#header1').css({
 				"margin-right" : rightMargin
 			});
@@ -52,35 +36,40 @@
 				"margin-right" : rightMargin
 			});
 
-			// Numbers need more spacing than images because they're not as wide
-			var unitMargin = '25px';
-			$('#unitImage1').css({
-				"margin-right" : unitMargin
-			});
-			$('#unitCost1').css({
-				"margin-right" : unitMargin
-			});
-			$('#unitLevel1').css({
-				"margin-right" : unitMargin
-			});
-			$('#unitExperience1').css({
-				"margin-right" : unitMargin
-			});
-
-			$('#unitImage2').css({
-				"margin-right" : unitMargin
-			});
-			$('#unitCost2').css({
-				"margin-right" : unitMargin
-			});
-			$('#unitLevel2').css({
-				"margin-right" : unitMargin
-			});
-			$('#unitExperience2').css({
-				"margin-right" : unitMargin
-			});
-
-			// $('#buyingScreenContainer').append('<img src="img/img_trans.png" class="' + 'char-sprite arch32-png' + '" />');
+			// TODO: Make the loop go for the max size of characters
+			var unitMargin = '30px';
+			var unitOpacity = '1.0';
+			for (var i = 0; i < 4; i++) {
+				$('#buyingScreenContainer').append('<br>' +
+												'<div id="unit'+i+'" style="cursor:none;">' +
+													'<img id="unitImage'+i+'" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '" />' +
+													'<span id="unitCost'+i+'" style="font-weight: bold; font-size: 20px">50</span>' +
+													'<span id="unitLevel'+i+'" style="font-weight: bold; font-size: 20px">5</span>' +
+													'<span id="unitExperience'+i+'" style="font-weight: bold; font-size: 20px">94</span>' +
+												'</div>');
+				// TODO: Change opacity when the unit is already placed and 
+				// change it back when the unit is killed or removed
+				if (i == 3)
+				{
+					unitOpacity = '0.4';
+				}
+				$('#unitImage'+i).css({
+					"margin-right" : unitMargin,
+					"opacity"	   : unitOpacity
+				});
+				$('#unitCost'+i).css({
+					"margin-right" : unitMargin,
+					"opacity"	   : unitOpacity
+				});
+				$('#unitLevel'+i).css({
+					"margin-right" : unitMargin,
+					"opacity"	   : unitOpacity
+				});
+				$('#unitExperience'+i).css({
+					"margin-right" : unitMargin,
+					"opacity"	   : unitOpacity
+				});
+			}
 
 			var $canvas = $('#canvas');
 			var width = $canvas.width();
@@ -102,9 +91,9 @@
 
 			// draw the characters
 			// window.playersCharacters.length => gets the length of the array
-			for (var i = 0; i < window.playersCharacters.length; i++) {
+			// for (var i = 0; i < window.playersCharacters.length; i++) {
 
-			}
+			// }
         }
     };
 }()); 
