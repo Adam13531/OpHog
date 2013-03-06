@@ -15,7 +15,7 @@
 			// - Find out how to make a "template" that I could reuse for the player's characters
 			// 		(so I can use a for loop)
 			var rightMargin = '18px';
-			var buyingScreenContainer = $('<div id="buyingScreenContainer" style="border:1px solid; cursor:none; width:200px; height:300px;"></div>');
+			var buyingScreenContainer = $('<div id="buyingScreenContainer" style="border:1px solid; cursor:none;"></div>');
 			$('body').append(buyingScreenContainer);
 			$('#buyingScreenContainer').append('<div id="headers" style="border:1px solid; cursor:none; width:200px; height:32px;">' +
 													'<img id="header1" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite smallDiamond-png' + '" />' +
@@ -29,6 +29,13 @@
 													'<span id="unitCost1" style="font-weight: bold; font-size: 20px">50</span>' +
 													'<span id="unitLevel1" style="font-weight: bold; font-size: 20px">50</span>' +
 													'<span id="unitExperience1" style="font-weight: bold; font-size: 20px">50</span>' +
+												'</div>' +
+												'<br>' +
+												'<div id="unit2" style="cursor:none; width:200px; height:32px;">' +
+													'<img id="unitImage2" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '" />' +
+													'<span id="unitCost2" style="font-weight: bold; font-size: 20px">50</span>' +
+													'<span id="unitLevel2" style="font-weight: bold; font-size: 20px">50</span>' +
+													'<span id="unitExperience2" style="font-weight: bold; font-size: 20px">50</span>' +
 												'</div>');
 
 			// TODO: Put these in a loop
@@ -57,6 +64,19 @@
 				"margin-right" : unitMargin
 			});
 			$('#unitExperience1').css({
+				"margin-right" : unitMargin
+			});
+
+			$('#unitImage2').css({
+				"margin-right" : unitMargin
+			});
+			$('#unitCost2').css({
+				"margin-right" : unitMargin
+			});
+			$('#unitLevel2').css({
+				"margin-right" : unitMargin
+			});
+			$('#unitExperience2').css({
 				"margin-right" : unitMargin
 			});
 
