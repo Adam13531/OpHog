@@ -201,7 +201,7 @@
 
             var newUnit = new game.Unit(createX,createY,0,this.isPlayer);
             newUnit.graphicIndexes = [224 + Math.floor(Math.random() * 5)];
-            gameUnits.push(newUnit);
+            game.UnitManager.addUnit(newUnit);
             return;
         }
 
