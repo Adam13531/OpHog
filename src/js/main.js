@@ -114,8 +114,19 @@
             event.originalEvent.preventDefault();
         });
 
-		// Commenting this out for now due to our ghetto branch structure
-        // game.Inventory.setupUI();
+        // Initialize the UI showing the inventory.
+        // We initialize the UI first so that the character pictures show up
+        // before the equipment slots.
+        game.InventoryUI.setupUI();
+
+        // Initialize the slots of our inventory.
+        game.Inventory.initialize();
+
+        // TODO: figure out how to call this safely in addSlot. That way, the
+        // inventory can change sizes later.
+        window.ui.setSlider($('#equippable-item-scroll-pane'));
+        window.ui.setSlider($('#usable-item-scroll-pane'));
+
         // game.UnitPlacementUI.setupUI();
     }
 

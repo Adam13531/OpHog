@@ -48,6 +48,7 @@
         }
     });
 
+    // This code was adapted from http://www.simonbattersby.com/blog/vertical-scrollbar-using-jquery-ui-slider/
     window.ui.setSlider = function($scrollpane) {//$scrollpane is the div to be scrolled
         //set options for handle image - amend this to true or false as required
         var handleImage = false;
