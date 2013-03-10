@@ -11,6 +11,24 @@
         gameUnits: new Array(),
 
         /**
+         * Holds the number of archers that the player owns
+         * @type {Number}
+         */
+        numArchers: 0,
+
+        /**
+         * Holds the number of wizards that the player owns
+         * @type {Number}
+         */
+        numWizards: 0,
+
+        /**
+         * Holds the number of warriors that the player owns
+         * @type {Number}
+         */
+        numWarriors: 0,
+
+        /**
          * Draw the units.
          * @param  {Object} ctx The canvas context.
          */
@@ -48,6 +66,24 @@
             };
 
             game.BattleManager.checkForBattles(this.gameUnits);
+        },
+
+        /**
+         * Gets the number of units that belong to a player and are of the type
+         * that was passed in.
+         * @param  {Unit} unitType 
+         * @return {Integer} The number of units that belong to the player that
+         *                   are of the type unitType
+         */
+        getNumOfPlayerUnits: function(unitType) {
+            var numOfUnits = 0;
+            for (var i = 0; i < this.gameUnits.length; i++) {
+                if (this.gameUnits[i].getUnitType() == unitType && 
+                    this.gameUnits[i].isPlayerUnit()) {
+                    numOfUnits++;
+                }
+            };
+            return numOfUnits;
         },
     };
 }()); 

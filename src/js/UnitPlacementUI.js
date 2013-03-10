@@ -1,5 +1,16 @@
 ( function() {
     
+	/**
+	 * Defines the types of units. This will msot likely be refactored out,
+	 * but that will be done in another branch.
+	 * @type {UnitType}
+	 */
+	window.game.UnitType = {
+		ARCHER: 0,
+		WARRIOR: 1,
+		WIZARD: 2
+	};
+
     // There's only one unit placement UI, so we'll define everything in a single
     // object.
     window.game.UnitPlacementUI = {
@@ -31,10 +42,17 @@
 				"margin-right" : rightMargin
 			});
 
-			// TODO: Make the loop go for the max size of characters
+			// TODO: This is test code
+			// archers
+			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.ARCHER,true));
+			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.ARCHER,true));
+			// warriors
+			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.WARRIOR,true));
+			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.WARRIOR,true));
+
 			var unitMargin = '30px';
 			var unitOpacity = '1.0';
-			for (var i = 0; i < 4; i++) {
+			for (var i = 0; i < game.UnitManager.getNumOfPlayerUnits(window.game.UnitType.ARCHER); i++) {
 				$('#buyingScreenContainer').append('<div id="unit'+i+'" style="cursor:none;">' +
 														'<img id="unitImage'+i+'" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '" />' +
 														'<span id="unitCost'+i+'" style="font-weight: bold; font-size: 20px">50</span>' +
