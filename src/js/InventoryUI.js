@@ -94,14 +94,39 @@
          * @param {Slot} slot - the slot to add
          */
         addedSlot: function(slot) {
+            // This points to the element that we will add the SlotUI to.
             var domSelector;
+
+            // This needs some explanation. When we call setSlider on a div, all
+            // of the existing children are wrapped in a .scroll-content class.
+            // From then on, you need to add to the .scroll-content, not the
+            // original div, otherwise your new items will not be in the scroll
+            // area.
+            var scrollContentClassSelector = ' > .scroll-content';
+            var setScrollable = false;
+
+            // This points to the scrollpane, assuming the div in question was
+            // already made into a scrollpane (i.e. on all calls to this
+            // function after the first).
+            var scrollSelector = null;
 
             switch(slot.slotType) {
                 case game.SlotTypes.EQUIP:
                     domSelector = '#equippable-item-scroll-pane';
+                    scrollSelector = domSelector;
+
+                    // If the .scroll-content already exists...
+                    if ( $(domSelector + scrollContentClassSelector).length > 0 ) {
+                        // Then we add the SlotUI to that.
+                        domSelector += scrollContentClassSelector;
+                    }
                     break;
                 case game.SlotTypes.USABLE:
                     domSelector = '#usable-item-scroll-pane';
+                    scrollSelector = domSelector;
+                    if ( $(domSelector + scrollContentClassSelector).length > 0 ) {
+                        domSelector += scrollContentClassSelector;
+                    }
                     break;
                 case game.SlotTypes.WAR:
                     domSelector = '#war-section';
@@ -120,6 +145,10 @@
 
             var newSlotUI = new game.SlotUI(domSelector, slot);
             this.slots.push(newSlotUI);
+
+            if ( scrollSelector != null ) {
+                window.ui.setSlider($(scrollSelector));
+            }
         },
 
         /**
