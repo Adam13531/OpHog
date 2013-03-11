@@ -53,19 +53,30 @@
         /**
          * Gets the number of units that belong to a player and are of the type
          * that was passed in.
-         * @param  {Unit} unitType 
-         * @return {Integer} The number of units that belong to the player that
+         * @param  {UnitType} unitType Type of unit
+         * @return {Number} The number of units that belong to the player that
          *                   are of the type unitType
          */
         getNumOfPlayerUnits: function(unitType) {
-            var numOfUnits = 0;
+            return this.getUnits(unitType).length;
+        },
+
+        /**
+         * Gets the units that belong to a player and are of the type that was
+         * passed in.
+         * @param  {UnitType} unitType Type of unit
+         * @return {Array:Unit}          List of units that belong to the player
+         *                               that are of type unitType.
+         */
+        getUnits: function(unitType) {
+            var list = new Array();
             for (var i = 0; i < this.gameUnits.length; i++) {
-                if (this.gameUnits[i].getUnitType() == unitType && 
-                    this.gameUnits[i].isPlayerUnit()) {
-                    numOfUnits++;
-                }
+                if (this.gameUnits[i].unitType == unitType && 
+                    this.gameUnits[i].isPlayer) {
+                    list.push(this.gameUnits[i]);
+                };
             };
-            return numOfUnits;
+            return list;
         },
     };
 }()); 

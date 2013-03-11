@@ -29,6 +29,9 @@
         this.heightInTiles = 1;
         this.id = window.game.unitID++;
 
+        this.level = 1;
+        this.experience = 0;
+
         // You have a graphic index for each tile that you take up.
         // 'graphicIndexes' represents all of the tiles, from left to right, top
         // to bottom, to use when drawing a unit.
@@ -81,23 +84,6 @@
         // This is an object with a lot of different things in it.
         this.battleData = null;
     };
-
-    /**
-     * Returns whether or not this unit belongs to a player
-     * @return {Boolean} returns true if the unit belongs to a player
-     *                   returns false if the unit belongs to an enemy
-     */
-    window.game.Unit.prototype.isPlayerUnit = function() {
-        return this.isPlayer;
-    };
-
-    /**
-     * Returns the type of unit
-     * @return {UnitType} Type of unit
-     */
-    window.game.Unit.prototype.getUnitType = function() {
-        return this.unitType;
-    }
 
     window.game.Unit.prototype.update = function(delta) {
         var deltaAsSec = delta / 1000;
