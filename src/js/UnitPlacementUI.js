@@ -14,6 +14,18 @@
     // There's only one unit placement UI, so we'll define everything in a single
     // object.
     window.game.UnitPlacementUI = {
+
+    	/**
+    	 * Multiplies a minimum amount of money by the amount of a certain type
+    	 * of units to by in order to calculate how much a new slot will cost
+    	 * for that unit type
+    	 * @param  {UnitType} unitType Type of unit
+    	 * @return {Integer}           Amount that the new slot should cost
+    	 */
+    	costToPurchaseSlot: function(unitType) {
+    		var minAmountOfMoney = 500;
+    		return (minAmountOfMoney * game.UnitManager.getNumOfPlayerUnits(unitType));
+    	},
 		
 		/**
          * Sets up the entire unit placement UI.
@@ -21,9 +33,9 @@
         setupUI: function() {
 
 			var rightMargin = '18px';
-			var buyingScreenContainer = $('<div id="buyingScreenContainer" style="border:1px solid; cursor:none;"></div>');
+			var buyingScreenContainer = $('<div id="buyingScreenContainer" style="border:1px solid;"></div>');
 			$('body').append(buyingScreenContainer);
-			$('#buyingScreenContainer').append('<div id="headers" style="cursor:none; width:200px; height:32px;">' +
+			$('#buyingScreenContainer').append('<div id="headers" style="width:200px; height:32px;">' +
 													'<img id="header1" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite smallDiamond-png' + '" />' +
 													'<img id="header2" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite redCube-png' + '" />' +
 													'<img id="header3" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite purpleCube-png' + '" />' +
@@ -46,6 +58,7 @@
 			// archers
 			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.ARCHER,true));
 			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.ARCHER,true));
+			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.ARCHER,true));
 			// warriors
 			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.WARRIOR,true));
 			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.WARRIOR,true));
@@ -53,7 +66,7 @@
 			var unitMargin = '30px';
 			var unitOpacity = '1.0';
 			for (var i = 0; i < game.UnitManager.getNumOfPlayerUnits(window.game.UnitType.ARCHER); i++) {
-				$('#buyingScreenContainer').append('<div id="unit'+i+'" style="cursor:none;">' +
+				$('#buyingScreenContainer').append('<div id="unit'+i+'">' +
 														'<img id="unitImage'+i+'" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '" />' +
 														'<span id="unitCost'+i+'" style="font-weight: bold; font-size: 20px">50</span>' +
 														'<span id="unitLevel'+i+'" style="font-weight: bold; font-size: 20px">5</span>' +
@@ -82,6 +95,14 @@
 					"opacity"	   : unitOpacity
 				});
 			}
+
+			// Add a button to allow the player to buy a new slot
+			$('#buyingScreenContainer'). append('<button id="buySlotButton">'+ 
+												this.costToPurchaseSlot(window.game.UnitType.ARCHER) +
+												'</button> - Buy archer slot');
+			$('#buySlotButton').click(function() {
+
+			});
 
 			var $canvas = $('#canvas');
 			var width = $canvas.width();

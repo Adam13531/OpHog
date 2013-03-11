@@ -11,24 +11,6 @@
         gameUnits: new Array(),
 
         /**
-         * Holds the number of archers that the player owns
-         * @type {Number}
-         */
-        numArchers: 0,
-
-        /**
-         * Holds the number of wizards that the player owns
-         * @type {Number}
-         */
-        numWizards: 0,
-
-        /**
-         * Holds the number of warriors that the player owns
-         * @type {Number}
-         */
-        numWarriors: 0,
-
-        /**
          * Draw the units.
          * @param  {Object} ctx The canvas context.
          */
