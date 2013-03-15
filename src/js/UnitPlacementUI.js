@@ -45,12 +45,14 @@
 			var rightMargin = '18px';
 			var buyingScreenContainer = $('<div id="buyingScreenContainer" style="border:1px solid;"></div>');
 			$('body').append(buyingScreenContainer);
+
+			// TODO: Load real headers
 			$('#buyingScreenContainer').append('<div id="headers" style="width:200px; height:32px;">' +
-													'<img id="header1" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite smallDiamond-png' + '" />' +
-													'<img id="header2" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite redCube-png' + '" />' +
-													'<img id="header3" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite purpleCube-png' + '" />' +
-													'<img id="header4" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite greenCube-png' + '" />' +
-											   '</div>');
+										'<img id="header1" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite smallDiamond-png' + '" />' +
+										'<img id="header2" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite redCube-png' + '" />' +
+										'<img id="header3" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite purpleCube-png' + '" />' +
+										'<img id="header4" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite greenCube-png' + '" />' +
+								   '</div>');
 			$('#header1').css({
 				"margin-right" : rightMargin
 			});
@@ -74,10 +76,32 @@
 			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.WARRIOR,true));
 			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.WARRIOR,true));
 
+			// Sets the default page
+			this.setPage(window.game.UnitType.ARCHER);
+
+			var $canvas = $('#canvas');
+			var width = $canvas.width();
+			var canvasPos = $canvas.position();
+
+			// Position the buying screen based on the div
+			$('#buyingScreenContainer').css({
+				position : 'absolute',
+				top : canvasPos.top + 'px',
+				left : (canvasPos.left + width + 5) + 'px'
+			});
+        },
+
+        /**
+         * Allows the user to place units and buy slots for all the units of the
+         * specified unit type.
+         * @param {UnitType} unitType Type of unit
+         */
+        setPage: function(unitType) {
+
 			var unitMargin = '30px';
 			var unitOpacity = '1.0';
 			
-			var unitArray = game.UnitManager.getUnits(window.game.UnitType.ARCHER);
+			var unitArray = game.UnitManager.getUnits(unitType);
 			
 			for (var i = 0; i < unitArray.length; i++) {
 				$('#buyingScreenContainer').append('<div id="unit'+i+'">' +
@@ -86,8 +110,13 @@
 														'<span id="unitLevel'+i+'" style="font-weight: bold; font-size: 20px">'+unitArray[i].level+'</span>' +
 														'<span id="unitExperience'+i+'" style="font-weight: bold; font-size: 20px">'+unitArray[i].experience+'</span>' +
 												   '</div>');
-				// TODO: Change opacity when the unit is already placed and 
-				// change it back when the unit is killed or removed
+
+				$('#unit'+i).click(function() {
+					//TODO: Make this do something
+				});
+
+				// TODO: Make sure opacity changes when the unit gets revived
+				// or dies
 				if (!unitArray[i].isLiving)
 				{
 					unitOpacity = '0.4';
@@ -111,25 +140,13 @@
 			}
 
 			// Add a button to allow the player to buy a new slot
-			$('#buyingScreenContainer'). append('<button id="buySlotButton">'+ 
-												costToPurchaseSlot(window.game.UnitType.ARCHER) +
+			$('#buyingScreenContainer').append('<button id="buySlotButton">'+ 
+												costToPurchaseSlot(unitType) +
 												'</button> - Buy archer slot');
 			$('#buySlotButton').click(function() {
-				// var id = game.UnitManager.getNumOfPlayerUnits(window.game.UnitType.ARCHER);
-				// $('#buyingScreenContainer').append('<div id="unit'+id+
-				// 									);
+				// game.UnitManager.addUnit(new game.Unit(1,9,unitType,true));
+				// this.setPage(unitType);
 			});
-
-			var $canvas = $('#canvas');
-			var width = $canvas.width();
-			var canvasPos = $canvas.position();
-
-			// Position the buying screen based on the div
-			$('#buyingScreenContainer').css({
-				position : 'absolute',
-				top : canvasPos.top + 'px',
-				left : (canvasPos.left + width + 5) + 'px'
-			});
-        }
+        },
     };
 }()); 
