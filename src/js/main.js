@@ -60,12 +60,20 @@
         var $toggleParticlesButton = $('#toggleParticlesButton');
 
         var $settingsButton = $('#settingsButton');
+        var $showInventory = $('#showInventory');
         $settingsButton.button({
               icons: {
                 primary: 'ui-icon-gear'
               },
               text: false
           });
+
+
+        $showInventory.button();
+        $showInventory.click(function() {
+            $settingsDialog.dialog('close');
+            $('#inventory-screen').dialog('open');
+        });
 
         var settingsWidth = $settingsButton.width();
 
@@ -76,6 +84,7 @@
         });
         $settingsButton.click(function() {
             $settingsDialog.dialog('open');
+            $settingsButton.hide();
         });
 
         var $settingsDialog = $('#settingsDialog');
@@ -111,6 +120,10 @@
                 at: 'right top',
                 of: $canvas
             },
+
+            close: function(event, ui) {
+                $settingsButton.show();
+            }
 
         });
 

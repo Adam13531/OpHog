@@ -22,68 +22,34 @@
          * Sets up the entire Inventory UI.
          */
         setupUI: function() {
-            var $canvas = $('#canvas');
-            var width = $canvas.width();
-            var canvasPos = $canvas.position();
-            // canvasPos.top -= 100;
-            // canvasPos.left -= 400;
-
-            // Position where the equippable items go
-            $('#equippable-item-scroll-pane').css({
-                position : 'absolute',
-                top : (canvasPos.top + 350) + 'px',
-                left : (canvasPos.left + width + 175) + 'px'
-            });
-
-            // Base the location of the usable items on the equippable ones
-            var equipPanePos = $('#equippable-item-scroll-pane').position();
-            var equipPaneWidth = $('#equippable-item-scroll-pane').width();
-            var equipPaneHeight = $('#equippable-item-scroll-pane').height();
-            $('#usable-item-scroll-pane').css({
-                position : 'absolute',
-                top : (equipPanePos.top) + 'px',
-                left : (equipPanePos.left + equipPaneWidth + 5) + 'px'
-            });
-            $('#item-description').css({
-                position : 'absolute',
-                top : (equipPanePos.top + equipPaneHeight + 5) + 'px',
-                left : (canvasPos.left + width + 5) + 'px'
-            });
-
-            // The warrior's section
             $('#war-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite war32-png' + '"/>');
-            $('#war-section').css({
-               position: 'absolute',
-               top: (equipPanePos.top) + 'px',
-               left: (canvasPos.left + width + 5) + 'px'
-            });
-            
-            // The wizard's section comes next
-            var warPos = $('#war-section').position();
-            var warHeight = $('#war-section').height();
             $('#wiz-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite wiz32-png' + '"/>');
-            $('#wiz-section').css({
-               position: 'absolute',
-               top: (warPos.top + warHeight + 5) + 'px',
-               left: (warPos.left) + 'px'
-            });
-            
-            var wizPos = $('#wiz-section').position();
-            var wizHeight = $('#wiz-section').height();
             $('#arch-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '"/>');
-            $('#arch-section').css({
-               position: 'absolute',
-               top: (wizPos.top + wizHeight + 5) + 'px',
-               left: (wizPos.left) + 'px'
-            });
 
             // Put some starter text for the description
-            $('#item-description').html('<h1>Click here to close the whole screen.</h1>');
-            $('#item-description').click(function() {
-                if (game.InventoryUI.getSelectedSlot() == null )
-                {
-                    $('#inventory-screen').hide();
-                }
+            $('#item-description').html('<h2>Click a slot to select it.</h2>');
+
+            // For more thorough comments, look at the settings dialog.
+            $('#inventory-screen').dialog({
+                autoOpen: false,
+                width:360,
+                height:342,
+                resizable:false,
+
+                // Wrap the dialog in a span so that it gets themed correctly.
+                appendTo:"#inventoryThemeSpan",
+                hide: {
+                    effect: 'fade',
+                    duration: 400
+                },
+    
+                // Position the inventory screen in the center of the canvas
+                position: {
+                    my: 'center',
+                    at: 'center',
+                    of: ('#canvas')
+                },
+    
             });
         },
         

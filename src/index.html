@@ -40,13 +40,23 @@
 	    	 -->
 	    <span id="garbage"></span>
 	    
-	    <div id="inventory-screen">
-	    	<span id="war-section" style="width:128px;"></span>
-		    <span id="wiz-section" style="width:128px;"></span>
-		    <span id="arch-section" style="width:128px;"></span>
-			<div id="equippable-item-scroll-pane" class="scroll-pane"/></div>
-			<div id="usable-item-scroll-pane" class="scroll-pane"/></div>
-			<div id="item-description" class="test3" style="border:1px solid gray;width:355px;height:132px"></div>
+	    <div id="inventory-screen" title="Inventory">
+
+            <!-- Top part -->
+            <div id="top_part_with_characters_and_items" style="position:absolute;top:0px;left:0px;width:100%;margin-top:5px">
+
+                <!-- Each character section is horizontal, but they are vertically aligned -->
+                <div id="char-section" style="margin-right:1px;float:left">
+                    <div id="war-section" style="width:128px;"></div>
+                    <div id="wiz-section" style="width:128px;"></div>
+                    <div id="arch-section" style="width:128px;"></div>
+                </div>
+    			<div id="equippable-item-scroll-pane" style="margin-right:5px;" class="scroll-pane"/></div>
+    			<div id="usable-item-scroll-pane" class="scroll-pane"/></div>
+            </div>
+
+            <!-- Bottom part -->
+			<div id="item-description" class="test1" style="position:absolute;top:150px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
 	    </div>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
@@ -93,14 +103,21 @@
         </script>
         <button id='createPlayer'>Create player</button>
         <button id='createEnemy'>Create enemy</button>
-        
+
+        <!-- This is used for styling the inventory UI -->
+        <span style="opacity:.95;" class="le-frog" id="inventoryThemeSpan"></span>
+        <!-- This is used for syling the settings UI -->
+        <span style="opacity:.95;" class="le-frog" id="settingsDialogThemeSpan"></span>
+
+        <!-- The button to open the settings UI -->
         <span class="le-frog">
             <button style="width:25px;" id='settingsButton'></button>
         </span>
 
-        <span style="opacity:.95;" class="le-frog" id="settingsDialogThemeSpan"></span>
+        <!-- These are the contents of the settings UI -->
         <div style="border:1px solid gray;background-color:#373737;" id="settingsDialog" title="Settings">
             <input type="checkbox" id="toggleParticlesButton"/><label for="toggleParticlesButton">Disable particles</label>
+            <button style="margin-top:5px;" id='showInventory'>Show inventory</button>
         </div>
     </body>
 </html>
