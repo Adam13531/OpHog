@@ -11,6 +11,10 @@
 		WIZARD: 2
 	};
 
+	window.game.UNIT_MARGIN = '30px';
+	window.game.SLOT_COST = 500;
+	window.game.unitOpacity = '1.0';
+
 	// "Private" functions (These should only be accessible in this file)
     
     /**
@@ -18,10 +22,15 @@
 	 * of units to by in order to calculate how much a new slot will cost
 	 * for that unit type
 	 * @param  {UnitType} unitType Type of unit
-	 * @return {Number}           Amount that the new slot should cost
+	 * @return {Number}           Amount that the new slot will cost
 	 */
 	function costToPurchaseSlot(unitType) {
-		return (500 * game.UnitManager.getNumOfPlayerUnits(unitType));
+		if (game.UnitManager.getNumOfPlayerUnits(unitType) == 0) {
+			return game.SLOT_COST; 
+		}
+		else {
+			return (game.SLOT_COST * game.UnitManager.getNumOfPlayerUnits(unitType) + game.SLOT_COST);
+		}
 	};
 
 	/**
@@ -66,16 +75,6 @@
 				"margin-right" : rightMargin
 			});
 
-			// TODO: This is test code
-			// archers
-			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.ARCHER,true));
-			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.ARCHER,true));
-			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.ARCHER,true));
-			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.ARCHER,true));
-			// warriors
-			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.WARRIOR,true));
-			game.UnitManager.addUnit(new game.Unit(1,9,game.UnitType.WARRIOR,true));
-
 			// Sets the default page
 			this.setPage(window.game.UnitType.ARCHER);
 
@@ -97,56 +96,69 @@
          * @param {UnitType} unitType Type of unit
          */
         setPage: function(unitType) {
-
-			var unitMargin = '30px';
-			var unitOpacity = '1.0';
 			
 			var unitArray = game.UnitManager.getUnits(unitType);
 			
+			$('#buyingScreenContainer').append('<div id="pageContainer">');
 			for (var i = 0; i < unitArray.length; i++) {
-				$('#buyingScreenContainer').append('<div id="unit'+i+'">' +
-														'<img id="unitImage'+i+'" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '" />' +
-														'<span id="unitCost'+i+'" style="font-weight: bold; font-size: 20px">'+costToPlaceUnit(unitArray[i])+'</span>' +
-														'<span id="unitLevel'+i+'" style="font-weight: bold; font-size: 20px">'+unitArray[i].level+'</span>' +
-														'<span id="unitExperience'+i+'" style="font-weight: bold; font-size: 20px">'+unitArray[i].experience+'</span>' +
-												   '</div>');
-
-				$('#unit'+i).click(function() {
-					//TODO: Make this do something
-				});
-
-				// TODO: Make sure opacity changes when the unit gets revived
-				// or dies
-				if (!unitArray[i].isLiving)
-				{
-					unitOpacity = '0.4';
-				}
-				$('#unitImage'+i).css({
-					"margin-right" : unitMargin,
-					"opacity"	   : unitOpacity
-				});
-				$('#unitCost'+i).css({
-					"margin-right" : unitMargin,
-					"opacity"	   : unitOpacity
-				});
-				$('#unitLevel'+i).css({
-					"margin-right" : unitMargin,
-					"opacity"	   : unitOpacity
-				});
-				$('#unitExperience'+i).css({
-					"margin-right" : unitMargin,
-					"opacity"	   : unitOpacity
-				});
+				this.addSlotToPage(unitArray[i], i);
 			}
+			$('#buyingScreenContainer').append('</div>');
 
 			// Add a button to allow the player to buy a new slot
 			$('#buyingScreenContainer').append('<button id="buySlotButton">'+ 
 												costToPurchaseSlot(unitType) +
 												'</button> - Buy archer slot');
 			$('#buySlotButton').click(function() {
-				// game.UnitManager.addUnit(new game.Unit(1,9,unitType,true));
-				// this.setPage(unitType);
+				newUnit = new game.Unit(1,9,unitType,true);
+				game.UnitManager.addUnit(newUnit);
+				game.UnitPlacementUI.addSlotToPage(newUnit, game.UnitManager.getNumOfPlayerUnits(unitType));
 			});
+        },
+
+        /**
+         * Adds a slot to the page
+         * @param {Unit} unit  Unit that will be in the slot
+         * @param {Number} index Used for indexing the units
+         */
+        addSlotToPage: function(unit, index) {
+			$('#pageContainer').append('<div id="unit'+index+'">' +
+										'<img id="unitImage'+index+'" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '" />' +
+										'<span id="unitCost'+index+'" style="font-weight: bold; font-size: 20px">'+costToPlaceUnit(unit)+'</span>' +
+										'<span id="unitLevel'+index+'" style="font-weight: bold; font-size: 20px">'+unit.level+'</span>' +
+										'<span id="unitExperience'+index+'" style="font-weight: bold; font-size: 20px">'+unit.experience+'</span>' +
+								   '</div>');
+
+			$('#unit'+index).click(function() {
+				//TODO: Make this do something
+			});
+
+			// TODO: Make sure opacity changes when the unit gets revived
+			// or dies
+			if (!unit.isLiving)
+			{
+				game.unitOpacity = '0.4';
+			}
+			$('#unitImage'+index).css({
+				"margin-right" : game.UNIT_MARGIN,
+				"opacity"	   : game.unitOpacity
+			});
+			$('#unitCost'+index).css({
+				"margin-right" : game.UNIT_MARGIN,
+				"opacity"	   : game.unitOpacity
+			});
+			$('#unitLevel'+index).css({
+				"margin-right" : game.UNIT_MARGIN,
+				"opacity"	   : game.unitOpacity
+			});
+			$('#unitExperience'+index).css({
+				"margin-right" : game.UNIT_MARGIN,
+				"opacity"	   : game.unitOpacity
+			});
+
+			// Update the text of the button to show the new cost of buying
+			// this unit
+			$('#buySlotButton').text(costToPurchaseSlot(unit.unitType));
         },
     };
 }()); 
