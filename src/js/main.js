@@ -55,6 +55,23 @@
     }
 
     function makeUI() {
+        $("#settingsButton").button({
+              icons: {
+                primary: "ui-icon-gear"
+              },
+              text: false
+          });
+        $("#settingsButton").click(function() {
+            game.util.debugDisplayText("You clicked a button. Settings will pop up when I code them.");
+        });
+
+        // This is done for theming.
+        $("#toggleParticlesButton").button({});
+
+        $("#toggleParticlesButton").click(function() {
+            game.ParticleManager.toggleEnabled();
+        });
+
         $('#createPlayer').click(function() {
             var newUnit = new game.Unit(1,9,0,true);
             game.UnitManager.addUnit(newUnit);
@@ -121,11 +138,6 @@
 
         // Initialize the slots of our inventory.
         game.Inventory.initialize();
-
-        // TODO: figure out how to call this safely in addSlot. That way, the
-        // inventory can change sizes later.
-        window.ui.setSlider($('#equippable-item-scroll-pane'));
-        window.ui.setSlider($('#usable-item-scroll-pane'));
 
         // game.UnitPlacementUI.setupUI();
     }

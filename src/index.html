@@ -16,8 +16,8 @@
 		      href="favicon.ico">
       
         <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/ui/le-frog/jquery-ui-1.10.2.custom.css">
         <link rel="stylesheet" href="css/main.css">
-        <!-- <link rel="stylesheet" href="css/ui/jquery.ui.all.css"> -->
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
     <body>
@@ -40,7 +40,6 @@
 	    	 -->
 	    <span id="garbage"></span>
 	    
-	    <!-- <div id="inventory-screen" style="border:1px solid;background-color:lightgrey;"> -->
 	    <div id="inventory-screen">
 	    	<span id="war-section" style="width:128px;"></span>
 		    <span id="wiz-section" style="width:128px;"></span>
@@ -98,5 +97,9 @@
         <button id='createPlayer'>Create player</button>
         <button id='createEnemy'>Create enemy</button>
         
+        <span class="le-frog"/>
+            <button style="width:25px;" id='settingsButton'></button>
+            <button id='toggleParticlesButton'>Disable particles</button>
+        </span>
     </body>
 </html>

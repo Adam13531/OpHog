@@ -5,7 +5,25 @@
     window.game.ParticleManager = {
         systems: new Array(),
 
+        // If you disable the particle manager, then two things will happen:
+        // 1. All existing systems will be removed
+        // 2. No new systems can be added
+        // 
+        // That means you can still call update and draw, but those functions
+        // will essentially do nothing.
+        enabled: true,
+
+        toggleEnabled: function() {
+            if ( this.enabled ) {
+                // Get rid of existing systems
+                this.systems = [];
+            }
+
+            this.enabled = !this.enabled;
+        },
+
         addSystem: function(system) {
+            if ( !this.enabled ) return;
             this.systems.push(system);
         },
 
