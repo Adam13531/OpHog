@@ -57,6 +57,7 @@
     function makeUI() {
         var $canvas = $('#canvas');
         var canvasPos = $canvas.position();
+        var $toggleParticlesButton = $('#toggleParticlesButton');
 
         var $settingsButton = $('#settingsButton');
         $settingsButton.button({
@@ -113,11 +114,19 @@
 
         });
 
-        // This is done for theming.
-        $('#toggleParticlesButton').button({});
+        // This is done for theming
+        $toggleParticlesButton.button();
 
-        $('#toggleParticlesButton').click(function() {
+        $toggleParticlesButton.click(function() {
+            // Toggle particles
             game.ParticleManager.toggleEnabled();
+
+            // Form the new text for this button
+            var text = game.ParticleManager.enabled ? "Disable" : "Enable";
+            text += " particles";
+
+            // The text actually goes in a sibling label's child span.
+            $($toggleParticlesButton.selector + ' ~ label > span').text(text);
         });
 
         $('#createPlayer').click(function() {
