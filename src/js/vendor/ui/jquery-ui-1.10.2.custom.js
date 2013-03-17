@@ -1,23 +1,18 @@
-/*! jQuery UI - v1.10.1 - 2013-02-15
+/*! jQuery UI - v1.10.2 - 2013-03-14
 * http://jqueryui.com
 * Includes: jquery.ui.core.js, jquery.ui.widget.js, jquery.ui.mouse.js, jquery.ui.position.js, jquery.ui.accordion.js, jquery.ui.autocomplete.js, jquery.ui.button.js, jquery.ui.datepicker.js, jquery.ui.dialog.js, jquery.ui.draggable.js, jquery.ui.droppable.js, jquery.ui.effect.js, jquery.ui.effect-blind.js, jquery.ui.effect-bounce.js, jquery.ui.effect-clip.js, jquery.ui.effect-drop.js, jquery.ui.effect-explode.js, jquery.ui.effect-fade.js, jquery.ui.effect-fold.js, jquery.ui.effect-highlight.js, jquery.ui.effect-pulsate.js, jquery.ui.effect-scale.js, jquery.ui.effect-shake.js, jquery.ui.effect-slide.js, jquery.ui.effect-transfer.js, jquery.ui.menu.js, jquery.ui.progressbar.js, jquery.ui.resizable.js, jquery.ui.selectable.js, jquery.ui.slider.js, jquery.ui.sortable.js, jquery.ui.spinner.js, jquery.ui.tabs.js, jquery.ui.tooltip.js
-* Copyright (c) 2013 jQuery Foundation and other contributors Licensed MIT */
+* Copyright 2013 jQuery Foundation and other contributors Licensed MIT */
 
 (function( $, undefined ) {
 
 var uuid = 0,
 	runiqueId = /^ui-id-\d+$/;
 
-// prevent duplicate loading
-// this is only a problem because we proxy existing functions
-// and we don't want to double proxy them
+// $.ui might exist from components with no dependencies, e.g., $.ui.position
 $.ui = $.ui || {};
-if ( $.ui.version ) {
-	return;
-}
 
 $.extend( $.ui, {
-	version: "1.10.1",
+	version: "1.10.2",
 
 	keyCode: {
 		BACKSPACE: 8,
@@ -47,20 +42,21 @@ $.extend( $.ui, {
 
 // plugins
 $.fn.extend({
-	_focus: $.fn.focus,
-	focus: function( delay, fn ) {
-		return typeof delay === "number" ?
-			this.each(function() {
-				var elem = this;
-				setTimeout(function() {
-					$( elem ).focus();
-					if ( fn ) {
-						fn.call( elem );
-					}
-				}, delay );
-			}) :
-			this._focus.apply( this, arguments );
-	},
+	focus: (function( orig ) {
+		return function( delay, fn ) {
+			return typeof delay === "number" ?
+				this.each(function() {
+					var elem = this;
+					setTimeout(function() {
+						$( elem ).focus();
+						if ( fn ) {
+							fn.call( elem );
+						}
+					}, delay );
+				}) :
+				orig.apply( this, arguments );
+		};
+	})( $.fn.focus ),
 
 	scrollParent: function() {
 		var scrollParent;
@@ -836,7 +832,7 @@ $( document ).mouseup( function() {
 });
 
 $.widget("ui.mouse", {
-	version: "1.10.1",
+	version: "1.10.2",
 	options: {
 		cancel: "input,textarea,button,select,option",
 		distance: 1,
@@ -1071,8 +1067,8 @@ $.position = {
 			hasOverflowY = overflowY === "scroll" ||
 				( overflowY === "auto" && within.height < within.element[0].scrollHeight );
 		return {
-			width: hasOverflowX ? $.position.scrollbarWidth() : 0,
-			height: hasOverflowY ? $.position.scrollbarWidth() : 0
+			width: hasOverflowY ? $.position.scrollbarWidth() : 0,
+			height: hasOverflowX ? $.position.scrollbarWidth() : 0
 		};
 	},
 	getWithinInfo: function( element ) {
@@ -1483,7 +1479,7 @@ showProps.height = showProps.paddingTop = showProps.paddingBottom =
 	showProps.borderTopWidth = showProps.borderBottomWidth = "show";
 
 $.widget( "ui.accordion", {
-	version: "1.10.1",
+	version: "1.10.2",
 	options: {
 		active: 0,
 		animate: {},
@@ -2035,7 +2031,7 @@ $.widget( "ui.accordion", {
 var requestIndex = 0;
 
 $.widget( "ui.autocomplete", {
-	version: "1.10.1",
+	version: "1.10.2",
 	defaultElement: "<input>",
 	options: {
 		appendTo: null,
@@ -2249,7 +2245,8 @@ $.widget( "ui.autocomplete", {
 				}
 			},
 			menufocus: function( event, ui ) {
-				// #7024 - Prevent accidental activation of menu items in Firefox
+				// support: Firefox
+				// Prevent accidental activation of menu items in Firefox (#7024 #9118)
 				if ( this.isNewMenu ) {
 					this.isNewMenu = false;
 					if ( event.originalEvent && /^mouse/.test( event.originalEvent.type ) ) {
@@ -2505,6 +2502,7 @@ $.widget( "ui.autocomplete", {
 	_suggest: function( items ) {
 		var ul = this.menu.element.empty();
 		this._renderMenu( ul, items );
+		this.isNewMenu = true;
 		this.menu.refresh();
 
 		// size and position menu
@@ -2652,7 +2650,7 @@ var lastActive, startXPos, startYPos, clickDragged,
 	};
 
 $.widget( "ui.button", {
-	version: "1.10.1",
+	version: "1.10.2",
 	defaultElement: "<button>",
 	options: {
 		disabled: null,
@@ -2969,7 +2967,7 @@ $.widget( "ui.button", {
 });
 
 $.widget( "ui.buttonset", {
-	version: "1.10.1",
+	version: "1.10.2",
 	options: {
 		items: "button, input[type=button], input[type=submit], input[type=reset], input[type=checkbox], input[type=radio], a, :data(ui-button)"
 	},
@@ -3028,7 +3026,7 @@ $.widget( "ui.buttonset", {
 }( jQuery ) );
 (function( $, undefined ) {
 
-$.extend($.ui, { datepicker: { version: "1.10.1" } });
+$.extend($.ui, { datepicker: { version: "1.10.2" } });
 
 var PROP_NAME = "datepicker",
 	dpuuid = new Date().getTime(),
@@ -5056,7 +5054,7 @@ $.fn.datepicker = function(options){
 $.datepicker = new Datepicker(); // singleton instance
 $.datepicker.initialized = false;
 $.datepicker.uuid = new Date().getTime();
-$.datepicker.version = "1.10.1";
+$.datepicker.version = "1.10.2";
 
 // Workaround for #4055
 // Add another global to avoid noConflict issues with inline event handlers
@@ -5082,7 +5080,7 @@ var sizeRelatedOptions = {
 	};
 
 $.widget( "ui.dialog", {
-	version: "1.10.1",
+	version: "1.10.2",
 	options: {
 		appendTo: "body",
 		autoOpen: true,
@@ -5738,11 +5736,23 @@ $.widget( "ui.dialog", {
 		}
 	},
 
+	_allowInteraction: function( event ) {
+		if ( $( event.target ).closest(".ui-dialog").length ) {
+			return true;
+		}
+
+		// TODO: Remove hack when datepicker implements
+		// the .ui-front logic (#8989)
+		return !!$( event.target ).closest(".ui-datepicker").length;
+	},
+
 	_createOverlay: function() {
 		if ( !this.options.modal ) {
 			return;
 		}
 
+		var that = this,
+			widgetFullName = this.widgetFullName;
 		if ( !$.ui.dialog.overlayInstances ) {
 			// Prevent use of anchors and inputs.
 			// We use a delay in case the overlay is created from an
@@ -5751,13 +5761,10 @@ $.widget( "ui.dialog", {
 				// Handle .dialog().dialog("close") (#4065)
 				if ( $.ui.dialog.overlayInstances ) {
 					this.document.bind( "focusin.dialog", function( event ) {
-						if ( !$( event.target ).closest(".ui-dialog").length &&
-								// TODO: Remove hack when datepicker implements
-								// the .ui-front logic (#8989)
-								!$( event.target ).closest(".ui-datepicker").length ) {
+						if ( !that._allowInteraction( event ) ) {
 							event.preventDefault();
 							$(".ui-dialog:visible:last .ui-dialog-content")
-								.data("ui-dialog")._focusTabbable();
+								.data( widgetFullName )._focusTabbable();
 						}
 					});
 				}
@@ -5846,7 +5853,7 @@ if ( $.uiBackCompat !== false ) {
 (function( $, undefined ) {
 
 $.widget("ui.draggable", $.ui.mouse, {
-	version: "1.10.1",
+	version: "1.10.2",
 	widgetEventPrefix: "drag",
 	options: {
 		addClasses: true,
@@ -6111,19 +6118,9 @@ $.widget("ui.draggable", $.ui.mouse, {
 	},
 
 	_getHandle: function(event) {
-
-		var handle = !this.options.handle || !$(this.options.handle, this.element).length ? true : false;
-		$(this.options.handle, this.element)
-			.find("*")
-			.addBack()
-			.each(function() {
-				if(this === event.target) {
-					handle = true;
-				}
-			});
-
-		return handle;
-
+		return this.options.handle ?
+			!!$( event.target ).closest( this.element.find( this.options.handle ) ).length :
+			true;
 	},
 
 	_createHelper: function(event) {
@@ -6253,8 +6250,8 @@ $.widget("ui.draggable", $.ui.mouse, {
 			this.containment = [
 				(parseInt($(ce).css("borderLeftWidth"),10) || 0) + (parseInt($(ce).css("paddingLeft"),10) || 0),
 				(parseInt($(ce).css("borderTopWidth"),10) || 0) + (parseInt($(ce).css("paddingTop"),10) || 0),
-				(over ? Math.max(ce.scrollWidth,ce.offsetWidth) : ce.offsetWidth) - (parseInt($(ce).css("borderLeftWidth"),10) || 0) - (parseInt($(ce).css("paddingRight"),10) || 0) - this.helperProportions.width - this.margins.left - this.margins.right,
-				(over ? Math.max(ce.scrollHeight,ce.offsetHeight) : ce.offsetHeight) - (parseInt($(ce).css("borderTopWidth"),10) || 0) - (parseInt($(ce).css("paddingBottom"),10) || 0) - this.helperProportions.height - this.margins.top  - this.margins.bottom
+				(over ? Math.max(ce.scrollWidth,ce.offsetWidth) : ce.offsetWidth) - (parseInt($(ce).css("borderRightWidth"),10) || 0) - (parseInt($(ce).css("paddingRight"),10) || 0) - this.helperProportions.width - this.margins.left - this.margins.right,
+				(over ? Math.max(ce.scrollHeight,ce.offsetHeight) : ce.offsetHeight) - (parseInt($(ce).css("borderBottomWidth"),10) || 0) - (parseInt($(ce).css("paddingBottom"),10) || 0) - this.helperProportions.height - this.margins.top  - this.margins.bottom
 			];
 			this.relative_container = c;
 
@@ -6430,7 +6427,7 @@ $.ui.plugin.add("draggable", "connectToSortable", {
 
 				//The sortable revert is supported, and we have to set a temporary dropped variable on the draggable to support revert: "valid/invalid"
 				if(this.shouldRevert) {
-					this.instance.options.revert = true;
+					this.instance.options.revert = this.shouldRevert;
 				}
 
 				//Trigger the stop of the sortable
@@ -6778,7 +6775,7 @@ function isOverAxis( x, reference, size ) {
 }
 
 $.widget("ui.droppable", {
-	version: "1.10.1",
+	version: "1.10.2",
 	widgetEventPrefix: "drop",
 	options: {
 		accept: "*",
@@ -7035,7 +7032,8 @@ $.ui.ddmanager = {
 	drop: function(draggable, event) {
 
 		var dropped = false;
-		$.each($.ui.ddmanager.droppables[draggable.options.scope] || [], function() {
+		// Create a copy of the droppables in case the list changes during the drop (#9116)
+		$.each(($.ui.ddmanager.droppables[draggable.options.scope] || []).slice(), function() {
 
 			if(!this.options) {
 				return;
@@ -7126,7 +7124,7 @@ $.ui.ddmanager = {
 };
 
 })(jQuery);
-;(jQuery.effects || (function($, undefined) {
+(function($, undefined) {
 
 var dataSpace = "ui-effects-";
 
@@ -7957,39 +7955,42 @@ $.effects.animateClass = function( value, duration, easing, callback ) {
 };
 
 $.fn.extend({
-	_addClass: $.fn.addClass,
-	addClass: function( classNames, speed, easing, callback ) {
-		return speed ?
-			$.effects.animateClass.call( this,
-				{ add: classNames }, speed, easing, callback ) :
-			this._addClass( classNames );
-	},
+	addClass: (function( orig ) {
+		return function( classNames, speed, easing, callback ) {
+			return speed ?
+				$.effects.animateClass.call( this,
+					{ add: classNames }, speed, easing, callback ) :
+				orig.apply( this, arguments );
+		};
+	})( $.fn.addClass ),
 
-	_removeClass: $.fn.removeClass,
-	removeClass: function( classNames, speed, easing, callback ) {
-		return arguments.length > 1 ?
-			$.effects.animateClass.call( this,
-				{ remove: classNames }, speed, easing, callback ) :
-			this._removeClass.apply( this, arguments );
-	},
+	removeClass: (function( orig ) {
+		return function( classNames, speed, easing, callback ) {
+			return arguments.length > 1 ?
+				$.effects.animateClass.call( this,
+					{ remove: classNames }, speed, easing, callback ) :
+				orig.apply( this, arguments );
+		};
+	})( $.fn.removeClass ),
 
-	_toggleClass: $.fn.toggleClass,
-	toggleClass: function( classNames, force, speed, easing, callback ) {
-		if ( typeof force === "boolean" || force === undefined ) {
-			if ( !speed ) {
-				// without speed parameter
-				return this._toggleClass( classNames, force );
+	toggleClass: (function( orig ) {
+		return function( classNames, force, speed, easing, callback ) {
+			if ( typeof force === "boolean" || force === undefined ) {
+				if ( !speed ) {
+					// without speed parameter
+					return orig.apply( this, arguments );
+				} else {
+					return $.effects.animateClass.call( this,
+						(force ? { add: classNames } : { remove: classNames }),
+						speed, easing, callback );
+				}
 			} else {
+				// without force parameter
 				return $.effects.animateClass.call( this,
-					(force ? { add: classNames } : { remove: classNames }),
-					speed, easing, callback );
+					{ toggle: classNames }, force, speed, easing );
 			}
-		} else {
-			// without force parameter
-			return $.effects.animateClass.call( this,
-				{ toggle: classNames }, force, speed, easing );
-		}
-	},
+		};
+	})( $.fn.toggleClass ),
 
 	switchClass: function( remove, add, speed, easing, callback) {
 		return $.effects.animateClass.call( this, {
@@ -8008,7 +8009,7 @@ $.fn.extend({
 (function() {
 
 $.extend( $.effects, {
-	version: "1.10.1",
+	version: "1.10.2",
 
 	// Saves a set of properties in a data storage
 	save: function( element, set ) {
@@ -8224,14 +8225,29 @@ function _normalizeArguments( effect, options, speed, callback ) {
 	return effect;
 }
 
-function standardSpeed( speed ) {
-	// valid standard speeds
-	if ( !speed || typeof speed === "number" || $.fx.speeds[ speed ] ) {
+function standardAnimationOption( option ) {
+	// Valid standard speeds (nothing, number, named speed)
+	if ( !option || typeof option === "number" || $.fx.speeds[ option ] ) {
 		return true;
 	}
 
-	// invalid strings - treat as "normal" speed
-	return typeof speed === "string" && !$.effects.effect[ speed ];
+	// Invalid strings - treat as "normal" speed
+	if ( typeof option === "string" && !$.effects.effect[ option ] ) {
+		return true;
+	}
+
+	// Complete callback
+	if ( $.isFunction( option ) ) {
+		return true;
+	}
+
+	// Options hash (but not naming an effect)
+	if ( typeof option === "object" && !option.effect ) {
+		return true;
+	}
+
+	// Didn't match any standard API
+	return false;
 }
 
 $.fn.extend({
@@ -8268,9 +8284,10 @@ $.fn.extend({
 				}
 			}
 
-			// if the element is hiddden and mode is hide,
-			// or element is visible and mode is show
+			// If the element already has the correct final state, delegate to
+			// the core methods so the internal tracking of "olddisplay" works.
 			if ( elem.is( ":hidden" ) ? mode === "hide" : mode === "show" ) {
+				elem[ mode ]();
 				done();
 			} else {
 				effectMethod.call( elem[0], args, done );
@@ -8280,39 +8297,41 @@ $.fn.extend({
 		return queue === false ? this.each( run ) : this.queue( queue || "fx", run );
 	},
 
-	_show: $.fn.show,
-	show: function( speed ) {
-		if ( standardSpeed( speed ) ) {
-			return this._show.apply( this, arguments );
-		} else {
-			var args = _normalizeArguments.apply( this, arguments );
-			args.mode = "show";
-			return this.effect.call( this, args );
-		}
-	},
+	show: (function( orig ) {
+		return function( option ) {
+			if ( standardAnimationOption( option ) ) {
+				return orig.apply( this, arguments );
+			} else {
+				var args = _normalizeArguments.apply( this, arguments );
+				args.mode = "show";
+				return this.effect.call( this, args );
+			}
+		};
+	})( $.fn.show ),
 
-	_hide: $.fn.hide,
-	hide: function( speed ) {
-		if ( standardSpeed( speed ) ) {
-			return this._hide.apply( this, arguments );
-		} else {
-			var args = _normalizeArguments.apply( this, arguments );
-			args.mode = "hide";
-			return this.effect.call( this, args );
-		}
-	},
+	hide: (function( orig ) {
+		return function( option ) {
+			if ( standardAnimationOption( option ) ) {
+				return orig.apply( this, arguments );
+			} else {
+				var args = _normalizeArguments.apply( this, arguments );
+				args.mode = "hide";
+				return this.effect.call( this, args );
+			}
+		};
+	})( $.fn.hide ),
 
-	// jQuery core overloads toggle and creates _toggle
-	__toggle: $.fn.toggle,
-	toggle: function( speed ) {
-		if ( standardSpeed( speed ) || typeof speed === "boolean" || $.isFunction( speed ) ) {
-			return this.__toggle.apply( this, arguments );
-		} else {
-			var args = _normalizeArguments.apply( this, arguments );
-			args.mode = "toggle";
-			return this.effect.call( this, args );
-		}
-	},
+	toggle: (function( orig ) {
+		return function( option ) {
+			if ( standardAnimationOption( option ) || typeof option === "boolean" ) {
+				return orig.apply( this, arguments );
+			} else {
+				var args = _normalizeArguments.apply( this, arguments );
+				args.mode = "toggle";
+				return this.effect.call( this, args );
+			}
+		};
+	})( $.fn.toggle ),
 
 	// helper functions
 	cssUnit: function(key) {
@@ -8383,7 +8402,7 @@ $.each( baseEasings, function( name, easeIn ) {
 
 })();
 
-})(jQuery));
+})(jQuery);
 (function( $, undefined ) {
 
 var rvertical = /up|down|vertical/,
@@ -9364,7 +9383,7 @@ $.effects.effect.transfer = function( o, done ) {
 (function( $, undefined ) {
 
 $.widget( "ui.menu", {
-	version: "1.10.1",
+	version: "1.10.2",
 	defaultElement: "<ul>",
 	delay: 300,
 	options: {
@@ -9970,7 +9989,7 @@ $.widget( "ui.menu", {
 (function( $, undefined ) {
 
 $.widget( "ui.progressbar", {
-	version: "1.10.1",
+	version: "1.10.2",
 	options: {
 		max: 100,
 		value: 0,
@@ -10109,7 +10128,7 @@ function isNumber(value) {
 }
 
 $.widget("ui.resizable", $.ui.mouse, {
-	version: "1.10.1",
+	version: "1.10.2",
 	widgetEventPrefix: "resize",
 	options: {
 		alsoResize: false,
@@ -11054,7 +11073,7 @@ $.ui.plugin.add("resizable", "grid", {
 (function( $, undefined ) {
 
 $.widget("ui.selectable", $.ui.mouse, {
-	version: "1.10.1",
+	version: "1.10.2",
 	options: {
 		appendTo: "body",
 		autoRefresh: true,
@@ -11320,7 +11339,7 @@ $.widget("ui.selectable", $.ui.mouse, {
 var numPages = 5;
 
 $.widget( "ui.slider", $.ui.mouse, {
-	version: "1.10.1",
+	version: "1.10.2",
 	widgetEventPrefix: "slide",
 
 	options: {
@@ -11978,8 +11997,12 @@ function isOverAxis( x, reference, size ) {
 	return ( x > reference ) && ( x < ( reference + size ) );
 }
 
+function isFloating(item) {
+	return (/left|right/).test(item.css("float")) || (/inline|table-cell/).test(item.css("display"));
+}
+
 $.widget("ui.sortable", $.ui.mouse, {
-	version: "1.10.1",
+	version: "1.10.2",
 	widgetEventPrefix: "sort",
 	ready: false,
 	options: {
@@ -12030,7 +12053,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 		this.refresh();
 
 		//Let's determine if the items are being displayed horizontally
-		this.floating = this.items.length ? o.axis === "x" || (/left|right/).test(this.items[0].item.css("float")) || (/inline|table-cell/).test(this.items[0].item.css("display")) : false;
+		this.floating = this.items.length ? o.axis === "x" || isFloating(this.items[0].item) : false;
 
 		//Let's determine the parent's offset
 		this.offset = this.element.offset();
@@ -12115,7 +12138,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 	_mouseStart: function(event, overrideHandle, noActivation) {
 
-		var i,
+		var i, body,
 			o = this.options;
 
 		this.currentContainer = this;
@@ -12185,11 +12208,14 @@ $.widget("ui.sortable", $.ui.mouse, {
 			this._setContainment();
 		}
 
-		if(o.cursor) { // cursor option
-			if ($("body").css("cursor")) {
-				this._storedCursor = $("body").css("cursor");
-			}
-			$("body").css("cursor", o.cursor);
+		if( o.cursor && o.cursor !== "auto" ) { // cursor option
+			body = this.document.find( "body" );
+
+			// support: IE
+			this.storedCursor = body.css( "cursor" );
+			body.css( "cursor", o.cursor );
+
+			this.storedStylesheet = $( "<style>*{ cursor: "+o.cursor+" !important; }</style>" ).appendTo( body );
 		}
 
 		if(o.opacity) { // opacity option
@@ -12378,14 +12404,18 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 		if(this.options.revert) {
 			var that = this,
-				cur = this.placeholder.offset();
+				cur = this.placeholder.offset(),
+				axis = this.options.axis,
+				animation = {};
 
+			if ( !axis || axis === "x" ) {
+				animation.left = cur.left - this.offset.parent.left - this.margins.left + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollLeft);
+			}
+			if ( !axis || axis === "y" ) {
+				animation.top = cur.top - this.offset.parent.top - this.margins.top + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollTop);
+			}
 			this.reverting = true;
-
-			$(this.helper).animate({
-				left: cur.left - this.offset.parent.left - this.margins.left + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollLeft),
-				top: cur.top - this.offset.parent.top - this.margins.top + (this.offsetParent[0] === document.body ? 0 : this.offsetParent[0].scrollTop)
-			}, parseInt(this.options.revert, 10) || 500, function() {
+			$(this.helper).animate( animation, parseInt(this.options.revert, 10) || 500, function() {
 				that._clear(event);
 			});
 		} else {
@@ -12706,15 +12736,25 @@ $.widget("ui.sortable", $.ui.mouse, {
 			o.placeholder = {
 				element: function() {
 
-					var el = $(document.createElement(that.currentItem[0].nodeName))
-						.addClass(className || that.currentItem[0].className+" ui-sortable-placeholder")
-						.removeClass("ui-sortable-helper")[0];
+					var nodeName = that.currentItem[0].nodeName.toLowerCase(),
+						element = $( that.document[0].createElement( nodeName ) )
+							.addClass(className || that.currentItem[0].className+" ui-sortable-placeholder")
+							.removeClass("ui-sortable-helper");
 
-					if(!className) {
-						el.style.visibility = "hidden";
+					if ( nodeName === "tr" ) {
+						// Use a high colspan to force the td to expand the full
+						// width of the table (browsers are smart enough to
+						// handle this properly)
+						element.append( "<td colspan='99'>&#160;</td>" );
+					} else if ( nodeName === "img" ) {
+						element.attr( "src", that.currentItem.attr( "src" ) );
 					}
 
-					return el;
+					if ( !className ) {
+						element.css( "visibility", "hidden" );
+					}
+
+					return element;
 				},
 				update: function(container, p) {
 
@@ -12743,7 +12783,7 @@ $.widget("ui.sortable", $.ui.mouse, {
 	},
 
 	_contactContainers: function(event) {
-		var i, j, dist, itemWithLeastDistance, posProperty, sizeProperty, base, cur, nearBottom,
+		var i, j, dist, itemWithLeastDistance, posProperty, sizeProperty, base, cur, nearBottom, floating,
 			innermostContainer = null,
 			innermostIndex = null;
 
@@ -12782,21 +12822,27 @@ $.widget("ui.sortable", $.ui.mouse, {
 
 		// move the item into the container if it's not there already
 		if(this.containers.length === 1) {
-			this.containers[innermostIndex]._trigger("over", event, this._uiHash(this));
-			this.containers[innermostIndex].containerCache.over = 1;
+			if (!this.containers[innermostIndex].containerCache.over) {
+				this.containers[innermostIndex]._trigger("over", event, this._uiHash(this));
+				this.containers[innermostIndex].containerCache.over = 1;
+			}
 		} else {
 
 			//When entering a new container, we will find the item with the least distance and append our item near it
 			dist = 10000;
 			itemWithLeastDistance = null;
-			posProperty = this.containers[innermostIndex].floating ? "left" : "top";
-			sizeProperty = this.containers[innermostIndex].floating ? "width" : "height";
+			floating = innermostContainer.floating || isFloating(this.currentItem);
+			posProperty = floating ? "left" : "top";
+			sizeProperty = floating ? "width" : "height";
 			base = this.positionAbs[posProperty] + this.offset.click[posProperty];
 			for (j = this.items.length - 1; j >= 0; j--) {
 				if(!$.contains(this.containers[innermostIndex].element[0], this.items[j].item[0])) {
 					continue;
 				}
 				if(this.items[j].item[0] === this.currentItem[0]) {
+					continue;
+				}
+				if (floating && !isOverAxis(this.positionAbs.top + this.offset.click.top, this.items[j].top, this.items[j].height)) {
 					continue;
 				}
 				cur = this.items[j].item.offset()[posProperty];
@@ -12817,10 +12863,14 @@ $.widget("ui.sortable", $.ui.mouse, {
 				return;
 			}
 
-			this.currentContainer = this.containers[innermostIndex];
+			if(this.currentContainer === this.containers[innermostIndex]) {
+				return;
+			}
+
 			itemWithLeastDistance ? this._rearrange(event, itemWithLeastDistance, null, true) : this._rearrange(event, null, this.containers[innermostIndex].element, true);
 			this._trigger("change", event, this._uiHash());
 			this.containers[innermostIndex]._trigger("change", event, this._uiHash(this));
+			this.currentContainer = this.containers[innermostIndex];
 
 			//Update the placeholder
 			this.options.placeholder.update(this.currentContainer, this.placeholder);
@@ -13135,8 +13185,9 @@ $.widget("ui.sortable", $.ui.mouse, {
 		}
 
 		//Do what was originally in plugins
-		if(this._storedCursor) {
-			$("body").css("cursor", this._storedCursor);
+		if ( this.storedCursor ) {
+			this.document.find( "body" ).css( "cursor", this.storedCursor );
+			this.storedStylesheet.remove();
 		}
 		if(this._storedOpacity) {
 			this.helper.css("opacity", this._storedOpacity);
@@ -13219,7 +13270,7 @@ function modifier( fn ) {
 }
 
 $.widget( "ui.spinner", {
-	version: "1.10.1",
+	version: "1.10.2",
 	defaultElement: "<input>",
 	widgetEventPrefix: "spin",
 	options: {
@@ -13294,6 +13345,7 @@ $.widget( "ui.spinner", {
 				return;
 			}
 
+			this._stop();
 			this._refresh();
 			if ( this.previous !== this.element.val() ) {
 				this._trigger( "change", event );
@@ -13698,7 +13750,7 @@ function isLocal( anchor ) {
 }
 
 $.widget( "ui.tabs", {
-	version: "1.10.1",
+	version: "1.10.2",
 	delay: 300,
 	options: {
 		active: null,
@@ -14544,7 +14596,7 @@ function removeDescribedBy( elem ) {
 }
 
 $.widget( "ui.tooltip", {
-	version: "1.10.1",
+	version: "1.10.2",
 	options: {
 		content: function() {
 			// support: IE<9, Opera in jQuery <1.7

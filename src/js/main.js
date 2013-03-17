@@ -55,20 +55,68 @@
     }
 
     function makeUI() {
-        $("#settingsButton").button({
+        var $canvas = $('#canvas');
+        var canvasPos = $canvas.position();
+
+        var $settingsButton = $('#settingsButton');
+        $settingsButton.button({
               icons: {
-                primary: "ui-icon-gear"
+                primary: 'ui-icon-gear'
               },
               text: false
           });
-        $("#settingsButton").click(function() {
-            game.util.debugDisplayText("You clicked a button. Settings will pop up when I code them.");
+
+        var settingsWidth = $settingsButton.width();
+
+        $settingsButton.css({
+            position : 'absolute',
+            top : (canvasPos.top + 5) + 'px',
+            left : (canvasPos.left + $canvas.width() - settingsWidth - 5) + 'px'
+        });
+        $settingsButton.click(function() {
+            $settingsDialog.dialog('open');
+        });
+
+        var $settingsDialog = $('#settingsDialog');
+        $settingsDialog.dialog({
+            autoOpen: false,
+            draggable:false,
+            resizable:false,
+            hide: {
+                // Effects that call createWrapper or clone could break
+                // positioning, theming, or both.
+                // 
+                // Fade is one of the few effects we can use.
+                effect: 'fade',
+                duration: 400
+            },
+
+            // Wrap the dialog in a span so that it gets themed correctly.
+            // 
+            // An alternative to this would be to make a 'create' event with:
+            // $settingsDialog.parent().wrap('<span class="le-frog"/>');
+            // 
+            // Note: I don't use dialogClass here for the theming because it
+            // only adds whatever class you specify to the end of the ui-dialog
+            // div so that you get: class="ui-dialog ui-widget ui-widget-content
+            // ui- corner-all le-frog"
+            appendTo:"#settingsDialogThemeSpan",
+
+            // Position the element at the upper right of the canvas.
+            position: {
+                // This says: "my upper right goes at the upper right of the
+                // canvas"
+                my: 'right top',
+                at: 'right top',
+                of: $canvas
+            },
+
         });
 
         // This is done for theming.
-        $("#toggleParticlesButton").button({});
+        $('#toggleParticlesButton').button({});
 
-        $("#toggleParticlesButton").click(function() {
+        $('#toggleParticlesButton').click(function() {
             game.ParticleManager.toggleEnabled();
         });
 
@@ -80,8 +128,6 @@
             var newUnit = new game.Unit(24,9,0,false);
             game.UnitManager.addUnit(newUnit);
         });
-
-        var $canvas = $('#canvas');
         
         // Look at https://github.com/EightMedia/hammer.js/blob/master/hammer.js to figure out what's in the event.
         // You get scale, rotation, distance, etc.
