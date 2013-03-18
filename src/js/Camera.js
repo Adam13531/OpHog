@@ -89,8 +89,7 @@
             }
 
             // Clamp the pan values so that we don't scroll out of bounds.
-            this.curPanX = Math.min(Math.max(0, this.curPanX), this.maxPanX);
-            this.curPanY = Math.min(Math.max(0, this.curPanY), this.maxPanY);
+            this.clampPanValues();
         },
 
         /**
@@ -118,6 +117,17 @@
 
             this.maxPanX = (mapWidthInPixels - screenWidth) / this.curZoom;
             this.maxPanY = (mapHeightInPixels - screenHeight) / this.curZoom;
+
+            this.clampPanValues();
+        },
+
+        /**
+         * This function prevents scrolling out of bounds.
+         * @return {null}
+         */
+        clampPanValues: function() {
+            this.curPanX = Math.min(Math.max(0, this.curPanX), this.maxPanX);
+            this.curPanY = Math.min(Math.max(0, this.curPanY), this.maxPanY);
         },
 
         /**
@@ -147,6 +157,11 @@
                 camera.curZoom += zoomSpeed;
                 camera.zoomChanged();
 
+                // This is CLOSE to the final formula for zooming at where your
+                // scroll wheel is, but it's not perfect, so I'm leaving it
+                // commented out for now. The magic numbers are map sizes.
+                // camera.curPanX = ((event.offsetX) / (800)) * (camera.maxPanX);
+                // camera.curPanY = ((event.offsetY) / (605)) * (camera.maxPanY);
                 event.originalEvent.preventDefault();
             };
         },
