@@ -4,15 +4,17 @@
     tileSize = 32;
 
     var gameloopId;
-    var screenWidth;
-    var screenHeight;
 
     var slotImage = new Image();
-
-    var ctxZoom = 1;
     
     var pinchZoomStart;
     var ctxOrigZoom;
+
+    /**
+     * The map we're looking at right now.
+     * @type {Map}
+     */
+    currentMap = new game.Map();
 
     // Time (in MS) of the last update.
     var lastUpdate;
@@ -73,6 +75,9 @@
         $showInventory.click(function() {
             $settingsDialog.dialog('close');
             $('#inventory-screen').dialog('open');
+
+            // See the comment for setScrollbars to see why this is needed.
+            game.InventoryUI.setScrollbars();
         });
 
         var settingsWidth = $settingsButton.width();
@@ -157,47 +162,14 @@
         // Pretty sure you should only call this once. Calling it multiple times will result in multiple events being fired.
         $canvas.hammer({prevent_default:true});
         
-        $canvas.bind('transformstart', function(event) {
-           pinchZoomStart = event.scale; 
-           ctxOrigZoom = ctxZoom;
-           
-        });
-        
-        $canvas.bind('transform', function(event) {
-            ctxZoom = ctxOrigZoom + (event.scale - pinchZoomStart) / 2.0;
-            if ( ctxZoom < 1.0 ) 
-            {
-                ctxZoom = 1.0;
-            }
-            
-            if (ctxZoom > 10.0 )
-            {
-                ctxZoom = 10.0
-            }
-        });
-        $canvas.bind('transformend', function(event) {
-        });
-        $canvas.bind('dragstart', function(event) {
-                // TODO: this is a global now. It shouldn't be a global.
-                scrollPos = {
-                    x : event.pageX,
-                    y : event.pageY
-                };
+        // Get all of the camera's event handlers.
+        $canvas.bind('transformstart', game.Camera.getTransformStartEventHandler());
+        $canvas.bind('transform', game.Camera.getTransformEventHandler());
+        $canvas.bind('transformend', function(event) {/*This does nothing*/});
+        $canvas.bind('dragstart', game.Camera.getDragStartEventHandler());
+        $canvas.bind('drag', game.Camera.getDragEventHandler());
 
-        });
-        $canvas.bind('drag', function(event) {
-            // Drag code goes here
-        });
-
-        $canvas.mousewheel(function(event, delta) {
-            if (delta > 0 ) {
-                ctxZoom+=.5;
-            } else if ( ctxZoom > 1 ) {
-                ctxZoom -= .5;
-            }
-
-            event.originalEvent.preventDefault();
-        });
+        $canvas.mousewheel(game.Camera.getMouseWheelEventHandler());
 
         // Initialize the UI showing the inventory.
         // We initialize the UI first so that the character pictures show up
@@ -306,6 +278,8 @@
         delta = Math.min(delta, game.msPerFrame * 2);
         var deltaAsSec = delta / 1000;
 
+        game.Camera.handleInput(keysDown, delta);
+
         // Draw a solid background on the canvas in case anything is transparent
         // This should eventually be unnecessary - we should instead draw a
         // parallax background or not have a transparent map.
@@ -313,57 +287,21 @@
         ctx.fillRect(0, 0, screenWidth, screenHeight);
 
         ctx.save();
-        ctx.scale(ctxZoom, ctxZoom);
+        game.Camera.scaleAndTranslate(ctx);
 
-        // 25x19      
-        var mapTiles = new Array(
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,67,88,88,88,88,88,88,88,88,88,88,88,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,67,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,93,
-            5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,67,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 
-            );
-        var numCols = 25;
-        var numRows = mapTiles.length / numCols;
-
-        for (var y = 0; y < numRows; y++) {
-            for (var x = 0; x < numCols; x++) {
-                var graphic = mapTiles[y * numCols + x];
-                envSheet.drawSprite(ctx, graphic, 0,0);
-                ctx.translate(tileSize, 0);
-            }
-            ctx.translate(-tileSize * numCols, tileSize);
-        }
+        currentMap.draw(ctx);
+        game.UnitManager.update(delta);
+        game.BattleManager.update(delta);
+        game.ParticleManager.update(delta);
+        game.TextManager.update(delta);
 
         ctx.restore();
         ctx.save();
+        game.Camera.scaleAndTranslate(ctx);
 
-        game.UnitManager.update(delta);
         game.UnitManager.draw(ctx);
-
-        game.BattleManager.update(delta);
-
-        // game.BattleManager.debugDrawBattleBackground(ctx);
         game.BattleManager.draw(ctx);
-
-        game.ParticleManager.update(delta);
         game.ParticleManager.draw(ctx);
-
-        game.TextManager.update(delta);
         game.TextManager.draw(ctx);
 
         ctx.restore();

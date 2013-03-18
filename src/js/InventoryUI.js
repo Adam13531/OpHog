@@ -118,6 +118,19 @@
         },
 
         /**
+         * If slots were added to the inventory UI while it was hidden, then the
+         * setSlider code will determine that the scroll content has a height of
+         * 0 and will not actually assign a scrollbar.
+         *
+         * That means you need to call this when the inventory UI is made
+         * visible.
+         */
+        setScrollbars: function() {
+            window.ui.setSlider($('#equippable-item-scroll-pane'));
+            window.ui.setSlider($('#usable-item-scroll-pane'));
+        },
+
+        /**
          * This is called when a slot's item is changed.
          * @param  {Number} slotIndex The index of the Slot/SlotUI that changed.
          * @return {null}
