@@ -13,6 +13,33 @@
     // battle system's repositioning logic.
     window.game.LARGEST_UNIT_WIDTH = 2;
 
+    // The possible number of unit classes
+    window.game.NUM_UNIT_CLASSES = 3;
+    /**
+     * Figures out the unit class for a specific unit type and returns it. This
+     * unit class is used to specify which image in the CSS file needs to be used.
+     * @param  {UnitType} unitType Type of unit
+     * @return {String}          Classes for the particular unit
+     */
+    window.game.getUnitClass = function(unitType) {
+        var unitClass;
+        switch (unitType) {
+            case game.UnitType.ARCHER:
+                unitClass = 'char-sprite arch32-png';
+                break;
+            case game.UnitType.WARRIOR:
+                unitClass = 'char-sprite war32-png';
+                break;
+            case game.UnitType.WIZARD:
+                unitClass = 'char-sprite wiz32-png';
+                break;
+            default:
+                unitClass = 'char-sprite arch32-png';
+                break;
+        }
+        return unitClass;
+    };
+
     /**
      * Creates a unit (player OR enemy).
      * @param {number}  tileX    X-coordinate (in tiles) to center on
@@ -31,6 +58,7 @@
 
         this.level = 1;
         this.experience = 0;
+        this.unitClass = game.getUnitClass(this.unitType);
 
         // You have a graphic index for each tile that you take up.
         // 'graphicIndexes' represents all of the tiles, from left to right, top

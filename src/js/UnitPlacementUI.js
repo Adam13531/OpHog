@@ -40,7 +40,7 @@
 	 */
 	function costToPlaceUnit(unit) {
 		return (unit.level * 50);
-	}
+	};
 
     // There's only one unit placement UI, so we'll define everything in a single
     // object.
@@ -99,7 +99,7 @@
 			
 			var unitArray = game.UnitManager.getUnits(unitType);
 			
-			$('#buyingScreenContainer').append('<div id="pageContainer">');
+			$('#buyingScreenContainer').append('<div id="unitContainer">');
 			for (var i = 0; i < unitArray.length; i++) {
 				this.addSlotToPage(unitArray[i], i);
 			}
@@ -114,6 +114,25 @@
 				game.UnitManager.addUnit(newUnit);
 				game.UnitPlacementUI.addSlotToPage(newUnit, game.UnitManager.getNumOfPlayerUnits(unitType));
 			});
+
+			// Setting up the arrows and images that will allow the user to
+			// switch units.
+			// TODO: This could probably be better
+			var nextUnitLeftImage = unitType + 1;
+			var nextUnitRightImage = unitType + 2;
+			if (nextUnitLeftImage > game.NUM_UNIT_CLASSES) {
+				nextUnitLeftImage = game.ARCHER;
+				nextUnitRightImage = game.WARRIOR;
+			}
+			else if (nextUnitRightImage > game.NUM_UNIT_CLASSES) {
+				nextUnitRightImage = game.ARCHER;
+			}
+
+			$('#buyingScreenContainer').append('<div id="changingPagesDiv">' +
+											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
+											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + game.getUnitClass(nextUnitLeftImage) + '" />' +
+											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitLeftImage)+'</span>' +
+											   '</div>');
         },
 
         /**
@@ -122,8 +141,8 @@
          * @param {Number} index Used for indexing the units
          */
         addSlotToPage: function(unit, index) {
-			$('#pageContainer').append('<div id="unit'+index+'">' +
-										'<img id="unitImage'+index+'" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '" />' +
+			$('#unitContainer').append('<div id="unit'+index+'">' +
+										'<img id="unitImage'+index+'" src="'+game.imagePath+'/img_trans.png" class="' + unit.unitClass + '" />' +
 										'<span id="unitCost'+index+'" style="font-weight: bold; font-size: 20px">'+costToPlaceUnit(unit)+'</span>' +
 										'<span id="unitLevel'+index+'" style="font-weight: bold; font-size: 20px">'+unit.level+'</span>' +
 										'<span id="unitExperience'+index+'" style="font-weight: bold; font-size: 20px">'+unit.experience+'</span>' +
