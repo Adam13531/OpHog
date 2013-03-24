@@ -3,6 +3,10 @@
     // There's only one particle system manager, so we'll define everything in a
     // single object.
     window.game.ParticleManager = {
+        /**
+         * Array of particle systems that this manages.
+         * @type {Array<ParticleSystem>}
+         */
         systems: new Array(),
 
         // If you disable the particle manager, then two things will happen:
