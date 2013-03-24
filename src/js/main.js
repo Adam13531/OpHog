@@ -4,15 +4,17 @@
     tileSize = 32;
 
     var gameloopId;
-    var screenWidth;
-    var screenHeight;
 
     var slotImage = new Image();
-
-    var ctxZoom = 1;
     
     var pinchZoomStart;
     var ctxOrigZoom;
+
+    /**
+     * The map we're looking at right now.
+     * @type {Map}
+     */
+    currentMap = new game.Map();
 
     // Time (in MS) of the last update.
     var lastUpdate;
@@ -55,6 +57,96 @@
     }
 
     function makeUI() {
+        var $canvas = $('#canvas');
+        var canvasPos = $canvas.position();
+        var $toggleParticlesButton = $('#toggleParticlesButton');
+
+        var $settingsButton = $('#settingsButton');
+        var $showInventory = $('#showInventory');
+        $settingsButton.button({
+              icons: {
+                primary: 'ui-icon-gear'
+              },
+              text: false
+          });
+
+
+        $showInventory.button();
+        $showInventory.click(function() {
+            $settingsDialog.dialog('close');
+            $('#inventory-screen').dialog('open');
+
+            // See the comment for setScrollbars to see why this is needed.
+            game.InventoryUI.setScrollbars();
+        });
+
+        var settingsWidth = $settingsButton.width();
+
+        $settingsButton.css({
+            position : 'absolute',
+            top : (canvasPos.top + 5) + 'px',
+            left : (canvasPos.left + $canvas.width() - settingsWidth - 5) + 'px'
+        });
+        $settingsButton.click(function() {
+            $settingsDialog.dialog('open');
+            $settingsButton.hide();
+        });
+
+        var $settingsDialog = $('#settingsDialog');
+        $settingsDialog.dialog({
+            autoOpen: false,
+            draggable:false,
+            resizable:false,
+            hide: {
+                // Effects that call createWrapper or clone could break
+                // positioning, theming, or both.
+                // 
+                // Fade is one of the few effects we can use.
+                effect: 'fade',
+                duration: 400
+            },
+
+            // Wrap the dialog in a span so that it gets themed correctly.
+            // 
+            // An alternative to this would be to make a 'create' event with:
+            // $settingsDialog.parent().wrap('<span class="le-frog"/>');
+            // 
+            // Note: I don't use dialogClass here for the theming because it
+            // only adds whatever class you specify to the end of the ui-dialog
+            // div so that you get: class="ui-dialog ui-widget ui-widget-content
+            // ui- corner-all le-frog"
+            appendTo:"#settingsDialogThemeSpan",
+
+            // Position the element at the upper right of the canvas.
+            position: {
+                // This says: "my upper right goes at the upper right of the
+                // canvas"
+                my: 'right top',
+                at: 'right top',
+                of: $canvas
+            },
+
+            close: function(event, ui) {
+                $settingsButton.show();
+            }
+
+        });
+
+        // This is done for theming
+        $toggleParticlesButton.button();
+
+        $toggleParticlesButton.click(function() {
+            // Toggle particles
+            game.ParticleManager.toggleEnabled();
+
+            // Form the new text for this button
+            var text = game.ParticleManager.enabled ? "Disable" : "Enable";
+            text += " particles";
+
+            // The text actually goes in a sibling label's child span.
+            $($toggleParticlesButton.selector + ' ~ label > span').text(text);
+        });
+
         $('#createPlayer').click(function() {
             var newUnit = new game.Unit(1,9,0,true);
             game.UnitManager.addUnit(newUnit);
@@ -63,8 +155,6 @@
             var newUnit = new game.Unit(24,9,0,false);
             game.UnitManager.addUnit(newUnit);
         });
-
-        var $canvas = $('#canvas');
         
         // Look at https://github.com/EightMedia/hammer.js/blob/master/hammer.js to figure out what's in the event.
         // You get scale, rotation, distance, etc.
@@ -72,50 +162,23 @@
         // Pretty sure you should only call this once. Calling it multiple times will result in multiple events being fired.
         $canvas.hammer({prevent_default:true});
         
-        $canvas.bind('transformstart', function(event) {
-           pinchZoomStart = event.scale; 
-           ctxOrigZoom = ctxZoom;
-           
-        });
-        
-        $canvas.bind('transform', function(event) {
-            ctxZoom = ctxOrigZoom + (event.scale - pinchZoomStart) / 2.0;
-            if ( ctxZoom < 1.0 ) 
-            {
-                ctxZoom = 1.0;
-            }
-            
-            if (ctxZoom > 10.0 )
-            {
-                ctxZoom = 10.0
-            }
-        });
-        $canvas.bind('transformend', function(event) {
-        });
-        $canvas.bind('dragstart', function(event) {
-                // TODO: this is a global now. It shouldn't be a global.
-                scrollPos = {
-                    x : event.pageX,
-                    y : event.pageY
-                };
+        // Get all of the camera's event handlers.
+        $canvas.bind('transformstart', game.Camera.getTransformStartEventHandler());
+        $canvas.bind('transform', game.Camera.getTransformEventHandler());
+        $canvas.bind('transformend', function(event) {/*This does nothing*/});
+        $canvas.bind('dragstart', game.Camera.getDragStartEventHandler());
+        $canvas.bind('drag', game.Camera.getDragEventHandler());
 
-        });
-        $canvas.bind('drag', function(event) {
-            // Drag code goes here
-        });
+        $canvas.mousewheel(game.Camera.getMouseWheelEventHandler());
 
-        $canvas.mousewheel(function(event, delta) {
-            if (delta > 0 ) {
-                ctxZoom+=.5;
-            } else if ( ctxZoom > 1 ) {
-                ctxZoom -= .5;
-            }
+        // Initialize the UI showing the inventory.
+        // We initialize the UI first so that the character pictures show up
+        // before the equipment slots.
+        game.InventoryUI.setupUI();
 
-            event.originalEvent.preventDefault();
-        });
+        // Initialize the slots of our inventory.
+        game.Inventory.initialize();
 
-		// Commenting this out for now due to our ghetto branch structure
-        // game.Inventory.setupUI();
         game.UnitPlacementUI.setupUI();
     }
 
@@ -205,6 +268,8 @@
 
         var deltaAsSec = delta / 1000;
 
+        game.Camera.handleInput(keysDown, delta);
+
         // Draw a solid background on the canvas in case anything is transparent
         // This should eventually be unnecessary - we should instead draw a
         // parallax background or not have a transparent map.
@@ -212,57 +277,21 @@
         ctx.fillRect(0, 0, screenWidth, screenHeight);
 
         ctx.save();
-        ctx.scale(ctxZoom, ctxZoom);
+        game.Camera.scaleAndTranslate(ctx);
 
-        // 25x19      
-        var mapTiles = new Array(
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,67,88,88,88,88,88,88,88,88,88,88,88,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,67,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,93,
-            5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,67,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-            5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 
-            );
-        var numCols = 25;
-        var numRows = mapTiles.length / numCols;
-
-        for (var y = 0; y < numRows; y++) {
-            for (var x = 0; x < numCols; x++) {
-                var graphic = mapTiles[y * numCols + x];
-                envSheet.drawSprite(ctx, graphic, 0,0);
-                ctx.translate(tileSize, 0);
-            }
-            ctx.translate(-tileSize * numCols, tileSize);
-        }
+        currentMap.draw(ctx);
+        game.UnitManager.update(delta);
+        game.BattleManager.update(delta);
+        game.ParticleManager.update(delta);
+        game.TextManager.update(delta);
 
         ctx.restore();
         ctx.save();
+        game.Camera.scaleAndTranslate(ctx);
 
-        game.UnitManager.update(delta);
         game.UnitManager.draw(ctx);
-
-        game.BattleManager.update(delta);
-
-        // game.BattleManager.debugDrawBattleBackground(ctx);
         game.BattleManager.draw(ctx);
-
-        game.ParticleManager.update(delta);
         game.ParticleManager.draw(ctx);
-
-        game.TextManager.update(delta);
         game.TextManager.draw(ctx);
 
         ctx.restore();

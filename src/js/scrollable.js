@@ -3,7 +3,12 @@
     // This will call jquery-ui.js's function: $.widget = function( name, base, prototype ) {...}
     //
     // This should ONLY be used on an element that has setSlider called on it.
-    // In other words, don't call this yourself.
+    // In other words, don't call this yourself. Also, if something ever needs
+    // a scrollbar, then later DOESN'T need it, then destroy should probably
+    // be called.
+    // 
+    // You can call public functions in this like so:
+    // $jQuerySelector.scrollable("publicFunctionName")
     $.widget("ui.scrollable", $.ui.mouse, {
 
         options : {
@@ -12,19 +17,46 @@
             scrollpane : null
         },
 
+        // Be very careful about what you put in _create. It is only called once
+        // despite how many times you call ui.scrollable(). I ran into a bug
+        // before where I was caching a scrollbar in the inventory, but when
+        // I first called addSlot, the scrollbar didn't exist, and I assumed that
+        // _create would be called again to set it once it DID exist.
+        // 
+        // More useful information here: http://ajpiano.com/widgetfactory/
         _create : function(test) {
-            // By setting this, we get easy access to ".slider".
-            this.sliderVertical = this.options.scrollpane.find(".slider-vertical");
-
             // This represents the position of the mouse/scrollbar when the user clicks.
             this.scrollPos = null;
             this._mouseInit();
         },
 
+        // This is probably not a complete destroy function. Based on the wiki
+        // (http://wiki.jqueryui.com/w/page/12138135/Widget%20factory): "This
+        // destroys an instantiated plugin and does any necessary cleanup. All
+        // modifications your plugin performs must be removed on destroy. This
+        // includes removing classes, unbinding events, destroying created
+        // elements, etc. The widget factory provides a starting point, but
+        // should be extended to meet the needs of the individual plugin."
+        // 
+        // I never call this directly.
         destroy : function() {
             this._mouseDestroy();
+            this._destroy();
         },
+
+        _destroy: function() {
+            this._super();
+        },
+
         _mouseStart : function(event) {
+            this.sliderVertical = this.options.scrollpane.find(".slider-vertical");
+
+            // If there was no slider, then we apparently called scrollable()
+            // without even needing a scrollbar.
+            if ( this.sliderVertical.length == 0 ) {
+                return;
+            }
+
             var curValue = this.sliderVertical.slider("value");
 
             this.scrollPos = {
@@ -37,17 +69,22 @@
         },
 
         _mouseDrag : function(event) {
+            if ( this.sliderVertical.length == 0 ) {
+                return;
+            }
+
             var mouseYDifference = this.scrollPos.y - event.pageY;
             var curValue = this.sliderVertical.slider("value");
             var finalValue = this.scrollPos.startValue - mouseYDifference;
 
             this.sliderVertical.slider("value", finalValue);
-            
+
             // This is a workaround for a bug in Chrome. See the 'garbage' tag in the HTML file for a full comment.
             $('#garbage').html('<b></b>');
         }
     });
 
+    // This code was adapted from http://www.simonbattersby.com/blog/vertical-scrollbar-using-jquery-ui-slider/
     window.ui.setSlider = function($scrollpane) {//$scrollpane is the div to be scrolled
         //set options for handle image - amend this to true or false as required
         var handleImage = false;
@@ -73,7 +110,6 @@
             });
             //and reset the top position
         }
-
         if (difference > 0)//if the scrollbar is needed, set it up...
         {
             var proportion = difference / $scrollpane.find('.scroll-content').height();
@@ -171,9 +207,6 @@
         $scrollpane.find('.scroll-content').scrollable({
             scrollpane : $scrollpane
         });
-        // $scrollpane.find('.scroll-content').mousedown(function(event) {
-        // $('body').append('mousedown ');
-        // });
         // -------- code that I'm adding to make mouse-drag in the content area work --------------
 
         //additional code for mousewheel

@@ -94,11 +94,8 @@ textarea {
    ========================================================================== */
 
 
-.ui-adam-test { width: 32px; height: 32px; /*background-image: url(images/slot.png)*//*{iconsContent}*/; }
-.test-button {
-}
-
 #scroll-pane,.scroll-pane { background-color:white;float:left;overflow: auto; width: 70px; height:136px;position:relative;border:1px solid gray;margin-bottom:25px;display:inline}
+#scroll-pane,.scroll-pane{position:relative}
 
 .scroll-content-item {background-color:#fcfcfc;color:#003366;width:100px;height:100px;float:left;margin:10px;font-size:3em;line-height:96px;text-align:center;border:1px solid gray;display:inline;}
 
@@ -117,7 +114,6 @@ textarea {
 .test2{background-color:#880015;color:white;text-align:center;}
 .test3{background-color:white;color:black;}
 
-#scroll-pane,.scroll-pane{position:relative}
 
 
 /*Using a sprite creator might be nice (we could also make our own): http://draeton.github.com/stitches/*/

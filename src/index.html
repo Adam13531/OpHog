@@ -16,8 +16,8 @@
 		      href="favicon.ico">
       
         <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/ui/le-frog/jquery-ui-1.10.2.custom.css">
         <link rel="stylesheet" href="css/main.css">
-        <!-- <link rel="stylesheet" href="css/ui/jquery.ui.all.css"> -->
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
     </head>
     <body>
@@ -40,23 +40,29 @@
 	    	 -->
 	    <span id="garbage"></span>
 	    
-	    <!-- <div id="inventory-screen" style="border:1px solid;background-color:lightgrey;"> -->
-	    <div id="inventory-screen">
-	    	<span id="war-section" style="width:128px;"></span>
-		    <span id="wiz-section" style="width:128px;"></span>
-		    <span id="arch-section" style="width:128px;"></span>
-			<div id="equippable-item-scroll-pane" class="scroll-pane"/></div>
-			<div id="usable-item-scroll-pane" class="scroll-pane"/></div>
-			<div id="item-description" class="test3" style="border:1px solid gray;width:355px;height:132px"></div>
+	    <div id="inventory-screen" title="Inventory">
+
+            <!-- Top part -->
+            <div id="top_part_with_characters_and_items" style="position:absolute;top:0px;left:0px;width:100%;margin-top:5px">
+
+                <!-- Each character section is horizontal, but they are vertically aligned -->
+                <div id="char-section" style="margin-right:1px;float:left">
+                    <div id="war-section" style="width:128px;"></div>
+                    <div id="wiz-section" style="width:128px;"></div>
+                    <div id="arch-section" style="width:128px;"></div>
+                </div>
+    			<div id="equippable-item-scroll-pane" style="margin-right:5px;" class="scroll-pane"/></div>
+    			<div id="usable-item-scroll-pane" class="scroll-pane"/></div>
+            </div>
+
+            <!-- Bottom part -->
+			<div id="item-description" class="test1" style="position:absolute;top:150px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
 	    </div>
 
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.3.min.js"><\/script>')</script>
 		<script src="js/vendor/jquery.mousewheel.js"></script>
-		<script src="js/vendor/ui/jquery.ui.core.js"></script>
-		<script src="js/vendor/ui/jquery.ui.widget.js"></script>
-		<script src="js/vendor/ui/jquery.ui.button.js"></script>
-		<script src="js/vendor/ui/jquery-ui.js"></script>
+		<script src="js/vendor/ui/jquery-ui-1.10.2.custom.js"></script>
         <!-- This needs to be defined after jquery-ui -->
         <script src="js/vendor/jquery.ui.touch-punch.js"></script>
         <!-- <script src="js/vendor/jgestures.js"></script> -->
@@ -69,13 +75,16 @@
         <script src="js/Constants.js"></script>
         <script src="js/Util.js"></script>
         <script src="js/KeyEventConstants.js"></script>
+        <script src="js/Camera.js"></script>
         <script src="js/SpriteSheet.js"></script>
         <script src="js/Particle.js"></script>
         <script src="js/ParticleSystem.js"></script>
         <script src="js/ParticleManager.js"></script>
         <script src="js/Inventory.js"></script>
+        <script src="js/InventoryUI.js"></script>
         <script src="js/UnitPlacementUI.js"></script>
         <script src="js/Slot.js"></script>
+        <script src="js/SlotUI.js"></script>
         <script src="js/Unit.js"></script>
         <script src="js/UnitManager.js"></script>
         <script src="js/scrollable.js"></script>
@@ -84,6 +93,7 @@
         <script src="js/TextObj.js"></script>
         <script src="js/TextManager.js"></script>
         <script src="js/Projectile.js"></script>
+        <script src="js/Map.js"></script>
         <script src="js/main.js"></script>
         
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -95,6 +105,21 @@
         </script>
         <button id='createPlayer'>Create player</button>
         <button id='createEnemy'>Create enemy</button>
-        
+
+        <!-- This is used for styling the inventory UI -->
+        <span style="opacity:.95;" class="le-frog" id="inventoryThemeSpan"></span>
+        <!-- This is used for syling the settings UI -->
+        <span style="opacity:.95;" class="le-frog" id="settingsDialogThemeSpan"></span>
+
+        <!-- The button to open the settings UI -->
+        <span class="le-frog">
+            <button style="width:25px;" id='settingsButton'></button>
+        </span>
+
+        <!-- These are the contents of the settings UI -->
+        <div style="border:1px solid gray;background-color:#373737;" id="settingsDialog" title="Settings">
+            <input type="checkbox" id="toggleParticlesButton"/><label for="toggleParticlesButton">Disable particles</label>
+            <button style="margin-top:5px;" id='showInventory'>Show inventory</button>
+        </div>
     </body>
 </html>
