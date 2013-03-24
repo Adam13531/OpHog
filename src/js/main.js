@@ -63,6 +63,7 @@
 
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
+        var $showUnitPlacement = $('#showUnitPlacement');
         $settingsButton.button({
               icons: {
                 primary: 'ui-icon-gear'
@@ -78,6 +79,12 @@
 
             // See the comment for setScrollbars to see why this is needed.
             game.InventoryUI.setScrollbars();
+        });
+
+        $showUnitPlacement.button();
+        $showUnitPlacement.click(function() {
+            $settingsDialog.dialog('close');
+            $('#buyingScreenContainer').dialog('open');
         });
 
         var settingsWidth = $settingsButton.width();

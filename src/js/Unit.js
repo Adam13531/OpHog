@@ -13,9 +13,6 @@
     // battle system's repositioning logic.
     window.game.LARGEST_UNIT_WIDTH = 2;
 
-    // The possible number of unit classes
-    window.game.NUM_UNIT_CLASSES = 3;
-
     /**
      * Creates a unit (player OR enemy).
      * @param {number}  tileX    X-coordinate (in tiles) to center on

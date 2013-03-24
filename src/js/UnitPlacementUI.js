@@ -55,7 +55,7 @@
         setupUI: function() {
 
 			var rightMargin = '18px';
-			var buyingScreenContainer = $('<div id="buyingScreenContainer" style="border:1px solid;"></div>');
+			var buyingScreenContainer = $('<div id="buyingScreenContainer" title="Place Units" style="border:1px solid;"></div>');
 			$('body').append(buyingScreenContainer);
 
 			// TODO: Load real headers
@@ -81,25 +81,48 @@
 			// Sets the default page
 			this.setPage(window.game.UnitType.ARCHER);
 
-			var $canvas = $('#canvas');
-			var width = $canvas.width();
-			var canvasPos = $canvas.position();
+			// var $canvas = $('#canvas');
+			// var width = $canvas.width();
+			// var canvasPos = $canvas.position();
 
 			// Position the buying screen based on the div
-			$('#buyingScreenContainer').css({
-				position : 'absolute',
-				top : canvasPos.top + 'px',
-				left : (canvasPos.left + width + 5) + 'px'
-			});
+			// $('#buyingScreenContainer').css({
+			// 	position : 'absolute',
+			// 	top : canvasPos.top + 'px',
+			// 	left : (canvasPos.left + width + 5) + 'px'
+			// });
+
+			$('#buyingScreenContainer').dialog({
+                autoOpen: false,
+                width:260,
+                height:342,
+                resizable:false,
+                // autoResize: true,
+
+                // Wrap the dialog in a span so that it gets themed correctly.
+                appendTo:"#unitPlacementDialogThemeSpan",
+                hide: {
+                    effect: 'fade',
+                    duration: 400
+                },
+    
+                // Position the unit placement screen in the center of the canvas
+                position: {
+                    my: 'center',
+                    at: 'center',
+                    of: ('#canvas')
+                },
+    
+            });
         },
 
 		/**
-		* Figures out the unit class for a specific unit type and returns it. This
-		* unit class is used to specify which image in the CSS file needs to be used.
+		* Figures out the CSS unit class for a specific unit type and returns it. This
+		* unit class is used to specify which image in the CSS file that needs to be used.
 		* @param  {UnitType} unitType Type of unit
 		* @return {String}          Classes for the particular unit
 		*/
-		getUnitClass: function(unitType) {
+		getCSSUnitClass: function(unitType) {
 			var unitClass;
 			switch (unitType) {
 			    case game.UnitType.ARCHER:
@@ -180,17 +203,13 @@
 			var nextUnitLeftImage = this.getLeftPage(unitType);
 			var nextUnitRightImage = this.getRightPage(unitType);
 
-			console.log("currentType: " + unitType);
-			console.log("left: " + nextUnitLeftImage);
-			console.log("right: " + nextUnitRightImage);
-
 			$('#buyingScreenContainer').append('<div id="changingPagesDiv">' +
 											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
-											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getUnitClass(nextUnitLeftImage) + '" />' +
+											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitLeftImage) + '" />' +
 											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitLeftImage)+'</span>' +
 											   '<span id="pageSpace" style="margin-right:3.00em; display:inline-block;">&nbsp;</span>' + // There is probably a better way to add a space between spans
 											   '<span id="rightUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitRightImage)+'</span>' +
-											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getUnitClass(nextUnitRightImage) + '" />' +
+											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitRightImage) + '" />' +
 											   '<img id="rightArrowImg" src="'+game.imagePath+'/right_arrow.png" width="32" height="32"/>' +
 											   '</div>');
 			$('#leftArrowImg').click(function() {
@@ -211,7 +230,7 @@
          */
         addSlotToPage: function(unit, index) {
 			$('#unitContainer').append('<div id="unit'+index+'">' +
-										'<img id="unitImage'+index+'" src="'+game.imagePath+'/img_trans.png" class="' + this.getUnitClass(unit.unitType) + '" />' +
+										'<img id="unitImage'+index+'" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(unit.unitType) + '" />' +
 										'<span id="unitCost'+index+'" style="font-weight: bold; font-size: 20px">'+costToPlaceUnit(unit)+'</span>' +
 										'<span id="unitLevel'+index+'" style="font-weight: bold; font-size: 20px">'+unit.level+'</span>' +
 										'<span id="unitExperience'+index+'" style="font-weight: bold; font-size: 20px">'+unit.experience+'</span>' +
