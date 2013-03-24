@@ -15,6 +15,9 @@
 	window.game.UNIT_PLACEMENT_SLOT_COST = 500;
 	window.game.unitOpacity = '1.0';
 
+	// The possible number of unit classes
+    window.game.NUM_UNIT_CLASSES = 3;
+
 	// "Private" functions (These should only be accessible in this file)
     
     /**
@@ -109,7 +112,7 @@
 			        unitClass = 'char-sprite wiz32-png';
 			        break;
 			    default:
-			        console.log("ERROR: unit type doesn't exist.")
+			        console.log("ERROR: Unit type doesn't exist.")
 			        break;
 			}
 			return unitClass;
@@ -174,7 +177,6 @@
 
 			// Setting up the arrows and images that will allow the user to
 			// switch units.
-
 			var nextUnitLeftImage = this.getLeftPage(unitType);
 			var nextUnitRightImage = this.getRightPage(unitType);
 
