@@ -90,6 +90,62 @@
 			});
         },
 
+		/**
+		* Figures out the unit class for a specific unit type and returns it. This
+		* unit class is used to specify which image in the CSS file needs to be used.
+		* @param  {UnitType} unitType Type of unit
+		* @return {String}          Classes for the particular unit
+		*/
+		getUnitClass: function(unitType) {
+			var unitClass;
+			switch (unitType) {
+			    case game.UnitType.ARCHER:
+			        unitClass = 'char-sprite arch32-png';
+			        break;
+			    case game.UnitType.WARRIOR:
+			        unitClass = 'char-sprite war32-png';
+			        break;
+			    case game.UnitType.WIZARD:
+			        unitClass = 'char-sprite wiz32-png';
+			        break;
+			    default:
+			        console.log("ERROR: unit type doesn't exist.")
+			        break;
+			}
+			return unitClass;
+		},
+
+        /**
+         * Removes page-specific items from the page
+         * @return {null}
+         */
+        clearPage: function() {
+        	$('#unitContainer').remove();
+        	$('#buySlotButtonDescription').remove();
+        	$('#buySlotButton').remove();
+        	$('#changingPagesDiv').remove();
+        },
+
+        /**
+         * Gets the page to the left of the current page
+         * @param  {UnitType} currentPage Index of the current page
+         * @return {UnitType}             Index of the page to the left
+         */
+        getLeftPage: function(currentPage) {
+        	if (currentPage == 0) return game.NUM_UNIT_CLASSES - 1;
+        	return currentPage - 1;
+        },
+
+        /**
+         * Gets the page to the right of the current page
+         * @param  {UnitType} currentPage Index of the current page
+         * @return {UnitType}             Index of the page to the right
+         */
+        getRightPage: function(currentPage) {
+        	if (currentPage == game.NUM_UNIT_CLASSES - 1) return 0;
+        	return currentPage + 1;
+        },
+
         /**
          * Allows the user to place units and buy slots for all the units of the
          * specified unit type.
@@ -108,7 +164,8 @@
 			// Add a button to allow the player to buy a new slot
 			$('#buyingScreenContainer').append('<button id="buySlotButton">'+ 
 												costToPurchaseSlot(unitType) +
-												'</button> - Buy archer slot');
+												'</button>' +
+												'<span id=buySlotButtonDescription>- Buy slot</span>');
 			$('#buySlotButton').click(function() {
 				newUnit = new game.Unit(1,9,unitType,true);
 				game.UnitManager.addUnit(newUnit);
@@ -117,26 +174,32 @@
 
 			// Setting up the arrows and images that will allow the user to
 			// switch units.
-			// TODO: This could probably be better
-			var nextUnitLeftImage = unitType + 1;
-			var nextUnitRightImage = unitType + 2;
-			if (nextUnitLeftImage > game.NUM_UNIT_CLASSES) {
-				nextUnitLeftImage = game.ARCHER;
-				nextUnitRightImage = game.WARRIOR;
-			}
-			else if (nextUnitRightImage > game.NUM_UNIT_CLASSES) {
-				nextUnitRightImage = game.ARCHER;
-			}
+
+			var nextUnitLeftImage = this.getLeftPage(unitType);
+			var nextUnitRightImage = this.getRightPage(unitType);
+
+			console.log("currentType: " + unitType);
+			console.log("left: " + nextUnitLeftImage);
+			console.log("right: " + nextUnitRightImage);
 
 			$('#buyingScreenContainer').append('<div id="changingPagesDiv">' +
 											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
-											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + game.getUnitClass(nextUnitLeftImage) + '" />' +
+											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getUnitClass(nextUnitLeftImage) + '" />' +
 											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitLeftImage)+'</span>' +
-											   '<span style="margin-right:3.00em; display:inline-block;">&nbsp;</span>' + // There is probably a better way to add a space between spans
+											   '<span id="pageSpace" style="margin-right:3.00em; display:inline-block;">&nbsp;</span>' + // There is probably a better way to add a space between spans
 											   '<span id="rightUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitRightImage)+'</span>' +
-											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + game.getUnitClass(nextUnitRightImage) + '" />' +
+											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getUnitClass(nextUnitRightImage) + '" />' +
 											   '<img id="rightArrowImg" src="'+game.imagePath+'/right_arrow.png" width="32" height="32"/>' +
 											   '</div>');
+			$('#leftArrowImg').click(function() {
+				game.UnitPlacementUI.clearPage();
+				game.UnitPlacementUI.setPage(nextUnitLeftImage);
+			});
+			$('#rightArrowImg').click(function() {
+				game.UnitPlacementUI.clearPage();
+				game.UnitPlacementUI.setPage(nextUnitRightImage);
+			});
+
         },
 
         /**
@@ -146,7 +209,7 @@
          */
         addSlotToPage: function(unit, index) {
 			$('#unitContainer').append('<div id="unit'+index+'">' +
-										'<img id="unitImage'+index+'" src="'+game.imagePath+'/img_trans.png" class="' + unit.unitClass + '" />' +
+										'<img id="unitImage'+index+'" src="'+game.imagePath+'/img_trans.png" class="' + this.getUnitClass(unit.unitType) + '" />' +
 										'<span id="unitCost'+index+'" style="font-weight: bold; font-size: 20px">'+costToPlaceUnit(unit)+'</span>' +
 										'<span id="unitLevel'+index+'" style="font-weight: bold; font-size: 20px">'+unit.level+'</span>' +
 										'<span id="unitExperience'+index+'" style="font-weight: bold; font-size: 20px">'+unit.experience+'</span>' +
@@ -156,8 +219,8 @@
 				//TODO: Make this do something
 			});
 
-			// TODO: Make sure opacity changes when the unit gets revived
-			// or dies
+			// TODO: Make sure opacity changes when the unit gets revived, dies
+			// or gets placed
 			if (!unit.isLiving)
 			{
 				game.unitOpacity = '0.4';
