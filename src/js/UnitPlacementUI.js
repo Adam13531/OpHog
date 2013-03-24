@@ -12,7 +12,7 @@
 	};
 
 	window.game.UNIT_MARGIN = '30px';
-	window.game.SLOT_COST = 500;
+	window.game.UNIT_PLACEMENT_SLOT_COST = 500;
 	window.game.unitOpacity = '1.0';
 
 	// "Private" functions (These should only be accessible in this file)
@@ -26,10 +26,10 @@
 	 */
 	function costToPurchaseSlot(unitType) {
 		if (game.UnitManager.getNumOfPlayerUnits(unitType) == 0) {
-			return game.SLOT_COST; 
+			return game.UNIT_PLACEMENT_SLOT_COST; 
 		}
 		else {
-			return (game.SLOT_COST * game.UnitManager.getNumOfPlayerUnits(unitType) + game.SLOT_COST);
+			return (game.UNIT_PLACEMENT_SLOT_COST * game.UnitManager.getNumOfPlayerUnits(unitType) + game.UNIT_PLACEMENT_SLOT_COST);
 		}
 	};
 
@@ -132,6 +132,10 @@
 											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
 											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + game.getUnitClass(nextUnitLeftImage) + '" />' +
 											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitLeftImage)+'</span>' +
+											   '<span style="margin-right:3.00em; display:inline-block;">&nbsp;</span>' + // There is probably a better way to add a space between spans
+											   '<span id="rightUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitRightImage)+'</span>' +
+											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + game.getUnitClass(nextUnitRightImage) + '" />' +
+											   '<img id="rightArrowImg" src="'+game.imagePath+'/right_arrow.png" width="32" height="32"/>' +
 											   '</div>');
         },
 
