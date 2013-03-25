@@ -31,7 +31,7 @@
 
             // For more thorough comments, look at the settings dialog.
             $('#inventory-screen').dialog({
-                autoOpen: false,
+                autoOpen: true,
                 width:360,
                 height:342,
                 resizable:false,
@@ -146,20 +146,106 @@
             // Update the description
             this.updateDescription();
         },
+
+        swapSelectedSlot: function(otherSlotUI) {
+            var selectedSlot = this.selectedSlotUI.slot;
+            var swapped = false;
+            if ( !this.selectedSlotUI.slot.isEmpty() ) {
+                // The items need to be swappable
+                var selectedItem = selectedSlot.item;
+                var slotToSelect = otherSlotUI.slot;
+                var itemToSwap = slotToSelect.item;
+
+                if ( !slotToSelect.canHoldItem(selectedItem) || !selectedSlot.canHoldItem(itemToSwap) ) {
+                    return false;
+                }
+
+                selectedSlot.setItem(slotToSelect.item);
+                slotToSelect.setItem(selectedItem);
+                swapped = true;
+            }
+
+            this.selectedSlotUI.deselectSlot();
+            if ( swapped ) {
+                this.selectedSlotUI = null;
+            }
+
+            return true;
+        },
+
+        dragItemDone: function(sourceSlotIndex, targetSlotIndex) {
+            var sourceSlotUI = this.slots[sourceSlotIndex];
+            var targetSlotUI = this.slots[targetSlotIndex];
+
+            if ( sourceSlotUI == null || targetSlotUI == null ) {
+                return false;
+            }
+
+            if ( sourceSlotUI.isEmpty() ) {
+                return false;
+            }
+
+            var sourceSlot = sourceSlotUI.slot;
+            var targetSlot = targetSlotUI.slot;
+
+            var sourceItem = sourceSlot.item;
+            var targetItem = targetSlot.item;
+
+            if ( !sourceSlot.canHoldItem(targetItem) || !targetSlot.canHoldItem(sourceItem) ) {
+                return false;
+            }
+
+            sourceSlot.setItem(targetItem);
+            targetSlot.setItem(sourceItem);
+
+            this.updateDescription();
+            return true;
+        },
         
         /**
          * Selects a slot. There can only be one selected slot.
          * @param {SlotUI} slotUI The slot to select
          */
-        setSelectedSlot: function(slotUI) {
-            if (this.selectedSlotUI != null && this.selectedSlotUI.slotIndex != slotUI.slotIndex) {
+        clickedSlot: function(slotUI) {
+            if ( this.selectedSlotUI != null ) {
                 this.selectedSlotUI.deselectSlot();
             }
-
-            // Select only the current one
             this.selectedSlotUI = slotUI;
+            slotUI.selectSlot();
 
-            slotUI.$bgImage.attr('src', game.imagePath + '/slot2.png');
+            return;
+            // clicking currently selected slot
+            // no selection --> any slot
+            // empty slot --> filled slot
+            // filled slot --> filled slot
+
+            // Clicking the currently selected slot deselects it
+            if ( this.selectedSlotUI == slotUI ) {
+                this.selectedSlotUI.deselectSlot();
+                this.selectedSlotUI = null;
+            } else if ( this.selectedSlotUI == null ) {
+                // Clicking a slot when you have no selection will select it.
+                this.selectedSlotUI = slotUI;
+                slotUI.selectSlot();
+            } else if (this.selectedSlotUI != null ) {
+                // If the currently selected slot contains an item, swap it with
+                // the slot you just clicked (if it is possible).
+                if ( !this.selectedSlotUI.isEmpty() ) {
+                    if ( !this.swapSelectedSlot(slotUI) ) {
+                        // If a swap didn't take place because it's not possible,
+                        // then just select the new slot.
+                        this.selectedSlotUI.deselectSlot();
+                        this.selectedSlotUI = slotUI;
+                        slotUI.selectSlot();
+                    }
+                } else {
+                    // Otherwise, deselect the old slot and select the new one
+                    this.selectedSlotUI.deselectSlot();
+                    this.selectedSlotUI = slotUI;
+                    slotUI.selectSlot();
+                }
+            }
+
             this.updateDescription();
         },
         
@@ -181,22 +267,18 @@
 
             var slot = selectedSlotUI.slot;
             
-            var item = slot.itemIndex;
-            var desc = '<no description for this> - ' + 'Slot type: ' + slot.slotType + ' Item index: ' + slot.itemIndex;
+            var item = slot.item;
+            var desc = '<no description for this> - ' + 'Slot type: ' + slot.slotType + ' Item: ' + item;
             if (item == null) {
                 desc = 'You don\'t have an item selected.<br/><br/>Scroll the slots above by dragging.<br/><br/><b>Double-click to add/remove items.</b>';
-                if (slot.isUsableSlot()) {
-                    $('#item-description').attr('class', 'test2');
-                }
-                if (slot.isEquipSlot()) {
-                    $('#item-description').attr('class', 'test1');
-                }
-            } else if (item == 0) {
-                desc = 'The Gem of All Knowledge<br/><font color="#a3a3cc"><b>Gives the user the keen insight to tackle everyday life in the ghetto.<b/></font>';
-                $('#item-description').attr('class', 'test2');
-            } else if (item == 1) {
-                desc = 'Grugtham\'s shield<br/><font color="#660000"><b>500000 Dragon Kill Points<b/></font>';
+            } else {
+                desc = item.htmlDescription;
+            }
+
+            if (slot.isEquipSlot()) {
                 $('#item-description').attr('class', 'test1');
+            } else if (slot.isUsableSlot()) {
+                $('#item-description').attr('class', 'test2');
             }
 
             $('#item-description').html(desc);

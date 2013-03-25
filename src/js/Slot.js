@@ -33,22 +33,51 @@
         // the index of the corresponding SlotUI.
         this.slotIndex = game.slotID++;
 
-        // Number representing the type of item inside this slot, or null if
-        // it's empty. This will eventually be an Item, not a Number.
-        this.itemIndex = null;
+        this.item = null;
 
-        this.setItem(this.itemIndex);
+        this.setItem(this.item);
     };
 
     /**
      * Sets the item in this slot.
-     * @param {Number} itemIndex The index of the item to set.
      */
-    window.game.Slot.prototype.setItem = function(itemIndex) {
-        this.itemIndex = itemIndex;
+    window.game.Slot.prototype.setItem = function(item) {
+        this.item = item;
 
         // Tell the UI that we updated this slot.
         game.InventoryUI.updatedSlot(this.slotIndex);
+    };
+
+    window.game.Slot.prototype.isEmpty = function() {
+        return this.item == null;
+    };
+
+    window.game.Slot.prototype.canHoldItem = function(item) {
+        if ( item == null ) return true;
+
+        // Usable items can only fit into USABLE slots.
+        if ( item.usable ) {
+            return this.slotType == game.SlotTypes.USABLE;
+        }
+
+        // We know the item is equippable now.
+        // Any equippable item can be placed in an EQUIP slot.        
+        if (this.slotType == game.SlotTypes.EQUIP ) {
+            return true;
+        }
+
+        // Need to match types now.
+        if (this.slotType == game.SlotTypes.WAR && item.isEquippableBy(game.EquippableBy.WAR)) {
+            return true;
+        }
+        if (this.slotType == game.SlotTypes.WIZ && item.isEquippableBy(game.EquippableBy.WIZ)) {
+            return true;
+        }
+        if (this.slotType == game.SlotTypes.ARCH && item.isEquippableBy(game.EquippableBy.ARCH)) {
+            return true;
+        }
+
+        return false;
     };
 
     /**

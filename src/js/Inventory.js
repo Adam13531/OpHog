@@ -21,6 +21,16 @@
             game.InventoryUI.addedSlot(slot);
         },
 
+        getFirstEmptySlot: function(slotType) {
+            for (var i = 0; i < this.slots.length; i++) {
+                if ( this.slots[i].isEmpty() && this.slots[i].slotType == slotType ) {
+                    return this.slots[i];
+                }
+            };
+
+            return null;
+        },
+
         /**
          * We know right from the beginning how many slots there are of each
          * type, so we can add them here.
@@ -52,6 +62,13 @@
                 var newSlot = new game.Slot(game.SlotTypes.ARCH);
                 this.addSlot(newSlot);
             };
+
+            // Fill some of the slots (this is debug code)
+            this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(0));
+            this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(1));
+            this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(1));
+            this.getFirstEmptySlot(game.SlotTypes.WAR).setItem(new game.Item(1));
+            this.getFirstEmptySlot(game.SlotTypes.WAR).setItem(new game.Item(2));
         }
         
     };
