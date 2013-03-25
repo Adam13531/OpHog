@@ -48,6 +48,18 @@
     // There's only one unit placement UI, so we'll define everything in a single
     // object.
     window.game.UnitPlacementUI = {
+
+    	/**
+    	 * X position of the spawn point where units will be placed
+    	 * @type {Number}
+    	 */
+    	spawnPointX: 0,
+
+    	/**
+    	 * Y position of the spawn point where units will be placed
+    	 * @type {Number}
+    	 */
+    	spawnPointY: 0,
 		
 		/**
          * Sets up the entire unit placement UI.
@@ -191,7 +203,7 @@
 												'</button>' +
 												'<span id=buySlotButtonDescription>- Buy slot</span>');
 			$('#buySlotButton').click(function() {
-				newUnit = new game.Unit(1,9,unitType,true);
+				newUnit = new game.Unit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY, unitType, true);
 				game.UnitManager.addUnit(newUnit);
 				game.UnitPlacementUI.addSlotToPage(newUnit, game.UnitManager.getNumOfPlayerUnits(unitType));
 			});

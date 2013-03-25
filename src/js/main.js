@@ -81,10 +81,23 @@
             game.InventoryUI.setScrollbars();
         });
 
-        $showUnitPlacement.button();
+        $showUnitPlacement.button(); // Turns the button into a JQuery UI button
         $showUnitPlacement.click(function() {
             $settingsDialog.dialog('close');
             $('#buyingScreenContainer').dialog('open');
+        });
+
+        // Handle all the events from a user clicking/tapping the canvas
+        $canvas.click(function(event) {
+
+            // Check to see if the user wants to place units
+            var tileX = Math.floor(event.offsetX / tileSize);
+            var tileY = Math.floor(event.offsetY / tileSize);
+            if (currentMap.isSpawnerPoint(tileX, tileY)) {
+                game.UnitPlacementUI.spawnPointX = tileX;
+                game.UnitPlacementUI.spawnPointY = tileY;
+                $('#buyingScreenContainer').dialog('open');
+            }
         });
 
         var settingsWidth = $settingsButton.width();
