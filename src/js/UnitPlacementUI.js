@@ -94,10 +94,9 @@
 
 			$('#buyingScreenContainer').dialog({
                 autoOpen: false,
-                width:260,
-                height:342,
                 resizable:false,
-                // autoResize: true,
+                autoResize: true,
+                width: 230,
 
                 // Wrap the dialog in a span so that it gets themed correctly.
                 appendTo:"#unitPlacementDialogThemeSpan",
@@ -112,7 +111,6 @@
                     at: 'center',
                     of: ('#canvas')
                 },
-    
             });
         },
 
@@ -207,7 +205,7 @@
 											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
 											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitLeftImage) + '" />' +
 											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitLeftImage)+'</span>' +
-											   '<span id="pageSpace" style="margin-right:3.00em; display:inline-block;">&nbsp;</span>' + // There is probably a better way to add a space between spans
+											   '<span id="pageSpace" style="margin-right:2.00em; display:inline-block;">&nbsp;</span>' + // There is probably a better way to add a space between spans
 											   '<span id="rightUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitRightImage)+'</span>' +
 											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitRightImage) + '" />' +
 											   '<img id="rightArrowImg" src="'+game.imagePath+'/right_arrow.png" width="32" height="32"/>' +
