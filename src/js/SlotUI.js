@@ -33,6 +33,10 @@
         // http://stackoverflow.com/questions/2098387/jquery-ui-draggable-elements-not-draggable-outside-of-scrolling-div
         var dropped = false;
 
+        // This is to fix a bug that happens when you just mouseUp on something
+        // without actually dragging.
+        started = false;
+
         // This is the slot that you dragged from
         //   
         draggingSlotIndex = null;
@@ -61,10 +65,12 @@
 
             start: function(event, ui) {
                 dropped = false;
+                started = true;
                 draggingSlotIndex = indexInClosure;
                 $(this).addClass('hideit');
             },
             stop: function(event, ui) {
+                started = false;
                 if (dropped==true) {
                     $(this).remove();
                 } else {
@@ -122,6 +128,7 @@
 
             // accept: '.draggable-item', // this could also be a function that could check IDs
             accept: function(elm) {
+                if ( !started ) return null;
                 var id = elm.attr('id');
                 if ( id == null ) alert(elm);
                 // This is the slot that you're dragging.
