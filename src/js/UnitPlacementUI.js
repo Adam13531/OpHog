@@ -109,7 +109,7 @@
                 autoOpen: false,
                 resizable:false,
                 autoResize: true,
-                width: 230,
+                width: 240,
 
                 // Wrap the dialog in a span so that it gets themed correctly.
                 appendTo:"#unitPlacementDialogThemeSpan",
@@ -204,7 +204,7 @@
 												'</button>' +
 												'<span id=buySlotButtonDescription>- Buy slot</span>');
 			$('#buySlotButton').click(function() {
-				newUnit = new game.Unit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY, unitType, true);
+				newUnit = new game.Unit(unitType, true);
 				game.UnitManager.addUnit(newUnit);
 				game.UnitPlacementUI.addSlotToPage(newUnit, game.UnitManager.getNumOfPlayerUnits(unitType));
 			});
@@ -253,7 +253,7 @@
 				if (event.data.a_unit.hasBeenPlaced) {
 					return;
 				}
-				event.data.a_unit.hasBeenPlaced = true;
+				event.data.a_unit.placeUnit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY);
 				game.UnitPlacementUI.setUnitCSSProperties(event.data.an_index, window.game.UNIT_OPACITY_PLACED);
 			}
 

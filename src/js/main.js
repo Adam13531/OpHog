@@ -168,11 +168,13 @@
         });
 
         $('#createPlayer').click(function() {
-            var newUnit = new game.Unit(1,9,0,true);
+            var newUnit = new game.Unit(0,true);
+            newUnit.placeUnit(1, 9);
             game.UnitManager.addUnit(newUnit);
         });
         $('#createEnemy').click(function() {
-            var newUnit = new game.Unit(24,9,0,false);
+            var newUnit = new game.Unit(0,false);
+            newUnit.placeUnit(24, 9);
             game.UnitManager.addUnit(newUnit);
         });
         
@@ -242,7 +244,8 @@
                 unitType = window.game.twoByTwoUnit;
             }
             if ( unitType != null ) {
-                var newUnit = new game.Unit(1,9,unitType,true);
+                var newUnit = new game.Unit(unitType,true);
+                newUnit.placeUnit(1, 9);
                 game.UnitManager.addUnit(newUnit);
             }
 
@@ -260,19 +263,22 @@
                 enemyUnitType = window.game.twoByTwoUnit;
             }
             if ( enemyUnitType != null ) {
-                var newUnit = new game.Unit(24,9,enemyUnitType,false);
+                var newUnit = new game.Unit(enemyUnitType,false);
+                newUnit.placeUnit(24,9);
                 game.UnitManager.addUnit(newUnit);
             }
 
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(1,9,0,true);
+                    var newUnit = new game.Unit(0,true);
+                    newUnit.placeUnit(1,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(24,9,0,false);
+                    var newUnit = new game.Unit(0,false);
+                    newUnit.placeUnit(24,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
