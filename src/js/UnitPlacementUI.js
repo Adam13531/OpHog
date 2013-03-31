@@ -269,6 +269,11 @@
 			$('#buySlotButton').text(costToPurchaseSlot(unit.unitType));
         },
 
+        /**
+         * Sets come CSS properties of a specific unit.
+         * @param {Number} index   index of the unit in the window
+         * @param {Number} opacity The opacity to set the unit and its stats to
+         */
         setUnitCSSProperties: function(index, opacity) {
 			$('#unitImage'+index).css({
 				"margin-right" : game.UNIT_MARGIN,
