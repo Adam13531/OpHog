@@ -78,6 +78,12 @@
         this.battleData = null;
     };
 
+    /**
+     * Places a unit at the given tile locations
+     * @param  {number} tileX tile as an X coordinate
+     * @param  {number} tileY tile as a Y coordinate
+     * @return {null}       
+     */
     window.game.Unit.prototype.placeUnit = function(tileX, tileY) {
         // 'x' is in pixels and is only snapped to a tile at creation
         var centerXPx = tileX * tileSize + tileSize / 2;

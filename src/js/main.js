@@ -90,12 +90,11 @@
         // Handle all the events from a user clicking/tapping the canvas
         $canvas.click(function(event) {
 
-            // Check to see if the user wants to place units
+            // Check to see if the user tapped a spawner
             var tileX = Math.floor(event.offsetX / tileSize);
             var tileY = Math.floor(event.offsetY / tileSize);
             if (currentMap.isSpawnerPoint(tileX, tileY)) {
-                game.UnitPlacementUI.spawnPointX = tileX;
-                game.UnitPlacementUI.spawnPointY = tileY;
+                game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
                 $('#buyingScreenContainer').dialog('open');
             }
         });

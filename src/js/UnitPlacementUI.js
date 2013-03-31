@@ -1,7 +1,7 @@
 ( function() {
     
 	/**
-	 * Defines the types of units. This will msot likely be refactored out,
+	 * Defines the types of units. This will most likely be refactored out,
 	 * but that will be done in another branch.
 	 * @type {UnitType}
 	 */
@@ -18,13 +18,9 @@
 
 	// The possible number of unit classes
     window.game.NUM_UNIT_CLASSES = 3;
-
-	// "Private" functions (These should only be accessible in this file)
     
     /**
-	 * Multiplies a minimum amount of money by the amount of a certain type
-	 * of units to by in order to calculate how much a new slot will cost
-	 * for that unit type
+	 * Computes the cost to buy a slot for a specific unit type
 	 * @param  {UnitType} unitType Type of unit
 	 * @return {Number}           Amount that the new slot will cost
 	 */
@@ -51,13 +47,13 @@
     window.game.UnitPlacementUI = {
 
     	/**
-    	 * X position of the spawn point where units will be placed
+    	 * X position of the spawn point where units will be placed in tiles
     	 * @type {Number}
     	 */
     	spawnPointX: 0,
 
     	/**
-    	 * Y position of the spawn point where units will be placed
+    	 * Y position of the spawn point where units will be placed in tiles
     	 * @type {Number}
     	 */
     	spawnPointY: 0,
@@ -68,7 +64,7 @@
         setupUI: function() {
 
 			var rightMargin = '18px';
-			var buyingScreenContainer = $('<div id="buyingScreenContainer" title="Place Units" style="border:1px solid;"></div>');
+			var buyingScreenContainer = ('<div id="buyingScreenContainer" title="Place Units" style="border:1px solid;"></div>');
 			$('body').append(buyingScreenContainer);
 
 			// TODO: Load real headers
@@ -93,17 +89,6 @@
 
 			// Sets the default page
 			this.setPage(window.game.UnitType.ARCHER);
-
-			// var $canvas = $('#canvas');
-			// var width = $canvas.width();
-			// var canvasPos = $canvas.position();
-
-			// Position the buying screen based on the div
-			// $('#buyingScreenContainer').css({
-			// 	position : 'absolute',
-			// 	top : canvasPos.top + 'px',
-			// 	left : (canvasPos.left + width + 5) + 'px'
-			// });
 
 			$('#buyingScreenContainer').dialog({
                 autoOpen: false,
@@ -291,6 +276,16 @@
 				"margin-right" : game.UNIT_MARGIN,
 				"opacity"	   : opacity
 			});
+        },
+
+        /**
+         * Sets the spawn point tiles
+         * @param {Number} pointX Tile X
+         * @param {Number} pointY Tile Y
+         */
+        setSpawnPoint: function(pointX, pointY) {
+        	this.spawnPointX = pointX;
+        	this.spawnPointY = pointY;
         },
     };
 }()); 

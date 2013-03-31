@@ -56,7 +56,6 @@
 
     /**
      * Tells whether or not the tiles passed in point to a spawner point
-     * or not
      * @param  {Number}  tileX Tile X coordinate
      * @param  {Number}  tileY Tile Y coordinate
      * @return {Boolean}        Returns true if the point is a spawning point,
@@ -64,10 +63,7 @@
      */
     window.game.Map.prototype.isSpawnerPoint = function(tileX, tileY) {
         var index = tileY * this.numCols + tileX;
-        if (this.mapTiles[index] == 67) {
-            return true;
-        }
-        return false;
+        return this.mapTiles[index] == 67;
     };
 
 }());

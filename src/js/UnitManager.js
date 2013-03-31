@@ -69,14 +69,14 @@
          *                               that are of type unitType.
          */
         getUnits: function(unitType) {
-            var list = new Array();
+            var units = new Array();
             for (var i = 0; i < this.gameUnits.length; i++) {
                 if (this.gameUnits[i].unitType == unitType && 
                     this.gameUnits[i].isPlayer) {
-                    list.push(this.gameUnits[i]);
+                    units.push(this.gameUnits[i]);
                 };
             };
-            return list;
+            return units;
         },
     };
 }()); 
