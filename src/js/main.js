@@ -96,6 +96,8 @@
             if (currentMap.isSpawnerPoint(tileX, tileY)) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
                 $('#buyingScreenContainer').dialog('open');
+            } else {
+                $('#buyingScreenContainer').dialog('close');
             }
         });
 
