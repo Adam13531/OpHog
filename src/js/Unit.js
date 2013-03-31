@@ -28,6 +28,7 @@
         this.widthInTiles = 1;
         this.heightInTiles = 1;
         this.id = window.game.unitID++;
+        this.hasBeenPlaced = false;
 
         this.level = 1;
         this.experience = 0;

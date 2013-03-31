@@ -13,7 +13,8 @@
 
 	window.game.UNIT_MARGIN = '30px';
 	window.game.UNIT_PLACEMENT_SLOT_COST = 500;
-	window.game.unitOpacity = '1.0';
+	window.game.UNIT_OPACITY_NOT_PLACED = '1.0';
+	window.game.UNIT_OPACITY_PLACED = '0.4';
 
 	// The possible number of unit classes
     window.game.NUM_UNIT_CLASSES = 3;
@@ -246,36 +247,45 @@
 										'<span id="unitExperience'+index+'" style="font-weight: bold; font-size: 20px">'+unit.experience+'</span>' +
 								   '</div>');
 
-			$('#unit'+index).click(function() {
-				//TODO: Make this do something
-			});
-
-			// TODO: Make sure opacity changes when the unit gets revived, dies
-			// or gets placed
-			if (!unit.isLiving)
-			{
-				game.unitOpacity = '0.4';
+			// If the user clicks a unit, place the unit if it hasn't been placed
+			$('#unit'+index).click({a_unit: unit, an_index: index}, unitClicked);
+			function unitClicked(event) {
+				if (event.data.a_unit.hasBeenPlaced) {
+					return;
+				}
+				event.data.a_unit.hasBeenPlaced = true;
+				game.UnitPlacementUI.setUnitCSSProperties(event.data.an_index, window.game.UNIT_OPACITY_PLACED);
 			}
-			$('#unitImage'+index).css({
-				"margin-right" : game.UNIT_MARGIN,
-				"opacity"	   : game.unitOpacity
-			});
-			$('#unitCost'+index).css({
-				"margin-right" : game.UNIT_MARGIN,
-				"opacity"	   : game.unitOpacity
-			});
-			$('#unitLevel'+index).css({
-				"margin-right" : game.UNIT_MARGIN,
-				"opacity"	   : game.unitOpacity
-			});
-			$('#unitExperience'+index).css({
-				"margin-right" : game.UNIT_MARGIN,
-				"opacity"	   : game.unitOpacity
-			});
+
+			if (unit.hasBeenPlaced) {
+				this.setUnitCSSProperties(index, window.game.UNIT_OPACITY_PLACED);
+			}
+			else {
+				this.setUnitCSSProperties(index, window.game.UNIT_OPACITY_NOT_PLACED);
+			}
 
 			// Update the text of the button to show the new cost of buying
 			// this unit
 			$('#buySlotButton').text(costToPurchaseSlot(unit.unitType));
+        },
+
+        setUnitCSSProperties: function(index, opacity) {
+			$('#unitImage'+index).css({
+				"margin-right" : game.UNIT_MARGIN,
+				"opacity"	   : opacity
+			});
+			$('#unitCost'+index).css({
+				"margin-right" : game.UNIT_MARGIN,
+				"opacity"	   : opacity
+			});
+			$('#unitLevel'+index).css({
+				"margin-right" : game.UNIT_MARGIN,
+				"opacity"	   : opacity
+			});
+			$('#unitExperience'+index).css({
+				"margin-right" : game.UNIT_MARGIN,
+				"opacity"	   : opacity
+			});
         },
     };
 }()); 
