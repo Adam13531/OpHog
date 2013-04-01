@@ -37,7 +37,7 @@
             id: 2,
             itemLevel:1,
             htmlDescription:'Skull Stab<br/><font color="#660000"><b>It is said that this sword can actually only pierce hearts.<b/></font>',
-            equippableBy: game.EquippableBy.ALL,
+            equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
             cssClass:'item-sprite sword32-png'
         },
     };

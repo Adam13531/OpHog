@@ -33,9 +33,8 @@
         // the index of the corresponding SlotUI.
         this.slotIndex = game.slotID++;
 
-        this.item = null;
-
-        this.setItem(this.item);
+        // New slots start with no item in them
+        this.setItem(null);
     };
 
     /**
@@ -46,6 +45,26 @@
 
         // Tell the UI that we updated this slot.
         game.InventoryUI.updatedSlot(this.slotIndex);
+    };
+
+    window.game.Slot.prototype.swapItems = function(otherSlot, simulateOnly) {
+        var sourceItem = this.item;
+        var targetItem = otherSlot.item;
+
+        if ( !this.canHoldItem(targetItem) || !otherSlot.canHoldItem(sourceItem) ) {
+            return false;
+        }
+
+        // If we just want to know if it's possible, then we return here now
+        // that we know it is.
+        if ( simulateOnly ) {
+            return true;
+        }
+
+        this.setItem(targetItem);
+        otherSlot.setItem(sourceItem);
+
+        return true;
     };
 
     window.game.Slot.prototype.isEmpty = function() {

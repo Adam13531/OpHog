@@ -18,6 +18,14 @@
          */
         selectedSlotUI: null,
 
+        // This is the slot that you dragged from and must be global
+        // 
+        // This is also to fix a bug that happens when you just mouseUp on something
+        // without actually dragging.
+        //
+        // This needs to be global because it's shared amongst the different slots.
+        draggingSlotUI: null,
+
         /**
          * Sets up the entire Inventory UI.
          */
@@ -31,7 +39,7 @@
 
             // For more thorough comments, look at the settings dialog.
             $('#inventory-screen').dialog({
-                autoOpen: true,
+                autoOpen: true, // this is just for debugging
                 width:360,
                 height:342,
                 resizable:false,
@@ -147,67 +155,6 @@
             this.updateDescription();
         },
 
-        swapSelectedSlot: function(otherSlotUI) {
-            var selectedSlot = this.selectedSlotUI.slot;
-            var swapped = false;
-            if ( !this.selectedSlotUI.slot.isEmpty() ) {
-                // The items need to be swappable
-                var selectedItem = selectedSlot.item;
-                var slotToSelect = otherSlotUI.slot;
-                var itemToSwap = slotToSelect.item;
-
-                if ( !slotToSelect.canHoldItem(selectedItem) || !selectedSlot.canHoldItem(itemToSwap) ) {
-                    return false;
-                }
-
-                selectedSlot.setItem(slotToSelect.item);
-                slotToSelect.setItem(selectedItem);
-                swapped = true;
-            }
-
-            this.selectedSlotUI.deselectSlot();
-            if ( swapped ) {
-                this.selectedSlotUI = null;
-            }
-
-            return true;
-        },
-
-        dragItemDone: function(sourceSlotIndex, targetSlotIndex, simulateOnly) {
-            var sourceSlotUI = this.slots[sourceSlotIndex];
-            var targetSlotUI = this.slots[targetSlotIndex];
-
-            if ( sourceSlotUI == null || targetSlotUI == null ) {
-                return false;
-            }
-
-            if ( sourceSlotUI.isEmpty() ) {
-                return false;
-            }
-
-            var sourceSlot = sourceSlotUI.slot;
-            var targetSlot = targetSlotUI.slot;
-
-            var sourceItem = sourceSlot.item;
-            var targetItem = targetSlot.item;
-
-            if ( !sourceSlot.canHoldItem(targetItem) || !targetSlot.canHoldItem(sourceItem) ) {
-                return false;
-            }
-
-            // If we just want to know if it's possible, then we return here
-            // now that we know it is.
-            if ( simulateOnly ) {
-                return true;
-            }
-
-            sourceSlot.setItem(targetItem);
-            targetSlot.setItem(sourceItem);
-
-            this.updateDescription();
-            return true;
-        },
-        
         /**
          * Selects a slot. There can only be one selected slot.
          * @param {SlotUI} slotUI The slot to select
@@ -219,41 +166,12 @@
             this.selectedSlotUI = slotUI;
             slotUI.selectSlot();
             this.updateDescription();
+        },
 
-            return;
-            // clicking currently selected slot
-            // no selection --> any slot
-            // empty slot --> filled slot
-            // filled slot --> filled slot
-
-            // Clicking the currently selected slot deselects it
-            if ( this.selectedSlotUI == slotUI ) {
-                this.selectedSlotUI.deselectSlot();
-                this.selectedSlotUI = null;
-            } else if ( this.selectedSlotUI == null ) {
-                // Clicking a slot when you have no selection will select it.
-                this.selectedSlotUI = slotUI;
-                slotUI.selectSlot();
-            } else if (this.selectedSlotUI != null ) {
-                // If the currently selected slot contains an item, swap it with
-                // the slot you just clicked (if it is possible).
-                if ( !this.selectedSlotUI.isEmpty() ) {
-                    if ( !this.swapSelectedSlot(slotUI) ) {
-                        // If a swap didn't take place because it's not possible,
-                        // then just select the new slot.
-                        this.selectedSlotUI.deselectSlot();
-                        this.selectedSlotUI = slotUI;
-                        slotUI.selectSlot();
-                    }
-                } else {
-                    // Otherwise, deselect the old slot and select the new one
-                    this.selectedSlotUI.deselectSlot();
-                    this.selectedSlotUI = slotUI;
-                    slotUI.selectSlot();
-                }
-            }
-
-            this.updateDescription();
+        revertHighlightOnAllSlots: function() {
+            for (var i = 0; i < this.slots.length; i++) {
+                this.slots[i].highlight(false, false);
+            };
         },
         
         /**
@@ -261,6 +179,10 @@
          */
         getSelectedSlot: function() {
             return this.selectedSlotUI;              
+        },
+
+        getSlot: function(slotIndex) {
+            return this.slots[slotIndex];
         },
         
         /**

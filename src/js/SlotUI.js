@@ -14,9 +14,11 @@
         //
         // The image needs an ID too so that accept() will work.
         $(domSelector).append(
-            '<span id="slot' + this.slotIndex +'"style="display:inline-block;margin:1px;width:32px;height:32px">' +
+            '<span id="slot' + this.slotIndex +'"style="position:relative;display:inline-block;margin:1px;width:32px;height:32px">' +
             '<img style="z-index:5" src="' + this.getBackImage() + '" width="32" height="32"/>' +
             '<img id="img-slot' + this.slotIndex + '"style="display:block;z-index:10" src="'+game.imagePath+'/black_slot.png" width="32" height="32"/>' +
+            '<img id="img-green' + this.slotIndex + '"style="display:block;z-index:11" src="'+game.imagePath+'/trans-green.png" width="32" height="32"/>' +
+            '<img id="img-red' + this.slotIndex + '"style="display:block;z-index:11" src="'+game.imagePath+'/trans-red.png" width="32" height="32"/>' +
             '</span>');
             
         // Get the span we just added
@@ -29,21 +31,19 @@
         this.$bgImage = $(domSelector + ' > span:last > img:first');
 
         // The foreground <img> in the <span>
-        this.$itemImage = $(domSelector + ' > span:last > img:last');
+        this.$itemImage = this.$bgImage.next();
+
+        // These are simply overlays that will be shown/hidden appropriately
+        // when dragging items around.
+        this.$greenImage = this.$itemImage.next();
+        this.$redImage = this.$greenImage.next();
+
         // http://stackoverflow.com/questions/2098387/jquery-ui-draggable-elements-not-draggable-outside-of-scrolling-div
         var dropped = false;
 
-        // This is to fix a bug that happens when you just mouseUp on something
-        // without actually dragging.
-        started = false;
+        // Capture this slot in the closures below
+        var thisSlotUI = this;
 
-        // This is the slot that you dragged from
-        //   
-        draggingSlotIndex = null;
-        originalSelectedSlot = null;
-        var indexInClosure = this.slotIndex;
-        var slotUIToDrag = this;
-        this.$itemImage.addClass('draggable-item');
         this.$itemImage.draggable({
             // prevents ui-draggable from being added
             addClasses:false,
@@ -51,7 +51,7 @@
             containment: '#top_part_with_characters_and_items',
 
             // Reverts back to original position if target is invalid
-            revert: 'invalid' ,
+            revert: 'invalid',
 
             // Element is cloned and the clone is dragged
             helper: 'clone',
@@ -65,28 +65,26 @@
 
             start: function(event, ui) {
                 dropped = false;
-                started = true;
-                draggingSlotIndex = indexInClosure;
+                game.InventoryUI.draggingSlotUI = thisSlotUI;
                 $(this).addClass('hideit');
             },
             stop: function(event, ui) {
-                started = false;
+                // $(this) refers to the original DOM element that you dragged.
+                // We use the clone helper, so if we dropped the clone, then
+                // we can remove the original (which was hidden anyway). If
+                // the clone wasn't accepted, then it will revert back to its
+                // original position, then it will be removed, so we need to
+                // show our original again.
                 if (dropped==true) {
                     $(this).remove();
                 } else {
                     $(this).removeClass('hideit');
                 }
 
-                // This is a hack because I don't know why it's not being
-                // removed normally when you drag the item to a valid slot.
-                $('.testactive').removeClass('testactive');
+                // Revert all highlighting
+                game.InventoryUI.revertHighlightOnAllSlots();
 
-                // Deselect all slots and select the one that was originally selected
-                for (var i = game.InventoryUI.slots.length - 1; i >= 0; i--) {
-                    game.InventoryUI.slots[i].deselectSlot();
-                };
-
-                if ( originalSelectedSlot != null ) originalSelectedSlot.selectSlot();
+                game.InventoryUI.draggingSlotUI = null;
             },
 
             // If true, container auto-scrolls while dragging
@@ -94,88 +92,92 @@
         });
 
 
-        debugTest = false;
-
         // Although yes, this is droppable for the slot, it may make more sense to put this in InventoryUI.
         $(this.$spanSelector).droppable({
             scope: 'inventory-draggable',
 
+            // This is triggered when something is dragged. We do this instead
+            // of just setting an activeClass so that we do more than just apply
+            // css.
+            //
+            // If this isn't called, then slots won't be highlighted when you
+            // start dragging.
+            // 
+            // We don't implement deactivate because we need to revert all of
+            // the slots' visual state after the drop ends, so that goes in the
+            // draggable's 'stop' function.
             activate: function(event, ui) {
-                originalSelectedSlot = game.InventoryUI.selectedSlotUI;
-                var id = ui.draggable.attr('id');
-                // This is the slot that you're dragging.
-                var draggingSlotIndex = parseInt(id.replace('img-slot', ''));
-
                 var targetID = $(this).attr('id');
                 var targetSlotIndex = parseInt(targetID.replace('slot', ''));
 
-                if ( debugTest ) {
-                    console.log("hello");
-                }
-
-
-                if (game.InventoryUI.dragItemDone(draggingSlotIndex, targetSlotIndex, true)) {
-                    game.InventoryUI.slots[targetSlotIndex].selectSlot();
+                if (thisSlotUI.swapItems(game.InventoryUI.draggingSlotUI, true)) {
+                    thisSlotUI.highlight(true, false);
                 }
 
             },
 
-            deactivate: function(event, ui) {
-                var targetID = $(this).attr('id');
-                var targetSlotIndex = parseInt(targetID.replace('slot', ''));
-                game.InventoryUI.slots[targetSlotIndex].deselectSlot();
-            },
-
-            // accept: '.draggable-item', // this could also be a function that could check IDs
+            // This returns true if this will accept the dragged item. There
+            // many droppables though, so suppose you drop an item in slot #3
+            // (which means drop() was called), that doesn't stop accept() from
+            // being called on all slots afterward, except drop() was already
+            // called, so now the slot whose item you WERE dragging is
+            // potentially empty, and that'll change the value of "accept" this
+            // time around. That's not the only problem though: imagine you're
+            // dragging an equippable item - it would graphically fade all of
+            // the usable slots since you can't drag an equippable item to a
+            // usable slot. That would never get reverted since 'accept' is
+            // always going to return false for the usable slots.  The solution
+            // is this: when you're done dragging the item entirely, revert all
+            // graphical state back to what it was before you dragged.
             accept: function(elm) {
-                if ( !started ) return null;
-                var id = elm.attr('id');
-                if ( id == null ) alert(elm);
-                // This is the slot that you're dragging.
-                var draggingSlotIndex = parseInt(id.replace('img-slot', ''));
+                if (game.InventoryUI.draggingSlotUI == null ) return null;
 
-                var targetID = $(this).attr('id');
-                var targetSlotIndex = parseInt(targetID.replace('slot', ''));
-
-                if ( debugTest ) {
-                    console.log("hello");
-                }
-
-                var canBeDraggedTo = game.InventoryUI.dragItemDone(draggingSlotIndex, targetSlotIndex, true);
+                var canBeDraggedTo = thisSlotUI.swapItems(game.InventoryUI.draggingSlotUI, true);
                 if ( !canBeDraggedTo ) {
-                    $(this).addClass('testactive');
+                    // Highlight it red. If we wanted to add a class here, we'd
+                    // need to make sure to remove them in the 'stop' of the
+                    // draggable with something like
+                    // $('.testactive').removeClass('testactive');
+                    thisSlotUI.highlight(false, true);
                 }
                 return canBeDraggedTo;
             },
-            // hoverClass: 'testhover',
+
+            // Whatever you're hovering over will get this class
+            hoverClass: 'testhover',
+
+            // This only applies to things that accept() the draggable
             // activeClass: 'testactive',
             drop: function(event, ui) {
-
-                // return;
-
-                game.util.debugDisplayText('Dragged from slot' + draggingSlotIndex + ' to ' + event.target.id);
-                var indexOnly = parseInt(event.target.id.replace('slot', ''));
-                if (indexOnly == draggingSlotIndex) {
+                if (thisSlotUI.slotIndex == game.InventoryUI.draggingSlotUI.slotIndex) {
                     return;
                 }
 
-                var success = game.InventoryUI.dragItemDone(draggingSlotIndex, indexOnly);
+                var success = thisSlotUI.swapItems(game.InventoryUI.draggingSlotUI, false);
                 if ( success ) {
                     dropped = true;
+
+                    // Select the slot we moved to
+                    game.InventoryUI.clickedSlot(thisSlotUI);
                     $.ui.ddmanager.current.cancelHelperRemoval = true;
-                    // ui.helper.appendTo(this);
                     ui.helper.remove();
-                    debugTest = true;
+                    return true;
                 }
+
+                return false;
             }
         });
 
         // Position the images so that they're on top of each other.
-        var firstImgHeight = this.$bgImage.height();
-        this.$itemImage.css({
-            position : 'relative',
-            top : (-firstImgHeight) + 'px'
+        $.each([this.$itemImage, this.$greenImage, this.$redImage], function(index, value) {
+            value.css({
+                position : 'absolute',
+                top: 0,
+                left: 0
+            });
         });
+
+        this.highlight(false, false);
 
         // Setting the item to whatever it currently is will update the picture.
         this.updateItem();
@@ -183,6 +185,31 @@
         $(this.$spanSelector).click(this.clickedSlot(this));
         $(this.$spanSelector).dblclick(this.setOrRemoveSlotItem(this));
     };
+
+    window.game.SlotUI.prototype.highlight = function(isGreen, isRed) {
+        if ( isGreen ) {
+            this.$greenImage.show();
+        } else {
+            this.$greenImage.hide();
+        }
+
+        if ( isRed ) {
+            this.$redImage.show();
+        } else {
+            this.$redImage.hide();
+        }
+    };
+
+
+    window.game.SlotUI.prototype.swapItems = function(otherSlotUI, simulateOnly) {
+        // If no SlotUI was passed in, then we can't swap.
+        if ( otherSlotUI == null ) {
+            return false;
+        }
+
+        return this.slot.swapItems(otherSlotUI.slot, simulateOnly);
+    };
+
 
     /**
      * Gets an onclick function to select a slot
@@ -235,7 +262,6 @@
             var img = game.imagePath + '/img_trans.png';
             this.$itemImage.attr('src', img);
             this.$itemImage.attr('class', item.cssClass);
-            this.$itemImage.addClass('draggable-item'); // TODO: this is really bad, I shouldn't have to add this every time.
             this.$itemImage.show();
         }
     };
