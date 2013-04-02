@@ -39,7 +39,7 @@
 
             // For more thorough comments, look at the settings dialog.
             $('#inventory-screen').dialog({
-                autoOpen: true, // this is just for debugging
+                autoOpen: false,
                 width:360,
                 height:342,
                 resizable:false,
