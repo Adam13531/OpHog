@@ -189,9 +189,11 @@
 												'</button>' +
 												'<span id=buySlotButtonDescription>- Buy slot</span>');
 			$('#buySlotButton').click(function() {
-				newUnit = new game.Unit(unitType, true);
-				game.UnitManager.addUnit(newUnit);
-				game.UnitPlacementUI.addSlotToPage(newUnit, game.UnitManager.getNumOfPlayerUnits(unitType));
+				game.UnitPlacementUI.addUnit(unitType);
+			});
+
+			$('#buySlotButtonDescription').click(function() {
+				game.UnitPlacementUI.addUnit(unitType);
 			});
 
 			// Setting up the arrows and images that will allow the user to
@@ -286,6 +288,16 @@
         setSpawnPoint: function(pointX, pointY) {
         	this.spawnPointX = pointX;
         	this.spawnPointY = pointY;
+        },
+
+        /**
+         * Adds a unit to the UI
+         * TODO: unitType will soon be removed because it will be a member var
+         */
+        addUnit: function(unitType) {
+			newUnit = new game.Unit(unitType, true);
+			game.UnitManager.addUnit(newUnit);
+			game.UnitPlacementUI.addSlotToPage(newUnit, game.UnitManager.getNumOfPlayerUnits(unitType));
         },
     };
 }()); 
