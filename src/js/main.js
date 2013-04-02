@@ -292,6 +292,16 @@
         var delta = Date.now() - lastUpdate;
         lastUpdate = Date.now();
 
+        // Allow for some variability in the framerate, but not too much,
+        // otherwise everything that uses this delta could hit problems. This is
+        // because the user has control over this simply by pausing Javascript
+        // execution in their browser, which means they can get this value
+        // infinitely high.
+        // 
+        // An example of a bug that could result from an infinite delta is unit
+        // movement; they would jump so far ahead on the path that they wouldn't
+        // engage in battles.
+        delta = Math.min(delta, game.msPerFrame * 2);
         var deltaAsSec = delta / 1000;
 
         game.Camera.handleInput(keysDown, delta);
@@ -328,7 +338,7 @@
 
         // This will wipe out the timer (if it's non-null)
         clearInterval(gameloopId);
-        gameloopId = setInterval(gameLoop, 15);
+        gameloopId = setInterval(gameLoop, game.msPerFrame);
     }
 
 }());
