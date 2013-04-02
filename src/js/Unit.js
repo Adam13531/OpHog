@@ -21,13 +21,17 @@
      *                           of the special values above.
      * @param {Boolean} isPlayer True if this is a player unit.
      */
-    window.game.Unit = function Unit(tileX, tileY, unitType, isPlayer) {
+    window.game.Unit = function Unit(unitType, isPlayer) {
         this.unitType = unitType;
         this.width = tileSize;
         this.height = tileSize;
         this.widthInTiles = 1;
         this.heightInTiles = 1;
         this.id = window.game.unitID++;
+        this.hasBeenPlaced = false;
+
+        this.level = 1;
+        this.experience = 0;
 
         // You have a graphic index for each tile that you take up.
         // 'graphicIndexes' represents all of the tiles, from left to right, top
@@ -65,14 +69,6 @@
         }
 
         this.areaInTiles = this.widthInTiles * this.heightInTiles;
-
-        // Now that size is set, we can set the position. 'x' is in pixels and
-        // is only snapped to a tile at creation
-        var centerXPx = tileX * tileSize + tileSize / 2;
-        var centerYPx = tileY * tileSize + tileSize / 2;
-        this.setCenterX(centerXPx);
-        this.setCenterY(centerYPx);
-
         this.isPlayer = isPlayer;
 
         // As soon as this is true, the unit will be removed from the game.
@@ -80,6 +76,15 @@
 
         // This is an object with a lot of different things in it.
         this.battleData = null;
+    };
+
+    window.game.Unit.prototype.placeUnit = function(tileX, tileY) {
+        // 'x' is in pixels and is only snapped to a tile at creation
+        var centerXPx = tileX * tileSize + tileSize / 2;
+        var centerYPx = tileY * tileSize + tileSize / 2;
+        this.setCenterX(centerXPx);
+        this.setCenterY(centerYPx);
+        this.hasBeenPlaced = true;
     };
 
     window.game.Unit.prototype.update = function(delta) {
@@ -199,7 +204,8 @@
                 createY = Math.floor(battle.enemyCenterY / tileSize);
             }
 
-            var newUnit = new game.Unit(createX,createY,0,this.isPlayer);
+            var newUnit = new game.Unit(0,this.isPlayer);
+            newUnit.placeUnit(createX,createY);
             newUnit.graphicIndexes = [224 + Math.floor(Math.random() * 5)];
             game.UnitManager.addUnit(newUnit);
             return;

@@ -63,6 +63,7 @@
 
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
+        var $showUnitPlacement = $('#showUnitPlacement');
         $settingsButton.button({
               icons: {
                 primary: 'ui-icon-gear'
@@ -78,6 +79,25 @@
 
             // See the comment for setScrollbars to see why this is needed.
             game.InventoryUI.setScrollbars();
+        });
+
+        $showUnitPlacement.button(); // Turns the button into a JQuery UI button
+        $showUnitPlacement.click(function() {
+            $settingsDialog.dialog('close');
+            $('#buyingScreenContainer').dialog('open');
+        });
+
+        // Handle all the events from a user clicking/tapping the canvas
+        $canvas.click(function(event) {
+
+            // Check to see if the user wants to place units
+            var tileX = Math.floor(event.offsetX / tileSize);
+            var tileY = Math.floor(event.offsetY / tileSize);
+            if (currentMap.isSpawnerPoint(tileX, tileY)) {
+                game.UnitPlacementUI.spawnPointX = tileX;
+                game.UnitPlacementUI.spawnPointY = tileY;
+                $('#buyingScreenContainer').dialog('open');
+            }
         });
 
         var settingsWidth = $settingsButton.width();
@@ -148,11 +168,13 @@
         });
 
         $('#createPlayer').click(function() {
-            var newUnit = new game.Unit(1,9,0,true);
+            var newUnit = new game.Unit(0,true);
+            newUnit.placeUnit(1, 9);
             game.UnitManager.addUnit(newUnit);
         });
         $('#createEnemy').click(function() {
-            var newUnit = new game.Unit(24,9,0,false);
+            var newUnit = new game.Unit(0,false);
+            newUnit.placeUnit(24, 9);
             game.UnitManager.addUnit(newUnit);
         });
         
@@ -179,7 +201,7 @@
         // Initialize the slots of our inventory.
         game.Inventory.initialize();
 
-        // game.UnitPlacementUI.setupUI();
+        game.UnitPlacementUI.setupUI();
     }
 
     function initSettings() {
@@ -222,7 +244,8 @@
                 unitType = window.game.twoByTwoUnit;
             }
             if ( unitType != null ) {
-                var newUnit = new game.Unit(1,9,unitType,true);
+                var newUnit = new game.Unit(unitType,true);
+                newUnit.placeUnit(1, 9);
                 game.UnitManager.addUnit(newUnit);
             }
 
@@ -240,19 +263,22 @@
                 enemyUnitType = window.game.twoByTwoUnit;
             }
             if ( enemyUnitType != null ) {
-                var newUnit = new game.Unit(24,9,enemyUnitType,false);
+                var newUnit = new game.Unit(enemyUnitType,false);
+                newUnit.placeUnit(24,9);
                 game.UnitManager.addUnit(newUnit);
             }
 
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(1,9,0,true);
+                    var newUnit = new game.Unit(0,true);
+                    newUnit.placeUnit(1,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(24,9,0,false);
+                    var newUnit = new game.Unit(0,false);
+                    newUnit.placeUnit(24,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
@@ -266,16 +292,6 @@
         var delta = Date.now() - lastUpdate;
         lastUpdate = Date.now();
 
-        // Allow for some variability in the framerate, but not too much,
-        // otherwise everything that uses this delta could hit problems. This is
-        // because the user has control over this simply by pausing Javascript
-        // execution in their browser, which means they can get this value
-        // infinitely high.
-        // 
-        // An example of a bug that could result from an infinite delta is unit
-        // movement; they would jump so far ahead on the path that they wouldn't
-        // engage in battles.
-        delta = Math.min(delta, game.msPerFrame * 2);
         var deltaAsSec = delta / 1000;
 
         game.Camera.handleInput(keysDown, delta);
@@ -312,7 +328,7 @@
 
         // This will wipe out the timer (if it's non-null)
         clearInterval(gameloopId);
-        gameloopId = setInterval(gameLoop, game.msPerFrame);
+        gameloopId = setInterval(gameLoop, 15);
     }
 
 }());
