@@ -48,7 +48,12 @@
             // prevents ui-draggable from being added
             addClasses:false,
 
+            // Prevents you from dragging outside of this element
             containment: '#top_part_with_characters_and_items',
+
+            // The z-index of the draggable helper. IE requires this to be
+            // explicitly set to something higher than the dialog's z-index.
+            zIndex: 100,
 
             // Reverts back to original position if target is invalid
             revert: 'invalid',
