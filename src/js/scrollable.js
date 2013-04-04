@@ -125,7 +125,8 @@
 
             if ($scrollpane.find('.slider-wrap').length == 0)//if the slider-wrap doesn't exist, insert it and set the initial value
             {
-                $scrollpane.append('<\div class="slider-wrap"><\div class="slider-vertical"><\/div><\/div>');
+                // Apply "no-slider-vertical" so that we don't get a background
+                $scrollpane.append('<\div class="slider-wrap no-slider-vertical"><\div class="slider-vertical"><\/div><\/div>');
                 //append the necessary divs so they're only there if needed
                 sliderInitial = 100;
             }
@@ -146,7 +147,7 @@
                         top : topValue
                     });
                     //move the top up (negative value) by the percentage the slider has been moved times the difference in height
-                    $('ui-slider-range').height(ui.value + '%');
+                    $scrollpane.find(".ui-slider-range").height(ui.value + '%');
                     //set the height of the range element
                 },
                 change : function(event, ui) {
@@ -156,7 +157,7 @@
                         top : topValue
                     });
                     //move the top up (negative value) by the percentage the slider has been moved times the difference in height
-                    $('ui-slider-range').height(ui.value + '%');
+                    $scrollpane.find(".ui-slider-range").height(ui.value + '%');
                 }
             });
 
