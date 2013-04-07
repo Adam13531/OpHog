@@ -187,6 +187,9 @@
                             // We call this because the item still exists, but
                             // its quantity is lower.
                             this.updateUseInstructions();
+
+                            // This updates the text on the item
+                            this.getSlotUIWithItem(this.usingItem).updateItem();
                         }
 
                         // Return true that we used the item.
@@ -196,6 +199,23 @@
             }
 
             return false;
+        },
+
+        /**
+         * Given an item, this will return the slotUI that holds it. Passing in
+         * null will probably return the first empty slotUI, but I don't suggest
+         * doing that.
+         * @param  {Item} item - the item whose slot you want to find
+         * @return {SlotUI}      the slotUI, or null if not found.
+         */
+        getSlotUIWithItem: function(item) {
+            for (var i = 0; i < this.slots.length; i++) {
+                if ( this.slots[i].slot.item === this.usingItem ) {
+                    return this.slots[i];
+                }
+            };
+
+            return null;
         },
 
         /**

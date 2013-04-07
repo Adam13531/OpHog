@@ -16,9 +16,9 @@
         $(domSelector).append(
             '<span id="slot' + this.slotIndex +'"style="position:relative;display:inline-block;margin:1px;width:32px;height:32px">' +
             '<img style="z-index:5" src="' + this.getBackImage() + '" width="32" height="32"/>' +
-            '<img id="img-slot' + this.slotIndex + '"style="display:block;z-index:10" src="'+game.imagePath+'/black_slot.png" width="32" height="32"/>' +
-            '<img id="img-green' + this.slotIndex + '"style="display:block;z-index:11" src="'+game.imagePath+'/trans-green.png" width="32" height="32"/>' +
-            '<img id="img-red' + this.slotIndex + '"style="display:block;z-index:11" src="'+game.imagePath+'/trans-red.png" width="32" height="32"/>' +
+            '<span "style="display:block;z-index:10;width:32px;height:32px;"></span>' +
+            '<img "style="display:block;z-index:11" src="'+game.imagePath+'/trans-green.png" width="32" height="32"/>' +
+            '<img "style="display:block;z-index:11" src="'+game.imagePath+'/trans-red.png" width="32" height="32"/>' +
             '</span>');
             
         // Get the span we just added
@@ -30,7 +30,9 @@
         // The background <img> in the <span>
         this.$bgImage = $(domSelector + ' > span:last > img:first');
 
-        // The foreground <img> in the <span>
+        // The foreground image in the <span>. This is a span itself so that it
+        // can display quantity for stackable items. This gives the added
+        // benefit of making the text draggable along with the item.
         this.$itemImage = this.$bgImage.next();
 
         // These are simply overlays that will be shown/hidden appropriately
@@ -268,9 +270,21 @@
         if (item == null) {
             this.$itemImage.hide();
         } else {
+            if (item.stackable) {
+                // Remember: put all font-related style on THIS span, not
+                // surrounding spans.
+                this.$itemImage.html('<span style="color: white; font-size:.95em;position:absolute;left:2px;top:11px;"><b>' + item.quantity + '</b></span>');
+            } else {
+                // Non-stackable items shouldn't show any number.
+                this.$itemImage.html('');
+            }
+
             var img = game.imagePath + '/img_trans.png';
             this.$itemImage.attr('src', img);
             this.$itemImage.attr('class', item.cssClass);
+
+            // Add this so that the quantity is actually visible
+            this.$itemImage.addClass('outline-font');
             this.$itemImage.show();
         }
     };

@@ -172,6 +172,19 @@ textarea {
     background-position: -160px -96px;
 }
 
+/*This applies 8 black shadows with no blur, which are exact copies of whatever 
+was drawn to begin with, but they're offset slightly*/
+.outline-font {
+    text-shadow: 
+        -1px -1px 0 black,
+        -1px 1px 0 black,
+        1px -1px 0 black,
+        1px 1px 0 black,
+        -2px -2px 0 black,
+        -2px 2px 0 black,
+        2px -2px 0 black,
+        2px 2px 0 black;
+}
 
 
 
