@@ -75,10 +75,7 @@
         $showInventory.button();
         $showInventory.click(function() {
             $settingsDialog.dialog('close');
-            $('#inventory-screen').dialog('open');
-
-            // See the comment for setScrollbars to see why this is needed.
-            game.InventoryUI.setScrollbars();
+            game.InventoryUI.show();
         });
 
         $showUnitPlacement.button(); // Turns the button into a JQuery UI button
@@ -290,6 +287,16 @@
                     newUnit.placeUnit(24,9);
                     game.UnitManager.addUnit(newUnit);
                 };
+            }
+
+            // Pressing 'i' will toggle the inventory screen
+            if (evt.keyCode == game.Key.DOM_VK_I) {
+                var $invScreen = $('#inventory-screen');
+                if ( $invScreen.is(":visible") ) {
+                    $('#inventory-screen').dialog('close');
+                } else {
+                    game.InventoryUI.show();
+                }
             }
 
             keysDown[evt.keyCode] = false;

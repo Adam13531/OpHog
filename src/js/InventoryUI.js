@@ -351,6 +351,18 @@
         },
 
         /**
+         * This is its own function because setScrollbars also needs to be
+         * called every time you show the inventory screen.
+         * @return {null}
+         */
+        show: function() {
+            $('#inventory-screen').dialog('open');
+
+            // See the comment for setScrollbars to see why this is needed.
+            game.InventoryUI.setScrollbars();
+        },
+
+        /**
          * This is called when a slot's item is changed.
          * @param  {Number} slotIndex The index of the Slot/SlotUI that changed.
          * @return {null}
