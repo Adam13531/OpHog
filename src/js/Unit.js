@@ -13,6 +13,10 @@
     // battle system's repositioning logic.
     window.game.LARGEST_UNIT_WIDTH = 2;
 
+    // This is just a number that goes up about 1/FPS every game loop. It's used
+    // to blink the green highlights on units when they're a possible target.
+    window.game.alphaBlink = 0;
+
     /**
      * Creates a unit (player OR enemy).
      * @param {number}  tileX    X-coordinate (in tiles) to center on
@@ -90,8 +94,7 @@
     window.game.Unit.prototype.update = function(delta) {
         var deltaAsSec = delta / 1000;
         // var speed = Math.random()*120 + 500;
-        // var speed = Math.random()*120 + 500;
-        var speed = 600;
+        var speed = 60;
         var change = speed * deltaAsSec;
         if (!this.isInBattle()) {
             this.x += this.isPlayer ? change : -change;
@@ -307,13 +310,9 @@
     window.game.Unit.prototype.draw = function(ctx) {
         // Dead units always look like a 1x1 tombstone for now.
         if ( this.isInBattle() && !this.isLiving() ) {
-            objSheet.drawSprite(ctx, 19, this.x, this.y, !this.isPlayer);
-            return;                
-        }
-
-        if ( this.widthInTiles == 1 && this.heightInTiles == 1 ) {
+            objSheet.drawSprite(ctx, 19, this.x, this.y, !this.isPlayer);              
+        } else if ( this.widthInTiles == 1 && this.heightInTiles == 1 ) {
             charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-            return;
         }
 
         if (this.widthInTiles == 2) {
@@ -344,6 +343,24 @@
                 }
             }
         }
+
+        // Draw a green highlight box over the unit if we're in use mode and
+        // this unit is a target
+        if ( game.InventoryUI.isInUseMode() && 
+                game.InventoryUI.isUnitAUseTarget(this) ) {
+
+            // Save the canvas context because we modify the fillStyle
+            ctx.save();
+
+            // Blink is always between [-1,1] thanks to sin, so alpha is in the
+            // range [.2,.4]. This reduces the subtlety of the green highlight.
+            var blink = Math.sin(game.alphaBlink * 4);
+            var alpha = blink * .1 + .3;
+            ctx.fillStyle = 'rgba(0, 255, 0, ' + alpha + ')';
+            ctx.fillRect(this.x, this.y, tileSize, tileSize);
+            ctx.restore();
+        }        
+        
     };
 
 }());

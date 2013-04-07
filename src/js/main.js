@@ -89,6 +89,15 @@
 
         // Handle all the events from a user clicking/tapping the canvas
         $canvas.click(function(event) {
+            // If you're currently trying to use an item, then check to see if
+            // the user clicked a valid target
+            if ( game.InventoryUI.attemptToUseItem(event.offsetX, event.offsetY) ) {
+                // If that worked, then we don't attempt to open the spawners
+                // (perhaps you were targeting a unit on your spawner, or you
+                // were targeting the spawner itself - you wouldn't want to open
+                // the placement UI).
+                return;
+            }
 
             // Check to see if the user wants to place units
             var tileX = Math.floor(event.offsetX / tileSize);
@@ -303,6 +312,8 @@
         // engage in battles.
         delta = Math.min(delta, game.msPerFrame * 2);
         var deltaAsSec = delta / 1000;
+
+        game.alphaBlink += deltaAsSec;
 
         game.Camera.handleInput(keysDown, delta);
 

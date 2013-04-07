@@ -244,6 +244,10 @@
                 var itemID = 0;
                 if (slot.isEquipSlot()) {
                     itemID = 1;
+                } else {
+                    if ( Math.random() > .5 ) {
+                        itemID = 4;
+                    }
                 }
 
                 var newItem = new game.Item(itemID);

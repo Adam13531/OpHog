@@ -54,12 +54,13 @@
 
                 <!-- Each character section is horizontal, but they are vertically aligned -->
                 <div id="char-section" style="margin-right:1px;float:left">
-                    <div id="war-section" style="width:128px;"></div>
-                    <div id="wiz-section" style="width:128px;"></div>
-                    <div id="arch-section" style="width:128px;"></div>
+                    <div id="war-section" style="width:110px;"></div>
+                    <div id="wiz-section" style="width:110px;"></div>
+                    <div id="arch-section" style="width:110px;"></div>
                 </div>
     			<div id="equippable-item-scroll-pane" style="margin-right:5px;" class="scroll-pane"></div>
-    			<div id="usable-item-scroll-pane" class="scroll-pane"></div>
+    			<div id="usable-item-scroll-pane" style="margin-right:5px;" class="scroll-pane"></div>
+                <button id='useItemButton'>Use</button>
             </div>
 
             <!-- Bottom part -->
@@ -132,5 +133,8 @@
             <button style="margin-top:5px;" id='showInventory'>Show inventory</button>
             <button style="margin-top:5px;" id='showUnitPlacement'>Place Units</button>
         </div>
+
+        <div id='useItemInstructions' style="background-color:#22a050;color:white;text-align:center;"></div>
+
     </body>
 </html>
