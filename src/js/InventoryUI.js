@@ -157,8 +157,8 @@
         /**
          * Attempts to use an item at the passed-in point, which may represent a
          * unit, a battle, a map tile, or nothing.
-         * @param  {Number} x - coordinate, in pixels, bound by canvas size
-         * @param  {Number} y - coordinate, in pixels, bound by canvas size
+         * @param  {Number} x - world coordinate
+         * @param  {Number} y - world coordinate
          * @return {Boolean}   true if the item was used
          */
         attemptToUseItem: function(x, y) {

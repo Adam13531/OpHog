@@ -86,9 +86,13 @@
 
         // Handle all the events from a user clicking/tapping the canvas
         $canvas.click(function(event) {
+            // Convert to world coordinates
+            var worldX = game.Camera.canvasXToWorldX(event.offsetX);
+            var worldY = game.Camera.canvasYToWorldY(event.offsetY);
+            
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target
-            if ( game.InventoryUI.attemptToUseItem(event.offsetX, event.offsetY) ) {
+            if ( game.InventoryUI.attemptToUseItem(worldX, worldY) ) {
                 // If that worked, then we don't attempt to open the spawners
                 // (perhaps you were targeting a unit on your spawner, or you
                 // were targeting the spawner itself - you wouldn't want to open
@@ -97,8 +101,8 @@
             }
 
             // Check to see if the user wants to place units
-            var tileX = Math.floor(event.offsetX / tileSize);
-            var tileY = Math.floor(event.offsetY / tileSize);
+            var tileX = Math.floor(worldX / tileSize);
+            var tileY = Math.floor(worldY / tileSize);
             if (currentMap.isSpawnerPoint(tileX, tileY)) {
                 game.UnitPlacementUI.spawnPointX = tileX;
                 game.UnitPlacementUI.spawnPointY = tileY;

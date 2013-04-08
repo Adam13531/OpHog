@@ -105,6 +105,24 @@
         },
 
         /**
+         * Converts a canvas coordinate (which is bound by the size of the
+         * canvas) to world coordinates. This takes panning/zooming into
+         * account.
+         * @param  {Number} x canvas coordinate in pixels
+         * @return {Number}   world coordinate
+         */
+        canvasXToWorldX: function(x) {
+            return (x / game.Camera.curZoom) + game.Camera.curPanX;
+        },
+
+        /**
+         * See canvasXToWorldX.
+         */
+        canvasYToWorldY: function(y) {
+            return y = (y / game.Camera.curZoom) + game.Camera.curPanY;;
+        },
+            
+        /**
          * When you load a map or change the zoom level, you need to call this
          * function.
          *

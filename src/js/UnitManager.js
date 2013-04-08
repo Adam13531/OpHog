@@ -32,8 +32,8 @@
          * Gets all units that intersect with the point x,y.
          *
          * Bug/todo: make this work with non-1x1 units.
-         * @param  {Number} x coordinate, in pixels, bound to canvas size
-         * @param  {Number} y coordinate, in pixels, bound to canvas size
+         * @param  {Number} x - world coordinate
+         * @param  {Number} y - world coordinate
          * @return {Array:Unit}   Array of units that intersects with the point
          */
         getUnitsAtPoint: function(x, y) {
