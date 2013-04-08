@@ -6,7 +6,7 @@
         
         /**
          * Array of Slot objects.
-         * @type {Array<Slot>}
+         * @type {Array:Slot}
          */
         slots: new Array(),
         

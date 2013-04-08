@@ -8,7 +8,7 @@
         /**
          * Array of SlotUI objects. These should never be rearranged since they
          * are referred to by numerical index (slotUI.slotIndex).
-         * @type {Array<SlotUI>}
+         * @type {Array:SlotUI}
          */
         slots: new Array(),
         

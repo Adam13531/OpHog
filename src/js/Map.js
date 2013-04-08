@@ -10,7 +10,7 @@
         /**
          * The tiles representing this map. A tile is simply a graphic index for
          * now; there's no additional state.
-         * @type {Array<Number>}
+         * @type {Array:Number}
          */
         this.mapTiles = new Array(
             5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
