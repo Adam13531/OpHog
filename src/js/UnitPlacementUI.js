@@ -1,36 +1,45 @@
 ( function() {
     
 	/**
-	 * Defines the types of units. This will most likely be refactored out,
-	 * but that will be done in another branch.
-	 * @type {UnitType}
+	 * Defines the types of units that can be placed. These are used to distinguish
+	 * between the other unit types because these are the only types that can
+	 * actually be placed by a player
+	 * @type {Placeablethis.unitType}
 	 */
-	window.game.UnitType = {
+	window.game.PlaceableUnitType = {
 		ARCHER: 0,
 		WARRIOR: 1,
 		WIZARD: 2
 	};
 
-	window.game.UNIT_MARGIN = '30px';
+	/**
+	 * The amount a slot costs per level
+	 * @type {Number}
+	 */
 	window.game.UNIT_PLACEMENT_SLOT_COST = 500;
+	/**
+	 * Opacity of the units in the UI that aren't placed
+	 * @type {String}
+	 */
 	window.game.UNIT_OPACITY_NOT_PLACED = '1.0';
+	/**
+	 * Opacity of the units in the UI that are placed
+	 * @type {String}
+	 */
 	window.game.UNIT_OPACITY_PLACED = '0.4';
 
-	// The possible number of unit classes
-    window.game.NUM_UNIT_CLASSES = 3;
+	/**
+	 * The amount placeable units there are
+	 * @type {Number}
+	 */
+	window.game.NUM_PLACEABLE_UNIT_CLASSES = Object.keys(game.PlaceableUnitType).length;
     
     /**
 	 * Computes the cost to buy a slot for a specific unit type
-	 * @param  {UnitType} unitType Type of unit
 	 * @return {Number}           Amount that the new slot will cost
 	 */
-	function costToPurchaseSlot(unitType) {
-		if (game.UnitManager.getNumOfPlayerUnits(unitType) == 0) {
-			return game.UNIT_PLACEMENT_SLOT_COST; 
-		}
-		else {
-			return (game.UNIT_PLACEMENT_SLOT_COST * game.UnitManager.getNumOfPlayerUnits(unitType) + game.UNIT_PLACEMENT_SLOT_COST);
-		}
+	function costToPurchaseSlot() {
+		return game.UNIT_PLACEMENT_SLOT_COST * (game.UnitManager.getNumOfPlayerUnits(this.unitType) + 1);
 	};
 
 	/**
@@ -57,6 +66,12 @@
     	 * @type {Number}
     	 */
     	spawnPointY: 0,
+
+    	/**
+    	 * Type of unit that the player can currently place
+    	 * @type {PlaceableUnitType}
+    	 */
+    	unitType: null,
 		
 		/**
          * Sets up the entire unit placement UI.
@@ -64,7 +79,7 @@
         setupUI: function() {
 
 			var rightMargin = '18px';
-			var buyingScreenContainer = ('<div id="buyingScreenContainer" title="Place Units" style="border:1px solid;"></div>');
+			var buyingScreenContainer = ('<div id="buyingScreenContainer" title="Place Units"></div>');
 			$('body').append(buyingScreenContainer);
 
 			// TODO: Load real headers
@@ -75,20 +90,20 @@
 										'<img id="header4" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite greenCube-png' + '" />' +
 								   '</div>');
 			$('#header1').css({
-				"margin-right" : rightMargin
+				'margin-right' : rightMargin
 			});
 			$('#header2').css({
-				"margin-right" : rightMargin
+				'margin-right' : rightMargin
 			});
 			$('#header3').css({
-				"margin-right" : rightMargin
+				'margin-right' : rightMargin
 			});
 			$('#header4').css({
-				"margin-right" : rightMargin
+				'margin-right' : rightMargin
 			});
 
 			// Sets the default page
-			this.setPage(window.game.UnitType.ARCHER);
+			this.setPage(game.PlaceableUnitType.ARCHER);
 
 			$('#buyingScreenContainer').dialog({
                 autoOpen: false,
@@ -114,20 +129,20 @@
 
 		/**
 		* Figures out the CSS unit class for a specific unit type and returns it. This
-		* unit class is used to specify which image in the CSS file that needs to be used.
-		* @param  {UnitType} unitType Type of unit
+		* unit class is used to specify which image in the CSS file to use.
+		* @param  {PlaceableUnitType} unitType Type of unit
 		* @return {String}          Classes for the particular unit
 		*/
 		getCSSUnitClass: function(unitType) {
 			var unitClass;
 			switch (unitType) {
-			    case game.UnitType.ARCHER:
+			    case game.PlaceableUnitType.ARCHER:
 			        unitClass = 'char-sprite arch32-png';
 			        break;
-			    case game.UnitType.WARRIOR:
+			    case game.PlaceableUnitType.WARRIOR:
 			        unitClass = 'char-sprite war32-png';
 			        break;
-			    case game.UnitType.WIZARD:
+			    case game.PlaceableUnitType.WIZARD:
 			        unitClass = 'char-sprite wiz32-png';
 			        break;
 			    default:
@@ -149,33 +164,38 @@
         },
 
         /**
-         * Gets the page to the left of the current page
-         * @param  {UnitType} currentPage Index of the current page
-         * @return {UnitType}             Index of the page to the left
+         * Returns the index of the unit that will show when you click the left
+         * arrow.
+         * Pages are ordered: [0,1,..., Object.keys(game.PlaceableUnitType).length]
+         * @param  {PlaceableUnitType} currentPage Index of the current page
+         * @return {PlaceableUnitType}             Index of the page to the left
          */
         getLeftPage: function(currentPage) {
-        	if (currentPage == 0) return game.NUM_UNIT_CLASSES - 1;
+        	if (currentPage == 0) return game.NUM_PLACEABLE_UNIT_CLASSES - 1;
         	return currentPage - 1;
         },
 
         /**
-         * Gets the page to the right of the current page
-         * @param  {UnitType} currentPage Index of the current page
-         * @return {UnitType}             Index of the page to the right
+         * Returns the index of the unit that will show when you click the left
+         * arrow.
+         * Pages are ordered: [0,1,..., Object.keys(game.PlaceableUnitType).length]
+         * @param  {PlaceableUnitType} currentPage Index of the current page
+         * @return {PlaceableUnitType}             Index of the page to the right
          */
         getRightPage: function(currentPage) {
-        	if (currentPage == game.NUM_UNIT_CLASSES - 1) return 0;
+        	if (currentPage == game.NUM_PLACEABLE_UNIT_CLASSES - 1) return 0;
         	return currentPage + 1;
         },
 
         /**
          * Allows the user to place units and buy slots for all the units of the
          * specified unit type.
-         * @param {UnitType} unitType Type of unit
+         * @param {PlaceableUnitType} unitType Type of unit
          */
         setPage: function(unitType) {
 			
-			var unitArray = game.UnitManager.getUnits(unitType);
+			this.unitType = unitType;
+			var unitArray = game.UnitManager.getUnits(this.unitType);
 			
 			$('#buyingScreenContainer').append('<div id="unitContainer">');
 			for (var i = 0; i < unitArray.length; i++) {
@@ -185,21 +205,21 @@
 
 			// Add a button to allow the player to buy a new slot
 			$('#buyingScreenContainer').append('<button id="buySlotButton">'+ 
-												costToPurchaseSlot(unitType) +
+												costToPurchaseSlot(this.unitType) +
 												'</button>' +
 												'<span id=buySlotButtonDescription>- Buy slot</span>');
 			$('#buySlotButton').click(function() {
-				game.UnitPlacementUI.addUnit(unitType);
+				game.UnitPlacementUI.addUnit(this.unitType);
 			});
 
 			$('#buySlotButtonDescription').click(function() {
-				game.UnitPlacementUI.addUnit(unitType);
+				game.UnitPlacementUI.addUnit(this.unitType);
 			});
 
 			// Setting up the arrows and images that will allow the user to
 			// switch units.
-			var nextUnitLeftImage = this.getLeftPage(unitType);
-			var nextUnitRightImage = this.getRightPage(unitType);
+			var nextUnitLeftImage = this.getLeftPage(this.unitType);
+			var nextUnitRightImage = this.getRightPage(this.unitType);
 
 			$('#buyingScreenContainer').append('<div id="changingPagesDiv">' +
 											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
@@ -246,8 +266,7 @@
 
 			if (unit.hasBeenPlaced) {
 				this.setUnitCSSProperties(index, window.game.UNIT_OPACITY_PLACED);
-			}
-			else {
+			} else {
 				this.setUnitCSSProperties(index, window.game.UNIT_OPACITY_NOT_PLACED);
 			}
 
@@ -257,27 +276,14 @@
         },
 
         /**
-         * Sets come CSS properties of a specific unit.
+         * Sets some CSS properties of a specific unit.
          * @param {Number} index   index of the unit in the window
          * @param {Number} opacity The opacity to set the unit and its stats to
          */
         setUnitCSSProperties: function(index, opacity) {
-			$('#unitImage'+index).css({
-				"margin-right" : game.UNIT_MARGIN,
-				"opacity"	   : opacity
-			});
-			$('#unitCost'+index).css({
-				"margin-right" : game.UNIT_MARGIN,
-				"opacity"	   : opacity
-			});
-			$('#unitLevel'+index).css({
-				"margin-right" : game.UNIT_MARGIN,
-				"opacity"	   : opacity
-			});
-			$('#unitExperience'+index).css({
-				"margin-right" : game.UNIT_MARGIN,
-				"opacity"	   : opacity
-			});
+        	var unitMargin = '30px';
+			$('#unitImage' + index + ',#unitCost' + index + ',#unitLevel' + index + 
+		     ',#unitExperience' + index).css({'margin-right':unitMargin, 'opacity': opacity});
         },
 
         /**
@@ -292,12 +298,11 @@
 
         /**
          * Adds a unit to the UI
-         * TODO: unitType will soon be removed because it will be a member var
          */
-        addUnit: function(unitType) {
-			newUnit = new game.Unit(unitType, true);
+        addUnit: function() {
+			newUnit = new game.Unit(this.unitType, true);
 			game.UnitManager.addUnit(newUnit);
-			game.UnitPlacementUI.addSlotToPage(newUnit, game.UnitManager.getNumOfPlayerUnits(unitType));
+			game.UnitPlacementUI.addSlotToPage(newUnit, game.UnitManager.getNumOfPlayerUnits(this.unitType));
         },
     };
 }()); 
