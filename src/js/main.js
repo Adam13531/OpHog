@@ -86,9 +86,14 @@
 
         // Handle all the events from a user clicking/tapping the canvas
         $canvas.click(function(event) {
+            // Apparently offsetX and offsetY aren't in every browser...
+            // http://stackoverflow.com/questions/11334452/event-offsetx-in-firefox
+            var offsetX = event.offsetX==undefined?event.originalEvent.layerX:event.offsetX;
+            var offsetY = event.offsetY==undefined?event.originalEvent.layerY:event.offsetY;
+
             // Convert to world coordinates
-            var worldX = game.Camera.canvasXToWorldX(event.offsetX);
-            var worldY = game.Camera.canvasYToWorldY(event.offsetY);
+            var worldX = game.Camera.canvasXToWorldX(offsetX);
+            var worldY = game.Camera.canvasYToWorldY(offsetY);
             
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target
