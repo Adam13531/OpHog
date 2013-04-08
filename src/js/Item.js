@@ -108,6 +108,7 @@
     window.game.Item = function Item(itemID) {
         var itemData = game.GetItemDataFromID(itemID);
 
+        this.itemID = itemID;
         this.name = itemData.name;
         this.usable = false;
         this.stackable = false;

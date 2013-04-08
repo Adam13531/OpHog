@@ -65,6 +65,7 @@
 
             // Fill some of the slots (this is debug code)
             this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(0));
+            this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(0));
             this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(4));
             this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(1));
             this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(1));
