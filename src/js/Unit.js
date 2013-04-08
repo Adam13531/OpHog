@@ -101,6 +101,11 @@
         } else {
             this.updateBattle(delta);
         }
+
+        // Clear some fog every loop, even if we're in battle.
+        if ( this.isPlayer ) {
+            currentMap.setFog(this.getTileX(), this.getTileY(), 3, false, true);
+        }
     };
 
     window.game.Unit.prototype.updateBattle = function(delta) {

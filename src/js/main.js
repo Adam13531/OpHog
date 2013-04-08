@@ -331,18 +331,21 @@
         // Draw a solid background on the canvas in case anything is transparent
         // This should eventually be unnecessary - we should instead draw a
         // parallax background or not have a transparent map.
+        ctx.save();
         ctx.fillStyle = '#373737';
         ctx.fillRect(0, 0, screenWidth, screenHeight);
 
-        ctx.save();
-        game.Camera.scaleAndTranslate(ctx);
+        ctx.restore();
 
-        currentMap.draw(ctx);
         game.UnitManager.update(delta);
         game.BattleManager.update(delta);
         game.ParticleManager.update(delta);
         game.TextManager.update(delta);
 
+        ctx.save();
+        game.Camera.scaleAndTranslate(ctx);
+
+        currentMap.draw(ctx);
         ctx.restore();
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
@@ -350,6 +353,10 @@
         game.UnitManager.draw(ctx);
         game.BattleManager.draw(ctx);
         game.ParticleManager.draw(ctx);
+
+        // Fog will cover everything drawn before this line of code (e.g. units,
+        // projectiles).
+        currentMap.drawFog(ctx);
         game.TextManager.draw(ctx);
 
         ctx.restore();
