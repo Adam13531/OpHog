@@ -310,7 +310,9 @@
     window.game.Unit.prototype.draw = function(ctx) {
         // Dead units always look like a 1x1 tombstone for now.
         if ( this.isInBattle() && !this.isLiving() ) {
-            objSheet.drawSprite(ctx, 19, this.x, this.y, !this.isPlayer);              
+            // Draw the tombstone at the center so that it doesn't look awkward
+            // for big units.
+            objSheet.drawSprite(ctx, 19, this.getCenterX() - tileSize / 2, this.getCenterY() - tileSize / 2, !this.isPlayer);              
         } else {
             // The index in this.graphicIndexes to draw.
             var index = 0;
