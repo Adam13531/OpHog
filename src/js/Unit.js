@@ -311,37 +311,30 @@
         // Dead units always look like a 1x1 tombstone for now.
         if ( this.isInBattle() && !this.isLiving() ) {
             objSheet.drawSprite(ctx, 19, this.x, this.y, !this.isPlayer);              
-        } else if ( this.widthInTiles == 1 && this.heightInTiles == 1 ) {
-            charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-        }
+        } else {
+            // The index in this.graphicIndexes to draw.
+            var index = 0;
+            for (var j = 0; j < this.heightInTiles; j++) {
+                for (var i = 0; i < this.widthInTiles; i++) {
+                    // The following code is to flip enemies horizontally. This
+                    // only accounts for sizes up to 2x2. Anything bigger and
+                    // I'll have to stop hard-coding it.
+                    var indexToUse = index;
+                    if ( !this.isPlayer && this.widthInTiles == 2 ) {
+                        // Swap 0 and 1
+                        if ( index == 0 ) indexToUse = 1;
+                        if ( index == 1 ) indexToUse = 0;
 
-        if (this.widthInTiles == 2) {
-            if (this.isPlayer) {
-                charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-                charSheet.drawSprite(ctx, this.graphicIndexes[1], this.x + tileSize, this.y, !this.isPlayer);
-            } else {
-                charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-                charSheet.drawSprite(ctx, this.graphicIndexes[1], this.x - tileSize, this.y, !this.isPlayer);
-            }
-        }
+                        // Swap 2 and 3
+                        if ( index == 2 ) indexToUse = 3;
+                        if ( index == 3 ) indexToUse = 2;
+                    }
 
-        if (this.heightInTiles == 2) {
-            if ( this.widthInTiles == 1 ) {
-                charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-                charSheet.drawSprite(ctx, this.graphicIndexes[1], this.x, this.y + tileSize, !this.isPlayer);
-            } else {
-                if (this.isPlayer) {
-                    charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[1], this.x + tileSize, this.y, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[2], this.x, this.y + tileSize, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[3], this.x + tileSize, this.y + tileSize, !this.isPlayer);
-                } else {
-                    charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[1], this.x - tileSize, this.y, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[2], this.x, this.y + tileSize, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[3], this.x - tileSize, this.y + tileSize, !this.isPlayer);
-                }
-            }
+                    charSheet.drawSprite(ctx, this.graphicIndexes[indexToUse], this.x + i * tileSize, this.y + j * tileSize, !this.isPlayer);
+
+                    index++;
+                };
+            };
         }
 
         // Draw a green highlight box over the unit if we're in use mode and
@@ -357,9 +350,9 @@
             var blink = Math.sin(game.alphaBlink * 4);
             var alpha = blink * .1 + .3;
             ctx.fillStyle = 'rgba(0, 255, 0, ' + alpha + ')';
-            ctx.fillRect(this.x, this.y, tileSize, tileSize);
+            ctx.fillRect(this.x, this.y, this.width, this.height);
             ctx.restore();
-        }        
+        }
         
     };
 

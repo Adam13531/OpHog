@@ -554,15 +554,8 @@
                 }
             };
 
-            var desiredX;
-            var desiredY;
-
-            if ( isPlayer ) {
-                desiredX = attemptX * tileSize + stagingAreaCenterX;
-            } else {
-                desiredX = attemptX * tileSize + stagingAreaCenterX + (unitWidth - 1) * tileSize;
-            }
-            desiredY = attemptY * tileSize + stagingAreaCenterY;
+            var desiredX = attemptX * tileSize + stagingAreaCenterX;
+            var desiredY = attemptY * tileSize + stagingAreaCenterY;
 
             // desiredBattleTile coordinates are based on the staging rect
             // that's set up. (0,0) is the upper-left-most tile in a battle, but

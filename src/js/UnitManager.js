@@ -41,8 +41,8 @@
 
             for (var i = 0; i < this.gameUnits.length; i++) {
                 var unit = this.gameUnits[i];
-                if ( x >= unit.x && x <= unit.x + tileSize && 
-                    y >= unit.y && y <= unit.y + tileSize ) {
+                if ( x >= unit.x && x <= unit.x + unit.width && 
+                    y >= unit.y && y <= unit.y + unit.height ) {
                     collidingUnits.push(unit);
                 }
             };
