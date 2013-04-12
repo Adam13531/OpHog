@@ -74,6 +74,17 @@
             startingQuantity:3,
             cssClass:'item-sprite potion32-png'
         },
+        LEAF: {
+            id: 5,
+            itemLevel:1,
+            name:'Oculeaf',
+            htmlDescription:'<font color="#a3a3cc"><b>Consuming this will give you visions.<b/></font>',
+            usable:true,
+            useTarget: game.UseTarget.MAP,
+            stackable:true,
+            startingQuantity:3,
+            cssClass:'item-sprite leaf32-png'
+        },
     };
 
     // This is debug code to put the item name in the item's description. It's
@@ -157,6 +168,33 @@
         // decreasing the quantity.
         var particleSystem = new game.ParticleSystem(unit.getCenterX(), unit.getCenterY());
         game.ParticleManager.addSystem(particleSystem);
+    };
+
+    /**
+     * Attempts to use the item on the map.
+     * @param  {Number} x - world coordinate
+     * @param  {Number} y - world coordinate
+     * @return {Boolean} true if the item was used.
+     */
+    window.game.Item.prototype.useOnMap = function(x, y) {
+        var used = false;
+
+        var tileX = Math.floor(x / tileSize);
+        var tileY = Math.floor(y / tileSize);
+
+        // For now, every tile will be considered valid, so we'll always set
+        // 'used' to true.
+        used = true;
+        if ( used ) {
+            // For now, the only effect is to clear fog, so we'll hard-code that
+            // here. Eventually, it should check item type or effect.
+            currentMap.setFog(tileX, tileY, 4, false, true);
+            this.quantity--;
+            var particleSystem = new game.ParticleSystem(x, y);
+            game.ParticleManager.addSystem(particleSystem);
+        }
+
+        return used;
     };
 
     /**

@@ -151,9 +151,6 @@
 
         },
 
-        // x and y are in pixels and are contained to the bounds of the canvas.
-        // Returns true if you actually used an item.
-        
         /**
          * Attempts to use an item at the passed-in point, which may represent a
          * unit, a battle, a map tile, or nothing.
@@ -165,6 +162,7 @@
             if ( !this.isInUseMode() ) return false;
 
             var useTarget = this.usingItem.useTarget;
+            var used = false;
 
             // Check to see if you're targeting a unit
             if ( useTarget == game.UseTarget.PLAYER_UNIT || 
@@ -178,27 +176,33 @@
 
                     if ( this.isUnitAUseTarget(collidingUnits[i]) ) {
                         this.usingItem.useOnUnit(collidingUnits[i]);
+                        used = true;
 
-                        // Check to see if we depleted the item
-                        if ( this.usingItem.isDepleted() ) {
-                            this.removeDepletedItems();
-                            this.exitUseMode();
-                        } else {
-                            // We call this because the item still exists, but
-                            // its quantity is lower.
-                            this.updateUseInstructions();
-
-                            // This updates the text on the item
-                            this.getSlotUIWithItem(this.usingItem).updateItem();
-                        }
-
-                        // Return true that we used the item.
-                        return true;
+                        // Break so that we don't use it on multiple units (i.e.
+                        // if the units occupy the same spot)
+                        break;
                     }
                 };
+            } else if ( useTarget == game.UseTarget.MAP ) {
+                used = this.usingItem.useOnMap(x, y);
             }
 
-            return false;
+            if ( used ) {
+                // Check to see if we depleted the item
+                if ( this.usingItem.isDepleted() ) {
+                    this.removeDepletedItems();
+                    this.exitUseMode();
+                } else {
+                    // We call this because the item still exists, but
+                    // its quantity is lower.
+                    this.updateUseInstructions();
+
+                    // This updates the text on the item
+                    this.getSlotUIWithItem(this.usingItem).updateItem();
+                }
+            }
+
+            return used;
         },
 
         /**
@@ -259,6 +263,10 @@
                 
                 case game.UseTarget.ENEMY_UNIT:
                     targetString = 'Tap an enemy unit';
+                    break;
+
+                case game.UseTarget.MAP:
+                    targetString = 'Tap the map';
                     break;
 
                 default:

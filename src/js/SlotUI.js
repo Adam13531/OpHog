@@ -247,8 +247,8 @@
                 if (slot.isEquipSlot()) {
                     itemID = 1;
                 } else {
-                    if ( Math.random() > .5 ) {
-                        itemID = 4;
+                    if ( Math.random() > .3 ) {
+                        itemID = 4 + Math.round(Math.random());
                     }
                 }
 
