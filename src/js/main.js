@@ -258,6 +258,20 @@
         });
 
         $(document).keyup(function(evt) {
+            var itemID = null;
+            if (evt.keyCode == game.Key.DOM_VK_O) {
+                itemID = game.ItemType.SHIELD.id;
+            }
+            if (evt.keyCode == game.Key.DOM_VK_P) {
+                itemID = game.ItemType.LEAF.id;
+            }
+
+            if ( itemID != null ) {
+                game.Inventory.addItem(new game.Item(itemID));
+            }
+
+
+
             var unitType = null;
             if (evt.keyCode == game.Key.DOM_VK_1) {
                 unitType = game.UnitType.DEBUG;

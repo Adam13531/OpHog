@@ -247,6 +247,8 @@
          */
         updateUseInstructions: function() {
             var item = this.usingItem;
+            if ( item == null ) return;
+
             var quantityString = item.stackable ? ' (' + item.quantity + ')' : '';
             var targetString;
 
@@ -276,7 +278,6 @@
 
             this.$useItemInstructions.text(targetString + ' to use ' + 
                 item.name + quantityString + ' or tap here to cancel');
-            this.$useItemInstructions.show();
         },
 
         /**
@@ -294,6 +295,7 @@
             this.updateUseInstructions();
 
             $('#inventory-screen').dialog('close');
+            this.$useItemInstructions.show();
             // Leaving these here in case we want them later...
             // $('#inventory-screen').dialog('option', 'hide').duration = 100;
             // $('#inventoryThemeSpan').css({
@@ -405,6 +407,11 @@
 
             // Update the description
             this.updateDescription();
+
+            // It's possible that we now need to update the use instructions
+            // too, for example, if we just acquired more of the item that we're
+            // currently using.
+            this.updateUseInstructions();
         },
 
         /**

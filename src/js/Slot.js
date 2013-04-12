@@ -87,20 +87,10 @@
             // incomplete stack to a complete one
             if ( targetItem.quantity != game.maxSlotQuantity ) {
                 var amountToMove = Math.min(sourceItem.quantity, game.maxSlotQuantity - targetItem.quantity);
-                sourceItem.quantity -= amountToMove;
-                targetItem.quantity += amountToMove;
 
-                // Call setItem on the current contents now that we've updated
-                // the quantities. This not only refreshes the UI, but it will
-                // nullify the source item if we just depleted it.
-                //
-                // setItem is called below for swapping items, so we COULD
-                // reverse this logic, then fall through this 'if' instead of
-                // returning, which in essence would be like dragging the target
-                // onto the source and then swapping target and source, but this
-                // way makes more sense.
-                sourceSlot.setItem(sourceItem);
-                this.setItem(targetItem);
+                sourceSlot.addQuantity(-amountToMove);
+                this.addQuantity(amountToMove);
+
                 return true;
             }
         }
@@ -110,6 +100,40 @@
 
         return true;
     };
+
+    /**
+     * Adds or subtracts from the item's quantity. This is here and not in Item
+     * because the slot needs to update the UI, and the item has no reference to
+     * the slot that holds it.
+     * @param {Number} amount - a positive number if adding quantity, negative
+     * if removing
+     * @return {Number} the amount remaining to add/subtract
+     */
+    window.game.Slot.prototype.addQuantity = function(amount) {
+        var item = this.item;
+        if ( item == null || !item.stackable ) return amount;
+
+        var amountThatFits;
+
+        if ( amount < 0 ) {
+            // You can't remove more than what exists...
+            amountThatFits = Math.max(-item.quantity, amount);
+        } else {
+            // You can't make the slot overflow either
+            amountThatFits = Math.min(game.maxSlotQuantity - item.quantity, amount);
+        }
+
+        item.quantity += amountThatFits;
+
+        // Call setItem on the current contents now that we've updated the
+        // quantities. This not only refreshes the UI, but it will nullify the
+        // item if we just depleted it.
+        this.setItem(item);
+
+        // Return the remaining amount
+        return amount - amountThatFits;
+    };
+    
 
     /**
      * @return {Boolean} true if this slot is empty
