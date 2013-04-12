@@ -64,6 +64,7 @@
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
         var $showUnitPlacement = $('#showUnitPlacement');
+        var $createUnits = $('#createUnits');
         $settingsButton.button({
               icons: {
                 primary: 'ui-icon-gear'
@@ -82,6 +83,29 @@
         $showUnitPlacement.click(function() {
             $settingsDialog.dialog('close');
             $('#buyingScreenContainer').dialog('open');
+        });
+
+        // This button is here for a couple of reasons:
+        // 
+        // 1. There are some pretty good bugs that've been found by spawning
+        // multiple units at the same time or having units stacked on top of
+        // each other.
+        // 
+        // 2. There's no other way on an iPad or something to spawn units
+        // quickly.
+        $createUnits.button();
+        $createUnits.click(function() {
+            $settingsDialog.dialog('close');
+            for (var i = 0; i < 30; i++) {
+                var newUnit = new game.Unit(game.UnitType.DEBUG,true);
+                newUnit.placeUnit(1,9);
+                game.UnitManager.addUnit(newUnit);
+            };
+            for (var i = 0; i < 30; i++) {
+                var newUnit = new game.Unit(game.UnitType.DEBUG,false);
+                newUnit.placeUnit(24,9);
+                game.UnitManager.addUnit(newUnit);
+            };
         });
 
         // Handle all the events from a user clicking/tapping the canvas
@@ -182,17 +206,6 @@
             $($toggleParticlesButton.selector + ' ~ label > span').text(text);
         });
 
-        $('#createPlayer').click(function() {
-            var newUnit = new game.Unit(0,true);
-            newUnit.placeUnit(1, 9);
-            game.UnitManager.addUnit(newUnit);
-        });
-        $('#createEnemy').click(function() {
-            var newUnit = new game.Unit(0,false);
-            newUnit.placeUnit(24, 9);
-            game.UnitManager.addUnit(newUnit);
-        });
-        
         // Look at https://github.com/EightMedia/hammer.js/blob/master/hammer.js to figure out what's in the event.
         // You get scale, rotation, distance, etc.
         // 
