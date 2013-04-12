@@ -8,7 +8,11 @@
 	window.game.UnitType = {
 		ARCHER: 0,
 		WARRIOR: 1,
-		WIZARD: 2
+		WIZARD: 2,
+
+		// This is here just so that we have some indicator that it's NOT an
+		// archer/warrior/wizard
+		DEBUG: 3
 	};
 
 	window.game.UNIT_MARGIN = '30px';

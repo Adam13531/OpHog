@@ -69,7 +69,25 @@
             this.widthInTiles = 2;
             this.heightInTiles = 2;
         } else {
-            this.graphicIndexes.push(Math.floor(Math.random()*220));
+            // For 1x1 units, make them look like what you spawned.
+            var graphicIndex;
+
+            switch( this.unitType ) {
+                case game.UnitType.ARCHER:
+                    graphicIndex = 0;
+                    break;
+                case game.UnitType.WARRIOR:
+                    graphicIndex = 1;
+                    break;
+                case game.UnitType.WIZARD:
+                    graphicIndex = 2;
+                    break;
+                default:
+                    graphicIndex = Math.floor(Math.random()*220);
+                    break;
+            }
+
+            this.graphicIndexes.push(graphicIndex);
         }
 
         this.areaInTiles = this.widthInTiles * this.heightInTiles;
@@ -212,7 +230,7 @@
                 createY = Math.floor(battle.enemyCenterY / tileSize);
             }
 
-            var newUnit = new game.Unit(0,this.isPlayer);
+            var newUnit = new game.Unit(game.UnitType.DEBUG,this.isPlayer);
             newUnit.placeUnit(createX,createY);
             newUnit.graphicIndexes = [224 + Math.floor(Math.random() * 5)];
             game.UnitManager.addUnit(newUnit);
