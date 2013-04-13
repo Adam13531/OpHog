@@ -54,6 +54,80 @@
     };
 
     /**
+     * This will modify the 'current' coordinates so that they get closer to the
+     * desired coordinates.
+     * @param  {Number} currentX  - starting X coordinate (can be any coordinate
+     * system you want)
+     * @param  {Number} currentY  - starting Y coordinate
+     * @param  {Number} desiredX  - desired X coordinate
+     * @param  {Number} desiredY  - desierd Y coordinate
+     * @param  {Number} speed     - speed (units are up to you and are based on
+     * your coordinate system)
+     * @param  {Boolean} useVector - if true, this will compute a line between
+     * 'current' and 'desired' and travel along that. If false, this will simply
+     * move as close in each axis as possible. This leads to "unsmooth"
+     * movement, e.g. if you're moving 1000 pixels right and only 50 pixels up,
+     * then passing false will cause the vertical movement to finish almost
+     * immediately.
+     * @return {Object}           An object with 'x' (number), 'y' (number), and
+     * 'atDestination' (boolean).
+     */
+    window.game.util.chaseCoordinates = function(currentX, currentY, desiredX, desiredY, speed, useVector) {
+        if ( useVector ) {
+            var distX = desiredX - currentX;
+            var distY = desiredY - currentY;
+
+            // The desired angle
+            var angle = Math.atan2(distY, distX);
+
+            if ( Math.abs(currentX - desiredX) < speed ) {
+                currentX = desiredX;
+            } else {
+                currentX += speed * Math.cos(angle);
+            }
+
+            if ( Math.abs(currentY - desiredY) < speed ) {
+                currentY = desiredY;
+            } else {
+                currentY += speed * Math.sin(angle);
+            }
+        } else {
+
+            if ( currentX < desiredX ) {
+                if ( Math.abs(currentX - desiredX) < speed ) {
+                    currentX = desiredX;
+                } else {
+                    currentX += speed;
+                }
+            } else {
+                if ( Math.abs(currentX - desiredX) < speed ) {
+                    currentX = desiredX;
+                } else {
+                    currentX -= speed;
+                }
+            }
+
+            if ( currentY < desiredY ) {
+                if ( Math.abs(currentY - desiredY) < speed ) {
+                    currentY = desiredY;
+                } else {
+                    currentY += speed;
+                }
+            } else {
+                if ( Math.abs(currentY - desiredY) < speed ) {
+                    currentY = desiredY;
+                } else {
+                    currentY -= speed;
+                }
+            }
+        }
+
+        var atDestination = (currentX == desiredX && currentY == desiredY);
+
+        return {x: currentX, y: currentY, atDestination: atDestination};
+    };
+
+    /**
      * Sometimes, you want to output some text to the page without using
      * console.log. In that case, you should use this function, which will add a
      * div to the page (if it doesn't already exist), then set the text of that

@@ -81,25 +81,11 @@
         var desiredX = this.target.getCenterX();
         var desiredY = this.target.getCenterY();
 
-        var distX = desiredX - this.x;
-        var distY = desiredY - this.y;
+        var newCoords = game.util.chaseCoordinates(this.x, this.y, desiredX, desiredY, change, true);
+        this.x = newCoords.x;
+        this.y = newCoords.y;
 
-        // The desired angle of the projectile
-        var angle = Math.atan2(distY, distX);
-
-        this.x += change * Math.cos(angle);
-        this.y += change * Math.sin(angle);
-
-
-        if ( Math.abs(this.x - desiredX) < change ) {
-            this.x = desiredX;
-        }
-        if ( Math.abs(this.y - desiredY) < change ) {
-            this.y = desiredY;
-        }
-
-        var atDestination = ((this.x == desiredX) && (this.y == desiredY));
-        if ( atDestination ) {
+        if ( newCoords.atDestination ) {
             this.projectileMetTarget();
             this.owner.projectileCallback(this);
             this.living = false;

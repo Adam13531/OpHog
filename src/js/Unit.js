@@ -98,6 +98,15 @@
 
         // This is an object with a lot of different things in it.
         this.battleData = null;
+
+        // If this is true, then the unit's current goal is to move back to
+        // where he was before starting a battle.
+        this.movingToPreBattlePosition = false;
+
+        // These are meaningless unless movingToPreBattlePosition is true, then
+        // they represent (in world coordinates) where to move.
+        this.preBattleX = null;
+        this.preBattleY = null;
     };
 
     window.game.Unit.prototype.placeUnit = function(tileX, tileY) {
@@ -115,7 +124,20 @@
         var speed = 60;
         var change = speed * deltaAsSec;
         if (!this.isInBattle()) {
-            this.x += this.isPlayer ? change : -change;
+            if ( this.movingToPreBattlePosition ) {
+                var desiredX = this.preBattleX;
+                var desiredY = this.preBattleY;
+
+                var newCoords = game.util.chaseCoordinates(this.x, this.y, desiredX, desiredY, change, true);
+                this.x = newCoords.x;
+                this.y = newCoords.y;
+
+                if ( newCoords.atDestination ) {
+                    this.movingToPreBattlePosition = false;
+                }
+            } else {
+                this.x += this.isPlayer ? change : -change;
+            }
         } else {
             this.updateBattle(delta);
         }
@@ -135,46 +157,23 @@
         }
 
         var deltaAsSec = delta / 1000;
-        var speed = 300;
+
+        // Double the speed in a battle so that rearranging doesn't end up
+        // destroying your team (units don't lower their cooldown while moving)
+        var speed = 60 * 2;
         var change = speed * deltaAsSec;
         var desiredX = this.battleData.desiredX;
         var desiredY = this.battleData.desiredY;
 
-        if ( this.x < desiredX ) {
-            if ( Math.abs(this.x - desiredX) < change ) {
-                this.x = desiredX;
-            } else {
-                this.x += change;
-            }
-        } else {
-            if ( Math.abs(this.x - desiredX) < change ) {
-                this.x = desiredX;
-            } else {
-                this.x -= change;
-            }
-        }
-
-        if ( this.y < desiredY ) {
-            if ( Math.abs(this.y - desiredY) < change ) {
-                this.y = desiredY;
-            } else {
-                this.y += change;
-            }
-        } else {
-            if ( Math.abs(this.y - desiredY) < change ) {
-                this.y = desiredY;
-            } else {
-                this.y -= change;
-            }
-        }
-
-        var atDestination = ((this.x == desiredX) && (this.y == desiredY));
+        var newCoords = game.util.chaseCoordinates(this.x, this.y, desiredX, desiredY, change, true);
+        this.x = newCoords.x;
+        this.y = newCoords.y;
 
         // You only count down when you're at your destination and you're alive.
         // 
         // Hard-coding that this unit gets closer to its cooldown at 100 units
         // per second.
-        if ( atDestination && this.isLiving() ) {
+        if ( newCoords.atDestination && this.isLiving() ) {
             var cooldownDifference = 100 * deltaAsSec;
             this.battleData.cooldown -= cooldownDifference;
             if ( this.battleData.cooldown <= 0 ) {
@@ -218,8 +217,8 @@
 
         // Summon
         if ( !this.isPlayer && (this.id % 16) == 0 ) {
-            // Create it at the center of the battle so that it's forced to join
-            // this battle.
+            // Create it at the center of the battle. It may also make sense to
+            // create at it this unit's original battle X/Y.
             var createX;
             var createY;
             if ( this.isPlayer ) {
@@ -232,8 +231,14 @@
 
             var newUnit = new game.Unit(game.UnitType.DEBUG,this.isPlayer);
             newUnit.placeUnit(createX,createY);
+
+            // Make the unit look like a dragon whelp
             newUnit.graphicIndexes = [224 + Math.floor(Math.random() * 5)];
             game.UnitManager.addUnit(newUnit);
+
+            // Force the unit to join this battle
+            battle.summonedUnit(this, newUnit);
+
             return;
         }
 

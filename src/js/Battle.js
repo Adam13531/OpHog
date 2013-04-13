@@ -250,13 +250,31 @@
             }
 
             // Restore their original positions
-            unit.x = battleData.originalX;
-            unit.y = battleData.originalY;
+            unit.movingToPreBattlePosition = true;
+            unit.preBattleX = battleData.originalX;
+            unit.preBattleY = battleData.originalY;
 
             // Remove it from battle
             this.units[i].battleData = null;
         };
     };
+
+    /**
+     * When you summon a unit in battle, you should call this function. It will
+     * add the summoned unit to battle immediately (that way it's guaranteed to
+     * be part of the same battle as the summoner), and it'll make sure that the
+     * summoned unit has appropriate coordinates to go back to when the battle
+     * is over.
+     * @param  {Unit} summoner     - the unit doing the summoning
+     * @param  {Unit} summonedUnit - the unit being summoned
+     * @return {null}
+     */
+    window.game.Battle.prototype.summonedUnit = function(summoner, summonedUnit) {
+        this.addUnit(summonedUnit);
+
+        summonedUnit.battleData.originalX = summoner.battleData.originalX;
+        summonedUnit.battleData.originalY = summoner.battleData.originalY;
+    },
 
     /**
      * Adds a unit to the battle.
@@ -292,7 +310,6 @@
             originalY = unit.battleData.originalY;
         }
 
-
         // Not all of this data will be relevant, but I'm leaving it in for now.
         // When this becomes production code, it should be removed until we
         // figure out that it's needed.
@@ -320,11 +337,21 @@
             // The order in which they joined the whole battle
             absoluteOrder: absoluteOrder,
 
-            // These are the X and Y coordinates that the unit should return
-            // to if he's alive when the battle ends.
+            // These are the X and Y coordinates that the unit should return to
+            // if he's alive when the battle ends. These coordinates should
+            // always refer to a path so that the unit knows where to move when
+            // it's done with battle.
             originalX: originalX,
             originalY: originalY
         };
+
+        // If the unit was already moving back to their original position from a
+        // previous battle, then we shouldn't lose what that old position was.
+        if ( unit.movingToPreBattlePosition ) {
+            unit.movingToPreBattlePosition = false;
+            unit.battleData.originalX = unit.preBattleX;
+            unit.battleData.originalY = unit.preBattleY;
+        }
 
         this.needsToBeRepositioned = true;
     };
