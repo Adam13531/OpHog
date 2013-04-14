@@ -94,15 +94,18 @@ textarea {
    ========================================================================== */
 
 
-#scroll-pane,.scroll-pane { background-color:white;float:left;overflow: auto; width: 70px; height:136px;position:relative;border:1px solid gray;margin-bottom:25px;display:inline}
+#scroll-pane,.scroll-pane { background-color:white;float:left;overflow: auto; width: 91px; height:136px;position:relative;border:0px solid gray;margin-bottom:25px;display:inline}
 #scroll-pane,.scroll-pane{position:relative}
 
 .scroll-content-item {background-color:#fcfcfc;color:#003366;width:100px;height:100px;float:left;margin:10px;font-size:3em;line-height:96px;text-align:center;border:1px solid gray;display:inline;}
 
 .scroll-content {position:absolute;top:0;left:0}
-.slider-wrap{position:absolute;right:0;top:0;background-color:lightgrey;width:1px;border-left:1px solid gray;}
-.slider-vertical{position:relative;height:100%}
-.ui-slider-handle{width:1px;height:10px;margin:0 auto;background-color:green;display:block;position:absolute}
+.slider-wrap{position:absolute;right:0;top:0;background-color:lightgrey;width:21px;border-left:0px solid gray;}
+.slider-vertical{position:relative;left:3.5px;height:100%}
+
+/*This is sort of hacky, but it hides the slider-vertical*/
+.no-slider-vertical .ui-slider-vertical{border:0px; width:0%;}
+.ui-slider-handle{width:21px;height:10px;margin:0 auto;background-color:green;display:block;position:absolute}
 .ui-slider-handle img{border:none}
 .scrollbar-top{position:absolute;top:0;}
 .scrollbar-bottom{position:absolute;bottom:0;}
@@ -159,10 +162,32 @@ textarea {
 .gem32-png {
     background-position: -160px -0px;
 }
+.potion32-png {
+    background-position: -384px -0px;
+}
 .shield32-png {
     background-position: -64px -96px;
 }
+.sword32-png {
+    background-position: -160px -96px;
+}
+.leaf32-png {
+    background-position: -352px -96px;
+}
 
+/*This applies 8 black shadows with no blur, which are exact copies of whatever 
+was drawn to begin with, but they're offset slightly*/
+.outline-font {
+    text-shadow: 
+        -1px -1px 0 black,
+        -1px 1px 0 black,
+        1px -1px 0 black,
+        1px 1px 0 black,
+        -2px -2px 0 black,
+        -2px 2px 0 black,
+        2px -2px 0 black,
+        2px 2px 0 black;
+}
 
 
 

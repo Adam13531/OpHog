@@ -19,6 +19,13 @@
         <link rel="stylesheet" href="css/ui/le-frog/jquery-ui-1.10.2.custom.css">
         <link rel="stylesheet" href="css/main.css">
         <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+        <style>
+            .hideit { opacity:0.0;}
+
+            /*Order matters here*/
+            .testactive { opacity:.25; }
+            .testhover { opacity:.75; }
+        </style>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -47,12 +54,13 @@
 
                 <!-- Each character section is horizontal, but they are vertically aligned -->
                 <div id="char-section" style="margin-right:1px;float:left">
-                    <div id="war-section" style="width:128px;"></div>
-                    <div id="wiz-section" style="width:128px;"></div>
-                    <div id="arch-section" style="width:128px;"></div>
+                    <div id="war-section" style="width:110px;"></div>
+                    <div id="wiz-section" style="width:110px;"></div>
+                    <div id="arch-section" style="width:110px;"></div>
                 </div>
-    			<div id="equippable-item-scroll-pane" style="margin-right:5px;" class="scroll-pane"/></div>
-    			<div id="usable-item-scroll-pane" class="scroll-pane"/></div>
+    			<div id="equippable-item-scroll-pane" style="margin-right:5px;" class="scroll-pane"></div>
+    			<div id="usable-item-scroll-pane" style="margin-right:5px;" class="scroll-pane"></div>
+                <button id='useItemButton'>Use</button>
             </div>
 
             <!-- Bottom part -->
@@ -83,6 +91,7 @@
         <script src="js/Inventory.js"></script>
         <script src="js/InventoryUI.js"></script>
         <script src="js/UnitPlacementUI.js"></script>
+        <script src="js/Item.js"></script>
         <script src="js/Slot.js"></script>
         <script src="js/SlotUI.js"></script>
         <script src="js/Unit.js"></script>
@@ -103,8 +112,6 @@
             g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));
         </script>
-        <button id='createPlayer'>Create player</button>
-        <button id='createEnemy'>Create enemy</button>
 
         <!-- This is used for styling the inventory UI -->
         <span style="opacity:.95;" class="le-frog" id="inventoryThemeSpan"></span>
@@ -123,6 +130,10 @@
             <input type="checkbox" id="toggleParticlesButton"/><label for="toggleParticlesButton">Disable particles</label>
             <button style="margin-top:5px;" id='showInventory'>Show inventory</button>
             <button style="margin-top:5px;" id='showUnitPlacement'>Place Units</button>
+            <button style="margin-top:5px;" id='createUnits'>Create Units</button>
         </div>
+
+        <div id='useItemInstructions' style="background-color:#22a050;color:white;text-align:center;"></div>
+
     </body>
 </html>

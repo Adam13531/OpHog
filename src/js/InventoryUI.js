@@ -8,7 +8,7 @@
         /**
          * Array of SlotUI objects. These should never be rearranged since they
          * are referred to by numerical index (slotUI.slotIndex).
-         * @type {Array<SlotUI>}
+         * @type {Array:SlotUI}
          */
         slots: new Array(),
         
@@ -17,6 +17,22 @@
          * @type {SlotUI}
          */
         selectedSlotUI: null,
+
+        // This is the slot that you dragged from and must be global
+        // 
+        // This is also to fix a bug that happens when you just mouseUp on something
+        // without actually dragging.
+        //
+        // This needs to be global because it's shared amongst the different slots.
+        draggingSlotUI: null,
+
+        /**
+         * This is the item that you're using. If this is null, then you're not
+         * in USE mode. It is set when you click "Use" so that you can still
+         * click other slots and see what they do.
+         * @type {Item}
+         */
+        usingItem: null,
 
         /**
          * Sets up the entire Inventory UI.
@@ -29,9 +45,51 @@
             // Put some starter text for the description
             $('#item-description').html('<h2>Click a slot to select it.</h2>');
 
+            this.$useItemButton = $('#useItemButton');
+            this.$useItemButton.button();
+
+            // Lower the font size so that the button isn't huge
+            $(this.$useItemButton.selector + '> span').css({
+                'font-size': '.75em'
+            });
+
+            this.$useItemInstructions = $('#useItemInstructions');
+
+            // Position the instructions based on the canvas so that it looks
+            // like a banner at the top.
+            var $canvas = $('#canvas');
+            var canvasPos = $canvas.position();
+            var width = $canvas.width() - 100;
+            var left = ($canvas.width() - width) / 2;
+            this.$useItemInstructions.css({
+                position : 'absolute',
+                top : (canvasPos.top + 5) + 'px',
+                left : (left) + 'px',
+                width: (width) + 'px',
+                opacity:.85
+            });
+
+            this.$useItemButton.button('disable');
+            this.$useItemInstructions.hide();
+
+            this.$useItemButton.click(function(inventoryUI) {
+                return function() {
+                    inventoryUI.enterUseMode();
+                }
+            }(this));
+
+            this.$useItemInstructions.click(function(inventoryUI) {
+                return function() {
+                    inventoryUI.exitUseMode();
+                }
+            }(this));
+
             // For more thorough comments, look at the settings dialog.
             $('#inventory-screen').dialog({
-                autoOpen: false,
+                // This is just for debugging (FYI: 'true' is for debugging, but
+                // I sometimes check in this code with this set to 'false' but
+                // with this comment still)
+                autoOpen: false, 
                 width:360,
                 height:342,
                 resizable:false,
@@ -42,7 +100,13 @@
                     effect: 'fade',
                     duration: 400
                 },
-    
+
+                // Fade in very quickly
+                show: {
+                    effect: 'fade',
+                    duration: 150
+                },
+
                 // Position the inventory screen in the center of the canvas
                 position: {
                     my: 'center',
@@ -51,6 +115,192 @@
                 },
     
             });
+        },
+
+        /**
+         * Exit USE mode. This will hide the instructions that show up.
+         * @return {null}
+         */
+        exitUseMode: function() {
+            $('#useItemInstructions').hide();
+            $('#inventory-screen').dialog('open');
+            this.usingItem = null;
+        },
+
+        /**
+         * @return {Boolean} true if the inventory is in USE mode.
+         */
+        isInUseMode: function() {
+            return this.usingItem != null;
+        },
+
+        /**
+         * Returns true if the unit passed in is a valid target for the item
+         * that you're using.
+         * @param  {Unit}  unit - the unit to check
+         * @return {Boolean}      true if valid, false if invalid or if you're
+         * not in USE mode.
+         */
+        isUnitAUseTarget: function(unit) {
+            if (!this.isInUseMode()) return false;
+
+            var useTarget = this.usingItem.useTarget;
+            return ( useTarget == game.UseTarget.PLAYER_UNIT && unit.isPlayer ) ||
+                ( useTarget == game.UseTarget.PLAYER_AND_ENEMY_UNIT ) ||
+                ( useTarget == game.UseTarget.ENEMY_UNIT && !unit.isPlayer );
+
+        },
+
+        /**
+         * Attempts to use an item at the passed-in point, which may represent a
+         * unit, a battle, a map tile, or nothing.
+         * @param  {Number} x - world coordinate
+         * @param  {Number} y - world coordinate
+         * @return {Boolean}   true if the item was used
+         */
+        attemptToUseItem: function(x, y) {
+            if ( !this.isInUseMode() ) return false;
+
+            var useTarget = this.usingItem.useTarget;
+            var used = false;
+
+            // Check to see if you're targeting a unit
+            if ( useTarget == game.UseTarget.PLAYER_UNIT || 
+                useTarget == game.UseTarget.PLAYER_AND_ENEMY_UNIT 
+                || useTarget == game.UseTarget.ENEMY_UNIT ) {
+
+                // Get all units at that point; we want to use the item on the
+                // first VALID unit that we find, not just the first unit.
+                var collidingUnits = game.UnitManager.getUnitsAtPoint(x, y);
+                for (var i = 0; i < collidingUnits.length; i++) {
+
+                    if ( this.isUnitAUseTarget(collidingUnits[i]) ) {
+                        this.usingItem.useOnUnit(collidingUnits[i]);
+                        used = true;
+
+                        // Break so that we don't use it on multiple units (i.e.
+                        // if the units occupy the same spot)
+                        break;
+                    }
+                };
+            } else if ( useTarget == game.UseTarget.MAP ) {
+                used = this.usingItem.useOnMap(x, y);
+            }
+
+            if ( used ) {
+                // Check to see if we depleted the item
+                if ( this.usingItem.isDepleted() ) {
+                    this.removeDepletedItems();
+                    this.exitUseMode();
+                } else {
+                    // We call this because the item still exists, but
+                    // its quantity is lower.
+                    this.updateUseInstructions();
+
+                    // This updates the text on the item
+                    this.getSlotUIWithItem(this.usingItem).updateItem();
+                }
+            }
+
+            return used;
+        },
+
+        /**
+         * Given an item, this will return the slotUI that holds it. Passing in
+         * null will probably return the first empty slotUI, but I don't suggest
+         * doing that.
+         * @param  {Item} item - the item whose slot you want to find
+         * @return {SlotUI}      the slotUI, or null if not found.
+         */
+        getSlotUIWithItem: function(item) {
+            for (var i = 0; i < this.slots.length; i++) {
+                if ( this.slots[i].slot.item === this.usingItem ) {
+                    return this.slots[i];
+                }
+            };
+
+            return null;
+        },
+
+        /**
+         * Remove all depleted items from the inventory. This is always safe to
+         * call this since depleted items should never exist.
+         *
+         * I made this function because 'usingItem' is stored as an item, not a
+         * slot, so there's no easy way to know which slot the item is in once
+         * you've depleted it, so we just remove all depleted items.
+         * @return {null}
+         */
+        removeDepletedItems: function() {
+            for (var i = 0; i < this.slots.length; i++) {
+                var slot = this.slots[i].slot;
+
+                if ( slot.isUsableSlot() && !slot.isEmpty() && slot.item.isDepleted() ) {
+                    slot.setItem(null);
+                }
+            };
+        },
+
+        /**
+         * Update the instructions that appear when you're in USE mode.
+         * @return {null}
+         */
+        updateUseInstructions: function() {
+            var item = this.usingItem;
+            if ( item == null ) return;
+
+            var quantityString = item.stackable ? ' (' + item.quantity + ')' : '';
+            var targetString;
+
+            var useTarget = this.usingItem.useTarget;
+
+            switch(useTarget) {
+                case game.UseTarget.PLAYER_UNIT:
+                    targetString = 'Tap one of your units';
+                    break;
+                
+                case game.UseTarget.PLAYER_AND_ENEMY_UNIT:
+                    targetString = 'Tap any unit';
+                    break;
+                
+                case game.UseTarget.ENEMY_UNIT:
+                    targetString = 'Tap an enemy unit';
+                    break;
+
+                case game.UseTarget.MAP:
+                    targetString = 'Tap the map';
+                    break;
+
+                default:
+                    targetString = 'UNDEFINED123';
+                    break;
+            }
+
+            this.$useItemInstructions.text(targetString + ' to use ' + 
+                item.name + quantityString + ' or tap here to cancel');
+        },
+
+        /**
+         * Enters USE mode. This will hide the inventory screen.
+         * @return {null}
+         */
+        enterUseMode: function() {
+            if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
+                return;
+            }
+
+            var item = this.selectedSlotUI.slot.item;
+            this.usingItem = item;
+
+            this.updateUseInstructions();
+
+            $('#inventory-screen').dialog('close');
+            this.$useItemInstructions.show();
+            // Leaving these here in case we want them later...
+            // $('#inventory-screen').dialog('option', 'hide').duration = 100;
+            // $('#inventoryThemeSpan').css({
+            //     opacity: '.5' // note: opacity starts at .95
+            // });
         },
         
         /**
@@ -131,6 +381,18 @@
         },
 
         /**
+         * This is its own function because setScrollbars also needs to be
+         * called every time you show the inventory screen.
+         * @return {null}
+         */
+        show: function() {
+            $('#inventory-screen').dialog('open');
+
+            // See the comment for setScrollbars to see why this is needed.
+            game.InventoryUI.setScrollbars();
+        },
+
+        /**
          * This is called when a slot's item is changed.
          * @param  {Number} slotIndex The index of the Slot/SlotUI that changed.
          * @return {null}
@@ -145,22 +407,30 @@
 
             // Update the description
             this.updateDescription();
+
+            // It's possible that we now need to update the use instructions
+            // too, for example, if we just acquired more of the item that we're
+            // currently using.
+            this.updateUseInstructions();
         },
-        
+
         /**
          * Selects a slot. There can only be one selected slot.
          * @param {SlotUI} slotUI The slot to select
          */
-        setSelectedSlot: function(slotUI) {
-            if (this.selectedSlotUI != null && this.selectedSlotUI.slotIndex != slotUI.slotIndex) {
+        clickedSlot: function(slotUI) {
+            if ( this.selectedSlotUI != null ) {
                 this.selectedSlotUI.deselectSlot();
             }
-
-            // Select only the current one
             this.selectedSlotUI = slotUI;
-
-            slotUI.$bgImage.attr('src', game.imagePath + '/slot2.png');
+            slotUI.selectSlot();
             this.updateDescription();
+        },
+
+        revertHighlightOnAllSlots: function() {
+            for (var i = 0; i < this.slots.length; i++) {
+                this.slots[i].highlight(false, false);
+            };
         },
         
         /**
@@ -168,6 +438,10 @@
          */
         getSelectedSlot: function() {
             return this.selectedSlotUI;              
+        },
+
+        getSlot: function(slotIndex) {
+            return this.slots[slotIndex];
         },
         
         /**
@@ -181,25 +455,28 @@
 
             var slot = selectedSlotUI.slot;
             
-            var item = slot.itemIndex;
-            var desc = '<no description for this> - ' + 'Slot type: ' + slot.slotType + ' Item index: ' + slot.itemIndex;
+            var item = slot.item;
+            var desc = '<no description for this> - ' + 'Slot type: ' + slot.slotType + ' Item: ' + item;
             if (item == null) {
                 desc = 'You don\'t have an item selected.<br/><br/>Scroll the slots above by dragging.<br/><br/><b>Double-click to add/remove items.</b>';
-                if (slot.isUsableSlot()) {
-                    $('#item-description').attr('class', 'test2');
-                }
-                if (slot.isEquipSlot()) {
-                    $('#item-description').attr('class', 'test1');
-                }
-            } else if (item == 0) {
-                desc = 'The Gem of All Knowledge<br/><font color="#a3a3cc"><b>Gives the user the keen insight to tackle everyday life in the ghetto.<b/></font>';
-                $('#item-description').attr('class', 'test2');
-            } else if (item == 1) {
-                desc = 'Grugtham\'s shield<br/><font color="#660000"><b>500000 Dragon Kill Points<b/></font>';
+            } else {
+                desc = item.htmlDescription;
+            }
+
+            if (slot.isEquipSlot()) {
                 $('#item-description').attr('class', 'test1');
+            } else if (slot.isUsableSlot()) {
+                $('#item-description').attr('class', 'test2');
             }
 
             $('#item-description').html(desc);
+
+            // If we selected a usable item, enable the 'Use' button.
+            if ( item != null && slot.isUsableSlot() ) {
+                this.$useItemButton.button('enable');
+            } else {
+                this.$useItemButton.button('disable');
+            }
         }
         
     };

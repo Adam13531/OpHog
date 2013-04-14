@@ -5,7 +5,7 @@
     window.game.ParticleManager = {
         /**
          * Array of particle systems that this manages.
-         * @type {Array<ParticleSystem>}
+         * @type {Array:ParticleSystem}
          */
         systems: new Array(),
 

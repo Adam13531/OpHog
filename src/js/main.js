@@ -64,6 +64,7 @@
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
         var $showUnitPlacement = $('#showUnitPlacement');
+        var $createUnits = $('#createUnits');
         $settingsButton.button({
               icons: {
                 primary: 'ui-icon-gear'
@@ -75,10 +76,7 @@
         $showInventory.button();
         $showInventory.click(function() {
             $settingsDialog.dialog('close');
-            $('#inventory-screen').dialog('open');
-
-            // See the comment for setScrollbars to see why this is needed.
-            game.InventoryUI.setScrollbars();
+            game.InventoryUI.show();
         });
 
         $showUnitPlacement.button(); // Turns the button into a JQuery UI button
@@ -87,12 +85,53 @@
             $('#buyingScreenContainer').dialog('open');
         });
 
+        // This button is here for a couple of reasons:
+        // 
+        // 1. There are some pretty good bugs that've been found by spawning
+        // multiple units at the same time or having units stacked on top of
+        // each other.
+        // 
+        // 2. There's no other way on an iPad or something to spawn units
+        // quickly.
+        $createUnits.button();
+        $createUnits.click(function() {
+            $settingsDialog.dialog('close');
+            for (var i = 0; i < 30; i++) {
+                var newUnit = new game.Unit(game.UnitType.DEBUG,true);
+                newUnit.placeUnit(1,9);
+                game.UnitManager.addUnit(newUnit);
+            };
+            for (var i = 0; i < 30; i++) {
+                var newUnit = new game.Unit(game.UnitType.DEBUG,false);
+                newUnit.placeUnit(24,9);
+                game.UnitManager.addUnit(newUnit);
+            };
+        });
+
         // Handle all the events from a user clicking/tapping the canvas
         $canvas.click(function(event) {
+            // Apparently offsetX and offsetY aren't in every browser...
+            // http://stackoverflow.com/questions/11334452/event-offsetx-in-firefox
+            var offsetX = event.offsetX==undefined?event.originalEvent.layerX:event.offsetX;
+            var offsetY = event.offsetY==undefined?event.originalEvent.layerY:event.offsetY;
 
-            // Check to see if the user tapped a spawner
-            var tileX = Math.floor(event.offsetX / tileSize);
-            var tileY = Math.floor(event.offsetY / tileSize);
+            // Convert to world coordinates
+            var worldX = game.Camera.canvasXToWorldX(offsetX);
+            var worldY = game.Camera.canvasYToWorldY(offsetY);
+            
+            // If you're currently trying to use an item, then check to see if
+            // the user clicked a valid target
+            if ( game.InventoryUI.attemptToUseItem(worldX, worldY) ) {
+                // If that worked, then we don't attempt to open the spawners
+                // (perhaps you were targeting a unit on your spawner, or you
+                // were targeting the spawner itself - you wouldn't want to open
+                // the placement UI).
+                return;
+            }
+
+            // Check to see if the user wants to place units
+            var tileX = Math.floor(worldX / tileSize);
+            var tileY = Math.floor(worldY / tileSize);
             if (currentMap.isSpawnerPoint(tileX, tileY)) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
                 $('#buyingScreenContainer').dialog('open');
@@ -168,17 +207,6 @@
             $($toggleParticlesButton.selector + ' ~ label > span').text(text);
         });
 
-        $('#createPlayer').click(function() {
-            var newUnit = new game.Unit(0,true);
-            newUnit.placeUnit(1, 9);
-            game.UnitManager.addUnit(newUnit);
-        });
-        $('#createEnemy').click(function() {
-            var newUnit = new game.Unit(0,false);
-            newUnit.placeUnit(24, 9);
-            game.UnitManager.addUnit(newUnit);
-        });
-        
         // Look at https://github.com/EightMedia/hammer.js/blob/master/hammer.js to figure out what's in the event.
         // You get scale, rotation, distance, etc.
         // 
@@ -231,9 +259,23 @@
         });
 
         $(document).keyup(function(evt) {
+            var itemID = null;
+            if (evt.keyCode == game.Key.DOM_VK_O) {
+                itemID = game.ItemType.SHIELD.id;
+            }
+            if (evt.keyCode == game.Key.DOM_VK_P) {
+                itemID = game.ItemType.LEAF.id;
+            }
+
+            if ( itemID != null ) {
+                game.Inventory.addItem(new game.Item(itemID));
+            }
+
+
+
             var unitType = null;
             if (evt.keyCode == game.Key.DOM_VK_1) {
-                unitType = 0;
+                unitType = game.UnitType.DEBUG;
             }
             if (evt.keyCode == game.Key.DOM_VK_2) {
                 unitType = window.game.twoByOneUnit;
@@ -252,7 +294,7 @@
 
             var enemyUnitType = null;
             if (evt.keyCode == game.Key.DOM_VK_5) {
-                enemyUnitType = 0;
+                enemyUnitType = game.UnitType.DEBUG;
             }
             if (evt.keyCode == game.Key.DOM_VK_6) {
                 enemyUnitType = window.game.twoByOneUnit;
@@ -271,17 +313,27 @@
 
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(0,true);
+                    var newUnit = new game.Unit(game.UnitType.DEBUG,true);
                     newUnit.placeUnit(1,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(0,false);
+                    var newUnit = new game.Unit(game.UnitType.DEBUG,false);
                     newUnit.placeUnit(24,9);
                     game.UnitManager.addUnit(newUnit);
                 };
+            }
+
+            // Pressing 'i' will toggle the inventory screen
+            if (evt.keyCode == game.Key.DOM_VK_I) {
+                var $invScreen = $('#inventory-screen');
+                if ( $invScreen.is(":visible") ) {
+                    $('#inventory-screen').dialog('close');
+                } else {
+                    game.InventoryUI.show();
+                }
             }
 
             keysDown[evt.keyCode] = false;
@@ -303,25 +355,42 @@
         // engage in battles.
         delta = Math.min(delta, game.msPerFrame * 2);
 
+        // Allow for some variability in the framerate, but not too much,
+        // otherwise everything that uses this delta could hit problems. This is
+        // because the user has control over this simply by pausing Javascript
+        // execution in their browser, which means they can get this value
+        // infinitely high.
+        // 
+        // An example of a bug that could result from an infinite delta is unit
+        // movement; they would jump so far ahead on the path that they wouldn't
+        // engage in battles.
+        delta = Math.min(delta, game.msPerFrame * 2);
         var deltaAsSec = delta / 1000;
+
+        game.alphaBlink += deltaAsSec;
 
         game.Camera.handleInput(keysDown, delta);
 
         // Draw a solid background on the canvas in case anything is transparent
         // This should eventually be unnecessary - we should instead draw a
         // parallax background or not have a transparent map.
+        ctx.save();
         ctx.fillStyle = '#373737';
         ctx.fillRect(0, 0, screenWidth, screenHeight);
+
+        ctx.restore();
+
+        // Update battles before units so that when the battle is over, the dead
+        // units can be removed immediately by the UnitManager
+        game.BattleManager.update(delta);
+        game.UnitManager.update(delta);
+        game.ParticleManager.update(delta);
+        game.TextManager.update(delta);
 
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
 
         currentMap.draw(ctx);
-        game.UnitManager.update(delta);
-        game.BattleManager.update(delta);
-        game.ParticleManager.update(delta);
-        game.TextManager.update(delta);
-
         ctx.restore();
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
@@ -329,6 +398,10 @@
         game.UnitManager.draw(ctx);
         game.BattleManager.draw(ctx);
         game.ParticleManager.draw(ctx);
+
+        // Fog will cover everything drawn before this line of code (e.g. units,
+        // projectiles).
+        currentMap.drawFog(ctx);
         game.TextManager.draw(ctx);
 
         ctx.restore();

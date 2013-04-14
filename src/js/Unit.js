@@ -13,6 +13,10 @@
     // battle system's repositioning logic.
     window.game.LARGEST_UNIT_WIDTH = 2;
 
+    // This is just a number that goes up about 1/FPS every game loop. It's used
+    // to blink the green highlights on units when they're a possible target.
+    window.game.alphaBlink = 0;
+
     /**
      * Creates a unit (player OR enemy).
      * @param {number}  tileX    X-coordinate (in tiles) to center on
@@ -65,7 +69,25 @@
             this.widthInTiles = 2;
             this.heightInTiles = 2;
         } else {
-            this.graphicIndexes.push(Math.floor(Math.random()*220));
+            // For 1x1 units, make them look like what you spawned.
+            var graphicIndex;
+
+            switch( this.unitType ) {
+                case game.UnitType.ARCHER:
+                    graphicIndex = 0;
+                    break;
+                case game.UnitType.WARRIOR:
+                    graphicIndex = 1;
+                    break;
+                case game.UnitType.WIZARD:
+                    graphicIndex = 2;
+                    break;
+                default:
+                    graphicIndex = Math.floor(Math.random()*220);
+                    break;
+            }
+
+            this.graphicIndexes.push(graphicIndex);
         }
 
         this.areaInTiles = this.widthInTiles * this.heightInTiles;
@@ -76,6 +98,15 @@
 
         // This is an object with a lot of different things in it.
         this.battleData = null;
+
+        // If this is true, then the unit's current goal is to move back to
+        // where he was before starting a battle.
+        this.movingToPreBattlePosition = false;
+
+        // These are meaningless unless movingToPreBattlePosition is true, then
+        // they represent (in world coordinates) where to move.
+        this.preBattleX = null;
+        this.preBattleY = null;
     };
 
     /**
@@ -96,13 +127,30 @@
     window.game.Unit.prototype.update = function(delta) {
         var deltaAsSec = delta / 1000;
         // var speed = Math.random()*120 + 500;
-        // var speed = Math.random()*120 + 500;
-        var speed = 600;
+        var speed = 60;
         var change = speed * deltaAsSec;
         if (!this.isInBattle()) {
-            this.x += this.isPlayer ? change : -change;
+            if ( this.movingToPreBattlePosition ) {
+                var desiredX = this.preBattleX;
+                var desiredY = this.preBattleY;
+
+                var newCoords = game.util.chaseCoordinates(this.x, this.y, desiredX, desiredY, change, true);
+                this.x = newCoords.x;
+                this.y = newCoords.y;
+
+                if ( newCoords.atDestination ) {
+                    this.movingToPreBattlePosition = false;
+                }
+            } else {
+                this.x += this.isPlayer ? change : -change;
+            }
         } else {
             this.updateBattle(delta);
+        }
+
+        // Clear some fog every loop, even if we're in battle.
+        if ( this.isPlayer ) {
+            currentMap.setFog(this.getTileX(), this.getTileY(), 3, false, true);
         }
     };
 
@@ -115,46 +163,23 @@
         }
 
         var deltaAsSec = delta / 1000;
-        var speed = 300;
+
+        // Double the speed in a battle so that rearranging doesn't end up
+        // destroying your team (units don't lower their cooldown while moving)
+        var speed = 60 * 2;
         var change = speed * deltaAsSec;
         var desiredX = this.battleData.desiredX;
         var desiredY = this.battleData.desiredY;
 
-        if ( this.x < desiredX ) {
-            if ( Math.abs(this.x - desiredX) < change ) {
-                this.x = desiredX;
-            } else {
-                this.x += change;
-            }
-        } else {
-            if ( Math.abs(this.x - desiredX) < change ) {
-                this.x = desiredX;
-            } else {
-                this.x -= change;
-            }
-        }
-
-        if ( this.y < desiredY ) {
-            if ( Math.abs(this.y - desiredY) < change ) {
-                this.y = desiredY;
-            } else {
-                this.y += change;
-            }
-        } else {
-            if ( Math.abs(this.y - desiredY) < change ) {
-                this.y = desiredY;
-            } else {
-                this.y -= change;
-            }
-        }
-
-        var atDestination = ((this.x == desiredX) && (this.y == desiredY));
+        var newCoords = game.util.chaseCoordinates(this.x, this.y, desiredX, desiredY, change, true);
+        this.x = newCoords.x;
+        this.y = newCoords.y;
 
         // You only count down when you're at your destination and you're alive.
         // 
         // Hard-coding that this unit gets closer to its cooldown at 100 units
         // per second.
-        if ( atDestination && this.isLiving() ) {
+        if ( newCoords.atDestination && this.isLiving() ) {
             var cooldownDifference = 100 * deltaAsSec;
             this.battleData.cooldown -= cooldownDifference;
             if ( this.battleData.cooldown <= 0 ) {
@@ -198,8 +223,8 @@
 
         // Summon
         if ( !this.isPlayer && (this.id % 16) == 0 ) {
-            // Create it at the center of the battle so that it's forced to join
-            // this battle.
+            // Create it at the center of the battle. It may also make sense to
+            // create at it this unit's original battle X/Y.
             var createX;
             var createY;
             if ( this.isPlayer ) {
@@ -210,10 +235,16 @@
                 createY = Math.floor(battle.enemyCenterY / tileSize);
             }
 
-            var newUnit = new game.Unit(0,this.isPlayer);
+            var newUnit = new game.Unit(game.UnitType.DEBUG,this.isPlayer);
             newUnit.placeUnit(createX,createY);
+
+            // Make the unit look like a dragon whelp
             newUnit.graphicIndexes = [224 + Math.floor(Math.random() * 5)];
             game.UnitManager.addUnit(newUnit);
+
+            // Force the unit to join this battle
+            battle.summonedUnit(this, newUnit);
+
             return;
         }
 
@@ -313,43 +344,52 @@
     window.game.Unit.prototype.draw = function(ctx) {
         // Dead units always look like a 1x1 tombstone for now.
         if ( this.isInBattle() && !this.isLiving() ) {
-            objSheet.drawSprite(ctx, 19, this.x, this.y, !this.isPlayer);
-            return;                
+            // Draw the tombstone at the center so that it doesn't look awkward
+            // for big units.
+            objSheet.drawSprite(ctx, 19, this.getCenterX() - tileSize / 2, this.getCenterY() - tileSize / 2, !this.isPlayer);              
+        } else {
+            // The index in this.graphicIndexes to draw.
+            var index = 0;
+            for (var j = 0; j < this.heightInTiles; j++) {
+                for (var i = 0; i < this.widthInTiles; i++) {
+                    // The following code is to flip enemies horizontally. This
+                    // only accounts for sizes up to 2x2. Anything bigger and
+                    // I'll have to stop hard-coding it.
+                    var indexToUse = index;
+                    if ( !this.isPlayer && this.widthInTiles == 2 ) {
+                        // Swap 0 and 1
+                        if ( index == 0 ) indexToUse = 1;
+                        if ( index == 1 ) indexToUse = 0;
+
+                        // Swap 2 and 3
+                        if ( index == 2 ) indexToUse = 3;
+                        if ( index == 3 ) indexToUse = 2;
+                    }
+
+                    charSheet.drawSprite(ctx, this.graphicIndexes[indexToUse], this.x + i * tileSize, this.y + j * tileSize, !this.isPlayer);
+
+                    index++;
+                };
+            };
         }
 
-        if ( this.widthInTiles == 1 && this.heightInTiles == 1 ) {
-            charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-            return;
-        }
+        // Draw a green highlight box over the unit if we're in use mode and
+        // this unit is a target
+        if ( game.InventoryUI.isInUseMode() && 
+                game.InventoryUI.isUnitAUseTarget(this) ) {
 
-        if (this.widthInTiles == 2) {
-            if (this.isPlayer) {
-                charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-                charSheet.drawSprite(ctx, this.graphicIndexes[1], this.x + tileSize, this.y, !this.isPlayer);
-            } else {
-                charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-                charSheet.drawSprite(ctx, this.graphicIndexes[1], this.x - tileSize, this.y, !this.isPlayer);
-            }
-        }
+            // Save the canvas context because we modify the fillStyle
+            ctx.save();
 
-        if (this.heightInTiles == 2) {
-            if ( this.widthInTiles == 1 ) {
-                charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-                charSheet.drawSprite(ctx, this.graphicIndexes[1], this.x, this.y + tileSize, !this.isPlayer);
-            } else {
-                if (this.isPlayer) {
-                    charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[1], this.x + tileSize, this.y, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[2], this.x, this.y + tileSize, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[3], this.x + tileSize, this.y + tileSize, !this.isPlayer);
-                } else {
-                    charSheet.drawSprite(ctx, this.graphicIndexes[0], this.x, this.y, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[1], this.x - tileSize, this.y, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[2], this.x, this.y + tileSize, !this.isPlayer);
-                    charSheet.drawSprite(ctx, this.graphicIndexes[3], this.x - tileSize, this.y + tileSize, !this.isPlayer);
-                }
-            }
+            // Blink is always between [-1,1] thanks to sin, so alpha is in the
+            // range [.2,.4]. This reduces the subtlety of the green highlight.
+            var blink = Math.sin(game.alphaBlink * 4);
+            var alpha = blink * .1 + .3;
+            ctx.fillStyle = 'rgba(0, 255, 0, ' + alpha + ')';
+            ctx.fillRect(this.x, this.y, this.width, this.height);
+            ctx.restore();
         }
+        
     };
 
 }());
