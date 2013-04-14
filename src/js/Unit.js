@@ -73,13 +73,13 @@
             var graphicIndex;
 
             switch( this.unitType ) {
-                case game.UnitType.ARCHER:
+                case game.PlaceableUnitType.ARCHER:
                     graphicIndex = 0;
                     break;
-                case game.UnitType.WARRIOR:
+                case game.PlaceableUnitType.WARRIOR:
                     graphicIndex = 1;
                     break;
-                case game.UnitType.WIZARD:
+                case game.PlaceableUnitType.WIZARD:
                     graphicIndex = 2;
                     break;
                 default:
@@ -235,7 +235,7 @@
                 createY = Math.floor(battle.enemyCenterY / tileSize);
             }
 
-            var newUnit = new game.Unit(game.UnitType.DEBUG,this.isPlayer);
+            var newUnit = new game.Unit(game.PlaceableUnitType.DEBUG,this.isPlayer);
             newUnit.placeUnit(createX,createY);
 
             // Make the unit look like a dragon whelp

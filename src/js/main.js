@@ -97,12 +97,12 @@
         $createUnits.click(function() {
             $settingsDialog.dialog('close');
             for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.UnitType.DEBUG,true);
+                var newUnit = new game.Unit(game.PlaceableUnitType.DEBUG,true);
                 newUnit.placeUnit(1,9);
                 game.UnitManager.addUnit(newUnit);
             };
             for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.UnitType.DEBUG,false);
+                var newUnit = new game.Unit(game.PlaceableUnitType.DEBUG,false);
                 newUnit.placeUnit(24,9);
                 game.UnitManager.addUnit(newUnit);
             };
@@ -275,7 +275,7 @@
 
             var unitType = null;
             if (evt.keyCode == game.Key.DOM_VK_1) {
-                unitType = game.UnitType.DEBUG;
+                unitType = game.PlaceableUnitType.DEBUG;
             }
             if (evt.keyCode == game.Key.DOM_VK_2) {
                 unitType = window.game.twoByOneUnit;
@@ -294,7 +294,7 @@
 
             var enemyUnitType = null;
             if (evt.keyCode == game.Key.DOM_VK_5) {
-                enemyUnitType = game.UnitType.DEBUG;
+                enemyUnitType = game.PlaceableUnitType.DEBUG;
             }
             if (evt.keyCode == game.Key.DOM_VK_6) {
                 enemyUnitType = window.game.twoByOneUnit;
@@ -313,14 +313,14 @@
 
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.DEBUG,true);
+                    var newUnit = new game.Unit(game.PlaceableUnitType.DEBUG,true);
                     newUnit.placeUnit(1,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.DEBUG,false);
+                    var newUnit = new game.Unit(game.PlaceableUnitType.DEBUG,false);
                     newUnit.placeUnit(24,9);
                     game.UnitManager.addUnit(newUnit);
                 };
