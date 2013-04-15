@@ -7,13 +7,9 @@
 	 * @type {Placeablethis.unitType}
 	 */
 	window.game.PlaceableUnitType = {
-		ARCHER: 0,
-		WARRIOR: 1,
-		WIZARD: 2,
-
-		// This is here just so that we have some indicator that it's NOT an
-		// archer/warrior/wizard
-		DEBUG: 3
+		ARCHER: game.UnitType.ARCHER,
+		WARRIOR: game.UnitType.WARRIOR,
+		WIZARD: game.UnitType.WIZARD
 	};
 
 	/**

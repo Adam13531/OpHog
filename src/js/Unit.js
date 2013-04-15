@@ -1,10 +1,23 @@
 ( function() {
 
+
+    window.game.UnitType = {
+        ARCHER: 0,
+        WARRIOR: 1,
+        WIZARD: 2,
+
+        // This is here just so that we have some indicator that it's NOT an
+        // archer/warrior/wizard
+        DEBUG: 3,
+
+        twoByOneUnit: 496,
+        oneByTwoUnit: 497,
+        twoByTwoUnit: 498
+    };
+
+
     // This represents a 2x1 unit. 496 was chosen because it's the first index
     // that doesn't correspond to a valid sprite.
-    window.game.twoByOneUnit = 496;
-    window.game.oneByTwoUnit = 497;
-    window.game.twoByTwoUnit = 498;
 
     // Assign IDs for now to make debugging easier.
     window.game.unitID = 0;
@@ -19,9 +32,7 @@
 
     /**
      * Creates a unit (player OR enemy).
-     * @param {number}  tileX    X-coordinate (in tiles) to center on
-     * @param {number}  tileY    Y-coordinate (in tiles) to center on
-     * @param {number}  unitType For now, this is the graphic index, or one
+     * @param {UnitType}  unitType For now, this is the graphic index, or one
      *                           of the special values above.
      * @param {Boolean} isPlayer True if this is a player unit.
      */
@@ -49,17 +60,17 @@
         // For an enemy, it would draw them horizontally flipped.
         this.graphicIndexes = new Array();
 
-        if (unitType == window.game.twoByOneUnit) {
+        if (unitType == game.UnitType.twoByOneUnit) {
             this.width = tileSize * 2;
             this.graphicIndexes.push(240);
             this.graphicIndexes.push(241);
             this.widthInTiles = 2;
-        } else if (unitType == window.game.oneByTwoUnit) {
+        } else if (unitType == game.UnitType.oneByTwoUnit) {
             this.height = tileSize * 2;
             this.graphicIndexes.push(421);
             this.graphicIndexes.push(437);
             this.heightInTiles = 2;
-        } else if (unitType == window.game.twoByTwoUnit) {
+        } else if (unitType == game.UnitType.twoByTwoUnit) {
             this.width = tileSize * 2;
             this.height = tileSize * 2;
             this.graphicIndexes.push(302);
@@ -235,7 +246,7 @@
                 createY = Math.floor(battle.enemyCenterY / tileSize);
             }
 
-            var newUnit = new game.Unit(game.PlaceableUnitType.DEBUG,this.isPlayer);
+            var newUnit = new game.Unit(game.UnitType.DEBUG,this.isPlayer);
             newUnit.placeUnit(createX,createY);
 
             // Make the unit look like a dragon whelp

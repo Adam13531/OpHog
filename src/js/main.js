@@ -97,12 +97,12 @@
         $createUnits.click(function() {
             $settingsDialog.dialog('close');
             for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.PlaceableUnitType.DEBUG,true);
+                var newUnit = new game.Unit(game.UnitType.DEBUG,true);
                 newUnit.placeUnit(1,9);
                 game.UnitManager.addUnit(newUnit);
             };
             for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.PlaceableUnitType.DEBUG,false);
+                var newUnit = new game.Unit(game.UnitType.DEBUG,false);
                 newUnit.placeUnit(24,9);
                 game.UnitManager.addUnit(newUnit);
             };
@@ -275,16 +275,16 @@
 
             var unitType = null;
             if (evt.keyCode == game.Key.DOM_VK_1) {
-                unitType = game.PlaceableUnitType.DEBUG;
+                unitType = game.UnitType.DEBUG;
             }
             if (evt.keyCode == game.Key.DOM_VK_2) {
-                unitType = window.game.twoByOneUnit;
+                unitType = game.UnitType.twoByOneUnit;
             }
             if (evt.keyCode == game.Key.DOM_VK_3) {
-                unitType = window.game.oneByTwoUnit;
+                unitType = game.UnitType.oneByTwoUnit;
             }
             if (evt.keyCode == game.Key.DOM_VK_4) {
-                unitType = window.game.twoByTwoUnit;
+                unitType = game.UnitType.twoByTwoUnit;
             }
             if ( unitType != null ) {
                 var newUnit = new game.Unit(unitType,true);
@@ -294,16 +294,16 @@
 
             var enemyUnitType = null;
             if (evt.keyCode == game.Key.DOM_VK_5) {
-                enemyUnitType = game.PlaceableUnitType.DEBUG;
+                enemyUnitType = game.UnitType.DEBUG;
             }
             if (evt.keyCode == game.Key.DOM_VK_6) {
-                enemyUnitType = window.game.twoByOneUnit;
+                enemyUnitType = game.UnitType.twoByOneUnit;
             }
             if (evt.keyCode == game.Key.DOM_VK_7) {
-                enemyUnitType = window.game.oneByTwoUnit;
+                enemyUnitType = game.UnitType.oneByTwoUnit;
             }
             if (evt.keyCode == game.Key.DOM_VK_8) {
-                enemyUnitType = window.game.twoByTwoUnit;
+                enemyUnitType = game.UnitType.twoByTwoUnit;
             }
             if ( enemyUnitType != null ) {
                 var newUnit = new game.Unit(enemyUnitType,false);
@@ -313,14 +313,14 @@
 
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.PlaceableUnitType.DEBUG,true);
+                    var newUnit = new game.Unit(game.UnitType.DEBUG,true);
                     newUnit.placeUnit(1,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.PlaceableUnitType.DEBUG,false);
+                    var newUnit = new game.Unit(game.UnitType.DEBUG,false);
                     newUnit.placeUnit(24,9);
                     game.UnitManager.addUnit(newUnit);
                 };
