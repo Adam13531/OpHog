@@ -7,12 +7,10 @@
      * game.Camera.computeScrollBoundaries(); when you load a map for real.
      */
     window.game.Map = function Map() {
-        /**
-         * The tiles representing this map. A tile is simply a graphic index for
-         * now; there's no additional state.
-         * @type {Array:Number}
-         */
-        this.mapTiles = new Array(
+
+        // This is a hard-coded map to use for testing. It is a set of graphic
+        // indices that we use when constructing each tile.
+        var mapTilesIndices = new Array(
             5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
             93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
             5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
@@ -33,6 +31,16 @@
             93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
             5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 
             );
+
+        /**
+         * The tiles representing this map.
+         * @type {Array:Tile}
+         */
+        this.mapTiles = [];
+        for (var i = 0; i < mapTilesIndices.length; i++) {
+            var index = mapTilesIndices[i];
+            this.mapTiles.push(new game.Tile(index));
+        };
 
         /**
          * Array of booleans representing whether there's fog over a tile.
@@ -65,11 +73,13 @@
     window.game.Map.prototype.draw = function(ctx, drawingFogLayer) {
         var index;
         var graphic;
+        var tile;
         ctx.fillStyle = 'rgba(0,0,0,1)';
         for (var y = 0; y < this.numRows; y++) {
             for (var x = 0; x < this.numCols; x++) {
                 index = y * this.numCols + x;
-                graphic = this.mapTiles[index];
+                tile = this.mapTiles[index];
+                graphic = tile.graphicIndex;
                 
                 if ( drawingFogLayer ) {
                     if ( this.fog[index] ) {
@@ -160,7 +170,7 @@
      */
     window.game.Map.prototype.isSpawnerPoint = function(tileX, tileY) {
         var index = tileY * this.numCols + tileX;
-        return this.mapTiles[index] == 67;
+        return this.mapTiles[index].isSpawnerPoint;
     };
 
 }());
