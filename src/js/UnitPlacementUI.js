@@ -72,6 +72,16 @@
     	 * @type {PlaceableUnitType}
     	 */
     	unitType: null,
+
+        /**
+         * This is the Y coordinate (in pixels, relative to the unit placement
+         * UI) of the left arrow (which should also be the Y coordinate of the
+         * right arrow because they're on the same level). We keep track of it
+         * so that when we switch pages, we can maintain the position of the
+         * arrows.
+         * @type {Number}
+         */
+        lastYPosition: null,
 		
 		/**
          * Sets up the entire unit placement UI.
@@ -102,9 +112,6 @@
 				'margin-right' : rightMargin
 			});
 
-			// Sets the default page
-			this.setPage(game.PlaceableUnitType.ARCHER);
-
 			$('#buyingScreenContainer').dialog({
                 autoOpen: false,
                 resizable:false,
@@ -125,6 +132,9 @@
                     of: ('#canvas')
                 },
             });
+
+            // Sets the default page
+            this.setPage(game.PlaceableUnitType.ARCHER);
         },
 
 		/**
@@ -227,13 +237,34 @@
 											   '<img id="rightArrowImg" src="'+game.imagePath+'/right_arrow.png" width="32" height="32"/>' +
 											   '</div>');
 			$('#leftArrowImg').click(function() {
+                game.UnitPlacementUI.lastYPosition = $('#leftArrowImg').position().top;
 				game.UnitPlacementUI.clearPage();
 				game.UnitPlacementUI.setPage(nextUnitLeftImage);
 			});
 			$('#rightArrowImg').click(function() {
+                game.UnitPlacementUI.lastYPosition = $('#leftArrowImg').position().top;
 				game.UnitPlacementUI.clearPage();
 				game.UnitPlacementUI.setPage(nextUnitRightImage);
 			});
+
+            // If you're switching pages, make sure the arrows stay at the same
+            // height so that you can quickly navigate.
+            // 
+            // Note: the very first time this code is run, there won't be a
+            // lastYPosition.
+            if ( this.lastYPosition ) {
+                // Get the current position, which is relative to its container
+                var curYPosition = $('#leftArrowImg').position().top;
+
+                // Get the container's position so that we can place this
+                // relative to the canvas. Jqueryui puts our 'dialog' into
+                // another div, which is why we want the parent.
+                var containerY = $('#buyingScreenContainer').parent().position().top;
+
+                $('#buyingScreenContainer').parent().css( {
+                    top: containerY + this.lastYPosition - curYPosition
+                });
+            }
 
         },
 
