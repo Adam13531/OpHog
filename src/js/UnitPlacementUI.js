@@ -94,21 +94,11 @@
 
 			// TODO: Load real headers
 			$('#buyingScreenContainer').append('<div id="headers" style="width:200px; height:32px;">' +
-										'<img id="header1" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite smallDiamond-png' + '" />' +
-										'<img id="header2" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite redCube-png' + '" />' +
-										'<img id="header3" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite purpleCube-png' + '" />' +
-										'<img id="header4" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite greenCube-png' + '" />' +
+										'<img id="header1" src="'+game.imagePath+'/img_trans.png" class="item-sprite treasure-png" style="margin-left:58px;"/>' +
+                                        '<span id="header2">Lvl</span>' +
+                                        '<span id="header3">Exp</span>' +
 								   '</div>');
-			$('#header1').css({
-				'margin-right' : rightMargin
-			});
-			$('#header2').css({
-				'margin-right' : rightMargin
-			});
-			$('#header3').css({
-				'margin-right' : rightMargin
-			});
-			$('#header4').css({
+			$('#header1, #header2, #header3').css({
 				'margin-right' : rightMargin
 			});
 
@@ -230,8 +220,7 @@
 			$('#buyingScreenContainer').append('<div id="changingPagesDiv">' +
 											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
 											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitLeftImage) + '" />' +
-											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitLeftImage)+'</span>' +
-											   '<span id="pageSpace" style="margin-right:2.00em; display:inline-block;">&nbsp;</span>' + // There is probably a better way to add a space between spans
+											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px; margin-right:2.00em">' + game.UnitManager.getNumOfPlayerUnits(nextUnitLeftImage)+'</span>' +
 											   '<span id="rightUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitRightImage)+'</span>' +
 											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitRightImage) + '" />' +
 											   '<img id="rightArrowImg" src="'+game.imagePath+'/right_arrow.png" width="32" height="32"/>' +

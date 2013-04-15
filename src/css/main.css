@@ -159,6 +159,10 @@ textarea {
     background: url(../../res/img/obj_32.png) 0 0 no-repeat;
 }
 
+
+.treasure-png {
+    background-position: -0px -0px;
+}
 .gem32-png {
     background-position: -160px -0px;
 }
