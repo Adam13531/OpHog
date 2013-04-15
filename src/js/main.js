@@ -115,9 +115,11 @@
             var offsetX = event.offsetX==undefined?event.originalEvent.layerX:event.offsetX;
             var offsetY = event.offsetY==undefined?event.originalEvent.layerY:event.offsetY;
 
-            // Convert to world coordinates
+            // Convert to world coordinates and also tile coordinates
             var worldX = game.Camera.canvasXToWorldX(offsetX);
             var worldY = game.Camera.canvasYToWorldY(offsetY);
+            var tileX = Math.floor(worldX / tileSize);
+            var tileY = Math.floor(worldY / tileSize);
             
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target
@@ -129,9 +131,7 @@
                 return;
             }
 
-            // Check to see if the user wants to place units
-            var tileX = Math.floor(worldX / tileSize);
-            var tileY = Math.floor(worldY / tileSize);
+            // Check to see if the user tapped a spawner
             if (currentMap.isSpawnerPoint(tileX, tileY)) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
                 $('#buyingScreenContainer').dialog('open');

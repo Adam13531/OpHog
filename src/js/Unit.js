@@ -1,6 +1,10 @@
 ( function() {
 
-
+    /**
+     * Unit types. For now, these double as representing graphic indices too in
+     * some cases.
+     * @type {Number}
+     */
     window.game.UnitType = {
         ARCHER: 0,
         WARRIOR: 1,
@@ -127,7 +131,6 @@
      * @return {null}       
      */
     window.game.Unit.prototype.placeUnit = function(tileX, tileY) {
-        // 'x' is in pixels and is only snapped to a tile at creation
         var centerXPx = tileX * tileSize + tileSize / 2;
         var centerYPx = tileY * tileSize + tileSize / 2;
         this.setCenterX(centerXPx);

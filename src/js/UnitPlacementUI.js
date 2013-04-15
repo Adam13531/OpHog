@@ -1,10 +1,10 @@
 ( function() {
     
 	/**
-	 * Defines the types of units that can be placed. These are used to distinguish
-	 * between the other unit types because these are the only types that can
-	 * actually be placed by a player
-	 * @type {Placeablethis.unitType}
+     * Defines the types of units that can be placed. These are used to
+     * distinguish between the other unit types because these are the only types
+     * that can actually be placed by a player
+     * @type {game.UnitType}
 	 */
 	window.game.PlaceableUnitType = {
 		ARCHER: game.UnitType.ARCHER,
@@ -29,7 +29,7 @@
 	window.game.UNIT_OPACITY_PLACED = '0.4';
 
 	/**
-	 * The amount placeable units there are
+	 * The number of possible placeable classes
 	 * @type {Number}
 	 */
 	window.game.NUM_PLACEABLE_UNIT_CLASSES = Object.keys(game.PlaceableUnitType).length;
@@ -56,13 +56,13 @@
     window.game.UnitPlacementUI = {
 
     	/**
-    	 * X position of the spawn point where units will be placed in tiles
+    	 * X position in tiles of the spawn point where units will be placed
     	 * @type {Number}
     	 */
     	spawnPointX: 0,
 
     	/**
-    	 * Y position of the spawn point where units will be placed in tiles
+    	 * Y position in tiles of the spawn point where units will be placed
     	 * @type {Number}
     	 */
     	spawnPointY: 0,
@@ -167,24 +167,20 @@
          * Returns the index of the unit that will show when you click the left
          * arrow.
          * Pages are ordered: [0,1,..., Object.keys(game.PlaceableUnitType).length]
-         * @param  {PlaceableUnitType} currentPage Index of the current page
-         * @return {PlaceableUnitType}             Index of the page to the left
+         * @return {Number}             Index of the page to the left
          */
-        getLeftPage: function(currentPage) {
-        	if (currentPage == 0) return game.NUM_PLACEABLE_UNIT_CLASSES - 1;
-        	return currentPage - 1;
+        getLeftPage: function() {
+            return (this.unitType == 0) ? game.NUM_PLACEABLE_UNIT_CLASSES - 1 : this.unitType - 1;
         },
 
         /**
-         * Returns the index of the unit that will show when you click the left
+         * Returns the index of the unit that will show when you click the right
          * arrow.
          * Pages are ordered: [0,1,..., Object.keys(game.PlaceableUnitType).length]
-         * @param  {PlaceableUnitType} currentPage Index of the current page
-         * @return {PlaceableUnitType}             Index of the page to the right
+         * @return {Number}             Index of the page to the right
          */
-        getRightPage: function(currentPage) {
-        	if (currentPage == game.NUM_PLACEABLE_UNIT_CLASSES - 1) return 0;
-        	return currentPage + 1;
+        getRightPage: function() {
+            return (this.unitType == game.NUM_PLACEABLE_UNIT_CLASSES - 1) ? 0 : this.unitType + 1;
         },
 
         /**
@@ -199,7 +195,7 @@
 			
 			$('#buyingScreenContainer').append('<div id="unitContainer">');
 			for (var i = 0; i < unitArray.length; i++) {
-				this.addSlotToPage(unitArray[i], i);
+				this.addSlotToPage(unitArray[i]);
 			}
 			$('#buyingScreenContainer').append('</div>');
 
@@ -218,8 +214,8 @@
 
 			// Setting up the arrows and images that will allow the user to
 			// switch units.
-			var nextUnitLeftImage = this.getLeftPage(this.unitType);
-			var nextUnitRightImage = this.getRightPage(this.unitType);
+			var nextUnitLeftImage = this.getLeftPage();
+			var nextUnitRightImage = this.getRightPage();
 
 			$('#buyingScreenContainer').append('<div id="changingPagesDiv">' +
 											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
@@ -244,30 +240,31 @@
         /**
          * Adds a slot to the page
          * @param {Unit} unit  Unit that will be in the slot
-         * @param {Number} index Used for indexing the units
          */
-        addSlotToPage: function(unit, index) {
-			$('#unitContainer').append('<div id="unit'+index+'">' +
-										'<img id="unitImage'+index+'" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(unit.unitType) + '" />' +
-										'<span id="unitCost'+index+'" style="font-weight: bold; font-size: 20px">'+costToPlaceUnit(unit)+'</span>' +
-										'<span id="unitLevel'+index+'" style="font-weight: bold; font-size: 20px">'+unit.level+'</span>' +
-										'<span id="unitExperience'+index+'" style="font-weight: bold; font-size: 20px">'+unit.experience+'</span>' +
+        addSlotToPage: function(unit) {
+            var id = unit.id;
+			$('#unitContainer').append('<div id="unit'+id+'">' +
+										'<img id="unitImage'+id+'" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(unit.unitType) + '" />' +
+										'<span id="unitCost'+id+'" style="font-weight: bold; font-size: 20px">'+costToPlaceUnit(unit)+'</span>' +
+										'<span id="unitLevel'+id+'" style="font-weight: bold; font-size: 20px">'+unit.level+'</span>' +
+										'<span id="unitExperience'+id+'" style="font-weight: bold; font-size: 20px">'+unit.experience+'</span>' +
 								   '</div>');
 
 			// If the user clicks a unit, place the unit if it hasn't been placed
-			$('#unit'+index).click({a_unit: unit, an_index: index}, unitClicked);
+			$('#unit'+id).click({unitClicked: unit}, unitClicked);
 			function unitClicked(event) {
-				if (event.data.a_unit.hasBeenPlaced) {
+                var unit = event.data.unitClicked;
+				if (unit.hasBeenPlaced) {
 					return;
 				}
-				event.data.a_unit.placeUnit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY);
-				game.UnitPlacementUI.setUnitCSSProperties(event.data.an_index, window.game.UNIT_OPACITY_PLACED);
+				unit.placeUnit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY);
+				game.UnitPlacementUI.setUnitCSSProperties(unit.id, game.UNIT_OPACITY_PLACED);
 			}
 
 			if (unit.hasBeenPlaced) {
-				this.setUnitCSSProperties(index, window.game.UNIT_OPACITY_PLACED);
+				this.setUnitCSSProperties(id, game.UNIT_OPACITY_PLACED);
 			} else {
-				this.setUnitCSSProperties(index, window.game.UNIT_OPACITY_NOT_PLACED);
+				this.setUnitCSSProperties(id, game.UNIT_OPACITY_NOT_PLACED);
 			}
 
 			// Update the text of the button to show the new cost of buying
@@ -277,23 +274,25 @@
 
         /**
          * Sets some CSS properties of a specific unit.
-         * @param {Number} index   index of the unit in the window
+         * @param {Number} id   id of the unit in the window
          * @param {Number} opacity The opacity to set the unit and its stats to
          */
-        setUnitCSSProperties: function(index, opacity) {
+        setUnitCSSProperties: function(id, opacity) {
         	var unitMargin = '30px';
-			$('#unitImage' + index + ',#unitCost' + index + ',#unitLevel' + index + 
-		     ',#unitExperience' + index).css({'margin-right':unitMargin, 'opacity': opacity});
+
+            // Set the margin on all of the following at once
+			$('#unitImage' + id + ',#unitCost' + id + ',#unitLevel' + id + 
+		     ',#unitExperience' + id).css({'margin-right':unitMargin, 'opacity': opacity});
         },
 
         /**
          * Sets the spawn point tiles
-         * @param {Number} pointX Tile X
-         * @param {Number} pointY Tile Y
+         * @param {Number} tileX Tile X
+         * @param {Number} tileY Tile Y
          */
-        setSpawnPoint: function(pointX, pointY) {
-        	this.spawnPointX = pointX;
-        	this.spawnPointY = pointY;
+        setSpawnPoint: function(tileX, tileY) {
+        	this.spawnPointX = tileX;
+        	this.spawnPointY = tileY;
         },
 
         /**
