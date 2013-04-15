@@ -258,6 +258,27 @@
         },
 
         /**
+         * Updates this unit's statistics.
+         * @param  {Unit} unit - the unit to update
+         * @return {null}
+         */
+        updateUnit: function(unit) {
+        	var $costTag = $('#unitCost' + unit.id);
+        	var $levelTag = $('#unitLevel' + unit.id);
+        	var $expTag = $('#unitExperience' + unit.id);
+
+        	// Make sure that each tag exists. As of the time that I'm writing
+        	// this, there are lots of debug ways to spawn units, but if we
+        	// allow summoned units to level up, this code will have a real
+        	// scenario that necessitates its existence
+        	if ( $costTag.length == 0 || $levelTag.length == 0 || $expTag.length == 0 ) return;
+
+        	$costTag.text(costToPlaceUnit(unit));
+        	$levelTag.text(unit.level);
+        	$expTag.text(unit.experience);
+        },
+
+        /**
          * Adds a slot to the page
          * @param {Unit} unit  Unit that will be in the slot
          */

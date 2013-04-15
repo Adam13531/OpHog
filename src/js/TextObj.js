@@ -7,7 +7,8 @@
      * the font so that the object can be positioned correctly (search this file
      * for "height").
      */
-    window.game.TextObjFont = "12px Futura, Helvetica, sans-serif";
+    window.game.TextObjFont = '12px Futura, Helvetica, sans-serif';
+    window.game.BigFont = '40px Futura, Helvetica, sans-serif';
 
     /**
      * A text object. A nearly infinite amount of polish can go into this class
@@ -16,9 +17,12 @@
      * @param {Number} centerX The center X coordinate (in pixels)
      * @param {Number} centerY The center Y coordinate (in pixels)
      * @param {String} text    The text to display
+     * @param {Boolean} bigFont If true, this'll make the font big and green
      */
-    window.game.TextObj = function TextObj(centerX, centerY, text) {
+    window.game.TextObj = function TextObj(centerX, centerY, text, bigFont) {
         this.text = text;
+
+        this.bigFont = bigFont;
 
         // Text objects require a canvas in order to figure out their metrics,
         // so we can't actually position anything here.
@@ -28,6 +32,26 @@
 
         // Life in seconds
         this.ttl = 1;
+
+        // Height of the font (in pixels)
+        this.height = 12;
+
+        // Speed in pixels/second that the font moves
+        this.speed = 100;
+
+        if ( this.bigFont ) {
+            this.font = game.BigFont;
+            this.fontColor = '#0f0';
+            this.ttl = 2;
+            this.height = 40;
+            this.speed = 50;
+        } else {
+            this.font = game.TextObjFont;
+            this.fontColor = '#f00';
+            this.ttl = 1;
+            this.height = 12;
+            this.speed = 100;
+        }
     };
 
     /**
@@ -36,11 +60,9 @@
      */
     window.game.TextObj.prototype.update = function(delta) {
         var deltaAsSec = delta / 1000;
-        var speed = 100;
-        var change = speed * deltaAsSec;
+        var change = this.speed * deltaAsSec;
 
         this.y -= change;
-
         this.ttl -= deltaAsSec;
     };
 
@@ -58,21 +80,21 @@
      */
     window.game.TextObj.prototype.draw = function(ctx) {
         ctx.save();
-        ctx.font = window.game.TextObjFont;
+
+        ctx.font = this.font;
         var text = this.text;
         var width = ctx.measureText(text).width;
-        var height = 12; // this will need to be changed of course
 
         // We need the canvas in order to position the text since that's what
         // lets us compute width needed.
         if ( !this.hasBeenPositioned ) {
             this.x = this.x - width / 2;
-            this.y = this.y - height / 2;
+            this.y = this.y - this.height / 2;
             this.hasBeenPositioned = true;
         }
 
-        ctx.textBaseline = "top";
-        ctx.fillStyle = "#f00";
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = this.fontColor;
         ctx.fillText(text, this.x, this.y);
         ctx.restore();
     };

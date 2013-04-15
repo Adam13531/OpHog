@@ -294,7 +294,7 @@
 
             var damageString = "" + Math.round(-1 * damage);
 
-            var textObj = new game.TextObj(targetUnit.getCenterX(), targetUnit.y, damageString);
+            var textObj = new game.TextObj(targetUnit.getCenterX(), targetUnit.y, damageString, false);
             game.TextManager.addTextObj(textObj);
 
             if ( !targetUnit.isLiving() ) {
@@ -354,6 +354,30 @@
     window.game.Unit.prototype.isOffScreen = function() {
         return this.x < -tileSize || this.x > 25 * tileSize;
     };
+
+    /**
+     * Grants this unit experience, leveling it up if necessary.
+     * @param  {Number} experience - the amount of experience to gain
+     * @return {null}
+     */
+    window.game.Unit.prototype.gainExperience = function(experience) {
+        this.experience += experience;
+
+        // Use a 'while' loop in case they can gain more than one level
+        while (this.experience >= 100) {
+            this.experience -= 100;
+            this.levelUp();
+        }
+    };
+
+    /**
+     * Levels this unit up, increasing stats.
+     * @return {null}
+     */
+    window.game.Unit.prototype.levelUp = function() {
+        // TODO: actually increase stats here...        
+        this.level++;
+    };    
 
     window.game.Unit.prototype.draw = function(ctx) {
         // Dead units always look like a 1x1 tombstone for now.

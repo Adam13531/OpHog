@@ -13,6 +13,16 @@
         DEAD: 8
     };
 
+    /**
+     * This is used to indicate who won the battle. It's pretty straightforward.
+     * @type {Number}
+     */
+    window.game.BattleWinner = {
+        NONE: 0,
+        PLAYER: 1,
+        ENEMY: 2
+    };
+
     window.game.Battle = function Battle(centerX, centerY) {
         // This contains all units battling here.
         this.units = new Array();
@@ -50,9 +60,8 @@
         // many units join a battle in a single game loop).
         this.needsToBeRepositioned = false;
 
-        // This is true when at least one team is dead. Currently, there's no
-        // way for both teams to be killed in a turn.
-        this.oneTeamDead = false;
+        // When this isn't NONE, the battle is over.
+        this.battleWinner = game.BattleWinner.NONE;
 
         // These are used for drawing the battle grid. They are otherwise
         // unnecessary.
@@ -208,8 +217,7 @@
      * to see if the battle is over.
      *
      * This function doesn't account for what would happen if units from both
-     * teams died in a single turn, in that case, "oneTeamDead" is a misnomer,
-     * since both teams could die (picture a self-destruct kind of move).
+     * teams died in a single turn (picture a self-destruct kind of move).
      * 
      * @param  {Unit} deadUnit The unit that just died.
      * @return {null}
@@ -219,7 +227,7 @@
 
         if ( numLivingUnits == 0 ) {
             // The battle is over
-            this.oneTeamDead = true;
+            this.battleWinner = deadUnit.isPlayer ? game.BattleWinner.ENEMY : game.BattleWinner.PLAYER;
         }
 
     };
@@ -229,17 +237,43 @@
      * entirely dead.
      */
     window.game.Battle.prototype.isDead = function() {
-        return this.oneTeamDead;
+        return this.battleWinner != game.BattleWinner.NONE;
     };
 
     /**
      * This is called by the BattleManager RIGHT before the battle is removed
-     * from existence. It will remove units from battle and set them to their
+     * from existence. It will remove units from battle and guide them to their
      * original positions.
      */
     window.game.Battle.prototype.aboutToRemoveBattle = function() {
         var battleData;
         var unit;
+
+        // If the player won, then we should add experience.
+        if ( this.battleWinner == game.BattleWinner.PLAYER ) {
+            // Hard-code this for now
+            var experienceGranted = 50;
+            var expString = "+" + experienceGranted + " exp";
+
+            // Spawn a text object where the enemies used to be
+            var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true);
+            game.TextManager.addTextObj(textObj);
+
+            // Give the experience to all living player units
+            for (var i = 0; i < this.units.length; i++) {
+                var unit = this.units[i];
+
+                // Ignore enemy and dead units
+                if ( !unit.isPlayer || !unit.isLiving() ) continue;
+
+                // This will also level up the unit if appropriate
+                unit.gainExperience(experienceGranted);
+
+                // Update the unit placement UI
+                game.UnitPlacementUI.updateUnit(unit);
+            };
+        }
+
         for (var i = 0; i < this.units.length; i++) {
             unit = this.units[i];
             battleData = unit.battleData;
