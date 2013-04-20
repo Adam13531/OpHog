@@ -92,7 +92,6 @@
 			var buyingScreenContainer = ('<div id="buyingScreenContainer" title="Place Units"></div>');
 			$('body').append(buyingScreenContainer);
 
-			// TODO: Load real headers
 			$('#buyingScreenContainer').append('<div id="headers" style="width:200px; height:32px;">' +
 										'<img id="header1" src="'+game.imagePath+'/img_trans.png" class="item-sprite treasure-png" style="margin-left:58px;"/>' +
                                         '<span id="header2">Lvl</span>' +
@@ -184,6 +183,21 @@
         },
 
         /**
+         * This is the function that is called when you click the left or right
+         * arrows (or their corresponding unit pictures).
+         *
+         * It's very straightforward.
+         * @param  {Number} pageIndex - the index of the page to switch to
+         * @return {null}
+         */
+        navigateToPage: function(pageIndex) {
+            // See the comment for lastYPosition for why we do this.
+            this.lastYPosition = $('#leftArrowImg').position().top;
+            this.clearPage();
+            this.setPage(pageIndex);
+        },
+
+        /**
          * Allows the user to place units and buy slots for all the units of the
          * specified unit type.
          * @param {PlaceableUnitType} unitType Type of unit
@@ -225,15 +239,11 @@
 											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitRightImage) + '" />' +
 											   '<img id="rightArrowImg" src="'+game.imagePath+'/right_arrow.png" width="32" height="32"/>' +
 											   '</div>');
-			$('#leftArrowImg').click(function() {
-                game.UnitPlacementUI.lastYPosition = $('#leftArrowImg').position().top;
-				game.UnitPlacementUI.clearPage();
-				game.UnitPlacementUI.setPage(nextUnitLeftImage);
+			$('#leftArrowImg,#leftUnit,#leftUnitAmount').click(function() {
+                game.UnitPlacementUI.navigateToPage(nextUnitLeftImage);
 			});
-			$('#rightArrowImg').click(function() {
-                game.UnitPlacementUI.lastYPosition = $('#leftArrowImg').position().top;
-				game.UnitPlacementUI.clearPage();
-				game.UnitPlacementUI.setPage(nextUnitRightImage);
+			$('#rightArrowImg,#rightUnit,#rightUnitAmount').click(function() {
+                game.UnitPlacementUI.navigateToPage(nextUnitRightImage);
 			});
 
             // If you're switching pages, make sure the arrows stay at the same
@@ -258,24 +268,32 @@
         },
 
         /**
-         * Updates this unit's statistics.
+         * Updates this unit's statistics and the opacity of the entire row.
          * @param  {Unit} unit - the unit to update
          * @return {null}
          */
         updateUnit: function(unit) {
-        	var $costTag = $('#unitCost' + unit.id);
-        	var $levelTag = $('#unitLevel' + unit.id);
-        	var $expTag = $('#unitExperience' + unit.id);
+            var id = unit.id;
 
-        	// Make sure that each tag exists. As of the time that I'm writing
-        	// this, there are lots of debug ways to spawn units, but if we
-        	// allow summoned units to level up, this code will have a real
-        	// scenario that necessitates its existence
+        	var $costTag = $('#unitCost' + id);
+        	var $levelTag = $('#unitLevel' + id);
+        	var $expTag = $('#unitExperience' + id);
+
+            // Make sure that each tag exists. Examples of why they may not
+            // exist: either you used one of the debug methods of spawning a
+            // unit (e.g. pressing a key on the keyboard) or perhaps you
+            // summoned a unit in battle. Either way, it wouldn't show in this
+            // UI, so there's nothing to update here.
         	if ( $costTag.length == 0 || $levelTag.length == 0 || $expTag.length == 0 ) return;
 
         	$costTag.text(costToPlaceUnit(unit));
         	$levelTag.text(unit.level);
         	$expTag.text(unit.experience);
+
+            var opacity = unit.hasBeenPlaced ? game.UNIT_OPACITY_PLACED : game.UNIT_OPACITY_NOT_PLACED;
+
+            // Modify the opacity of the entire div
+            $('#unit' + id).css({'opacity': opacity});
         },
 
         /**
@@ -284,12 +302,18 @@
          */
         addSlotToPage: function(unit) {
             var id = unit.id;
+
 			$('#unitContainer').append('<div id="unit'+id+'">' +
-										'<img id="unitImage'+id+'" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(unit.unitType) + '" />' +
-										'<span id="unitCost'+id+'" style="font-weight: bold; font-size: 20px">'+costToPlaceUnit(unit)+'</span>' +
-										'<span id="unitLevel'+id+'" style="font-weight: bold; font-size: 20px">'+unit.level+'</span>' +
-										'<span id="unitExperience'+id+'" style="font-weight: bold; font-size: 20px">'+unit.experience+'</span>' +
+										'<img id="unitImage'+id+'" src="'+game.imagePath+'/img_trans.png" class="'+this.getCSSUnitClass(unit.unitType)+'" />' +
+										'<span id="unitCost'+id+'" style="font-weight: bold; font-size: 20px"/>' +
+										'<span id="unitLevel'+id+'" style="font-weight: bold; font-size: 20px"/>' +
+										'<span id="unitExperience'+id+'" style="font-weight: bold; font-size: 20px"/>' +
 								   '</div>');
+
+            // Set the margin on everything at once. The margins never change.
+            $('#unitImage'+id+',#unitCost'+id+',#unitLevel'+id).css({
+                'margin-right':'30px'
+            });
 
 			// If the user clicks a unit, place the unit if it hasn't been placed
 			$('#unit'+id).click({unitClicked: unit}, unitClicked);
@@ -299,31 +323,14 @@
 					return;
 				}
 				unit.placeUnit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY);
-				game.UnitPlacementUI.setUnitCSSProperties(unit.id, game.UNIT_OPACITY_PLACED);
-			}
-
-			if (unit.hasBeenPlaced) {
-				this.setUnitCSSProperties(id, game.UNIT_OPACITY_PLACED);
-			} else {
-				this.setUnitCSSProperties(id, game.UNIT_OPACITY_NOT_PLACED);
+				game.UnitPlacementUI.updateUnit(unit);
 			}
 
 			// Update the text of the button to show the new cost of buying
 			// this unit
 			$('#buySlotButton').text(costToPurchaseSlot(unit.unitType));
-        },
 
-        /**
-         * Sets some CSS properties of a specific unit.
-         * @param {Number} id   id of the unit in the window
-         * @param {Number} opacity The opacity to set the unit and its stats to
-         */
-        setUnitCSSProperties: function(id, opacity) {
-        	var unitMargin = '30px';
-
-            // Set the margin on all of the following at once
-			$('#unitImage' + id + ',#unitCost' + id + ',#unitLevel' + id + 
-		     ',#unitExperience' + id).css({'margin-right':unitMargin, 'opacity': opacity});
+            this.updateUnit(unit);
         },
 
         /**

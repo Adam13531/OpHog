@@ -59,14 +59,20 @@
          */
         update: function(delta) {
             for (var i = 0; i < this.gameUnits.length; i++) {
+                var unit = this.gameUnits[i];
                 // Remove units that died in battle
-                if (this.gameUnits[i].removeFromGame) {
-                    this.gameUnits.splice(i, 1);
-                    i--;
+                if (unit.removeFromMap) {
+                    if ( unit.isPlayer ) {
+                        unit.unplaceUnit();
+                    } else {
+                        this.gameUnits.splice(i, 1);
+                        i--;
+                    }
+                    
                     continue;
                 }
 
-                this.gameUnits[i].update(delta);
+                unit.update(delta);
             };
 
             game.BattleManager.checkForBattles(this.gameUnits);

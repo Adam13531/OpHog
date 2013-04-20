@@ -108,8 +108,10 @@
         this.areaInTiles = this.widthInTiles * this.heightInTiles;
         this.isPlayer = isPlayer;
 
-        // As soon as this is true, the unit will be removed from the game.
-        this.removeFromGame = false;
+        // As soon as this is true, the unit will be removed from the map. For
+        // enemy units, this means they're removed from the game. For player
+        // units, this means they will be "unplaced" (see unplaceUnit).
+        this.removeFromMap = false;
 
         // This is an object with a lot of different things in it.
         this.battleData = null;
@@ -138,7 +140,41 @@
         this.hasBeenPlaced = true;
     };
 
+
+    /**
+     * Every unit needs to be placed, but player units should be "unplaced"
+     * (i.e. removed) when they're done. I didn't name this 'removeUnit' because
+     * enemy units are technically removed too.
+     *
+     * This function will light the unit up again in the unit placement UI.
+     *
+     * Don't call this function when a unit is in battle.
+     * @return {null}
+     */
+    window.game.Unit.prototype.unplaceUnit = function() {
+        if ( !this.isPlayer ) {
+            console.log('Error: unplaceUnit was called on an enemy unit. ' +
+                'Ignoring. ID: ' + this.id);
+            return;
+        }
+
+        this.hasBeenPlaced = false;
+        this.removeFromMap = false;
+        game.UnitPlacementUI.updateUnit(this);
+    };
+
+    /**
+     * @return {Boolean} true if this unit can join a battle, which requires
+     * that the unit has been placed and isn't already in a battle
+     */
+    window.game.Unit.prototype.canJoinABattle = function() {
+        return this.hasBeenPlaced && !this.isInBattle();
+    }
+
     window.game.Unit.prototype.update = function(delta) {
+        // We only update if the unit was placed
+        if ( !this.hasBeenPlaced ) return;
+
         var deltaAsSec = delta / 1000;
         // var speed = Math.random()*120 + 500;
         var speed = 60;
@@ -158,6 +194,18 @@
             } else {
                 this.x += this.isPlayer ? change : -change;
             }
+
+            // This is the number of pixels a unit has to move off the map
+            // before it's considered to be out of bounds. This is PURELY for
+            // debugging. Units will eventually never be able to move off of the
+            // map (because they will attack the castle when they get to the
+            // boundary), but for now, it happens a lot and there's no way to
+            // use or kill the unit.
+            var outOfBounds = 10 * tileSize;
+            if ( this.x < -outOfBounds || this.x > currentMap.numCols * tileSize + outOfBounds ) {
+                this.removeFromMap = true;
+            }
+
         } else {
             this.updateBattle(delta);
         }
@@ -380,6 +428,9 @@
     };    
 
     window.game.Unit.prototype.draw = function(ctx) {
+        // Don't draw any units that haven't been placed
+        if ( !this.hasBeenPlaced ) return;
+
         // Dead units always look like a 1x1 tombstone for now.
         if ( this.isInBattle() && !this.isLiving() ) {
             // Draw the tombstone at the center so that it doesn't look awkward

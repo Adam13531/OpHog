@@ -280,7 +280,7 @@
 
             // If the unit dies in battle, it dies in real life
             if (!unit.isLiving()) {
-                unit.removeFromGame = true;
+                unit.removeFromMap = true;
             }
 
             // Restore their original positions
@@ -289,7 +289,7 @@
             unit.preBattleY = battleData.originalY;
 
             // Remove it from battle
-            this.units[i].battleData = null;
+            unit.battleData = null;
         };
     };
 

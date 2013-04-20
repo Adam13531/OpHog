@@ -70,9 +70,7 @@
         },
 
         checkForBattles: function(allUnits) {
-            // Split units up into player and enemy units. There's no point
-            // omitting the units already in a battle here because we'll need to
-            // do that later regardless.
+            // Split units up into player and enemy units
             var playerUnits = new Array();
             var enemyUnits = new Array();
             var unit = null;
@@ -84,7 +82,7 @@
                     enemyUnits.push(unit);
                 }
                 
-                if ( !unit.isInBattle() ) {
+                if ( unit.canJoinABattle() ) {
                     // Add the unit to any nearby existing battles
                     for (var j = this.battles.length - 1; j >= 0; j--) {
                         if (this.battles[j].addUnitIfCloseEnough(unit)) {
@@ -106,7 +104,7 @@
             for (var i = playerUnits.length - 1; i >= 0; i--) {
                 player = playerUnits[i];
 
-                if ( player.isInBattle() ) {
+                if ( !player.canJoinABattle() ) {
                     continue;
                 }
 
@@ -116,7 +114,7 @@
 
                 for (var j = enemyUnits.length - 1; j >= 0; j--) {
                     enemy = enemyUnits[j];
-                    if ( enemy.isInBattle() ) {
+                    if ( !enemy.canJoinABattle() ) {
                         continue;
                     }
 
