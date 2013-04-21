@@ -16,9 +16,9 @@
         $(domSelector).append(
             '<span id="slot' + this.slotIndex +'"style="position:relative;display:inline-block;margin:1px;width:32px;height:32px">' +
             '<img style="z-index:5" src="' + this.getBackImage() + '" width="32" height="32"/>' +
-            '<span "style="display:block;z-index:10;width:32px;height:32px;"></span>' +
-            '<img "style="display:block;z-index:11" src="'+game.imagePath+'/trans-green.png" width="32" height="32"/>' +
-            '<img "style="display:block;z-index:11" src="'+game.imagePath+'/trans-red.png" width="32" height="32"/>' +
+            '<span style="display:block;z-index:10;width:32px;height:32px;"></span>' +
+            '<img style="display:block;z-index:11" src="'+game.imagePath+'/trans-green.png" width="32" height="32"/>' +
+            '<img style="display:block;z-index:11" src="'+game.imagePath+'/trans-red.png" width="32" height="32"/>' +
             '</span>');
             
         // Get the span we just added

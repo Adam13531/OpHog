@@ -272,6 +272,9 @@
                 // Update the unit placement UI
                 game.UnitPlacementUI.updateUnit(unit);
             };
+
+            // Give them a random item for every battle won.
+            game.Inventory.addItem(new game.Item(Math.floor(Math.random() * 3)));
         }
 
         for (var i = 0; i < this.units.length; i++) {

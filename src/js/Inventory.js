@@ -42,6 +42,14 @@
         addItem: function(item) {
             if ( item == null ) return true;
 
+            var addedItem = false;
+            var emptySlot = null;
+
+            // When we add a stackable item, we distribute the original item
+            // into our inventory, thus decreasing the quantity. We keep this
+            // around so that the loot summary can display the correct quantity.
+            var originalQuantity = item.quantity;
+
             // If the item is equippable or can't be stacked, then the only way
             // it will fit is by finding an empty slot.
             // 
@@ -49,38 +57,43 @@
             // TODO: technically it could also fit if it's equippable by a class
             // and that's our only empty slot...
             if ( !item.usable || !item.stackable) {
-                var emptySlot = null;
                 emptySlot = this.getFirstEmptySlot(item.usable ? game.SlotTypes.USABLE : game.SlotTypes.EQUIP);
-                if ( emptySlot == null ) {
-                    return false;
+                if ( emptySlot != null ) {
+                    emptySlot.setItem(item);
+                    addedItem = true;
                 }
-                emptySlot.setItem(item);
-                return true;
+            } else {
+                // We got here, so the item has to be usable and stackable.
+                //
+                // First, go through each slot. If there's an item of the same
+                // type, then deposit as much as possible into that slot.
+                var quantityLeft = item.quantity;
+                for (var i = 0; i < this.slots.length; i++) {
+                    var slotItem = this.slots[i].item;
+                    if ( slotItem == null || slotItem.itemID != item.itemID ) continue;
+
+                    // Add as much as we can
+                    quantityLeft = this.slots[i].addQuantity(quantityLeft);
+                    if ( quantityLeft == 0 ) {
+                        addedItem = true;
+                        break;
+                    }
+                };
+
+                // If there's still something left after that, see if there's an
+                // empty slot. If so, cram the rest in there (guaranteed to fit
+                // unless we found more than an entire stack of an item).
+                emptySlot = this.getFirstEmptySlot(game.SlotTypes.USABLE);
+                if ( emptySlot != null ) {
+                    addedItem = true;
+                    item.quantity = quantityLeft;
+                    emptySlot.setItem(item);
+                }
             }
 
-            // We got here, so the item has to be usable and stackable.
-            //
-            // First, go through each slot. If there's an item of the same type,
-            // then deposit as much as possible into that slot.
-            var quantityLeft = item.quantity;
-            for (var i = 0; i < this.slots.length; i++) {
-                var slotItem = this.slots[i].item;
-                if ( slotItem == null || slotItem.itemID != item.itemID ) continue;
+            game.LootUI.addItemNotification(item, addedItem, originalQuantity);
 
-                // Add as much as we can
-                quantityLeft = this.slots[i].addQuantity(quantityLeft);
-                if ( quantityLeft == 0 ) break;
-            };
-
-            // If there's still something left after that, see if there's an
-            // empty slot. If so, cram the rest in there (guaranteed to fit
-            // unless we found more than an entire stack of an item).
-            var emptySlot = this.getFirstEmptySlot(game.SlotTypes.USABLE);
-            if ( emptySlot == null ) return false;
-            item.quantity = quantityLeft;
-            emptySlot.setItem(item);
-
-            return true;
+            return addedItem;
         },
 
         /**

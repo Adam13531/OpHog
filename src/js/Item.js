@@ -108,6 +108,7 @@
             }
         }
 
+        console.log('Error - ' + itemID + ' is not a valid item ID.');
         return null;
     };
 

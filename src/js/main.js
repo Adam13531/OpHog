@@ -231,6 +231,7 @@
         game.Inventory.initialize();
 
         game.UnitPlacementUI.setupUI();
+        game.LootUI.setupUI();
     }
 
     function initSettings() {
@@ -382,6 +383,7 @@
 
         // Update battles before units so that when the battle is over, the dead
         // units can be removed immediately by the UnitManager
+        game.LootUI.update(delta);
         game.BattleManager.update(delta);
         game.UnitManager.update(delta);
         game.ParticleManager.update(delta);
