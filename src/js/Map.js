@@ -59,6 +59,21 @@
         this.setFog(1,3,3,false);
         this.setFog(1,9,3,false);
         this.setFog(1,15,3,false);
+
+        // This puts a single generator on the middle of the path. Leaving this
+        // here for testing purposes
+        // var generatorCoords = [[21,9]];
+
+        // Coordinates of generators        
+        var generatorCoords = [[8,3], [13,3], [9,9], [15,9], [18,9], [8,15], [14,15]];
+
+        // Make generators at each spot
+        for (var i = 0; i < generatorCoords.length; i++) {
+            var x = generatorCoords[i][0];
+            var y = generatorCoords[i][1];
+            var generator = new game.Generator(x, y);
+            game.GeneratorManager.addGenerator(generator);
+        };
     };
 
     /**

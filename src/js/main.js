@@ -384,6 +384,7 @@
         // Update battles before units so that when the battle is over, the dead
         // units can be removed immediately by the UnitManager
         game.LootUI.update(delta);
+        game.GeneratorManager.update(delta);
         game.BattleManager.update(delta);
         game.UnitManager.update(delta);
         game.ParticleManager.update(delta);
@@ -397,6 +398,7 @@
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
 
+        game.GeneratorManager.draw(ctx);
         game.UnitManager.draw(ctx);
         game.BattleManager.draw(ctx);
         game.ParticleManager.draw(ctx);
