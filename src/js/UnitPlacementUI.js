@@ -347,9 +347,19 @@
          * Adds a unit to the UI
          */
         addUnit: function() {
+            // Keep track of where the 'buy' button is so that we can restore
+            // that position at the end of this function.
+            var oldBuyYPosition = $('#buySlotButton').position().top;
+            var containerY = $('#buyingScreenContainer').parent().position().top;
+
 			newUnit = new game.Unit(this.unitType, true);
 			game.UnitManager.addUnit(newUnit);
 			game.UnitPlacementUI.addSlotToPage(newUnit, game.UnitManager.getNumOfPlayerUnits(this.unitType));
+
+            var newBuyYPosition = $('#buySlotButton').position().top;
+            $('#buyingScreenContainer').parent().css( {
+                top: Math.max(0, containerY + oldBuyYPosition - newBuyYPosition)
+            });
         },
     };
 }()); 
