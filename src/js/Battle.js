@@ -294,6 +294,9 @@
             // Remove it from battle
             unit.battleData = null;
         };
+
+        // Wipe out the projectiles now that their targets will be removed
+        this.projectiles = [];
     };
 
     /**
@@ -350,18 +353,12 @@
         // Not all of this data will be relevant, but I'm leaving it in for now.
         // When this becomes production code, it should be removed until we
         // figure out that it's needed.
-        var life = 100;
         unit.battleData = {
             // Associate that unit to this battle
             battle: this,
 
             // Cooldown until this unit is ready to attack
             cooldown: 100,
-
-            life: life,
-            maxLife: life,
-            atk: 30,
-            def: 0,
 
             // The X and Y coordinates where this unit wants to move to.
             // These will be set when the unit is repositioned.

@@ -51,6 +51,10 @@
 
         this.level = 1;
         this.experience = 0;
+        this.maxLife = 100;
+        this.life = this.maxLife;
+        this.atk = 30;
+        this.def = 0;
 
         // You have a graphic index for each tile that you take up.
         // 'graphicIndexes' represents all of the tiles, from left to right, top
@@ -137,6 +141,8 @@
         var centerYPx = tileY * tileSize + tileSize / 2;
         this.setCenterX(centerXPx);
         this.setCenterY(centerYPx);
+        this.life = this.maxLife;
+        this.movingToPreBattlePosition = false;
         this.hasBeenPlaced = true;
     };
 
@@ -339,13 +345,13 @@
         if ( projectile.type == 0 ) {
 
             // Compute damage very simply
-            var bonusDamage = Math.floor(Math.random() * this.battleData.atk * .5);
+            var bonusDamage = Math.floor(Math.random() * this.atk * .5);
 
-            var damage = this.battleData.atk + bonusDamage - targetUnit.battleData.def;
+            var damage = this.atk + bonusDamage - targetUnit.def;
             damage = Math.max(0, damage);
 
             // Apply the damage
-            targetUnit.battleData.life -= damage;
+            targetUnit.life -= damage;
 
             var damageString = "" + Math.round(-1 * damage);
 
@@ -365,17 +371,15 @@
             if( targetUnit.isLiving() ) {
                 return;
             }
-            targetUnit.battleData.life = targetUnit.battleData.maxLife;
+            targetUnit.life = targetUnit.maxLife;
         }
     };
 
     /**
      * Returns true if this unit is alive.
-     *
-     * This function will not work if you're not in a battle.
      */
     window.game.Unit.prototype.isLiving = function() {
-        return this.battleData.life > 0;
+        return this.life > 0;
     };
 
     window.game.Unit.prototype.getCenterX = function() {
@@ -438,8 +442,11 @@
      * @return {null}
      */
     window.game.Unit.prototype.levelUp = function() {
-        // TODO: actually increase stats here...        
         this.level++;
+        this.atk += 5;
+        this.def += 1;
+        this.maxLife += 10;
+        this.life = this.maxLife;
     };    
 
     window.game.Unit.prototype.draw = function(ctx) {
