@@ -193,6 +193,13 @@
                 }
             } else {
                 this.x += this.isPlayer ? change : -change;
+
+                // Remove any generators that the player steps on
+                if ( this.isPlayer ) {
+                    var centerTileX = this.getCenterTileX();
+                    var centerTileY = this.getCenterTileY();
+                    game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
+                }
             }
 
             // This is the number of pixels a unit has to move off the map
@@ -201,7 +208,7 @@
             // map (because they will attack the castle when they get to the
             // boundary), but for now, it happens a lot and there's no way to
             // use or kill the unit.
-            var outOfBounds = 10 * tileSize;
+            var outOfBounds = 20 * tileSize;
             if ( this.x < -outOfBounds || this.x > currentMap.numCols * tileSize + outOfBounds ) {
                 this.removeFromMap = true;
             }
@@ -385,6 +392,14 @@
 
     window.game.Unit.prototype.getTileY = function() {
         return Math.floor(this.y / tileSize);
+    };
+
+    window.game.Unit.prototype.getCenterTileX = function() {
+        return Math.floor(this.getCenterX() / tileSize);
+    };
+
+    window.game.Unit.prototype.getCenterTileY = function() {
+        return Math.floor(this.getCenterY() / tileSize);
     };
 
     window.game.Unit.prototype.setCenterX = function(pixelX) {

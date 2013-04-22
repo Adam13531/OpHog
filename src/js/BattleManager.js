@@ -44,8 +44,8 @@
          * Combines any combinable battles. Battles are combinable when they
          * collide (see Battle.collide()).
          *
-         * This is a function so that removing battles out of the list
-         * doesn't cause any weird errors.
+         * This is a function so that removing battles out of the list doesn't
+         * cause any weird errors (we immediately return after combining)
          * 
          * @return {boolean} true if any battles were combined.
          */
@@ -59,8 +59,14 @@
 
                     battleJ = this.battles[j];
                     if ( battleI.collidesWith(battleJ) ) {
-                        battleI.combineWith(battleJ);
-                        this.battles.splice(j, 1); // no need for j++ after this since we return (and even if we DID j++, we'd need to change the 'for' loop end condition)
+                        // Absorb the smaller battle
+                        if ( battleJ.units.length < battleI.units.length ) {
+                            battleI.combineWith(battleJ);
+                            this.battles.splice(j, 1); // no need for j++ after this since we return (and even if we DID j++, we'd need to change the 'for' loop end condition)
+                        } else {
+                            battleJ.combineWith(battleI);
+                            this.battles.splice(i, 1); // see above splice comment (no need for i++)
+                        }
                         return true;
                     }
                 }
