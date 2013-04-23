@@ -52,9 +52,12 @@
         this.level = 1;
         this.experience = 0;
         this.maxLife = 100;
-        this.life = this.maxLife;
         this.atk = 30;
         this.def = 0;
+
+        // Note: there is only a base life stat. Status/items only apply to
+        // maxLife. Damage and healing are what apply to life, not [de]buffs.
+        this.restoreLife();
 
         // You have a graphic index for each tile that you take up.
         // 'graphicIndexes' represents all of the tiles, from left to right, top
@@ -141,7 +144,7 @@
         var centerYPx = tileY * tileSize + tileSize / 2;
         this.setCenterX(centerXPx);
         this.setCenterY(centerYPx);
-        this.life = this.maxLife;
+        this.restoreLife();
         this.movingToPreBattlePosition = false;
         this.hasBeenPlaced = true;
     };
@@ -344,10 +347,13 @@
 
         if ( projectile.type == 0 ) {
 
-            // Compute damage very simply
-            var bonusDamage = Math.floor(Math.random() * this.atk * .5);
+            var myAtk = this.getAtk();
+            var targetDef = targetUnit.getDef();
 
-            var damage = this.atk + bonusDamage - targetUnit.def;
+            // Compute damage very simply
+            var bonusDamage = Math.floor(Math.random() * myAtk * .5);
+
+            var damage = myAtk + bonusDamage - targetDef;
             damage = Math.max(0, damage);
 
             // Apply the damage
@@ -371,7 +377,7 @@
             if( targetUnit.isLiving() ) {
                 return;
             }
-            targetUnit.life = targetUnit.maxLife;
+            targetUnit.restoreLife();
         }
     };
 
@@ -379,7 +385,7 @@
      * Returns true if this unit is alive.
      */
     window.game.Unit.prototype.isLiving = function() {
-        return this.life > 0;
+        return this.getLife() > 0;
     };
 
     window.game.Unit.prototype.getCenterX = function() {
@@ -423,6 +429,32 @@
     };
 
     /**
+     * Returns atk stat with any status effects and items taken into account.
+     */
+    window.game.Unit.prototype.getAtk = function() {
+        return this.atk;
+    };
+    /**
+     * Returns def stat with any status effects and items taken into account.
+     */
+    window.game.Unit.prototype.getDef = function() {
+        return this.def;
+    };
+    /**
+     * Returns max life stat with any status effects and items taken into
+     * account.
+     */
+    window.game.Unit.prototype.getMaxLife = function() {
+        return this.maxLife;
+    };
+    /**
+     * Restores life to full (maxLife will have buffs taken into account)
+     */
+    window.game.Unit.prototype.restoreLife = function() {
+        this.life = this.getMaxLife();
+    };
+
+    /**
      * Grants this unit experience, leveling it up if necessary.
      * @param  {Number} experience - the amount of experience to gain
      * @return {null}
@@ -446,7 +478,7 @@
         this.atk += 5;
         this.def += 1;
         this.maxLife += 10;
-        this.life = this.maxLife;
+        this.restoreLife();
     };    
 
     window.game.Unit.prototype.draw = function(ctx) {
