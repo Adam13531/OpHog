@@ -274,7 +274,7 @@
             };
 
             // Give them a random item for every battle won.
-            game.Inventory.addItem(new game.Item(Math.floor(Math.random() * 3)));
+            game.Inventory.addItem(new game.Item(Math.floor(Math.random() * 7)));
         }
 
         for (var i = 0; i < this.units.length; i++) {
