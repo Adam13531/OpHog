@@ -163,8 +163,14 @@ textarea {
 .treasure-png {
     background-position: -0px -0px;
 }
-.gem32-png {
+.greengem32-png {
     background-position: -160px -0px;
+}
+.pinkgem32-png {
+    background-position: -128px -0px;
+}
+.redgem32-png {
+    background-position: -96px -0px;
 }
 .potion32-png {
     background-position: -384px -0px;

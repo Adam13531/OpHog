@@ -8,7 +8,7 @@
         this.particleSystem = particleSystem;
 
         // Number of seconds to live
-        this.life = .8;
+        this.ttl = .8;
         this.x = this.particleSystem.x;
         this.y = this.particleSystem.y;
 
@@ -26,7 +26,7 @@
     window.game.Particle.prototype.update = function(delta) {
         var deltaAsSec = delta / 1000;
 
-        this.life -= deltaAsSec;
+        this.ttl -= deltaAsSec;
         this.x += this.vx * deltaAsSec;
         this.y += this.vy * deltaAsSec;
     };
@@ -35,7 +35,7 @@
      * Returns true if this particle is still alive.
      */
     window.game.Particle.prototype.isLiving = function() {
-        return this.life > 0;
+        return this.ttl > 0;
     };
 
     /**
@@ -43,7 +43,7 @@
      * @param {Object} ctx - the canvas context
      */
     window.game.Particle.prototype.draw = function(ctx) {
-        var alpha = this.life;
+        var alpha = this.ttl;
         var radius = 5;
         ctx.save();
         var gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, radius);
