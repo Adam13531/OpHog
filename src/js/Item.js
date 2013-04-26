@@ -36,16 +36,16 @@
      * Note: the htmlDescription will have '[name]<br/>' prepended to it.
      */
     window.game.ItemType = {
-        GEM: {
+        STAT_GEM: {
             id: 0,
             itemLevel:1,
             name:'The Gem of All Knowledge',
-            htmlDescription:'<font color="#a3a3cc"><b>Gives the user the keen insight to tackle everyday life in the ghetto.<b/></font>',
+            htmlDescription:'<font color="#a3a3cc"><b>Greatly increases the stats of the target unit.<b/></font>',
             usable:true,
-            useTarget: game.UseTarget.PLAYER_AND_ENEMY_UNIT,
+            useTarget: game.UseTarget.PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
-            cssClass:'item-sprite gem32-png'
+            cssClass:'item-sprite redgem32-png'
         },
         SHIELD: {
             id: 1,
@@ -62,6 +62,17 @@
             htmlDescription:'<font color="#660000"><b>It is said that this sword can actually only pierce hearts.<b/></font>',
             equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
             cssClass:'item-sprite sword32-png'
+        },
+        HEAL_GEM: {
+            id: 3,
+            itemLevel:1,
+            name:'Gem of Regen',
+            htmlDescription:'<font color="#a3a3cc"><b>Slowly restores the target unit\'s life.<b/></font>',
+            usable:true,
+            useTarget: game.UseTarget.PLAYER_UNIT,
+            stackable:true,
+            startingQuantity:3,
+            cssClass:'item-sprite pinkgem32-png'
         },
         POTION: {
             id: 4,
@@ -84,6 +95,17 @@
             stackable:true,
             startingQuantity:3,
             cssClass:'item-sprite leaf32-png'
+        },
+        POISON_GEM: {
+            id: 6,
+            itemLevel:1,
+            name:'Essence of Poison',
+            htmlDescription:'<font color="#a3a3cc"><b>Poisons the target unit, slowly destroying it.<b/></font>',
+            usable:true,
+            useTarget: game.UseTarget.ENEMY_UNIT,
+            stackable:true,
+            startingQuantity:3,
+            cssClass:'item-sprite greengem32-png'
         },
     };
 
@@ -157,22 +179,42 @@
 
     /**
      * Uses an item on a unit. The caller must know whether this item is usable
-     * on a unit.
+     * on a unit (so that he can pass the correct argument (a unit) in)
      * @param  {Unit} unit - the target
      * @return {null}
      */
     window.game.Item.prototype.useOnUnit = function(unit) {
         this.quantity--;
 
-        // Spawn a particle system on the unit so that you can tell the item was
-        // used. I'm doing this for now because there's no other effect besides
-        // decreasing the quantity.
+        switch(this.itemID) {
+            case game.ItemType.STAT_GEM.id:
+                var statusEffect = new game.StatusEffect(unit, game.EffectType.STAT_BOOST);
+                unit.addStatusEffect(statusEffect);
+                break;
+            case game.ItemType.HEAL_GEM.id:
+                var statusEffect = new game.StatusEffect(unit, game.EffectType.REGEN);
+                unit.addStatusEffect(statusEffect);
+                break;
+            case game.ItemType.POISON_GEM.id:
+                var statusEffect = new game.StatusEffect(unit, game.EffectType.POISON);
+                unit.addStatusEffect(statusEffect);
+                break;
+            case game.ItemType.POTION.id:
+                unit.restoreLife();
+                break;
+            default:
+                console.log('Unrecognized item type: ' + this.itemID);
+                break;
+        }
+
         var particleSystem = new game.ParticleSystem(unit.getCenterX(), unit.getCenterY());
         game.ParticleManager.addSystem(particleSystem);
     };
 
     /**
-     * Attempts to use the item on the map.
+     * Attempts to use the item on the map. The caller must know whether this
+     * item is usable on the map (so that he can pass the correct arguments
+     * (coords) in)
      * @param  {Number} x - world coordinate
      * @param  {Number} y - world coordinate
      * @return {Boolean} true if the item was used.

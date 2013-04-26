@@ -49,6 +49,12 @@
         this.id = window.game.unitID++;
         this.hasBeenPlaced = false;
 
+        /**
+         * StatusEffects affecting this unit.
+         * @type {Array:StatusEffect}
+         */
+        this.statusEffects = [];
+
         this.level = 1;
         this.experience = 0;
         this.maxLife = 100;
@@ -147,6 +153,9 @@
         this.restoreLife();
         this.movingToPreBattlePosition = false;
         this.hasBeenPlaced = true;
+
+        // Purge status effects
+        this.statusEffects = [];
     };
 
 
@@ -167,6 +176,12 @@
             return;
         }
 
+        // Status effects are also purged when you place a unit, so it wouldn't
+        // make sense for them to exist while the unit isn't placed (e.g. if we
+        // ever show stats in the unit placement UI or something, we wouldn't
+        // want buffs to be taken into account if they won't exist once the unit
+        // is placed).
+        this.statusEffects = [];
         this.hasBeenPlaced = false;
         this.removeFromMap = false;
         game.UnitPlacementUI.updateUnit(this);
@@ -180,6 +195,11 @@
         return this.hasBeenPlaced && !this.isInBattle();
     }
 
+    /**
+     * Updates this unit, moving it, making it execute its battle turn, etc.
+     * @param  {Number} delta - time in ms since this function was last called
+     * @return {null}
+     */
     window.game.Unit.prototype.update = function(delta) {
         // We only update if the unit was placed
         if ( !this.hasBeenPlaced ) return;
@@ -230,6 +250,34 @@
         if ( this.isPlayer ) {
             currentMap.setFog(this.getTileX(), this.getTileY(), 3, false, true);
         }
+
+        this.updateStatusEffects(delta);
+    };
+
+    /**
+     * Updates any status effects, removing the ones that are finished.
+     * @param  {Number} delta - time in ms since this function was last called
+     * @return {null}
+     */
+    window.game.Unit.prototype.updateStatusEffects = function(delta) {
+        for (var i = 0; i < this.statusEffects.length; i++) {
+            var effect = this.statusEffects[i];
+            effect.update(delta);
+
+            if ( !effect.isLiving() ) {
+                this.statusEffects.splice(i, 1);
+                i--;
+                continue;
+            }
+        };
+    };
+
+    /**
+     * Adds a status effect to this unit.
+     * @param {StatusEffect} statusEffect - the effect to add
+     */
+    window.game.Unit.prototype.addStatusEffect = function(statusEffect) {
+        this.statusEffects.push(statusEffect);
     };
 
     window.game.Unit.prototype.updateBattle = function(delta) {
@@ -357,16 +405,7 @@
             damage = Math.max(0, damage);
 
             // Apply the damage
-            targetUnit.life -= damage;
-
-            var damageString = "" + Math.round(-1 * damage);
-
-            var textObj = new game.TextObj(targetUnit.getCenterX(), targetUnit.y, damageString, false);
-            game.TextManager.addTextObj(textObj);
-
-            if ( !targetUnit.isLiving() ) {
-                battle.unitDied(targetUnit);
-            }
+            targetUnit.modifyLife(-damage, true);
         } else {
             // If the target is already alive, then we don't do anything here.
             // This is better than just killing the projectile as soon as the
@@ -382,10 +421,39 @@
     };
 
     /**
+     * Modifies this unit's life.
+     * @param  {Number} amount          - amount to modify. Positive is healing,
+     * negative is damage.
+     * @param  {Boolean} spawnTextEffect - if true, this will spawn a text
+     * effect at the unit showing what happened.
+     * @return {null}
+     */
+    window.game.Unit.prototype.modifyLife = function(amount, spawnTextEffect) {
+        // Modify life
+        this.life += amount;
+
+        // Spawn a text effect if specified
+        if ( spawnTextEffect ) {
+            var lifeChangeString = "" + Math.round(amount);
+            var textObj = new game.TextObj(this.getCenterX(), this.y, lifeChangeString, false);
+            game.TextManager.addTextObj(textObj);
+        }
+
+        // Check to see if we killed the unit
+        if ( !this.isLiving() ) {
+            if ( this.battleData != null ) {
+                this.battleData.battle.unitDied(this);
+            } else {
+                this.removeFromMap = true;
+            }
+        }
+    };
+
+    /**
      * Returns true if this unit is alive.
      */
     window.game.Unit.prototype.isLiving = function() {
-        return this.getLife() > 0;
+        return this.life > 0;
     };
 
     window.game.Unit.prototype.getCenterX = function() {
@@ -429,23 +497,45 @@
     };
 
     /**
+     * Go through each StatusEffect that is affecting this unit and sum the
+     * amount to add/subtract for a given stat.
+     * @param  {String} statType - the stat you're interested in
+     * @return {Number}          total bonus/drain on that stat
+     */
+    window.game.Unit.prototype.getEffectStatModifiers = function(statType) {
+        var modifier = 0;
+
+        for (var i = 0; i < this.statusEffects.length; i++) {
+            var effect = this.statusEffects[i];
+            if ( statType == 'atk' ) modifier += effect.atkModifier;
+            else if ( statType == 'def' ) modifier += effect.defModifier;
+            else if ( statType == 'maxLife' ) modifier += effect.maxLifeModifier;
+        }
+
+        return modifier;
+    };
+
+    /**
      * Returns atk stat with any status effects and items taken into account.
      */
     window.game.Unit.prototype.getAtk = function() {
-        return this.atk;
+        var atkBonus = this.getEffectStatModifiers('atk');
+        return this.atk + atkBonus;
     };
     /**
      * Returns def stat with any status effects and items taken into account.
      */
     window.game.Unit.prototype.getDef = function() {
-        return this.def;
+        var defBonus = this.getEffectStatModifiers('def');
+        return this.def + defBonus;
     };
     /**
      * Returns max life stat with any status effects and items taken into
      * account.
      */
     window.game.Unit.prototype.getMaxLife = function() {
-        return this.maxLife;
+        var maxLifeBonus = this.getEffectStatModifiers('maxLife');
+        return this.maxLife + maxLifeBonus;
     };
     /**
      * Restores life to full (maxLife will have buffs taken into account)
@@ -491,6 +581,13 @@
             // for big units.
             objSheet.drawSprite(ctx, 19, this.getCenterX() - tileSize / 2, this.getCenterY() - tileSize / 2, !this.isPlayer);              
         } else {
+
+            // Draw all status effects
+            for (var i = 0; i < this.statusEffects.length; i++) {
+                var effect = this.statusEffects[i];
+                effect.draw(ctx);
+            }
+
             // The index in this.graphicIndexes to draw.
             var index = 0;
             for (var j = 0; j < this.heightInTiles; j++) {
