@@ -53,6 +53,9 @@
                 'font-size': '.75em'
             });
 
+            this.$sellItemButton = $('#sellItemButton');
+            this.$sellItemButton.button();
+
             this.$useItemInstructions = $('#useItemInstructions');
 
             // Position the instructions based on the canvas so that it looks
@@ -70,7 +73,14 @@
             });
 
             this.$useItemButton.button('disable');
+            this.$sellItemButton.button('disable');
             this.$useItemInstructions.hide();
+
+            this.$sellItemButton.click(function(inventoryUI) {
+                return function() {
+                    inventoryUI.sellSelectedItem();
+                }
+            }(this));
 
             this.$useItemButton.click(function(inventoryUI) {
                 return function() {
@@ -132,6 +142,20 @@
          */
         isInUseMode: function() {
             return this.usingItem != null;
+        },
+
+        /**
+         * Sells the selected item.
+         *
+         * For now, this actually just destroys the item.
+         * @return {null}
+         */
+        sellSelectedItem: function() {
+            if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
+                return;
+            }
+
+            this.selectedSlotUI.slot.setItem(null);
         },
 
         /**
@@ -338,6 +362,24 @@
             //     opacity: '.5' // note: opacity starts at .95
             // });
         },
+
+        /**
+         * Updates the sell button with the appropriate text. Also
+         * enables/disables the button.
+         * @return {null}
+         */
+        updateSellButton: function() {
+            if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
+                this.$sellItemButton.button('disable');
+                this.$sellItemButton.html('<span class="ui-button-text" style="font-size:.75em">Sell</span>');
+                return;
+            }
+
+            var item = this.selectedSlotUI.slot.item;
+
+            this.$sellItemButton.button('enable');
+            this.$sellItemButton.html('<span class="ui-button-text" style="font-size:.75em">Sell</span><span style="font-size:.6em">$' + item.itemID * 1000 + '</span>');
+        },
         
         /**
          * This should be called whenever a Slot is added to the inventory.
@@ -444,6 +486,8 @@
             // Update the description
             this.updateDescription();
 
+            this.updateSellButton();
+
             // It's possible that we now need to update the use instructions
             // too, for example, if we just acquired more of the item that we're
             // currently using.
@@ -460,6 +504,7 @@
             }
             this.selectedSlotUI = slotUI;
             slotUI.selectSlot();
+            this.updateSellButton();
             this.updateDescription();
         },
 
