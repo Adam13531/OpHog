@@ -243,6 +243,8 @@
         screenWidth = parseInt($('#canvas').attr('width'));
         screenHeight = parseInt($('#canvas').attr('height'));
 
+        game.Camera.initialize();
+
         addKeyboardListeners();
     }
 
@@ -260,6 +262,12 @@
         });
 
         $(document).keyup(function(evt) {
+            // Shake the camera when you press 'I'
+            if (evt.keyCode == game.Key.DOM_VK_I) {
+                // Shake the camera for approximately 20 game loops
+                game.Camera.shakeTimer = 20 * 16;
+            }
+
             var itemID = null;
             if (evt.keyCode == game.Key.DOM_VK_O) {
                 itemID = game.ItemType.SHIELD.id;
@@ -370,7 +378,7 @@
 
         game.alphaBlink += deltaAsSec;
 
-        game.Camera.handleInput(keysDown, delta);
+        game.Camera.update(keysDown, delta);
 
         // Draw a solid background on the canvas in case anything is transparent
         // This should eventually be unnecessary - we should instead draw a

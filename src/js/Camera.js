@@ -50,6 +50,25 @@
         maxPanY: 0,
 
         /**
+         * When this is greater than zero, the camera will shake. It goes down
+         * every update loop. It is the time in ms to shake for.
+         * @type {Number}
+         */
+        shakeTimer: 0,
+
+        /**
+         * The amount to shake the screen horizontally.
+         * @type {Number}
+         */
+        shakeX: 0,
+
+        /**
+         * See shakeX
+         * @type {Number}
+         */
+        shakeY: 0,
+
+        /**
          * This is used by the drag event handlers to keep track of where the
          * mouse was when you started dragging.
          * @type {Object}
@@ -64,7 +83,15 @@
         pinchZoomStartingScale: 0,
 
         /**
-         * Handles some keys to pan/zoom the camera.
+         * Sets the view so that zoom and pan values are within valid ranges.
+         * @return {null}
+         */
+        initialize: function() {
+            this.zoomChanged();
+        },
+
+        /**
+         * Updates the camera, handling input and shaking if necessary.
          * @param  {Object} keysDown A dictionary of number-->boolean. The
          * number is a keycode, and the boolean represents whether that key is
          * held.
@@ -72,24 +99,56 @@
          * was called.
          * @return {null}
          */
+        update: function(keysDown, delta) {
+            this.handleInput(keysDown, delta);
+            this.updateShake(delta);
+        },
+
+        /**
+         * Handles some keys to pan/zoom the camera.
+         *
+         * See 'update' for a description of the arguments.
+         */
         handleInput: function(keysDown, delta) {
             var deltaAsSec = delta / 1000;
             var panSpeed = 250 * deltaAsSec;
-            if (keysDown[game.Key.DOM_VK_RIGHT]) {
+            if (keysDown[game.Key.DOM_VK_RIGHT] || keysDown[game.Key.DOM_VK_D]) {
                 this.curPanX += panSpeed;
             }
-            if (keysDown[game.Key.DOM_VK_LEFT]) {
+            if (keysDown[game.Key.DOM_VK_LEFT] || keysDown[game.Key.DOM_VK_A]) {
                 this.curPanX -= panSpeed;
             }
-            if (keysDown[game.Key.DOM_VK_DOWN]) {
+            if (keysDown[game.Key.DOM_VK_DOWN] || keysDown[game.Key.DOM_VK_S]) {
                 this.curPanY += panSpeed;
             }
-            if (keysDown[game.Key.DOM_VK_UP]) {
+            if (keysDown[game.Key.DOM_VK_UP] || keysDown[game.Key.DOM_VK_W]) {
                 this.curPanY -= panSpeed;
             }
 
             // Clamp the pan values so that we don't scroll out of bounds.
             this.clampPanValues();
+        },
+
+        /**
+         * If the camera is shaking, then we update the coordinates here.
+         * @param  {Number} delta - number of ms since this was last called
+         * @return {null}
+         */
+        updateShake: function(delta) {
+            if ( this.shakeTimer <= 0 ) {
+                return;
+            }
+
+            var amplitude = 50;
+            var offset = 10;
+            this.shakeX = Math.sin(game.alphaBlink * amplitude) * offset;
+            this.shakeY = -Math.cos(game.alphaBlink * amplitude) * offset;
+
+            this.shakeTimer -= delta;
+            if ( this.shakeTimer <= 0 ) {
+                this.shakeX = 0;
+                this.shakeY = 0;
+            }
         },
 
         /**
@@ -112,14 +171,14 @@
          * @return {Number}   world coordinate
          */
         canvasXToWorldX: function(x) {
-            return (x / game.Camera.curZoom) + game.Camera.curPanX;
+            return (x / this.curZoom) + this.curPanX + this.shakeX;
         },
 
         /**
          * See canvasXToWorldX.
          */
         canvasYToWorldY: function(y) {
-            return y = (y / game.Camera.curZoom) + game.Camera.curPanY;;
+            return y = (y / this.curZoom) + this.curPanY + this.shakeY;
         },
             
         /**
@@ -156,7 +215,7 @@
          */
         scaleAndTranslate: function(ctx) {
             ctx.scale(this.curZoom, this.curZoom);
-            ctx.translate(-this.curPanX, -this.curPanY);
+            ctx.translate(-this.curPanX - this.shakeX, -this.curPanY - this.shakeY);
         },
 
         /**
