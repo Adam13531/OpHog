@@ -145,10 +145,26 @@
             if (!this.isInUseMode()) return false;
 
             var useTarget = this.usingItem.useTarget;
-            return ( useTarget == game.UseTarget.PLAYER_UNIT && unit.isPlayer ) ||
-                ( useTarget == game.UseTarget.PLAYER_AND_ENEMY_UNIT ) ||
-                ( useTarget == game.UseTarget.ENEMY_UNIT && !unit.isPlayer );
+            var isPlayer = unit.isPlayer;
+            var isLiving = unit.isLiving();
+            
+            if (
+                ( useTarget == game.UseTarget.LIVING_PLAYER_UNIT && isPlayer && isLiving ) ||
+                ( useTarget == game.UseTarget.LIVING_PLAYER_AND_ENEMY_UNIT && isLiving ) ||
+                ( useTarget == game.UseTarget.LIVING_ENEMY_UNIT && !isPlayer && isLiving )
+                ) {
+                return true;
+            }
+            
+            if (
+                ( useTarget == game.UseTarget.DEAD_PLAYER_UNIT && isPlayer && !isLiving ) ||
+                ( useTarget == game.UseTarget.DEAD_PLAYER_AND_ENEMY_UNIT && !isLiving ) ||
+                ( useTarget == game.UseTarget.DEAD_ENEMY_UNIT && !isPlayer && !isLiving )
+                ) {
+                return true;
+            }
 
+            return false;
         },
 
         /**
@@ -165,9 +181,9 @@
             var used = false;
 
             // Check to see if you're targeting a unit
-            if ( useTarget == game.UseTarget.PLAYER_UNIT || 
-                useTarget == game.UseTarget.PLAYER_AND_ENEMY_UNIT 
-                || useTarget == game.UseTarget.ENEMY_UNIT ) {
+            if ( useTarget == game.UseTarget.LIVING_PLAYER_UNIT || 
+                useTarget == game.UseTarget.LIVING_PLAYER_AND_ENEMY_UNIT 
+                || useTarget == game.UseTarget.LIVING_ENEMY_UNIT ) {
 
                 // Get all units at that point; we want to use the item on the
                 // first VALID unit that we find, not just the first unit.
@@ -255,16 +271,28 @@
             var useTarget = this.usingItem.useTarget;
 
             switch(useTarget) {
-                case game.UseTarget.PLAYER_UNIT:
-                    targetString = 'Tap one of your units';
+                case game.UseTarget.DEAD_PLAYER_UNIT:
+                    targetString = 'Tap one of your dead units';
+                    break;
+
+                case game.UseTarget.LIVING_PLAYER_UNIT:
+                    targetString = 'Tap one of your living units';
                     break;
                 
-                case game.UseTarget.PLAYER_AND_ENEMY_UNIT:
-                    targetString = 'Tap any unit';
+                case game.UseTarget.DEAD_PLAYER_AND_ENEMY_UNIT:
+                    targetString = 'Tap any dead unit';
+                    break;
+
+                case game.UseTarget.LIVING_PLAYER_AND_ENEMY_UNIT:
+                    targetString = 'Tap any living unit';
                     break;
                 
-                case game.UseTarget.ENEMY_UNIT:
-                    targetString = 'Tap an enemy unit';
+                case game.UseTarget.DEAD_ENEMY_UNIT:
+                    targetString = 'Tap a dead enemy unit';
+                    break;
+
+                case game.UseTarget.LIVING_ENEMY_UNIT:
+                    targetString = 'Tap a living enemy unit';
                     break;
 
                 case game.UseTarget.MAP:

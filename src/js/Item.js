@@ -14,9 +14,12 @@
     // 
     // They represent the possible target for an item.
     window.game.UseTarget = {
-        PLAYER_UNIT: 'player units',
-        PLAYER_AND_ENEMY_UNIT: 'player and enemy units',
-        ENEMY_UNIT: 'enemy units',
+        LIVING_PLAYER_UNIT: 'player units',
+        LIVING_PLAYER_AND_ENEMY_UNIT: 'player and enemy units',
+        LIVING_ENEMY_UNIT: 'enemy units',
+        DEAD_PLAYER_UNIT: 'dead player units',
+        DEAD_PLAYER_AND_ENEMY_UNIT: 'dead player and enemy units',
+        DEAD_ENEMY_UNIT: 'dead enemy units',
         MAP: 'map',
 
         // TODO: when I finally use this, I think the best way to code it would
@@ -42,7 +45,7 @@
             name:'The Gem of All Knowledge',
             htmlDescription:'<font color="#a3a3cc"><b>Greatly increases the stats of the target unit.<b/></font>',
             usable:true,
-            useTarget: game.UseTarget.PLAYER_UNIT,
+            useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
             cssClass:'item-sprite redgem32-png'
@@ -69,7 +72,7 @@
             name:'Gem of Regen',
             htmlDescription:'<font color="#a3a3cc"><b>Slowly restores the target unit\'s life.<b/></font>',
             usable:true,
-            useTarget: game.UseTarget.PLAYER_UNIT,
+            useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
             cssClass:'item-sprite pinkgem32-png'
@@ -80,7 +83,7 @@
             name:'Joachim\'s Wisdom',
             htmlDescription:'<font color="#a3a3cc"><b>Drinking this will make you smart.<b/></font>',
             usable:true,
-            useTarget: game.UseTarget.PLAYER_UNIT,
+            useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
             cssClass:'item-sprite potion32-png'
@@ -102,7 +105,7 @@
             name:'Essence of Poison',
             htmlDescription:'<font color="#a3a3cc"><b>Poisons the target unit, slowly destroying it.<b/></font>',
             usable:true,
-            useTarget: game.UseTarget.ENEMY_UNIT,
+            useTarget: game.UseTarget.LIVING_ENEMY_UNIT,
             stackable:true,
             startingQuantity:3,
             cssClass:'item-sprite greengem32-png'

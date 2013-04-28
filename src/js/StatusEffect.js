@@ -136,10 +136,10 @@
     window.game.StatusEffect.prototype.proc = function() {
         switch(this.type) {
             case game.EffectType.REGEN:
-                this.target.modifyLife(50, true);
+                this.target.modifyLife(50, true, false);
                 break;
             case game.EffectType.POISON:
-                this.target.modifyLife(-50, true);
+                this.target.modifyLife(-50, true, false);
 
                 // Spawn a particle system too
                 var particleSystem = new game.ParticleSystem(this.target.getCenterX(), this.target.getCenterY());

@@ -61,8 +61,13 @@
         this.atk = 30;
         this.def = 0;
 
-        // Note: there is only a base life stat. Status/items only apply to
+        // Note: there is only a base life stat; status and items only apply to
         // maxLife. Damage and healing are what apply to life, not [de]buffs.
+        // 
+        // We set it to 0 here simply so that when we call restoreLife, it isn't
+        // equal to 'undefined'.
+        this.life = 0;
+
         this.restoreLife();
 
         // You have a graphic index for each tile that you take up.
@@ -227,7 +232,7 @@
                 if ( this.isPlayer ) {
                     var centerTileX = this.getCenterTileX();
                     var centerTileY = this.getCenterTileY();
-                    game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
+                    // game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
                 }
             }
 
@@ -405,7 +410,7 @@
             damage = Math.max(0, damage);
 
             // Apply the damage
-            targetUnit.modifyLife(-damage, true);
+            targetUnit.modifyLife(-damage, true, false);
         } else {
             // If the target is already alive, then we don't do anything here.
             // This is better than just killing the projectile as soon as the
@@ -426,11 +431,41 @@
      * negative is damage.
      * @param  {Boolean} spawnTextEffect - if true, this will spawn a text
      * effect at the unit showing what happened.
+     * @param {Boolean} letLifeGoAboveMax - if true, your life can go higher
+     * than your maximum. If false, your life will not be added to beyond the
+     * maximum, but it won't be capped at your max if it was already that way
+     * when this function was called. For example, if a unit has 105% life
+     * already and you call this function with 'false' and try to add 10 more
+     * life, you'll still be at 105% (no change).
      * @return {null}
      */
-    window.game.Unit.prototype.modifyLife = function(amount, spawnTextEffect) {
+    window.game.Unit.prototype.modifyLife = function(amount, spawnTextEffect, letLifeGoAboveMax) {
         // Modify life
-        this.life += amount;
+        var maxLife = this.getMaxLife();
+
+        // Special-case the heal logic
+        if ( amount > 0 ) {
+            var atMaxAlready = this.life >= maxLife;
+
+            // If we aren't at maximum or if we're allowed to heal past maximum,
+            // then we can add life now.
+            if ( !atMaxAlready || letLifeGoAboveMax ) {
+                this.life += amount;
+
+                var atMaxNow = this.life >= maxLife;
+
+                // If you were already at the maximum to begin with, then we
+                // don't ever want to cap your life since that could end up
+                // doing damage to you. We only want to cap it if this specific
+                // healing pushed us beyond the maximum.
+                if ( !atMaxAlready && atMaxNow && !letLifeGoAboveMax ) {
+                    this.life = Math.min(this.life, maxLife);
+                }
+            }
+
+        } else {
+            this.life += amount;
+        }
 
         // Spawn a text effect if specified
         if ( spawnTextEffect ) {
@@ -538,10 +573,13 @@
         return this.maxLife + maxLifeBonus;
     };
     /**
-     * Restores life to full (maxLife will have buffs taken into account)
+     * Restores life to full (maxLife will have buffs taken into account).
+     *
+     * If you were already beyond your maximum, then this won't bring your life
+     * down.
      */
     window.game.Unit.prototype.restoreLife = function() {
-        this.life = this.getMaxLife();
+        this.life = Math.max(this.life, this.getMaxLife());
     };
 
     /**
