@@ -262,8 +262,8 @@
         });
 
         $(document).keyup(function(evt) {
-            // Shake the camera when you press 'I'
-            if (evt.keyCode == game.Key.DOM_VK_I) {
+            // Shake the camera when you press 'U'
+            if (evt.keyCode == game.Key.DOM_VK_U) {
                 // Shake the camera for approximately 20 game loops
                 game.Camera.shakeTimer = 20 * 16;
             }
