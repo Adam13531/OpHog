@@ -207,7 +207,14 @@
                 // Check to see if we depleted the item
                 if ( this.usingItem.isDepleted() ) {
                     this.removeDepletedItems();
-                    this.exitUseMode();
+
+                    // If we have another stack of that item, start using that.
+                    var slotWithSameItem = game.Inventory.getSlotWithItem(this.usingItem);
+                    if ( slotWithSameItem == null ) {
+                        this.exitUseMode();
+                    } else {
+                        this.usingItem = slotWithSameItem.item;
+                    }
                 } else {
                     // We call this because the item still exists, but
                     // its quantity is lower.
@@ -265,7 +272,8 @@
             var item = this.usingItem;
             if ( item == null ) return;
 
-            var quantityString = item.stackable ? ' (' + item.quantity + ')' : '';
+            var totalQuantity = game.Inventory.getQuantityAcrossAllSlots(item);
+            var quantityString = item.stackable ? ' (' + totalQuantity + ')' : '';
             var targetString;
 
             var useTarget = this.usingItem.useTarget;
