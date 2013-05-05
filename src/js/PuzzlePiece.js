@@ -10,9 +10,7 @@
     window.game.PUZZLE_PIECE_SIZE = 5; // Length of a side
 
     window.game.PuzzlePiece = function PuzzlePiece(tiles) {
-        // TODO: Should be taken in as an argument or something
         this.tiles = tiles;
-
         this.leftEdgeOpenings = [];  // [0,0,1,0,0]
         this.rightEdgeOpenings = []; // [0 1 0 0 0]
         this.topEdgeOpenings = [];   // [0,0,0,0,0]
@@ -29,6 +27,20 @@
             this.topEdgeOpenings.push(this.tiles[i] == 1);
             this.bottomEdgeOpenings.push(this.tiles[i + (game.PUZZLE_PIECE_SIZE * (game.PUZZLE_PIECE_SIZE-1))] == 1);
         };
+    };
+
+    window.game.PuzzlePiece.prototype.applyToMapArray = function(mapArray, width, x, y) {
+        // Go through each tile in the puzzle piece...
+        for (var i = 0; i < this.tiles.length; i++) {
+
+            // Figure out "row" and "column", which are offsets from the beginning of the puzzle piece
+            var row = Math.floor(i / game.PUZZLE_PIECE_SIZE);
+            var column = i % game.PUZZLE_PIECE_SIZE;
+
+            // Apply our offsets to the passed-in coordinates
+            var index2 = (y + row) * width + x + column;
+            mapArray[index2] = this.tiles[i];
+        }
     };
 
     window.game.PuzzlePiece.prototype.canFitTogether = function(otherPuzzlePiece) {
@@ -83,23 +95,5 @@
 
         return fitFlags;
     };
-
-
-    // THIS DOES NOT BELONG IN HERE. THIS IS HOW THE CALLER USES THE "canFitTogether" FUNCTION
-    // caller = function() {
-    //     var fitFlags = piece1.canFitTogether(piece2);
-    //     if ( fitFlags & RIGHT ) {
-            
-    //     }
-    //     if ( fitFlags & TOP ) {
-            
-    //     }
-    //     if ( fitFlags & LEFT ) {
-            
-    //     }
-
-
-    // }
-
 
 }());

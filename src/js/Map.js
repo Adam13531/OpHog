@@ -30,7 +30,8 @@
             this.fog.push(false);
         };
 
-        this.numCols = 25;
+        // this.numCols = 25;
+        this.numCols = 15;
         this.numRows = this.mapTiles.length / this.numCols;
 
         // Clear some fog around the spawners. These coordinates are hard-coded
