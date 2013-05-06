@@ -501,10 +501,6 @@
                 if ( neighbors1.indexOf(tile3) != -1 ) {
 
                     if ( this.areTilesCardinal(tile1, tile3) ) {
-                        // This code would fix it, but there's no need to fix it when we can just remove the entire path
-                        // path.splice(j+1, 1);
-                        // j--;
-
                         paths.splice(i,1);
                         i--;
                         break;
@@ -537,7 +533,6 @@
                 var tile3 = path[j+2];
                 var potentialMiddleTile = this.mapTiles[tile1.tileIndex + 1];
                 if ( tile2.x == tile1.x + 1 && tile2.y != tile1.y && tile3.y == tile1.y && tile3.x == tile1.x + 2 && potentialMiddleTile.isWalkable ) {
-                    // path[j+1] = potentialMiddleTile; // this would fix it, but there's no need to fix it when we can just remove the entire path
                     paths.splice(i,1);
                     i--;
                     break;
