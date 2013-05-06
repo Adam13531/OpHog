@@ -28,8 +28,8 @@
      * @param  {Array} array An array to choose from.
      * @return {Object}       A random element from that array.
      */
-    window.game.util.randomArrayElement = function(array, hi, there) {
-        if ( array == null ) return null;
+    window.game.util.randomArrayElement = function(array) {
+        if ( array == null || array.length == 0 ) return null;
         return array[Math.floor(Math.random() * array.length)];
     };
 
@@ -51,6 +51,31 @@
             newArray.push(array[i]);
         };
         return newArray;
+    };
+
+    /**
+     * Pushes all members of pushThisEntireArray to array.
+     * @param  {Array} array               - array to add to
+     * @param  {Array} pushThisEntireArray - array whose elements you'll add
+     * @return {null}
+     */
+    window.game.util.pushAllToArray = function(array, pushThisEntireArray) {
+        if ( array == null || pushThisEntireArray == null ) return;
+        for (var i = 0; i < pushThisEntireArray.length; i++) {
+            array.push(pushThisEntireArray[i]);
+        };
+    };
+
+    /**
+     * Given an array, this will return the reverse of a copy of it, so the
+     * original array will not be modified.
+     *
+     * E.g. [1,2,3] becomes [3,2,1]
+     * @param  {Array} array - the array to reverse
+     * @return {Array}       - a reversed copy of the array
+     */
+    window.game.util.copyAndReverseArray = function(array) {
+        return array.slice(0).reverse();
     };
 
     /**

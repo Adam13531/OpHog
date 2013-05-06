@@ -103,7 +103,7 @@
             };
             for (var i = 0; i < 30; i++) {
                 var newUnit = new game.Unit(game.UnitType.DEBUG,false);
-                newUnit.placeUnit(24,9);
+                newUnit.placeUnit(23,9);
                 game.UnitManager.addUnit(newUnit);
             };
         });
@@ -316,7 +316,7 @@
             }
             if ( enemyUnitType != null ) {
                 var newUnit = new game.Unit(enemyUnitType,false);
-                newUnit.placeUnit(24,9);
+                newUnit.placeUnit(23,9);
                 game.UnitManager.addUnit(newUnit);
             }
 
@@ -330,7 +330,7 @@
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
                     var newUnit = new game.Unit(game.UnitType.DEBUG,false);
-                    newUnit.placeUnit(24,9);
+                    newUnit.placeUnit(23,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }

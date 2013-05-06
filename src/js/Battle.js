@@ -190,7 +190,7 @@
             }
         };
 
-        return window.game.util.randomArrayElement(unitsToChooseFrom);
+        return game.util.randomArrayElement(unitsToChooseFrom);
     };
 
     /**
@@ -307,13 +307,15 @@
      * is over.
      * @param  {Unit} summoner     - the unit doing the summoning
      * @param  {Unit} summonedUnit - the unit being summoned
+     * @param  {Number} returnX    - world coordinate to return to after battle
+     * @param  {Number} returnY    - world coordinate to return to after battle
      * @return {null}
      */
-    window.game.Battle.prototype.summonedUnit = function(summoner, summonedUnit) {
+    window.game.Battle.prototype.summonedUnit = function(summoner, summonedUnit, returnX, returnY) {
         this.addUnit(summonedUnit);
 
-        summonedUnit.battleData.originalX = summoner.battleData.originalX;
-        summonedUnit.battleData.originalY = summoner.battleData.originalY;
+        summonedUnit.battleData.originalX = returnX;
+        summonedUnit.battleData.originalY = returnY;
     },
 
     /**
@@ -371,10 +373,8 @@
             // The order in which they joined the whole battle
             absoluteOrder: absoluteOrder,
 
-            // These are the X and Y coordinates that the unit should return to
-            // if he's alive when the battle ends. These coordinates should
-            // always refer to a path so that the unit knows where to move when
-            // it's done with battle.
+            // These are the X and Y world coordinates that the unit should
+            // return to if he's alive when the battle ends.
             originalX: originalX,
             originalY: originalY
         };

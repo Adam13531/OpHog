@@ -142,6 +142,24 @@
         // they represent (in world coordinates) where to move.
         this.preBattleX = null;
         this.preBattleY = null;
+
+        // The destination along the path, in pixels. This will be the center of
+        // some tile; we use the center so that we can account for non-1x1
+        // units.
+        this.destX = null;
+        this.destY = null;
+
+        /**
+         * A reference to one of the current map's paths.
+         * @type {Array:Tile}
+         */
+        this.whichPathToTake = null;
+
+        /**
+         * This represents which Tile we're on in the path.
+         * @type {Number}
+         */
+        this.indexInPath = 0;
     };
 
     /**
@@ -158,6 +176,10 @@
         this.restoreLife();
         this.movingToPreBattlePosition = false;
         this.hasBeenPlaced = true;
+
+        // Make sure to remove our current path so that we find a new one
+        this.whichPathToTake = null;
+        this.acquireNewDestination();
 
         // Purge status effects
         this.statusEffects = [];
@@ -201,6 +223,48 @@
     }
 
     /**
+     * If a unit doesn't have a path, this will find one for the unit. If a unit
+     * DOES have a path, then this will set its current destination to the next
+     * tile in that path.
+     * @return {null}
+     */
+    window.game.Unit.prototype.acquireNewDestination = function() {
+        // All pathfinding is based on centers to account for non- 1x1 units
+        var centerTileX = this.getCenterTileX();
+        var centerTileY = this.getCenterTileY();
+
+        if ( this.whichPathToTake == null ) {
+
+            var pathAndIndex = currentMap.getPathStartingWith(centerTileX, centerTileY, this.isPlayer);
+            if ( pathAndIndex == null ) {
+                // Here's how I think this happened before, which might give
+                // insight into how this could happen again if you see this: a
+                // unit was moving diagonally, and in the process of moving to
+                // the next tile, the coordinates that are used to say which
+                // tiles it is on happened to line up with a non-walkable tile.
+                console.log('Error: couldn\'t generate a path for unit #' + 
+                    this.id + ' at coordinates (' + centerTileX + ', ' + 
+                    centerTileY + ')');
+            }
+            this.whichPathToTake = pathAndIndex.path;
+            this.indexInPath = pathAndIndex.indexInPath;
+        }
+
+        if ( this.indexInPath == this.whichPathToTake.length - 1) {
+            // You're done with the path. For now, we'll make the units still
+            // move off of the map so that they'll get destroyed, but
+            // eventually, we'll remove this debug logic.
+            this.destX += this.isPlayer ? tileSize : -tileSize;
+        } else {
+            this.indexInPath++;
+            var nextTile = this.whichPathToTake[this.indexInPath];
+
+            this.destX = nextTile.getPixelCenterX();
+            this.destY = nextTile.getPixelCenterY();
+        }
+    }
+
+    /**
      * Updates this unit, moving it, making it execute its battle turn, etc.
      * @param  {Number} delta - time in ms since this function was last called
      * @return {null}
@@ -213,6 +277,8 @@
         // var speed = Math.random()*120 + 500;
         var speed = 60;
         var change = speed * deltaAsSec;
+        var centerX = this.getCenterX();
+        var centerY = this.getCenterY();
         if (!this.isInBattle()) {
             if ( this.movingToPreBattlePosition ) {
                 var desiredX = this.preBattleX;
@@ -226,7 +292,16 @@
                     this.movingToPreBattlePosition = false;
                 }
             } else {
-                this.x += this.isPlayer ? change : -change;
+                var desiredX = this.destX;
+                var desiredY = this.destY;
+
+                var newCoords = game.util.chaseCoordinates(centerX, centerY, desiredX, desiredY, change, true);
+                this.setCenterX(newCoords.x);
+                this.setCenterY(newCoords.y);
+
+                if ( newCoords.atDestination ) {
+                    this.acquireNewDestination();
+                }
 
                 // Remove any generators that the player steps on
                 if ( this.isPlayer ) {
@@ -354,27 +429,26 @@
 
         // Summon
         if ( !this.isPlayer && (this.id % 16) == 0 ) {
-            // Create it at the center of the battle. It may also make sense to
-            // create at it this unit's original battle X/Y.
-            var createX;
-            var createY;
-            if ( this.isPlayer ) {
-                createX = Math.floor(battle.playerCenterX / tileSize);
-                createY = Math.floor(battle.playerCenterY / tileSize);
-            } else {
-                createX = Math.floor(battle.enemyCenterX / tileSize);
-                createY = Math.floor(battle.enemyCenterY / tileSize);
+            // Create it at the previous tile in this unit's path, that way it's
+            // guaranteed to be walkable, because originalX and originalY may
+            // not be walkable if the unit was traveling diagonally.
+            var previousTile = this.whichPathToTake[this.indexInPath];
+            if ( this.indexInPath > 0 ) {
+                previousTile = this.whichPathToTake[this.indexInPath - 1];
             }
 
             var newUnit = new game.Unit(game.UnitType.DEBUG,this.isPlayer);
-            newUnit.placeUnit(createX,createY);
+            newUnit.placeUnit(previousTile.x, previousTile.y);
 
             // Make the unit look like a dragon whelp
             newUnit.graphicIndexes = [224 + Math.floor(Math.random() * 5)];
             game.UnitManager.addUnit(newUnit);
 
-            // Force the unit to join this battle
-            battle.summonedUnit(this, newUnit);
+            // Force the unit to join this battle. We pass coordinates so that
+            // the unit can go back to the walkable tile that we assigned
+            // earlier, otherwise it would go to the summoner's origin, which
+            // may be further in the path than "previousTile".
+            battle.summonedUnit(this, newUnit, previousTile.x * tileSize, previousTile.y * tileSize);
 
             return;
         }
