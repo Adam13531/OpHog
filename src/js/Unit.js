@@ -19,6 +19,15 @@
         twoByTwoUnit: 498
     };
 
+    /**
+     * See displayLifeBarForPlayer.
+     * @type {Object}
+     */
+    window.game.DisplayLifeBarFor = {
+        PLAYER:1,
+        ENEMY:2,
+        PLAYER_AND_ENEMY:3
+    };
 
     // This represents a 2x1 unit. 496 was chosen because it's the first index
     // that doesn't correspond to a valid sprite.
@@ -33,6 +42,27 @@
     // This is just a number that goes up about 1/FPS every game loop. It's used
     // to blink the green highlights on units when they're a possible target.
     window.game.alphaBlink = 0;
+
+    /**
+     * When you press the display-life-bar key, this will be set to true. It is
+     * set to false when you let go of the key.
+     * @type {Boolean}
+     */
+    window.game.keyPressedToDisplayLifeBars = false;
+
+    /**
+     * This is some combination of the DisplayLifeBarFor flags. When non-zero,
+     * life bars will always be displayed for player units, enemy units, or
+     * both.
+     * @type {game.DisplayLifeBarFor}
+     */
+    window.game.displayLifeBarForPlayer = 0;
+
+    /**
+     * If true, this will draw life bars when a unit is in battle.
+     * @type {Boolean}
+     */
+    window.game.displayLifeBarsInBattle = false;
 
     /**
      * Creates a unit (player OR enemy).
@@ -683,6 +713,70 @@
         this.restoreLife();
     };    
 
+    /**
+     * Draws this unit's life bar.
+     * @param  {Object} ctx - the canvas context
+     * @return {null}
+     */
+    window.game.Unit.prototype.drawLifeBar = function(ctx) {
+        ctx.save();
+        var alpha = .75;
+
+        // Properties of the life bar rectangle
+        var w = this.width;
+        var h = 10;
+        var x = this.x;
+        var y = this.y + this.height - h;
+
+        var percentLife = Math.min(1, Math.max(0, this.life / this.getMaxLife()));
+
+        // Draw a rectangle as the background
+        ctx.fillStyle = 'rgba(0, 0, 0, ' + alpha + ')';
+        ctx.fillRect(x,y,w,h);
+
+        // Draw a rectangle to show how much life you have
+        ctx.fillStyle = 'rgba(200, 0, 0, ' + alpha + ')';
+        ctx.fillRect(x,y,w * percentLife, h);
+
+        // Draw a border
+        ctx.strokeStyle = 'rgba(255, 0, 0, ' + alpha + ')';
+        ctx.strokeRect(x,y,w, h);
+
+        // Draw the percentage
+        ctx.font = '12px Futura, Helvetica, sans-serif';
+        var text = '' + Math.ceil(percentLife * 100) + '%';
+        var width = ctx.measureText(text).width;
+
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#fff';
+        ctx.fillText(text, x + w / 2 - width / 2, y - 2);
+
+        ctx.restore();
+    };
+
+    /**
+     * @return {Boolean} true if a life bar should be displayed for this unit
+     */
+    window.game.Unit.prototype.shouldDisplayLifeBar = function() {
+        // If you pressed a key
+        if ( game.keyPressedToDisplayLifeBars ) return true;
+
+        // If you're displaying life bars for players and this is a player unit
+        if ( (game.displayLifeBarForPlayer & game.DisplayLifeBarFor.PLAYER) && this.isPlayer ) return true;
+
+        // If you're displaying life bars for enemies and this is an enemy unit
+        if ( (game.displayLifeBarForPlayer & game.DisplayLifeBarFor.ENEMY) && !this.isPlayer ) return true;
+
+        // If you're displaying life bars while in battle
+        if ( game.displayLifeBarsInBattle && this.isInBattle() ) return true;
+
+        // If you're using an item and this unit is a target
+        if (game.InventoryUI.isInUseMode() && 
+                game.InventoryUI.isUnitAUseTarget(this)) return true;
+
+        return false;
+    }
+
     window.game.Unit.prototype.draw = function(ctx) {
         // Don't draw any units that haven't been placed
         if ( !this.hasBeenPlaced ) return;
@@ -723,6 +817,11 @@
                     index++;
                 };
             };
+
+            // Draw the life bar
+            if ( this.shouldDisplayLifeBar() ) {
+                this.drawLifeBar(ctx);
+            }
         }
 
         // Draw a green highlight box over the unit if we're in use mode and

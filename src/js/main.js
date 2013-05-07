@@ -11,7 +11,7 @@
     var ctxOrigZoom;
 
     /**
-     * The map we're looking at right now.
+     * [Global] The map we're looking at right now.
      * @type {Map}
      */
     currentMap = new game.Map();
@@ -259,9 +259,41 @@
                 evt.preventDefault();
             }
 
+            // Press ALT to show life bars
+            if ( evt.keyCode == game.Key.DOM_VK_ALT ) {
+                game.keyPressedToDisplayLifeBars = true;
+
+                // Stop the browser from going to the alt menu
+                evt.preventDefault();
+            }
+
         });
 
         $(document).keyup(function(evt) {
+
+            if ( evt.keyCode == game.Key.DOM_VK_ALT ) {
+                game.keyPressedToDisplayLifeBars = false;
+            }
+
+            // Pressing 'L' will toggle life bars between the following:
+            // * Display for player
+            // * Display for enemy
+            // * Display for both
+            // * Don't display
+            if ( evt.keyCode == game.Key.DOM_VK_L ) {
+                if ( game.displayLifeBarForPlayer == game.DisplayLifeBarFor.PLAYER_AND_ENEMY ) {
+                    game.displayLifeBarForPlayer = 0;
+                } else {
+                    game.displayLifeBarForPlayer++;
+                }
+            }
+
+            // Pressing 'B' will toggle between showing life bars while units
+            // are battling and not showing them
+            if ( evt.keyCode == game.Key.DOM_VK_B ) {
+                game.displayLifeBarsInBattle = !game.displayLifeBarsInBattle;
+            }
+
             // Shake the camera when you press 'U'
             if (evt.keyCode == game.Key.DOM_VK_U) {
                 // Shake the camera for approximately 20 game loops
