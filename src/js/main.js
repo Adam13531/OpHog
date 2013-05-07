@@ -120,6 +120,11 @@
             var worldY = game.Camera.canvasYToWorldY(offsetY);
             var tileX = Math.floor(worldX / tileSize);
             var tileY = Math.floor(worldY / tileSize);
+
+            // Make sure the tile is in-bounds
+            if ( tileX < 0 || tileX >= currentMap.numCols || tileY < 0 || tileY >= currentMap.numRows ) {
+                return;
+            }
             
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target

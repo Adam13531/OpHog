@@ -189,8 +189,6 @@
 
         if ( this.paths.length == 0 ) {
             console.log('Fatal error - no paths generated.');
-        } else {
-            this.printPaths(true);
         }
 
         this.ensureAllWalkableTilesAreInAPath();
