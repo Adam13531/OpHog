@@ -79,6 +79,24 @@
     };
 
     /**
+     * Returns a random key from the dictionary that you pass in.
+     * @param  {Object} dict - a dictionary, e.g. {a:5, b:6}
+     * @return {Object}      a key in that dictionary, e.g. 'a' or 'b'
+     */
+    window.game.util.randomKeyFromDict = function(dict) {
+        if ( dict === undefined || dict == null ) return null;
+        
+        var key;
+        var allKeys = [];
+        for(key in dict) {
+            if(dict.hasOwnProperty(key) ) {
+                allKeys.push(key);
+            }
+        }
+
+        return game.util.randomArrayElement(allKeys);
+    };
+    /**
      * This will modify the 'current' coordinates so that they get closer to the
      * desired coordinates.
      * @param  {Number} currentX  - starting X coordinate (can be any coordinate

@@ -2,8 +2,8 @@
   
     /**
      * ParticleSystem class
-     * @param {number} x - location of particle system
-     * @param {number} y - location of particle system
+     * @param {number} x - location of particle system in world coords
+     * @param {number} y - location of particle system in world coords
      */
     window.game.ParticleSystem = function ParticleSystem(x, y) {
     	this.particles = Array();

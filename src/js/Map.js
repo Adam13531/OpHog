@@ -127,6 +127,14 @@
 
         return game.util.randomArrayElement(possiblePaths);
     };
+
+    /**
+     * @return {Tile} a random, walkable tile
+     */
+    window.game.Map.prototype.getRandomWalkableTile = function() {
+        var path = game.util.randomArrayElement(this.paths);
+        return game.util.randomArrayElement(path);
+    };
     
     /**
      * Compute the set of paths that we want to use. This will return optimized,

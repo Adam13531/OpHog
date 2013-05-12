@@ -333,11 +333,14 @@
                     this.acquireNewDestination();
                 }
 
-                // Remove any generators that the player steps on
+                // Remove generators that the player steps on. Collect things
+                // too.
                 if ( this.isPlayer ) {
                     var centerTileX = this.getCenterTileX();
                     var centerTileY = this.getCenterTileY();
                     // game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
+                     
+                    game.CollectibleManager.collectAtLocation(this, centerTileX, centerTileY);
                 }
             }
 
@@ -580,6 +583,9 @@
 
         // Check to see if we killed the unit
         if ( !this.isLiving() ) {
+            // Wipe out any status effects so that we don't do something stupid
+            // like regen ourselves back to life
+            this.statusEffects = [];
             if ( this.battleData != null ) {
                 this.battleData.battle.unitDied(this);
             } else {

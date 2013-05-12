@@ -305,6 +305,11 @@
                 game.Camera.shakeTimer = 20 * 16;
             }
 
+            // Pressing 'C' will generate a collectible on the map
+            if (evt.keyCode == game.Key.DOM_VK_C) {
+                game.CollectibleManager.addNewCollectible();
+            }
+
             var itemID = null;
             if (evt.keyCode == game.Key.DOM_VK_O) {
                 itemID = game.ItemType.SHIELD.id;
@@ -430,6 +435,7 @@
         // units can be removed immediately by the UnitManager
         game.LootUI.update(delta);
         game.GeneratorManager.update(delta);
+        game.CollectibleManager.update(delta);
         game.BattleManager.update(delta);
         game.UnitManager.update(delta);
         game.ParticleManager.update(delta);
@@ -444,6 +450,7 @@
         game.Camera.scaleAndTranslate(ctx);
 
         game.GeneratorManager.draw(ctx);
+        game.CollectibleManager.draw(ctx);
         game.UnitManager.draw(ctx);
         game.BattleManager.draw(ctx);
         game.ParticleManager.draw(ctx);
