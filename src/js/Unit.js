@@ -787,6 +787,10 @@
         // Don't draw any units that haven't been placed
         if ( !this.hasBeenPlaced ) return;
 
+        // Don't draw if the camera can't even see this. We supply a padding
+        // because status effects can be drawn outside the unit's rect.
+        if (!game.Camera.canSeeUnit(this, game.STATUS_EFFECT_PADDING)) return;
+
         // Dead units always look like a 1x1 tombstone for now.
         if ( this.isInBattle() && !this.isLiving() ) {
             // Draw the tombstone at the center so that it doesn't look awkward

@@ -108,6 +108,9 @@
      * @return {null}
      */
     window.game.Collectible.prototype.draw = function(ctx) {
+        // Only draw if the camera can see this
+        if ( !game.Camera.canSeeTileCoordinates(this.tileX, this.tileY) ) return;
+        
         var worldX = this.tileX * tileSize;
         var worldY = this.tileY * tileSize;
         ctx.save();
