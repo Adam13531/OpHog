@@ -54,6 +54,8 @@
         };
 
         this.numRows = this.mapTiles.length / this.numCols;
+        this.widthInPixels = this.numCols * tileSize;
+        this.heightInPixels = this.numRows * tileSize;
 
         // Clear some fog around the spawners. These coordinates are hard-coded
         // for now.
@@ -809,23 +811,29 @@
             for (var x = 0; x < this.numCols; x++) {
                 index = y * this.numCols + x;
                 tile = this.mapTiles[index];
-                graphic = tile.graphicIndex;
-                
-                if ( drawingFogLayer ) {
-                    if ( this.fog[index] ) {
 
-                        // Draw black in the background for now since there's no
-                        // background beneath our map to begin with. TODO: we
-                        // should be able to remove this eventually and not see
-                        // units show up behind castles.
-                        ctx.fillRect(0, 0, tileSize, tileSize);
-                        envSheet.drawSprite(ctx, graphic, 0,0);
-                    }
-                } else {
-                    // If there's no fog here and we're not drawing the fog
-                    // layer, then we just draw the map normally.
-                    if ( !this.fog[index] ) {
-                        envSheet.drawSprite(ctx, graphic, 0,0);
+                // Only draw tiles that the map can see
+                if ( game.Camera.canSeeTile(tile) ) {
+
+                    graphic = tile.graphicIndex;
+                    
+                    if ( drawingFogLayer ) {
+                        if ( this.fog[index] ) {
+
+                            // Draw black in the background for now since
+                            // there's no background beneath our map to begin
+                            // with. TODO: we should be able to remove this
+                            // eventually and not see units show up behind
+                            // castles.
+                            ctx.fillRect(0, 0, tileSize, tileSize);
+                            envSheet.drawSprite(ctx, graphic, 0,0);
+                        }
+                    } else {
+                        // If there's no fog here and we're not drawing the fog
+                        // layer, then we just draw the map normally.
+                        if ( !this.fog[index] ) {
+                            envSheet.drawSprite(ctx, graphic, 0,0);
+                        }
                     }
                 }
 
@@ -857,7 +865,10 @@
         for (var y = 0; y < this.numRows; y++) {
             for (var x = 0; x < this.numCols; x++) {
                 if ( this.fog[y * this.numCols + x] ) {
-                    ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+                    // Only draw fog if the camera can see it
+                    if ( game.Camera.canSeeTileCoordinates(x, y) ) {
+                        ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+                    }
                 }
             }
         }

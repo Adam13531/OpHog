@@ -38,7 +38,8 @@
 
         /**
          * The furthest you can scroll to the right. This needs to be updated
-         * whenever a different map is loaded or the zoom level changes.
+         * whenever a different map is loaded or the zoom level changes. If you
+         * can't scroll, this is set to 0.
          * @type {Number}
          */
         maxPanX: 0,
@@ -48,6 +49,20 @@
          * @type {Number}
          */
         maxPanY: 0,
+
+        /**
+         * This is how wide the view is, which is needed so that we can figure
+         * out whether the camera can see a given object. It is based on screen
+         * width and zoom level.
+         * @type {Number}
+         */
+        viewWidth: 0,
+
+        /**
+         * See viewWidth.
+         * @type {Number}
+         */
+        viewHeight: 0,
 
         /**
          * When this is greater than zero, the camera will shake. It goes down
@@ -164,6 +179,59 @@
         },
 
         /**
+         * Returns true if the camera can see any part of this rectangle.
+         * @param  {Number} x - x of rect, in world coords
+         * @param  {Number} y - y of rect, in world coords
+         * @return {Boolean} - true if the camera can see this
+         */
+        canSeeRect: function(x, y, w, h) {
+            var right = this.curPanX + this.viewWidth;
+            var bottom = this.curPanY + this.viewHeight;
+            return !(right < x || this.curPanX > x + w || bottom < y || this.curPanY > y + h);
+        },
+
+        /**
+         * Wrapper around canSeeRect. Returns true if the camera can see the
+         * Unit.
+         * @param  {Unit} unit    - the unit to verify whether we can see
+         * @param  {Number} padding - this expands the Unit's rectangle in all
+         * directions. This is useful if you know you're going to possibly draw
+         * a status effect outside of the unit's rectangle; by supplying the
+         * padding, you will draw even when the status effect is in view, not
+         * just when the unit is in view.
+         * @return {Boolean}         - see canSeeRect
+         */
+        canSeeUnit: function(unit, padding) {
+            if ( padding === undefined ) padding = 0;
+            var twoPadding = padding * 2;
+            return this.canSeeRect(unit.x - padding, unit.y - padding, unit.width + twoPadding, unit.height + twoPadding);
+        },
+
+        /**
+         * Wrapper around canSeeRect. Returns true if the camera can see the
+         * Tile.
+         * @return {Boolean} - see canSeeRect
+         */
+        canSeeTile: function(tile) {
+            var tX = tile.x * tileSize;
+            var tY = tile.y * tileSize;
+            return this.canSeeRect(tX, tY, tileSize, tileSize);
+        },
+
+        /**
+         * Wrapper around canSeeRect. Returns true if the camera can see a tile
+         * based on its coordinates, not based on a Tile object. This function
+         * exists for convenience; sometimes you don't have a Tile object to
+         * pass to canSeeTile.
+         * @return {Boolean} - see canSeeRect
+         */
+        canSeeTileCoordinates: function(tileX, tileY) {
+            var tX = tileX * tileSize;
+            var tY = tileY * tileSize;
+            return this.canSeeRect(tX, tY, tileSize, tileSize);
+        },
+
+        /**
          * Converts a canvas coordinate (which is bound by the size of the
          * canvas) to world coordinates. This takes panning/zooming into
          * account.
@@ -189,11 +257,11 @@
          * @return {null}
          */
         computeScrollBoundaries: function() {
-            var mapWidthInPixels = currentMap.numCols * tileSize * this.curZoom;
-            var mapHeightInPixels = currentMap.numRows * tileSize * this.curZoom;
+            this.maxPanX = currentMap.widthInPixels - (screenWidth / this.curZoom);
+            this.maxPanY = currentMap.heightInPixels - (screenHeight / this.curZoom);
 
-            this.maxPanX = (mapWidthInPixels - screenWidth) / this.curZoom;
-            this.maxPanY = (mapHeightInPixels - screenHeight) / this.curZoom;
+            this.viewWidth = screenWidth / this.curZoom;
+            this.viewHeight = screenHeight / this.curZoom;
 
             this.clampPanValues();
         },
