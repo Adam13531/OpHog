@@ -256,7 +256,7 @@
             var expString = "+" + experienceGranted + " exp";
 
             // Spawn a text object where the enemies used to be
-            var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true);
+            var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true, '#0f0');
             game.TextManager.addTextObj(textObj);
 
             // Give the experience to all living player units
