@@ -162,17 +162,6 @@
                     else if (flags & game.FitFlags.LEFT) {
                         foundPiece = true;
                     }
-                    // else if ( i == 0 ) {
-                    //     if ( flags & game.FitFlags.LEFT ) {
-                    //         foundPiece = true;
-                    //     }
-                    // }
-                    // else {
-                    //     if ( flags & game.FitFlags.LEFT  &&
-                    //          flags & game.FitFlags.TOP ) {
-                    //         foundPiece = true;
-                    //     }
-                    // }
                 }
                 this.middleColumn.push(puzzlePiece);
                 puzzlePiece.applyToMapArray(this.mapArray, height, x, y);
@@ -188,7 +177,21 @@
             var x = 10;
             var y = 0;
             for ( var i = 0; i < choices.length; i++ ) {
-                var puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
+                var foundPiece = false;
+                var puzzlePiece;
+                var flags;
+                while (foundPiece == false) {
+                    puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
+                    flags = this.middleColumn[i].canFitTogether(puzzlePiece);
+                    if (this.middleColumn[i].isBlank &&
+                        puzzlePiece.isBlank) {
+                        foundPiece = true;
+                    }
+                    else if (flags & game.FitFlags.LEFT) {
+                        foundPiece = true;
+                    }
+                }
+                this.leftColumn.push(puzzlePiece);
                 puzzlePiece.applyToMapArray(this.mapArray, height, x, y);
                 y += game.PUZZLE_PIECE_SIZE;
                 if ( y == height ) {
@@ -209,27 +212,7 @@
                 this.mapArray.push(0);
             };
 
-            // var puzzlePieceConfiguration =  [
-            // this.puzzlePieces[0],this.puzzlePieces[1],this.puzzlePieces[2],
-            // this.puzzlePieces[3],this.puzzlePieces[4],this.puzzlePieces[5],
-            // this.puzzlePieces[6],this.puzzlePieces[7],this.puzzlePieces[8]
-            // ];
-
-            // var x = 0;
-            // var y = 0;
-            // for ( var i = 0; i < puzzlePieceConfiguration.length; i ++ ) {
-            //     var puzzlePiece = puzzlePieceConfiguration[i];
-            //     puzzlePiece.applyToMapArray(this.mapArray, width, x, y);
-            //     x += game.PUZZLE_PIECE_SIZE;
-            //     if ( x == width ) {
-            //         x = 0;
-            //         y += game.PUZZLE_PIECE_SIZE;
-            //     }
-            // }
-
-            // this.printMap(this.mapArray, width, height);
-            // return (new game.Map(this.mapArray));
-
+            // Make sure the left column isn't blank
             var goodLeftColumn = false;
             while (goodLeftColumn == false) {
                 if (this.generateLeftColumn(height) == true) {
@@ -240,29 +223,10 @@
                 }
             }
             this.generateMiddleColumns(height);
-            // this.generateRightColumn(height);
+            this.generateRightColumn(height);
 
             this.printMap(this.mapArray, width, height);
             return (new game.Map(this.mapArray));
-
-
-
-
-              // Use this later when the maps get generated randomly
-            // caller = function() {
-            //     var fitFlags = piece1.canFitTogether(piece2);
-            //     if ( fitFlags & RIGHT ) {
-                    
-            //     }
-            //     if ( fitFlags & TOP ) {
-                    
-            //     }
-            //     if ( fitFlags & LEFT ) {
-                    
-            //     }
-
-
-            // }
     	}
     };
 
