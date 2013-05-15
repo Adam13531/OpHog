@@ -5,6 +5,16 @@
     window.game.MapGenerator = {
     	puzzlePieces: [],
 
+        puzzlePieceConfiguration: [],
+
+        mapArray: [],
+
+        leftColumn: [],
+
+        middleColumn: [],
+
+        rightColumn: [],
+
     	init: function() {
     		// Piece 0
         	this.puzzlePieces.push(this.createBlankPuzzlePiece());
@@ -45,6 +55,12 @@
         	this.puzzlePieces.push(this.createBlankPuzzlePiece());
         	// Piece 8
         	this.puzzlePieces.push(this.createBlankPuzzlePiece());
+
+            this.puzzlePieceConfiguration =  [
+            this.puzzlePieces[0],this.puzzlePieces[1],this.puzzlePieces[2],
+            this.puzzlePieces[3],this.puzzlePieces[4],this.puzzlePieces[5],
+            this.puzzlePieces[6],this.puzzlePieces[7],this.puzzlePieces[8]
+            ];
     	},
 
     	createBlankPuzzlePiece: function() {
@@ -99,6 +115,88 @@
             }
         },
 
+        generateLeftColumn: function(height) {
+            var choices = [0, 3, 6];
+            var x = 0;
+            var y = 0;
+            var isGood = false;
+
+            for ( var i = 0; i < choices.length; i++ ) {
+                var puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
+                if (!puzzlePiece.isBlank) {
+                    isGood = true;
+                }
+                this.leftColumn.push(puzzlePiece);
+                puzzlePiece.applyToMapArray(this.mapArray, height, x, y);
+                y += game.PUZZLE_PIECE_SIZE;
+                if ( y == height ) {
+                    y = 0;
+                }
+            }
+
+            return isGood;
+        },
+
+        generateMiddleColumns: function(height) {
+            var choices = [1, 4, 7];
+            var x = 5;
+            var y = 0;
+
+            // Need to get a list of the possible puzzle pieces.
+            // This will be based on the one in the column before it and the one directly above it.
+            // ALL connections need to have an end.
+            // Therefore, the pieces need to check the piece above it
+            // and the piece to the left. If those have any exits, then
+            // they need to be closed. That is how we will find the valid piece.
+            for ( var i = 0; i < choices.length; i++ ) {
+                var foundPiece = false;
+                var puzzlePiece;
+                var flags;
+                while (foundPiece == false) {
+                    puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
+                    flags = this.leftColumn[i].canFitTogether(puzzlePiece);
+                    if (this.leftColumn[i].isBlank &&
+                        puzzlePiece.isBlank) {
+                        foundPiece = true;
+                    }
+                    else if (flags & game.FitFlags.LEFT) {
+                        foundPiece = true;
+                    }
+                    // else if ( i == 0 ) {
+                    //     if ( flags & game.FitFlags.LEFT ) {
+                    //         foundPiece = true;
+                    //     }
+                    // }
+                    // else {
+                    //     if ( flags & game.FitFlags.LEFT  &&
+                    //          flags & game.FitFlags.TOP ) {
+                    //         foundPiece = true;
+                    //     }
+                    // }
+                }
+                this.middleColumn.push(puzzlePiece);
+                puzzlePiece.applyToMapArray(this.mapArray, height, x, y);
+                y += game.PUZZLE_PIECE_SIZE;
+                if ( y == height ) {
+                    y = 0;
+                }
+            }
+        },
+
+        generateRightColumn: function(height) {
+            var choices = [2, 5, 8];
+            var x = 10;
+            var y = 0;
+            for ( var i = 0; i < choices.length; i++ ) {
+                var puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
+                puzzlePiece.applyToMapArray(this.mapArray, height, x, y);
+                y += game.PUZZLE_PIECE_SIZE;
+                if ( y == height ) {
+                    y = 0;
+                }
+            }
+        },
+
     	// TODO: Make sure it is random
     	generateRandomMap: function(width, height, difficulty) {
             // if (size < 9) return 0;
@@ -106,32 +204,49 @@
 
             // Generate a map array with all zeroes
             var sizeInTiles = width * height;
-            var mapArray = [];
+            // var mapArray = [];
             for (var i = 0; i < sizeInTiles; i++) {
-            mapArray.push(0);
+                this.mapArray.push(0);
             };
 
-            var puzzlePieceConfiguration =  [
-            this.puzzlePieces[0],this.puzzlePieces[1],this.puzzlePieces[2],
-            this.puzzlePieces[3],this.puzzlePieces[4],this.puzzlePieces[5],
-            this.puzzlePieces[6],this.puzzlePieces[7],this.puzzlePieces[8]
-            ];
+            // var puzzlePieceConfiguration =  [
+            // this.puzzlePieces[0],this.puzzlePieces[1],this.puzzlePieces[2],
+            // this.puzzlePieces[3],this.puzzlePieces[4],this.puzzlePieces[5],
+            // this.puzzlePieces[6],this.puzzlePieces[7],this.puzzlePieces[8]
+            // ];
 
-            var x = 0;
-            var y = 0;
-            for ( var i = 0; i < puzzlePieceConfiguration.length; i ++ ) {
-                var puzzlePiece = puzzlePieceConfiguration[i];
-                // this.applyPuzzlePiece(mapArray, puzzlePiece, width, x, y);
-                puzzlePiece.applyToMapArray(mapArray, width, x, y);
-                x += game.PUZZLE_PIECE_SIZE;
-                if ( x == width ) {
-                    x = 0;
-                    y += game.PUZZLE_PIECE_SIZE;
+            // var x = 0;
+            // var y = 0;
+            // for ( var i = 0; i < puzzlePieceConfiguration.length; i ++ ) {
+            //     var puzzlePiece = puzzlePieceConfiguration[i];
+            //     puzzlePiece.applyToMapArray(this.mapArray, width, x, y);
+            //     x += game.PUZZLE_PIECE_SIZE;
+            //     if ( x == width ) {
+            //         x = 0;
+            //         y += game.PUZZLE_PIECE_SIZE;
+            //     }
+            // }
+
+            // this.printMap(this.mapArray, width, height);
+            // return (new game.Map(this.mapArray));
+
+            var goodLeftColumn = false;
+            while (goodLeftColumn == false) {
+                if (this.generateLeftColumn(height) == true) {
+                    goodLeftColumn = true;
+                } 
+                else {
+                    this.leftColumn.length = 0;
                 }
             }
+            this.generateMiddleColumns(height);
+            // this.generateRightColumn(height);
 
-            this.printMap(mapArray, width, height);
-            return (new game.Map(mapArray));
+            this.printMap(this.mapArray, width, height);
+            return (new game.Map(this.mapArray));
+
+
+
 
               // Use this later when the maps get generated randomly
             // caller = function() {

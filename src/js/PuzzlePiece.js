@@ -15,6 +15,7 @@
         this.rightEdgeOpenings = []; // [0 1 0 0 0]
         this.topEdgeOpenings = [];   // [0,0,0,0,0]
         this.bottomEdgeOpenings = [];// [0,0,0,0,0]
+        this.isBlank = true;
 
         this.generateEdges();
     };
@@ -26,6 +27,13 @@
             this.rightEdgeOpenings.push(this.tiles[i * game.PUZZLE_PIECE_SIZE + (game.PUZZLE_PIECE_SIZE - 1)] == 1);
             this.topEdgeOpenings.push(this.tiles[i] == 1);
             this.bottomEdgeOpenings.push(this.tiles[i + (game.PUZZLE_PIECE_SIZE * (game.PUZZLE_PIECE_SIZE-1))] == 1);
+
+            if (this.leftEdgeOpenings[i] == 1 ||
+                this.rightEdgeOpenings[i] == 1 ||
+                this.topEdgeOpenings[i] == 1 ||
+                this.bottomEdgeOpenings[i] == 1) {
+                this.isBlank = false;
+            }
         };
     };
 
@@ -73,23 +81,22 @@
             }
         }
 
-        if ( canFitRight ) fitFlags |= RIGHT;
-        if ( canFitLeft ) fitFlags |= LEFT;
-        if ( canFitBottom ) fitFlags |= BOTTOM;
-        if ( canFitTop ) fitFlags |= TOP;
-        console.log("TEST");
+        if ( canFitRight ) fitFlags |= game.FitFlags.RIGHT;
+        if ( canFitLeft ) fitFlags |= game.FitFlags.LEFT;
+        if ( canFitBottom ) fitFlags |= game.FitFlags.BOTTOM;
+        if ( canFitTop ) fitFlags |= game.FitFlags.TOP;
 
         // TODO: Testing
-        if ( fitFlags & RIGHT ) {
+        if ( fitFlags & game.FitFlags.RIGHT ) {
             console.log("RIGHT");
         }
-        if ( fitFlags & TOP ) {
+        if ( fitFlags & game.FitFlags.TOP ) {
             console.log("TOP");
         }
-        if ( fitFlags & LEFT ) {
+        if ( fitFlags & game.FitFlags.LEFT ) {
             console.log("LEFT");
         }
-        if ( fitFlags & BOTTOM ) {
+        if ( fitFlags & game.FitFlags.BOTTOM ) {
             console.log("BOTTOM");
         }
 
