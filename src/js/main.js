@@ -56,8 +56,9 @@
     //         93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
     //         5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5
     //         );
-    // currentMap = new game.Map(mapArray);
-    currentMap = game.MapGenerator.generateRandomMap(15, 15, 1);
+    // currentMap = game.MapGenerator.generateRandomMap(15, 15, 1);
+    currentMap = game.MapGenerator.generateRandomMap(15, 25, 1);
+    if (currentMap == 0) return;
 
     // Time (in MS) of the last update.
     var lastUpdate;

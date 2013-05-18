@@ -15,6 +15,10 @@
 
         rightColumn: [],
 
+        mapWidth: 0,
+        mapHeight: 0,
+        mapDifficulty: 0,
+
     	init: function() {
     		// Piece 0
         	this.puzzlePieces.push(this.createBlankPuzzlePiece());
@@ -103,33 +107,36 @@
         // },
 
         // TODO: for debugging
-        printMap: function(mapArray, width, height) {
+        printMap: function() {
             // Print the map
-            for (var i = 0; i < height; i ++ ) {
+            for (var i = 0; i < this.mapHeight; i ++ ) {
                 rowStr = '';
-                for ( var j = 0; j < width; j ++ ) {
+                for ( var j = 0; j < this.mapWidth; j ++ ) {
                     if ( j > 0 ) rowStr += ' ';
-                    rowStr += mapArray[i * width + j];
+                    rowStr += this.mapArray[i * this.mapWidth + j];
                 }
                 console.log(rowStr);
             }
         },
 
-        generateLeftColumn: function(height) {
+        generateLeftColumn: function() {
             var choices = [0, 3, 6];
             var x = 0;
             var y = 0;
             var isGood = false;
+            var numIterations = this.mapHeight / game.PUZZLE_PIECE_SIZE;
 
-            for ( var i = 0; i < choices.length; i++ ) {
+            for ( var i = 0; i < numIterations; i++ ) {
                 var puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
+                // If at least one piece isn't blank, then we have a valid starting column.
                 if (!puzzlePiece.isBlank) {
                     isGood = true;
                 }
                 this.leftColumn.push(puzzlePiece);
-                puzzlePiece.applyToMapArray(this.mapArray, height, x, y);
+                puzzlePiece.applyToMapArray(this.mapArray, this.mapWidth, x, y);
+                
                 y += game.PUZZLE_PIECE_SIZE;
-                if ( y == height ) {
+                if ( y == this.mapHeight ) {
                     y = 0;
                 }
             }
@@ -137,10 +144,11 @@
             return isGood;
         },
 
-        generateMiddleColumns: function(height) {
+        generateMiddleColumns: function(startingX) {
             var choices = [1, 4, 7];
-            var x = 5;
+            var x = startingX;
             var y = 0;
+            var numIterations = this.mapHeight / game.PUZZLE_PIECE_SIZE;
 
             // Need to get a list of the possible puzzle pieces.
             // This will be based on the one in the column before it and the one directly above it.
@@ -148,13 +156,16 @@
             // Therefore, the pieces need to check the piece above it
             // and the piece to the left. If those have any exits, then
             // they need to be closed. That is how we will find the valid piece.
-            for ( var i = 0; i < choices.length; i++ ) {
+            for ( var i = 0; i < numIterations; i++ ) {
                 var foundPiece = false;
                 var puzzlePiece;
                 var flags;
                 while (foundPiece == false) {
                     puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
                     flags = this.leftColumn[i].canFitTogether(puzzlePiece);
+                    // If the piece it needs to connect to is blank, then this one
+                    // also needs to be blank to make sure paths don't begin in the
+                    // middle of the map!
                     if (this.leftColumn[i].isBlank &&
                         puzzlePiece.isBlank) {
                         foundPiece = true;
@@ -164,25 +175,29 @@
                     }
                 }
                 this.middleColumn.push(puzzlePiece);
-                puzzlePiece.applyToMapArray(this.mapArray, height, x, y);
+                puzzlePiece.applyToMapArray(this.mapArray, this.mapWidth, x, y);
                 y += game.PUZZLE_PIECE_SIZE;
-                if ( y == height ) {
+                if ( y == this.mapHeight ) {
                     y = 0;
                 }
             }
         },
 
-        generateRightColumn: function(height) {
+        generateRightColumn: function(startingX) {
             var choices = [2, 5, 8];
-            var x = 10;
+            var x = startingX;
             var y = 0;
-            for ( var i = 0; i < choices.length; i++ ) {
+            var numIterations = this.mapHeight / game.PUZZLE_PIECE_SIZE;
+            for ( var i = 0; i < numIterations; i++ ) {
                 var foundPiece = false;
                 var puzzlePiece;
                 var flags;
                 while (foundPiece == false) {
                     puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
                     flags = this.middleColumn[i].canFitTogether(puzzlePiece);
+                    // If the piece it needs to connect to is blank, then this one
+                    // also needs to be blank to make sure paths don't begin in the
+                    // middle of the map!
                     if (this.middleColumn[i].isBlank &&
                         puzzlePiece.isBlank) {
                         foundPiece = true;
@@ -192,18 +207,27 @@
                     }
                 }
                 this.leftColumn.push(puzzlePiece);
-                puzzlePiece.applyToMapArray(this.mapArray, height, x, y);
+                puzzlePiece.applyToMapArray(this.mapArray, this.mapWidth, x, y);
                 y += game.PUZZLE_PIECE_SIZE;
-                if ( y == height ) {
+                if ( y == this.mapHeight ) {
                     y = 0;
                 }
             }
         },
 
-    	// TODO: Make sure it is random
     	generateRandomMap: function(width, height, difficulty) {
-            // if (size < 9) return 0;
             if (difficulty < 1 || difficulty > 4) return 0;
+            // Make sure we can use whole puzzle pieces
+            if (width * height % game.PUZZLE_PIECE_SIZE != 0) return 0;
+
+            // Makes sure the map is at least as big as one puzzle piece
+            // if (width < game.PUZZLE_PIECE_SIZE) return 0;
+            if (width < 3 * game.PUZZLE_PIECE_SIZE) return 0;
+            // TODO: Always need at least three puzzle pieces to make up the width
+
+            this.mapDifficulty = difficulty;
+            this.mapWidth = width;
+            this.mapHeight = height;
 
             // Generate a map array with all zeroes
             var sizeInTiles = width * height;
@@ -215,18 +239,31 @@
             // Make sure the left column isn't blank
             var goodLeftColumn = false;
             while (goodLeftColumn == false) {
-                if (this.generateLeftColumn(height) == true) {
+                if (this.generateLeftColumn() == true) {
                     goodLeftColumn = true;
                 } 
                 else {
                     this.leftColumn.length = 0;
                 }
             }
-            this.generateMiddleColumns(height);
-            this.generateRightColumn(height);
 
-            this.printMap(this.mapArray, width, height);
-            return (new game.Map(this.mapArray));
+            // if (width >= 2 * game.PUZZLE_PIECE_SIZE) {            
+                // This is the starting x position for the first column
+                // in the "middle" section. Column in this case is a single
+                // value and not a puzzle piece column
+                var startingX = game.PUZZLE_PIECE_SIZE;
+                var numIterations = (width / game.PUZZLE_PIECE_SIZE) - 2;
+                for (var i = 0; i < numIterations; i++) {
+                    this.generateMiddleColumns(startingX);
+                    startingX += game.PUZZLE_PIECE_SIZE;
+                }
+            // }
+
+            // if (width >= 3 * game.PUZZLE_PIECE_SIZE) {
+                this.generateRightColumn(startingX);
+            // }
+
+            return (new game.Map(this.mapArray, width));
     	}
     };
 

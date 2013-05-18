@@ -4,7 +4,7 @@
      * have one map, so it'll go here. Note that you should call
      * game.Camera.computeScrollBoundaries(); when you load a map for real.
      */
-    window.game.Map = function Map(arrayOfOnesAndZeroes) {
+    window.game.Map = function Map(arrayOfOnesAndZeroes, width) {
         var mapTilesIndices = [];
         for (var i = 0; i < arrayOfOnesAndZeroes.length; i++) {
             mapTilesIndices.push((arrayOfOnesAndZeroes[i] == 0) ? 5 : 88);
@@ -31,7 +31,8 @@
         };
 
         // this.numCols = 25;
-        this.numCols = 15;
+        // this.numCols = 15;
+        this.numCols = width;
         this.numRows = this.mapTiles.length / this.numCols;
 
         // Clear some fog around the spawners. These coordinates are hard-coded
