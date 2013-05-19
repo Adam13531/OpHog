@@ -88,16 +88,12 @@
          * @return {null}
          */
         questGainedProgress: function(quest) {
-            // Cache this here because the quest might be null, but we'll still
-            // need the number to update the slot at the end
             var questSlotNumber = quest.questSlotNumber;
             if ( quest.isComplete() ) {
                 this.quests[questSlotNumber] = null;
             }
 
-            // Pass this.quests[questSlotNumber] instead of just 'quest' because
-            // quest will not be null at this point
-            game.QuestUI.updateQuest(this.quests[questSlotNumber], questSlotNumber);
+            game.QuestUI.updateQuest(questSlotNumber);
         },
 
         /**
@@ -133,7 +129,7 @@
             this.quests[nextQuestSlotNumber] = quest;
 
             // Update the UI.
-            game.QuestUI.updateQuest(quest);
+            game.QuestUI.updateQuest(quest.questSlotNumber);
         }
 
     };

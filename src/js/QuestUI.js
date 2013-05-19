@@ -68,21 +68,21 @@
          */
         updateQuests: function() {
             for (var i = 0; i < game.MAX_QUESTS; i++) {
-                var quest = game.QuestManager.getQuest(i);
-                this.updateQuest(quest, i);
+                this.updateQuest(i);
             };
         },
 
         /**
          * Updates the text for a quest in the UI.
-         * @param {Quest} quest - the quest to update
-         * @param {Number} questSlotNumber - if Quest is null, then you have to
-         * pass this in so that we update the correct div, otherwise this is
-         * ignored and can be undefined.
+         * @param {Number} questSlotNumber - the quest's questSlotNumber. We
+         * don't pass a Quest here because it might be null, and then we won't
+         * know which div to update. At one point, I had this function take a
+         * Quest (optional) and a Number (optional unless Quest is null). That
+         * was messy.
          * @return {null}
          */
-        updateQuest: function(quest, questSlotNumber) {
-            if ( quest != null ) questSlotNumber = quest.questSlotNumber
+        updateQuest: function(questSlotNumber) {
+            var quest = game.QuestManager.getQuest(questSlotNumber);
 
             var text;
             var color;
