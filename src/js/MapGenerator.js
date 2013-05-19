@@ -119,6 +119,18 @@
             }
         },
 
+        getPossiblePuzzlePieces: function(puzzlePiece, flagsWanted) {
+            var possiblePuzzlePiecesList = [];
+
+            for (var i = 0; i < this.puzzlePieces.length; i++) {
+                var flags = puzzlePiece.canFitTogether(this.puzzlePieces[i]);
+                if (flags == flagsWanted) {
+                    possiblePuzzlePiecesList.push(this.puzzlePieces[i]);
+                }
+            }
+            return possiblePuzzlePiecesList;
+        },
+
         generateLeftColumn: function() {
             var choices = [0, 3, 6];
             var x = 0;
@@ -145,7 +157,6 @@
         },
 
         generateMiddleColumns: function(startingX) {
-            var choices = [1, 4, 7];
             var x = startingX;
             var y = 0;
             var numIterations = this.mapHeight / game.PUZZLE_PIECE_SIZE;
@@ -157,23 +168,24 @@
             // and the piece to the left. If those have any exits, then
             // they need to be closed. That is how we will find the valid piece.
             for ( var i = 0; i < numIterations; i++ ) {
-                var foundPiece = false;
                 var puzzlePiece;
-                var flags;
-                while (foundPiece == false) {
-                    puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
-                    flags = this.leftColumn[i].canFitTogether(puzzlePiece);
-                    // If the piece it needs to connect to is blank, then this one
-                    // also needs to be blank to make sure paths don't begin in the
-                    // middle of the map!
-                    if (this.leftColumn[i].isBlank &&
-                        puzzlePiece.isBlank) {
-                        foundPiece = true;
-                    }
-                    else if (flags & game.FitFlags.LEFT) {
-                        foundPiece = true;
-                    }
+                var possiblePuzzlePiecesList = [];
+
+                if (this.leftColumn[i].isBlank) {
+                    puzzlePiece = this.createBlankPuzzlePiece();
                 }
+                else {
+                    var neededFlags;
+                    neededFlags |= game.FitFlags.LEFT;
+                    // Don't need to check the piece above this one if i is 0
+                    if (this.leftColumn[i].hasBottomOpening == true &&
+                        i == 0) {
+                        neededFlags |= game.FitFlags.TOP;
+                    }
+                    possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.leftColumn[i], neededFlags);
+                    puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
+                }
+
                 this.middleColumn.push(puzzlePiece);
                 puzzlePiece.applyToMapArray(this.mapArray, this.mapWidth, x, y);
                 y += game.PUZZLE_PIECE_SIZE;
@@ -184,28 +196,28 @@
         },
 
         generateRightColumn: function(startingX) {
-            var choices = [2, 5, 8];
             var x = startingX;
             var y = 0;
             var numIterations = this.mapHeight / game.PUZZLE_PIECE_SIZE;
             for ( var i = 0; i < numIterations; i++ ) {
-                var foundPiece = false;
                 var puzzlePiece;
-                var flags;
-                while (foundPiece == false) {
-                    puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
-                    flags = this.middleColumn[i].canFitTogether(puzzlePiece);
-                    // If the piece it needs to connect to is blank, then this one
-                    // also needs to be blank to make sure paths don't begin in the
-                    // middle of the map!
-                    if (this.middleColumn[i].isBlank &&
-                        puzzlePiece.isBlank) {
-                        foundPiece = true;
-                    }
-                    else if (flags & game.FitFlags.LEFT) {
-                        foundPiece = true;
-                    }
+                var possiblePuzzlePiecesList = [];
+
+                if (this.middleColumn[i].isBlank) {
+                    puzzlePiece = this.createBlankPuzzlePiece();
                 }
+                else {
+                    var neededFlags;
+                    neededFlags |= game.FitFlags.LEFT;
+                    // Don't need to check the piece above this one if i is 0
+                    if (this.middleColumn[i].hasBottomOpening == true &&
+                        i == 0) {
+                        neededFlags |= game.FitFlags.TOP;
+                    }
+                    possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.middleColumn[i], neededFlags);
+                    puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
+                }
+
                 this.leftColumn.push(puzzlePiece);
                 puzzlePiece.applyToMapArray(this.mapArray, this.mapWidth, x, y);
                 y += game.PUZZLE_PIECE_SIZE;

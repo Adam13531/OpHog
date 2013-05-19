@@ -17,6 +17,11 @@
         this.bottomEdgeOpenings = [];// [0,0,0,0,0]
         this.isBlank = true;
 
+        this.hasLeftOpening = false;
+        this.hasRightOpening = false;
+        this.hasTopOpening = false;
+        this.hasBottomOpening = false;
+
         this.generateEdges();
     };
 
@@ -33,6 +38,22 @@
                 this.topEdgeOpenings[i] == 1 ||
                 this.bottomEdgeOpenings[i] == 1) {
                 this.isBlank = false;
+            }
+
+            if (this.leftEdgeOpenings[i] == 1) {
+                this.hasLeftOpening = true;
+            }
+
+            if (this.rightEdgeOpenings[i] == 1) {
+                this.hasRightOpening = true;
+            }
+
+            if (this.topEdgeOpenings[i] == 1) {
+                this.hasTopOpening = true;
+            }
+
+            if (this.bottomEdgeOpenings[i] == 1) {
+                this.hasBottomOpening = true;
             }
         };
     };
@@ -87,18 +108,18 @@
         if ( canFitTop ) fitFlags |= game.FitFlags.TOP;
 
         // TODO: Testing
-        if ( fitFlags & game.FitFlags.RIGHT ) {
-            console.log("RIGHT");
-        }
-        if ( fitFlags & game.FitFlags.TOP ) {
-            console.log("TOP");
-        }
-        if ( fitFlags & game.FitFlags.LEFT ) {
-            console.log("LEFT");
-        }
-        if ( fitFlags & game.FitFlags.BOTTOM ) {
-            console.log("BOTTOM");
-        }
+        // if ( fitFlags & game.FitFlags.RIGHT ) {
+        //     console.log("RIGHT");
+        // }
+        // if ( fitFlags & game.FitFlags.TOP ) {
+        //     console.log("TOP");
+        // }
+        // if ( fitFlags & game.FitFlags.LEFT ) {
+        //     console.log("LEFT");
+        // }
+        // if ( fitFlags & game.FitFlags.BOTTOM ) {
+        //     console.log("BOTTOM");
+        // }
 
         return fitFlags;
     };
