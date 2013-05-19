@@ -9,7 +9,6 @@
          * @type {String}
          */
         KILL_ENEMIES: 'kill X enemy parties',
-
         
         /**
          * You must collect items. Even if you don't have space, you'll still
@@ -20,7 +19,7 @@
     };
 
     /**
-     * Quest constructor.
+     * Quest base-class constructor.
      * @param {game.QuestType} type            - the type of the quest
      * @param {Number} questSlotNumber - which index represents this quest. This
      * is used for the UI and for the QuestManager, so it is stored in this
@@ -29,15 +28,6 @@
     window.game.Quest = function Quest(type, questSlotNumber) {
         this.type = type;
         this.questSlotNumber = questSlotNumber;
-
-        // TODO: these should eventually go in their own class so that they
-        // don't pollute other quest types, e.g. an item-collection quest
-        // doesn't need to know how many enemies you've killed
-        this.enemiesKilled = 0;
-        this.enemiesNeeded = 5;
-
-        this.itemsCollected = 0;
-        this.itemsNeeded = 5;
     };
 
     /**
@@ -46,10 +36,7 @@
      * @return {null}
      */
     window.game.Quest.prototype.killedAnEnemyParty = function() {
-        if ( this.type != game.QuestType.KILL_ENEMIES ) return;
-
-        this.enemiesKilled++;
-        game.QuestManager.questGainedProgress(this);
+        return;
     };
 
     /**
@@ -58,10 +45,7 @@
      * @return {null}
      */
     window.game.Quest.prototype.collectedAnItem = function() {
-        if ( this.type != game.QuestType.COLLECT_ITEMS ) return;
-
-        this.itemsCollected++;
-        game.QuestManager.questGainedProgress(this);
+        return;
     };
 
     /**
@@ -69,15 +53,7 @@
      * objective.
      */
     window.game.Quest.prototype.isComplete = function() {
-        switch( this.type ) {
-            case game.QuestType.KILL_ENEMIES:
-                return this.enemiesKilled >= this.enemiesNeeded;
-            case game.QuestType.COLLECT_ITEMS:
-                return this.itemsCollected >= this.itemsNeeded;
-            default:
-                desc = 'Unrecognized quest type: ' + this.type;
-                break;
-        }
+        console.log('isComplete - unimplemented for: ' + this.type)
         return false;
     };
 
@@ -87,22 +63,8 @@
      * @return {String} see above
      */
     window.game.Quest.prototype.getDescription = function() {
-        var desc;
-        switch( this.type ) {
-            case game.QuestType.KILL_ENEMIES:
-                desc = 'Kill ' + this.enemiesNeeded + ' enemy parties. Progress: ' + 
-                    this.enemiesKilled + '/' + this.enemiesNeeded;
-                break;
-            case game.QuestType.COLLECT_ITEMS:
-                desc = 'Collect ' + this.itemsNeeded + ' items. Progress: ' + 
-                    this.itemsCollected + '/' + this.itemsNeeded;
-                break;
-            default:
-                desc = 'Unrecognized quest type: ' + this.type;
-                break;
-        }
-
-        return desc;
+        console.log('getDescription - unimplemented for: ' + this.type)
+        return 'Unrecognized quest type: ' + this.type;
     };
 
 }());

@@ -88,11 +88,16 @@
          * @return {null}
          */
         questGainedProgress: function(quest) {
+            // Cache this here because the quest might be null, but we'll still
+            // need the number to update the slot at the end
+            var questSlotNumber = quest.questSlotNumber;
             if ( quest.isComplete() ) {
-                this.quests[quest.questSlotNumber] = null;
+                this.quests[questSlotNumber] = null;
             }
 
-            game.QuestUI.updateQuest(quest);
+            // Pass this.quests[questSlotNumber] instead of just 'quest' because
+            // quest will not be null at this point
+            game.QuestUI.updateQuest(this.quests[questSlotNumber], questSlotNumber);
         },
 
         /**
@@ -113,7 +118,18 @@
 
             // Put this quest in the first available slot
             var nextQuestSlotNumber = this.getNextQuestSlotNumber();
-            var quest = new game.Quest(questType, nextQuestSlotNumber);
+            var quest;
+            switch( questType ) {
+                case game.QuestType.KILL_ENEMIES:
+                    quest = new game.KillEnemyPartyQuest(nextQuestSlotNumber);
+                    break;
+                case game.QuestType.COLLECT_ITEMS:
+                    quest = new game.CollectItemQuest(nextQuestSlotNumber);
+                    break;
+                default:
+                    console.log('Unrecognized quest type: ' + questType);
+                    return;
+            }
             this.quests[nextQuestSlotNumber] = quest;
 
             // Update the UI.
