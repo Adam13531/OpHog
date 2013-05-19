@@ -9,8 +9,6 @@
         this.base = game.Quest;
         this.base(game.QuestType.KILL_ENEMIES, questSlotNumber);
         
-        console.log('Made KillEnemyPartyQuest');
-
         this.enemiesKilled = 0;
         this.enemiesNeeded = 5;
     }

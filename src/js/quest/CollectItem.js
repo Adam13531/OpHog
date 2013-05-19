@@ -9,8 +9,6 @@
         this.base = game.Quest;
         this.base(game.QuestType.COLLECT_ITEMS, questSlotNumber);
 
-        console.log('Made CollectItemQuest');
-
         this.itemsCollected = 0;
         this.itemsNeeded = 5;
     }
