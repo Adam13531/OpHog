@@ -99,6 +99,9 @@
         <script src="js/UnitPlacementUI.js"></script>
         <script src="js/LootObject.js"></script>
         <script src="js/LootUI.js"></script>
+        <script src="js/Quest.js"></script>
+        <script src="js/QuestManager.js"></script>
+        <script src="js/QuestUI.js"></script>
         <script src="js/scrollable.js"></script>
         <script src="js/Battle.js"></script>
         <script src="js/BattleManager.js"></script>
@@ -123,9 +126,12 @@
         </script>
 
         <div id="loot-ui" title="Loot"></div>
+        <div id="quest-ui" title="Quests"></div>
 
         <!-- This is used for styling the loot UI -->
         <span style="opacity:.95" class="le-frog" id="lootUIDialogThemeSpan"></span>
+        <!-- This is used for styling the quest UI -->
+        <span style="opacity:.95" class="le-frog" id="questUIDialogThemeSpan"></span>
         <!-- This is used for styling the inventory UI -->
         <span style="opacity:.95;" class="le-frog" id="inventoryThemeSpan"></span>
         <!-- This is used for styling the settings UI -->
@@ -142,6 +148,7 @@
         <div style="border:1px solid gray;background-color:#373737;" id="settingsDialog" title="Settings">
             <input type="checkbox" id="toggleParticlesButton"/><label for="toggleParticlesButton">Disable particles</label><br/>
             <button style="margin-top:5px;" id='showInventory'>Show inventory</button><br/>
+            <button style="margin-top:5px;" id='showQuests'>View quests</button><br/>
             <button style="margin-top:5px;" id='showUnitPlacement'>Place Units</button><br/>
             <button style="margin-top:5px;" id='createUnits'>Create Units</button><br/>
         </div>

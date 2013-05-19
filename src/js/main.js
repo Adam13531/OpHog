@@ -63,6 +63,7 @@
 
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
+        var $showQuests = $('#showQuests');
         var $showUnitPlacement = $('#showUnitPlacement');
         var $createUnits = $('#createUnits');
         $settingsButton.button({
@@ -77,6 +78,12 @@
         $showInventory.click(function() {
             $settingsDialog.dialog('close');
             game.InventoryUI.show();
+        });
+
+        $showQuests.button();
+        $showQuests.click(function() {
+            $(settingsDialog).dialog('close');
+            $('#quest-ui').dialog('open');
         });
 
         $showUnitPlacement.button(); // Turns the button into a JQuery UI button
@@ -235,8 +242,12 @@
         // Initialize the slots of our inventory.
         game.Inventory.initialize();
 
+        // Initialize the quest slots
+        game.QuestManager.initialize();
+
         game.UnitPlacementUI.setupUI();
         game.LootUI.setupUI();
+        game.QuestUI.setupUI();
     }
 
     function initSettings() {
@@ -303,6 +314,11 @@
             if (evt.keyCode == game.Key.DOM_VK_U) {
                 // Shake the camera for approximately 20 game loops
                 game.Camera.shakeTimer = 20 * 16;
+            }
+
+            // 'K' - add quest
+            if (evt.keyCode == game.Key.DOM_VK_K) {
+                game.QuestManager.addNewQuest();
             }
 
             // Pressing 'C' will generate a collectible on the map
@@ -384,6 +400,16 @@
                     $('#inventory-screen').dialog('close');
                 } else {
                     game.InventoryUI.show();
+                }
+            }
+
+            // Pressing 'q' will toggle the quest UI
+            if (evt.keyCode == game.Key.DOM_VK_Q) {
+                var $questUI = $('#quest-ui');
+                if ( $questUI.is(":visible") ) {
+                    $('#quest-ui').dialog('close');
+                } else {
+                    $('#quest-ui').dialog('open');
                 }
             }
 

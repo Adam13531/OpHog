@@ -91,7 +91,9 @@
                 }
             }
 
+            // Notify appropriate listeners
             game.LootUI.addItemNotification(item, addedItem, originalQuantity);
+            game.QuestManager.collectedAnItem();
 
             return addedItem;
         },
