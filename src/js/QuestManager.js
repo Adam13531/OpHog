@@ -104,6 +104,9 @@
             var questSlotNumber = quest.questSlotNumber;
             if ( quest.isComplete() ) {
                 this.quests[questSlotNumber] = null;
+
+                // Randomly grant an item as a small reward
+                game.Inventory.addItem(game.GenerateRandomItem());
             }
 
             game.QuestUI.updateQuest(questSlotNumber);

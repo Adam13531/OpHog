@@ -138,6 +138,14 @@
     };
 
     /**
+     * This is a debug function to generate a random item of any type.
+     * @return {Item} - a random item
+     */
+    window.game.GenerateRandomItem = function() {
+        return new game.Item(Math.floor(Math.random() * 7));
+    };
+
+    /**
      * Items can't be both stackable and equippable.
      *
      * If an item is not in a slot, then there's no reference to it.

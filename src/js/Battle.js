@@ -274,7 +274,7 @@
             };
 
             // Give them a random item for every battle won.
-            game.Inventory.addItem(new game.Item(Math.floor(Math.random() * 7)));
+            game.Inventory.addItem(game.GenerateRandomItem());
 
             // Let the quest manager know too so that it can update quests
             game.QuestManager.killedAnEnemyParty();
