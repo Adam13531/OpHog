@@ -81,6 +81,19 @@
         },
 
         /**
+         * Calls the function with the same name for each quest.
+         * @return {null}
+         */
+        placedAUnit: function(unitType) {
+            for (var i = 0; i < game.MAX_QUESTS; i++) {
+                var quest = this.quests[i];
+                if ( quest == null ) continue;
+
+                quest.placedAUnit(unitType);
+            };
+        },
+
+        /**
          * Quests call this when they gain progress (e.g. you killed an enemy
          * while you had a KILL_ENEMIES quest - that is progress). This checks
          * for completion and is also in charge of updating the UI.
@@ -118,6 +131,18 @@
             switch( questType ) {
                 case game.QuestType.KILL_ENEMIES:
                     quest = new game.KillEnemyPartyQuest(nextQuestSlotNumber);
+                    break;
+                case game.QuestType.COLLECT_ITEMS:
+                    quest = new game.CollectItemQuest(nextQuestSlotNumber);
+                    break;
+                case game.QuestType.PLACE_WIZARDS: 
+                    quest = new game.PlaceUnitQuest(nextQuestSlotNumber, game.PlaceableUnitType.WIZARD);
+                    break;
+                case game.QuestType.PLACE_ARCHERS: 
+                    quest = new game.PlaceUnitQuest(nextQuestSlotNumber, game.PlaceableUnitType.ARCHER);
+                    break;
+                case game.QuestType.PLACE_WARRIORS: 
+                    quest = new game.PlaceUnitQuest(nextQuestSlotNumber, game.PlaceableUnitType.WARRIOR);
                     break;
                 case game.QuestType.COLLECT_ITEMS:
                     quest = new game.CollectItemQuest(nextQuestSlotNumber);

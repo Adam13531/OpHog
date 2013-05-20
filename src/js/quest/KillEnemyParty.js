@@ -10,13 +10,20 @@
         this.base(game.QuestType.KILL_ENEMIES, questSlotNumber);
         
         this.enemiesKilled = 0;
-        this.enemiesNeeded = 5;
+        this.enemiesNeeded = Math.floor(Math.random() * 4) + 2;
     }
 
     window.game.KillEnemyPartyQuest.prototype = new game.Quest;
 
     window.game.KillEnemyPartyQuest.prototype.getDescription = function() {
-        return 'Kill ' + this.enemiesNeeded + ' enemy parties. Progress: ' + 
+        var pluralizeCorrectly = 'enemy part';
+        if ( this.enemiesNeeded == 1 ) {
+            pluralizeCorrectly += 'y';
+        } else {
+            pluralizeCorrectly += 'ies';
+        }
+
+        return 'Kill ' + this.enemiesNeeded + ' ' + pluralizeCorrectly + '. Progress: ' + 
                     this.enemiesKilled + '/' + this.enemiesNeeded;;
     };
 

@@ -15,7 +15,16 @@
          * get credit.
          * @type {String}
          */
-        COLLECT_ITEMS: 'collect X items'
+        COLLECT_ITEMS: 'collect X items',
+
+        /**
+         * The following involve placing a specific unit. It doesn't matter if
+         * the unit immediately dies after that; it still counts.
+         * @type {String}
+         */
+        PLACE_WIZARDS: 'place X wizards',
+        PLACE_ARCHERS: 'place X archers',
+        PLACE_WARRIORS: 'place X warriors'
     };
 
     /**
@@ -35,18 +44,23 @@
      * particular Quest cares.
      * @return {null}
      */
-    window.game.Quest.prototype.killedAnEnemyParty = function() {
-        return;
-    };
+    window.game.Quest.prototype.killedAnEnemyParty = function() {};
 
     /**
      * This is called when you collect an item, regardless of whether this
      * particular Quest cares.
      * @return {null}
      */
-    window.game.Quest.prototype.collectedAnItem = function() {
-        return;
-    };
+    window.game.Quest.prototype.collectedAnItem = function() {};
+
+    /**
+     * This is called when you place a unit, regardless of whether this
+     * particular Quest cares.
+     * @param  {game.UnitType} unitType - the type of unit you placed. This
+     * doesn't necessarily have to be a placeable unit, but that's all that's
+     * going to trigger quest progress.
+     */
+    window.game.Quest.prototype.placedAUnit = function(unitType) {};
 
     /**
      * @return {Boolean} true if this quest is finished, i.e. if you've met the

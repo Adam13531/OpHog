@@ -213,6 +213,10 @@
 
         // Purge status effects
         this.statusEffects = [];
+
+        if ( this.isPlayer ) {
+            game.QuestManager.placedAUnit(this.unitType);
+        }
     };
 
 

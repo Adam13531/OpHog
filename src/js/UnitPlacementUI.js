@@ -361,5 +361,24 @@
                 top: Math.max(0, containerY + oldBuyYPosition - newBuyYPosition)
             });
         },
+
+        /**
+         * Returns the name of a placeable unit. This function is very simple.
+         * @param  {game.PlaceableUnitType} unitType - the type whose name you
+         * want
+         * @return {String}          - the name of that unit type
+         */
+        getNameOfPlaceableUnit: function(unitType) {
+            switch( unitType ) {
+                case game.PlaceableUnitType.ARCHER:
+                    return 'archer';
+                case game.PlaceableUnitType.WARRIOR:
+                    return 'warrior';
+                case game.PlaceableUnitType.WIZARD:
+                    return 'wizard';
+                default:
+                    return 'Unrecognized unit type: ' + unitType;
+            }
+        }
     };
 }()); 

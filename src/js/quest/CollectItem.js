@@ -10,13 +10,18 @@
         this.base(game.QuestType.COLLECT_ITEMS, questSlotNumber);
 
         this.itemsCollected = 0;
-        this.itemsNeeded = 5;
+        this.itemsNeeded = Math.floor(Math.random() * 4) + 2;
     }
 
     window.game.CollectItemQuest.prototype = new game.Quest;
 
     window.game.CollectItemQuest.prototype.getDescription = function() {
-        return 'Collect ' + this.itemsNeeded + ' items. Progress: ' + 
+        var pluralizeCorrectly = 'item';
+        if ( this.enemiesNeeded != 1 ) {
+            pluralizeCorrectly += 's';
+        }
+
+        return 'Collect ' + this.itemsNeeded + ' ' + pluralizeCorrectly + '. Progress: ' + 
                     this.itemsCollected + '/' + this.itemsNeeded;;
     };
 
