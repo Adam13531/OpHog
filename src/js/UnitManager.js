@@ -51,6 +51,19 @@
         },
 
         /**
+         * Gets a unit based on its ID.
+         * @param  {Number} unitID - the unit's ID
+         * @return {Unit}        - the unit with that ID
+         */
+        getUnitByID: function(unitID) {
+            for (var i = 0; i < this.gameUnits.length; i++) {
+                if ( this.gameUnits[i].id == unitID ) return this.gameUnits[i];
+            };
+
+            return null;
+        },
+
+        /**
          * Updates the units, removing when necessary.
          *
          * This also checks for battles.

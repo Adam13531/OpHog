@@ -304,6 +304,28 @@
                 }
             }
 
+            // Debug function to randomly morph the map in order to test
+            // saving/loading.
+            if ( evt.keyCode == game.Key.DOM_VK_R ) {
+                for (var i = 0; i < currentMap.mapTiles.length; i++) {
+                    currentMap.mapTiles[i].graphicIndex = Math.floor(Math.random() * 200);
+                };
+            }
+
+            // Save game
+            if ( evt.keyCode == game.Key.DOM_VK_Z ) {
+                game.GameDataManager.saveGame();
+                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'SAVING', true, '#0f0');
+                game.TextManager.addTextObj(textObj);
+            }
+
+            // Load game
+            if ( evt.keyCode == game.Key.DOM_VK_X ) {
+                game.GameDataManager.loadGame();
+                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'LOADING', true, '#0f0');
+                game.TextManager.addTextObj(textObj);
+            }
+
             // Pressing 'B' will toggle between showing life bars while units
             // are battling and not showing them
             if ( evt.keyCode == game.Key.DOM_VK_B ) {
@@ -397,7 +419,7 @@
             if (evt.keyCode == game.Key.DOM_VK_I) {
                 var $invScreen = $('#inventory-screen');
                 if ( $invScreen.is(":visible") ) {
-                    $('#inventory-screen').dialog('close');
+                    game.InventoryUI.hide();
                 } else {
                     game.InventoryUI.show();
                 }

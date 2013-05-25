@@ -131,9 +131,11 @@
          * Exit USE mode. This will hide the instructions that show up.
          * @return {null}
          */
-        exitUseMode: function() {
+        exitUseMode: function(doNotCallShowUI) {
             $('#useItemInstructions').hide();
-            $('#inventory-screen').dialog('open');
+            if (doNotCallShowUI === undefined || !doNotCallShowUI ) {
+                this.show();
+            }
             this.usingItem = null;
         },
 
@@ -354,7 +356,7 @@
 
             this.updateUseInstructions();
 
-            $('#inventory-screen').dialog('close');
+            this.hide();
             this.$useItemInstructions.show();
             // Leaving these here in case we want them later...
             // $('#inventory-screen').dialog('option', 'hide').duration = 100;
@@ -468,6 +470,14 @@
 
             // See the comment for setScrollbars to see why this is needed.
             game.InventoryUI.setScrollbars();
+        },
+
+        /**
+         * Convenience function since I call this a decent amount.
+         * @return {undefined}
+         */
+        hide: function() {
+            $('#inventory-screen').dialog('close');
         },
 
         /**

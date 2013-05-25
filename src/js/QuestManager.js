@@ -113,24 +113,16 @@
         },
 
         /**
-         * Adds a new quest of the specified type to your list.
-         * @param  {game.QuestType} questType - the type of quest you want. If
-         * you don't provide this, a random quest will be chosen.
-         * @return {null}
+         * This simply constructs a quest of a given type. It's like a factory.
+         * It doesn't actually add the quest to the UI.
+         * @param  {game.QuestType} questType           - the type of the quest
+         * to construct
+         * @param  {Number} nextQuestSlotNumber - the slot number of the quest
+         * to construct
+         * @return {Quest}                     - the Quest
          */
-        addNewQuest: function(questType) {
-            if ( !this.canAcceptQuests() ) return;
-
-            // If you don't pass in a type, randomly generate ANY quest.
-            // This is debug code.
-            if ( questType === undefined ) {
-                var key = game.util.randomKeyFromDict(game.QuestType);
-                questType = game.QuestType[key];
-            }
-
-            // Put this quest in the first available slot
-            var nextQuestSlotNumber = this.getNextQuestSlotNumber();
-            var quest;
+        constructQuest: function(questType, nextQuestSlotNumber) {
+            var quest = null;
             switch( questType ) {
                 case game.QuestType.KILL_ENEMIES:
                     quest = new game.KillEnemyPartyQuest(nextQuestSlotNumber);
@@ -152,8 +144,30 @@
                     break;
                 default:
                     console.log('Unrecognized quest type: ' + questType);
-                    return;
+                    break;
             }
+            return quest;
+        },
+
+        /**
+         * Adds a new quest of the specified type to your list.
+         * @param  {game.QuestType} questType - the type of quest you want. If
+         * you don't provide this, a random quest will be chosen.
+         * @return {null}
+         */
+        addNewQuest: function(questType) {
+            if ( !this.canAcceptQuests() ) return;
+
+            // If you don't pass in a type, randomly generate ANY quest.
+            // This is debug code.
+            if ( questType === undefined ) {
+                var key = game.util.randomKeyFromDict(game.QuestType);
+                questType = game.QuestType[key];
+            }
+
+            // Put this quest in the first available slot
+            var nextQuestSlotNumber = this.getNextQuestSlotNumber();
+            var quest = this.constructQuest(questType, nextQuestSlotNumber);
             this.quests[nextQuestSlotNumber] = quest;
 
             // Update the UI.

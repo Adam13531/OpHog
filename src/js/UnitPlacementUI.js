@@ -193,7 +193,6 @@
         navigateToPage: function(pageIndex) {
             // See the comment for lastYPosition for why we do this.
             this.lastYPosition = $('#leftArrowImg').position().top;
-            this.clearPage();
             this.setPage(pageIndex);
         },
 
@@ -203,6 +202,7 @@
          * @param {PlaceableUnitType} unitType Type of unit
          */
         setPage: function(unitType) {
+            this.clearPage();
 			
 			this.unitType = unitType;
 			var unitArray = game.UnitManager.getUnits(this.unitType);
@@ -354,7 +354,7 @@
 
 			newUnit = new game.Unit(this.unitType, true);
 			game.UnitManager.addUnit(newUnit);
-			game.UnitPlacementUI.addSlotToPage(newUnit, game.UnitManager.getNumOfPlayerUnits(this.unitType));
+			game.UnitPlacementUI.addSlotToPage(newUnit);
 
             var newBuyYPosition = $('#buySlotButton').position().top;
             $('#buyingScreenContainer').parent().css( {
