@@ -1,5 +1,16 @@
 ( function() {
 
+    /**
+     * There is one game-save version. This is used so that once the game is
+     * released, we can modify the save data however we want, then we can know
+     * how to convert from version X to version Y.
+     *
+     * Ideally, all saves should be backwards compatible, so that conversion
+     * process will hopefully be skippable.
+     * @type {String}
+     */
+    window.game.SAVE_DATA_VERSION = '1.0';
+
     // This handles saving and loading the game data from localStorage. In my
     // opinion, it sort of abuses how everything is public in JavaScript. In
     // general, saving works by decycling the stringified object (it's very
@@ -31,14 +42,25 @@
          */
         saveGame: function() {
             var curTime = new Date();
-            console.log('Saving the game at ' + curTime);
+            var version = game.SAVE_DATA_VERSION;
+            console.log('Saving the game (version ' + version + ') at ' + curTime);
 
+            localStorage.saveVersion = version;
+            localStorage.saveTime = curTime;
+
+            console.log('Saving the map');
             this.saveMap();
+            console.log('Saving quests');
             this.saveQuests();
+            console.log('Saving the camera');
             this.saveCamera();
+            console.log('Saving battles');
             this.saveBattles();
+            console.log('Saving units');
             this.saveUnits();
+            console.log('Saving collectibles');
             this.saveCollectibles();
+            console.log('Saving the inventory');
             this.saveInventory();
         },
 
@@ -47,6 +69,14 @@
          * @return {undefined}
          */
         loadGame: function() {
+            var savedVersion = localStorage.saveVersion;
+            var expectedVersion = game.SAVE_DATA_VERSION;
+
+            if ( !this.verifyVersion(expectedVersion, savedVersion, 'game') ) {
+                console.log('Note: your save file is from ' + localStorage.saveTime);
+                return;
+            }
+
             // Get rid of all existing text objects
             game.TextManager.textObjs = [];
 
@@ -66,22 +96,30 @@
             game.InventoryUI.exitUseMode(true);
 
             var curTime = new Date();
-            console.log('Loading the game at ' + curTime);
+            console.log('Loading a save (version ' + savedVersion + ') from ' + localStorage.saveTime);
 
             // Some of this ordering is important. For example, the map should
             // be loaded before basically anything else.
+            console.log('Loading the map');
             this.loadMap();
+            console.log('Loading quests');
             this.loadQuests();
+            console.log('Loading the camera');
             this.loadCamera();
+            console.log('Loading battles');
             this.loadBattles();
+            console.log('Loading units');
             this.loadUnits();
+            console.log('Loading projectiles');
             this.loadProjectiles();
+            console.log('Loading collectibles');
             this.loadCollectibles();
 
             // Load the inventory after units have been loaded. No code depends
             // on this at the time of writing, but that assumption may
             // eventually change, and I don't want to have to track down a bug
             // having to do with mis-ordering.
+            console.log('Loading the inventory');
             this.loadInventory();
         },
 
@@ -102,8 +140,9 @@
             }
 
             if ( actualVersion != expectedVersion ) {
-                console.log('Expected camera version ' + expectedVersion + 
-                    ', got ' + actualVersion + '. Not going to load "' + objectBeingVerified + '".');
+                console.log('Expected ' + objectBeingVerified + ' version ' + 
+                    expectedVersion + ', got ' + actualVersion + 
+                    '. Not going to load "' + objectBeingVerified + '".');
                 return false;
             }
 
@@ -134,10 +173,6 @@
          * @return {undefined}
          */
         saveInventory: function() {
-            var version = '1.0';
-            console.log('Saving inventory (version ' + version + ')');
-            localStorage.savedInventoryVersion = version;
-
             // The Inventory itself just has an array of Slots. Each Slot has an
             // item.
             localStorage.inventory = JSON.stringify(JSON.decycle(game.Inventory));
@@ -149,16 +184,7 @@
          * @return {undefined}
          */
         loadInventory: function() {
-            var savedVersion = localStorage.savedInventoryVersion;
-            var expectedVersion = '1.0';
-
-            if ( !this.verifyVersion(expectedVersion, savedVersion, 'inventory') ) {
-                return;
-            }
-
             game.slotID = localStorage.lastSlotID;
-
-            console.log('Loading inventory (version ' + savedVersion + ')');
 
             var parsedInventory = JSON.parse(localStorage.inventory);
             JSON.retrocycle(parsedInventory);
@@ -195,10 +221,6 @@
          * @return {undefined}
          */
         saveUnits: function() {
-            var version = '1.0';
-            console.log('Saving units (version ' + version + ')');
-            localStorage.savedUnitsVersion = version;
-
             // Save the last unit ID so that we don't end up with an ID of 0
             // when we come back from the save
             localStorage.lastUnitID = game.unitID;
@@ -232,15 +254,6 @@
          * @return {undefined}
          */
         loadUnits: function() {
-            var savedVersion = localStorage.savedUnitsVersion;
-            var expectedVersion = '1.0';
-
-            if ( !this.verifyVersion(expectedVersion, savedVersion, 'units') ) {
-                return;
-            }
-
-            console.log('Loading units (version ' + savedVersion + ')');
-
             var parsedUnits = JSON.parse(localStorage.units);
             JSON.retrocycle(parsedUnits);
 
@@ -302,9 +315,6 @@
          * @return {undefined}
          */
         saveCollectibles: function() {
-            var version = '1.0';
-            console.log('Saving collectibles (version ' + version + ')');
-            localStorage.savedCollectiblesVersion = version;
             var collectibles = game.CollectibleManager.collectibles;
             localStorage.collectibles = JSON.stringify(collectibles);
         },
@@ -314,15 +324,6 @@
          * @return {undefined}
          */
         loadCollectibles: function() {
-            var savedVersion = localStorage.savedCollectiblesVersion;
-            var expectedVersion = '1.0';
-
-            if ( !this.verifyVersion(expectedVersion, savedVersion, 'collectibles') ) {
-                return;
-            }
-
-            console.log('Loading collectibles (version ' + savedVersion + ')');
-            
             var finalCollectibles = []
             var parsedCollectibles = JSON.parse(localStorage.collectibles);
             for (var i = 0; i < parsedCollectibles.length; i++) {
@@ -339,9 +340,6 @@
          * @return {undefined}
          */
         saveQuests: function() {
-            var version = '1.0';
-            console.log('Saving quests (version ' + version + ')');
-            localStorage.savedQuestVersion = version;
             var quests = game.QuestManager.quests;
 
             localStorage.quests = JSON.stringify(quests);
@@ -352,15 +350,6 @@
          * @return {undefined}
          */
         loadQuests: function() {
-            var savedVersion = localStorage.savedQuestVersion;
-            var expectedVersion = '1.0';
-
-            if ( !this.verifyVersion(expectedVersion, savedVersion, 'quests') ) {
-                return;
-            }
-
-            console.log('Loading quests (version ' + savedVersion + ')');
-
             // Wipe out all of the quests so that we can simply add them again.
             for (var i = 0; i < game.MAX_QUESTS; i++) {
                 game.QuestManager.quests[i] = null;
@@ -390,9 +379,6 @@
          * @return {undefined}
          */
         saveBattles: function() {
-            var version = '1.0';
-            console.log('Saving battles (version ' + version + ')');
-            localStorage.savedBattlesVersion = version;
             var battles = game.BattleManager.battles;
 
             localStorage.battles = JSON.stringify(JSON.decycle(battles));
@@ -403,13 +389,6 @@
          * @return {undefined}
          */
         loadBattles: function() {
-            var savedVersion = localStorage.savedBattlesVersion;
-            var expectedVersion = '1.0';
-
-            if ( !this.verifyVersion(expectedVersion, savedVersion, 'battles') ) {
-                return;
-            }
-
             var parsedBattles = JSON.parse(localStorage.battles);
             JSON.retrocycle(parsedBattles);
 
@@ -457,10 +436,6 @@
          * @return {undefined}
          */
         saveMap: function() {
-            var version = '1.0';
-            console.log('Saving map (version ' + version + ')');
-            localStorage.savedMapVersion = version;
-
             localStorage.map = JSON.stringify(JSON.decycle(currentMap));
         },
 
@@ -469,13 +444,6 @@
          * @return {undefined}
          */
         loadMap: function() {
-            var savedVersion = localStorage.savedMapVersion;
-            var expectedVersion = '1.0';
-
-            if ( !this.verifyVersion(expectedVersion, savedVersion, 'map') ) {
-                return;
-            }
-
             var parsedMap = JSON.parse(localStorage.map);
             JSON.retrocycle(parsedMap);
 
@@ -513,9 +481,6 @@
          * @return {undefined}
          */
         saveCamera: function() {
-            var version = '1.0';
-            console.log('Saving camera (version ' + version + ')');
-            localStorage.savedCameraVersion = version;
             // The camera is a simple object with no reference loops, so we can
             // simply stringify it and restore it later
             localStorage.camera = JSON.stringify(game.Camera);
@@ -526,15 +491,6 @@
          * @return {undefined}
          */
         loadCamera: function() {
-            var savedVersion = localStorage.savedCameraVersion;
-            var expectedVersion = '1.0';
-
-            if ( !this.verifyVersion(expectedVersion, savedVersion, 'camera') ) {
-                return;
-            }
-
-            console.log('Loading camera (version ' + savedVersion + ')');
-
             // Set each property of the camera.
             JSON.parse(localStorage.camera, function(k, v) {
                 // The last property will be the empty string with no value.
