@@ -63,22 +63,69 @@
         this.setFog(1,9,3,false);
         this.setFog(1,15,3,false);
 
-        // This puts a single generator on the middle of the path. Leaving this
-        // here for testing purposes
-        // var generatorCoords = [[21,9]];
+        this.computePaths();
 
-        // Coordinates of generators        
-        var generatorCoords = [[8,3], [13,3], [9,9], [15,9], [18,9], [8,15], [14,15]];
+        // Now that we have paths, place some generators.
+        this.placeGenerators();
+    };
 
-        // Make generators at each spot
+    /**
+     * Places generators randomly on the map.
+     * @return {undefined}
+     */
+    window.game.Map.prototype.placeGenerators = function() {
+        // Coordinates of generators
+        var generatorCoords = [];
+        var spawnerTiles = this.getAllSpawnerTiles();
+        var minimumDistanceFromSpawn = 7;
+        var numberOfGeneratorsToPlace = 7;
+        var possibleGeneratorTiles;
+
+        // Start with all walkable tiles as candidates for possible generator
+        // tiles.
+        possibleGeneratorTiles = this.getAllWalkableTiles();
+
+        // Remove any tile that is within a certain number of tiles from any
+        // spawner so that enemies aren't generated too close to the spawn
+        for (var i = 0; i < possibleGeneratorTiles.length; i++) {
+            var tile = possibleGeneratorTiles[i];
+            for (var j = 0; j < spawnerTiles.length; j++) {
+                var spawnTile = spawnerTiles[j];
+                if ( game.util.distance(tile.x, tile.y, spawnTile.x, spawnTile.y) < minimumDistanceFromSpawn ) {
+                    possibleGeneratorTiles.splice(i, 1);
+                    i--;
+                    break;
+                }
+            };
+        };
+
+        // Figure out the coordinates for each generator now.
+        for (var i = 0; i < numberOfGeneratorsToPlace; i++) {
+            // If there are no more possible tiles, then we're forced to stop
+            // here.
+            if ( possibleGeneratorTiles.length == 0 ) {
+                console.log('Warning: this map tried to place ' + numberOfGeneratorsToPlace + 
+                    ' generator(s), but there was only enough room for ' + generatorCoords.length);
+                break;
+            }
+
+            var indexOfGeneratorTile = Math.floor(Math.random() * possibleGeneratorTiles.length);
+            var generatorTile = possibleGeneratorTiles[indexOfGeneratorTile];
+            generatorCoords.push([generatorTile.x, generatorTile.y]);
+
+            // Now that we placed a generator at this tile, we remove it from
+            // the possible coordinates for future generators so that we don't
+            // stack generators.
+            possibleGeneratorTiles.splice(indexOfGeneratorTile, 1);
+        };
+
+        // Make generators at each spot that we determined above
         for (var i = 0; i < generatorCoords.length; i++) {
             var x = generatorCoords[i][0];
             var y = generatorCoords[i][1];
             var generator = new game.Generator(x, y);
             game.GeneratorManager.addGenerator(generator);
         };
-
-        this.computePaths();
     };
 
     /**
@@ -131,11 +178,47 @@
     };
 
     /**
-     * @return {Tile} a random, walkable tile
+      * @param {Boolean} useEvenDistribution - if true, each walkable tile will
+      * have an even chance of being chosen. If false, each walkable tile gets a
+      * number of chances equal to the number of paths that it's in. For example,
+      * if your map's paths is simply an 'X', then the tile at which the two
+      * beams of the 'X' cross will be chosen slightly more often than the
+      * others.
+      * @return {Tile} a random, walkable tile
      */
-    window.game.Map.prototype.getRandomWalkableTile = function() {
-        var path = game.util.randomArrayElement(this.paths);
-        return game.util.randomArrayElement(path);
+    window.game.Map.prototype.getRandomWalkableTile = function(useEvenDistribution) {
+        if ( useEvenDistribution ) {
+            return game.util.randomArrayElement(this.getAllWalkableTiles());
+        } else {
+            var randomPath = game.util.randomArrayElement(this.paths);
+            return game.util.randomArrayElement(randomPath);
+        }
+    };
+
+    /**
+     * @return {Array:Tile} - an array of all of the walkable tiles on this map
+     */
+    window.game.Map.prototype.getAllWalkableTiles = function() {
+        var walkableTiles = [];
+        for (var i = 0; i < this.mapTiles.length; i++) {
+            var tile = this.mapTiles[i];
+            if ( tile.isWalkable ) walkableTiles.push(tile);
+        };
+
+        return walkableTiles;
+    };
+
+    /**
+     * @return {Array:Tile} - an array of all of the spawner tiles on this map
+     */
+    window.game.Map.prototype.getAllSpawnerTiles = function() {
+        var spawnerTiles = [];
+        for (var i = 0; i < this.mapTiles.length; i++) {
+            var tile = this.mapTiles[i];
+            if ( tile.isSpawnerPoint ) spawnerTiles.push(tile);
+        };
+
+        return spawnerTiles;
     };
     
     /**

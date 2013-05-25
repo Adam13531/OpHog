@@ -31,7 +31,7 @@
             }
 
             // Get a random walkable point
-            var randomWalkableTile = currentMap.getRandomWalkableTile();
+            var randomWalkableTile = currentMap.getRandomWalkableTile(false);
 
             // Make the Collectible based on that.
             var collectible = new game.Collectible(randomWalkableTile.x, randomWalkableTile.y, type);

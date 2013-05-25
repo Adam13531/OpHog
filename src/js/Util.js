@@ -4,12 +4,26 @@
      * Calculate the distance between two sets of coordinates.
      *
      * The units are simply numbers (not pixels or tiles).
+     *
+     * This computes Euclidean distance.
      */
     window.game.util.distance = function(x1, y1, x2, y2) {
         var dif1 = x2 - x1;
         var dif2 = y2 - y1;
         return Math.sqrt(dif1 * dif1 + dif2 * dif2);
     };
+
+    /**
+     * Calculates the Manhattan distance between two sets of coordinates.
+     *
+     * The units are simply numbers (not pixels or tiles).
+     *
+     * This computes "taxicab" distance, i.e. a diagonal counts as 2, not
+     * sqrt(2) like util.distance would provide.
+     */
+    window.game.util.manhattanDistance = function(x1, y1, x2, y2) {
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
+    };    
 
     /**
      * Two circles collide if the distance between their centers is less than

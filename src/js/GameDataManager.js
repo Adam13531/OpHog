@@ -50,6 +50,8 @@
 
             console.log('Saving the map');
             this.saveMap();
+            console.log('Saving generators');
+            this.saveGenerators();
             console.log('Saving quests');
             this.saveQuests();
             console.log('Saving the camera');
@@ -102,6 +104,8 @@
             // be loaded before basically anything else.
             console.log('Loading the map');
             this.loadMap();
+            console.log('Loading generators');
+            this.loadGenerators();
             console.log('Loading quests');
             this.loadQuests();
             console.log('Loading the camera');
@@ -333,6 +337,31 @@
                 finalCollectibles.push(finalCollectible);
             };
             game.CollectibleManager.collectibles = finalCollectibles;
+        },
+
+        /**
+         * Saves all generators.
+         * @return {undefined}
+         */
+        saveGenerators: function() {
+            var generators = game.GeneratorManager.generators;
+            localStorage.generators = JSON.stringify(generators);
+        },
+
+        /**
+         * Load generators.
+         * @return {undefined}
+         */
+        loadGenerators: function() {
+            var finalGenerators = []
+            var parsedGenerators = JSON.parse(localStorage.generators);
+            for (var i = 0; i < parsedGenerators.length; i++) {
+                var parsedGenerator = parsedGenerators[i];
+                var finalGenerator = new game.Generator(parsedGenerator.tileX,parsedGenerator.tileY);
+                this.copyProps(parsedGenerator, finalGenerator, []);
+                finalGenerators.push(finalGenerator);
+            };
+            game.GeneratorManager.generators = finalGenerators;
         },
 
         /**
