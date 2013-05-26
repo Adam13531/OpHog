@@ -57,7 +57,7 @@
     //         5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5
     //         );
     // currentMap = game.MapGenerator.generateRandomMap(15, 15, 1);
-    currentMap = game.MapGenerator.generateRandomMap(15, 25, 1);
+    currentMap = game.MapGenerator.generateRandomMap(20, 25, 1);
     if (currentMap == 0) return;
 
     // Time (in MS) of the last update.

@@ -1,20 +1,27 @@
 ( function() {
 
     window.game.FitFlags = {
-        UP: 1,   // 0001
-        RIGHT:2, // 0010
-        DOWN:4,  // 0100
-        LEFT:8   // 1000
+        UP: 1,    // 0001
+        RIGHT: 2, // 0010
+        DOWN: 4,  // 0100
+        LEFT: 8   // 1000
     };
+
+    window.game.PuzzlePieceType = {
+        LEFT: 1,
+        MIDDLE: 2,
+        RIGHT: 4
+    }
 
     window.game.PUZZLE_PIECE_SIZE = 5; // Length of a side
 
-    window.game.PuzzlePiece = function PuzzlePiece(tiles) {
+    window.game.PuzzlePiece = function PuzzlePiece(tiles, pieceType) {
         this.tiles = tiles;
-        this.leftEdgeOpenings = [];  // [0,0,1,0,0]
-        this.rightEdgeOpenings = []; // [0 1 0 0 0]
-        this.topEdgeOpenings = [];   // [0,0,0,0,0]
-        this.bottomEdgeOpenings = [];// [0,0,0,0,0]
+        this.pieceType = pieceType;
+        this.leftEdgeOpenings = [];
+        this.rightEdgeOpenings = [];
+        this.topEdgeOpenings = [];
+        this.bottomEdgeOpenings = [];
         this.isBlank = true;
 
         this.hasLeftOpening = false;
