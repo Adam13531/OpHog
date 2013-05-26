@@ -105,7 +105,7 @@
                 autoOpen: false,
                 resizable:false,
                 autoResize: true,
-                width: 240,
+                width: 260,
 
                 // Wrap the dialog in a span so that it gets themed correctly.
                 appendTo:"#unitPlacementDialogThemeSpan",
