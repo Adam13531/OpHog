@@ -66,16 +66,17 @@
 
     /**
      * Creates a unit (player OR enemy).
-     * @param {UnitType}  unitType For now, this is the graphic index, or one
-     *                           of the special values above.
+     * @param {UnitType}  unitType For now, this is the graphic index, or one of
+     * the special values above.
      * @param {Boolean} isPlayer True if this is a player unit.
+     * @param {Object} enemyData - the enemy data used to populate this unit.
+     * This can be undefined.
      */
-    window.game.Unit = function Unit(unitType, isPlayer) {
+    window.game.Unit = function Unit(unitType, isPlayer, enemyData) {
         this.unitType = unitType;
-        this.width = tileSize;
-        this.height = tileSize;
         this.widthInTiles = 1;
         this.heightInTiles = 1;
+
         this.id = window.game.unitID++;
         this.hasBeenPlaced = false;
 
@@ -97,8 +98,6 @@
         // We set it to 0 here simply so that when we call restoreLife, it isn't
         // equal to 'undefined'.
         this.life = 0;
-
-        this.restoreLife();
 
         // You have a graphic index for each tile that you take up.
         // 'graphicIndexes' represents all of the tiles, from left to right, top
@@ -152,6 +151,27 @@
 
             this.graphicIndexes.push(graphicIndex);
         }
+
+        // If enemyData was passed in, then we basically ignore a lot of the
+        // properties that were set earlier and set "correct" ones here.
+        if ( enemyData !== undefined && enemyData != null ) {
+            this.unitType = enemyData.id;
+            this.widthInTiles = enemyData.width;
+            this.heightInTiles = enemyData.height;
+            this.graphicIndexes = enemyData.graphicIndexes;
+
+            this.level = enemyData.level;
+            this.maxLife = enemyData.finalLife;
+            this.atk = enemyData.finalAtk;
+            this.def = enemyData.finalDef;
+
+            this.itemsDropped = enemyData.itemsDropped;
+        }
+
+        this.restoreLife();
+
+        this.width = tileSize * this.widthInTiles;
+        this.height = tileSize * this.heightInTiles;
 
         this.areaInTiles = this.widthInTiles * this.heightInTiles;
         this.isPlayer = isPlayer;

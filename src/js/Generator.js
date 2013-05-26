@@ -4,10 +4,13 @@
      * A generator creates enemies.
      * @param {Number} tileX - x coordinate
      * @param {Number} tileY - y coordinate
+     * @param {Array:PossibleEnemy} possibleEnemies - the set of possible
+     * enemies that this generator can produce.
      */
-    window.game.Generator = function Generator(tileX, tileY) {
+    window.game.Generator = function Generator(tileX, tileY, possibleEnemies) {
         this.tileX = tileX;
         this.tileY = tileY;
+        this.possibleEnemies = possibleEnemies;
     };
 
     /**
@@ -40,8 +43,15 @@
      * @return {null}
      */
     window.game.Generator.prototype.produceEnemy = function() {
-        // For now, every enemy will be the DEBUG type.
-        var newUnit = new game.Unit(game.UnitType.DEBUG,false);
+        var possibleEnemy = game.util.randomFromWeights(this.possibleEnemies);
+
+        // Add one here since randomInteger is exclusive.
+        var level = game.util.randomInteger(possibleEnemy.minLevel, possibleEnemy.maxLevel + 1);
+
+        // Get the corresponding enemy data.
+        var enemyData = game.GetEnemyDataFromID(possibleEnemy.enemyID, level);
+        var newUnit = new game.Unit(game.UnitType.DEBUG,false, enemyData);
+
         newUnit.placeUnit(this.tileX, this.tileY);
         game.UnitManager.addUnit(newUnit);
     };

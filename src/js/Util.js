@@ -26,6 +26,84 @@
     };    
 
     /**
+     * Generates a random number between lowerBound and (upperBound-1).
+     * @param  {Nmber} lowerBound - the lower bound
+     * @param  {Number} upperBound - the upper bound
+     * @return {Number}            - a random number in that range
+     */
+    window.game.util.randomInteger = function(lowerBound, upperBound) {
+        if (lowerBound > upperBound) {
+            var temp = lowerBound;
+            lowerBound = upperBound;
+            upperBound = temp;
+        }
+        
+        return Math.floor(Math.random() * (upperBound - lowerBound)) + lowerBound;
+    };
+
+    /**
+     * Given a list of weighted items, this will return one at random (according
+     * to the weights).
+     *
+     * For example, if you have the weights (5,10,15), then they should be
+     * picked with the frequencies (16.66%, 33.33%, 50%).
+     *
+     * This code was converted from Java code I wrote for BotLandLite. Back
+     * then, I tested this with 100K trials with (5,10,15) and got these
+     * numbers: 16713, 33260, and 50027. Those are pretty darn close to 16.66%,
+     * 33.33%, and 50%.
+     * @param {Array:Object} objectsWithRelativeWeight - this is an array of any
+     * object that contains the property 'relativeWeight'.
+     * @return {Object} - an object from the passed-in list, or null if none of
+     * them had a weight.
+     */
+    window.game.util.randomFromWeights = function(objectsWithRelativeWeight) {
+        // Get the total weight so that we can later get percentages.
+        var totalWeight = 0;
+
+        for (var i = 0; i < objectsWithRelativeWeight.length; i++) {
+            if ( objectsWithRelativeWeight[i].relativeWeight === undefined ) {
+                console.log('Warning: an object was passed in to ' +
+                    'randomFromWeights that does not have "relativeWeight" ' +
+                    'as a property. Returning null.');
+                return null;
+            }
+            totalWeight += objectsWithRelativeWeight[i].relativeWeight;
+        };
+
+        if (totalWeight == 0) {
+            // I will almost certainly never expect you to pass in all-zero
+            // weights, so I print a warning here when it does.
+            console.log('Warning: randomFromWeights is returning null.');
+            return null;
+        }
+
+        // Generate a random float now so that we can stop once we found the
+        // correct number below.
+        var f = Math.random();
+
+        // Make percentages based on the total weight. These are cumulative, so
+        // in our (5,10,15) example, 'percentages' will be {0.16666667, 0.5,
+        // 1.0}.
+        var percentages = new Array(objectsWithRelativeWeight.length);
+        var lastPercent = 0;
+
+        for (var i = 0; i < objectsWithRelativeWeight.length; i++) {
+            percentages[i] = lastPercent + (objectsWithRelativeWeight[i].relativeWeight / totalWeight);
+            lastPercent = percentages[i];
+
+            // We also return if we're at the last item to account for odd float
+            // behavior.
+            if ( f < lastPercent || i == objectsWithRelativeWeight.length - 1 ) {
+                return objectsWithRelativeWeight[i];
+            }
+        };
+
+        // This should be unreachable code due to the returns above.
+        return null;
+    }
+
+    /**
      * Two circles collide if the distance between their centers is less than
      * the sum of their radii.
      * @param  {number} x1 Center X of circle 1 (in pixels)

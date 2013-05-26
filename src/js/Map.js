@@ -119,11 +119,38 @@
             possibleGeneratorTiles.splice(indexOfGeneratorTile, 1);
         };
 
+        // Figure out which enemies can be spawned from this generator.
+        var possibleEnemies = [];
+
+        // This is a debug value and will eventually be based on the map number
+        // or something. Actually, a lot of this code will change.
+        var highestEnemyID = 4;
+
+        // Go through each ID and potentially make a PossibleEnemy.
+        for (var enemyID = 0; enemyID < highestEnemyID; enemyID++) {
+            var r = game.util.randomInteger(0, 2);
+
+            // If we randomly generated 0 OR if we didn't add any possible
+            // enemies yet, then we will add this type.
+            if ( r == 0 || (enemyID == highestEnemyID - 1 && possibleEnemies.length == 0) ) {
+                // Enemies with higher IDs will appear more frequently (this is
+                // just debug logic).
+                var relativeWeight = enemyID + 1;
+
+                // These level ranges are arbitrary
+                var minLevel = 1;
+                var maxLevel = 5;
+                var possibleEnemy = new game.PossibleEnemy(enemyID, relativeWeight, minLevel, maxLevel);
+                possibleEnemies.push(possibleEnemy);
+            }
+        };
+
         // Make generators at each spot that we determined above
         for (var i = 0; i < generatorCoords.length; i++) {
             var x = generatorCoords[i][0];
             var y = generatorCoords[i][1];
-            var generator = new game.Generator(x, y);
+
+            var generator = new game.Generator(x, y, possibleEnemies);
             game.GeneratorManager.addGenerator(generator);
         };
     };

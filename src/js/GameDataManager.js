@@ -359,6 +359,14 @@
                 var parsedGenerator = parsedGenerators[i];
                 var finalGenerator = new game.Generator(parsedGenerator.tileX,parsedGenerator.tileY);
                 this.copyProps(parsedGenerator, finalGenerator, []);
+
+                // Restore each PossibleEnemy from an Object to its original
+                // type
+                for (var j = 0; j < finalGenerator.possibleEnemies.length; j++) {
+                    var parsedPossibleEnemy = finalGenerator.possibleEnemies[j];
+                    var finalPossibleEnemy = new game.PossibleEnemy(parsedPossibleEnemy.enemyID, parsedPossibleEnemy.relativeWeight, parsedPossibleEnemy.minLevel, parsedPossibleEnemy.maxLevel);
+                    finalGenerator.possibleEnemies[j] = finalPossibleEnemy;
+                };
                 finalGenerators.push(finalGenerator);
             };
             game.GeneratorManager.generators = finalGenerators;
