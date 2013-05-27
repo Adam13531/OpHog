@@ -161,6 +161,28 @@
         },
 
         /**
+         * Returns true if the tile at the coordinates passed in is a valid
+         * target for the item you're using.
+         * @param  {Number} tileX - coordinate in tiles
+         * @param  {Number} tileY - coordinate in tiles
+         * @return {Boolean} - true if the tile is a valid target.
+         */
+        isTileAUseTarget: function(tileX, tileY) {
+            if (!this.isInUseMode()) return false;
+
+            var useTarget = this.usingItem.useTarget;
+
+            if ( useTarget == game.UseTarget.MAP ) {
+                return true;
+            } else if ( useTarget == game.UseTarget.MAP_WALKABLE_ONLY ) {
+                return this.usingItem.itemID == game.ItemType.CREATE_SPAWNER.id && currentMap.isValidTileToCreateSpawner(tileX,tileY,6) ;
+            } else {
+                console.log('Unrecognized type: ' + useTarget);
+                return false;
+            }
+        },
+
+        /**
          * Returns true if the unit passed in is a valid target for the item
          * that you're using.
          * @param  {Unit}  unit - the unit to check
@@ -205,6 +227,8 @@
 
             var useTarget = this.usingItem.useTarget;
             var used = false;
+            var tileX = Math.floor(x / tileSize);
+            var tileY = Math.floor(y / tileSize);
 
             // Check to see if you're targeting a unit
             if ( useTarget == game.UseTarget.LIVING_PLAYER_UNIT || 
@@ -225,7 +249,7 @@
                         break;
                     }
                 };
-            } else if ( useTarget == game.UseTarget.MAP || useTarget == game.UseTarget.MAP_WALKABLE_ONLY ) {
+            } else if ( this.isTileAUseTarget(tileX, tileY) ) {
                 used = this.usingItem.useOnMap(x, y);
             }
 

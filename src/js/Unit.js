@@ -802,8 +802,7 @@
         if ( game.displayLifeBarsInBattle && this.isInBattle() ) return true;
 
         // If you're using an item and this unit is a target
-        if (game.InventoryUI.isInUseMode() && 
-                game.InventoryUI.isUnitAUseTarget(this)) return true;
+        if (game.InventoryUI.isUnitAUseTarget(this)) return true;
 
         return false;
     }
@@ -861,8 +860,7 @@
 
         // Draw a green highlight box over the unit if we're in use mode and
         // this unit is a target
-        if ( game.InventoryUI.isInUseMode() && 
-                game.InventoryUI.isUnitAUseTarget(this) ) {
+        if ( game.InventoryUI.isUnitAUseTarget(this) ) {
 
             // Save the canvas context because we modify the fillStyle
             ctx.save();

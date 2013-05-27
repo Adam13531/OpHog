@@ -492,7 +492,7 @@
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
 
-        currentMap.draw(ctx);
+        currentMap.draw(ctx, false);
         ctx.restore();
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);

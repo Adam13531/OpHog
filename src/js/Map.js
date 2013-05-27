@@ -916,7 +916,18 @@
         var index;
         var graphic;
         var tile;
-        ctx.fillStyle = 'rgba(0,0,0,1)';
+
+        // Set up greenFillstyle, which we'll use to draw a highlight if a tile
+        // is a use target.
+        var blink = Math.sin(game.alphaBlink * 4);
+        var alpha = blink * .1 + .3;
+        var greenFillStyle = 'rgba(0, 255, 0, ' + alpha + ')';
+
+        // Keep track of the regular fill style too so that we don't have to
+        // save/restore the entire canvas context when this is all we're
+        // changing.
+        var regularFillStyle = 'rgba(0,0,0,1)';
+        ctx.fillStyle = regularFillStyle;
         for (var y = 0; y < this.numRows; y++) {
             for (var x = 0; x < this.numCols; x++) {
                 index = y * this.numCols + x;
@@ -937,12 +948,22 @@
                             // castles.
                             ctx.fillRect(0, 0, tileSize, tileSize);
                             envSheet.drawSprite(ctx, graphic, 0,0);
+                            if ( game.InventoryUI.isTileAUseTarget(x,y) ) {
+                                ctx.fillStyle = greenFillStyle;
+                                ctx.fillRect(0,0,tileSize,tileSize);
+                                ctx.fillStyle = regularFillStyle;
+                            }
                         }
                     } else {
                         // If there's no fog here and we're not drawing the fog
                         // layer, then we just draw the map normally.
                         if ( !this.fog[index] ) {
                             envSheet.drawSprite(ctx, graphic, 0,0);
+                            if ( game.InventoryUI.isTileAUseTarget(x,y) ) {
+                                ctx.fillStyle = greenFillStyle;
+                                ctx.fillRect(0,0,tileSize,tileSize);
+                                ctx.fillStyle = regularFillStyle;
+                            }
                         }
                     }
                 }
@@ -1063,14 +1084,14 @@
     };
 
     /**
-     * Attempts to create a new spawn location.
+     * Returns true if a spawn point can be created here.
      * @param  {Number} tileX                       - coordinate of new spawner
      * @param  {Number} tileY                       - coordniate of new spawner
      * @param  {Number} maxDistanceToAnotherSpawner - the new spawner must be
      * within this many tiles of any other spawner in order to be placed
      * @return {Boolean}                             - true if it was created
      */
-    window.game.Map.prototype.attemptToCreateSpawner = function(tileX, tileY, maxDistanceToAnotherSpawner) {
+    window.game.Map.prototype.isValidTileToCreateSpawner = function(tileX, tileY, maxDistanceToAnotherSpawner) {
         var tileIndex = (tileX % this.numCols) + tileY * this.numCols;
         var tile = this.mapTiles[tileIndex];
 
@@ -1109,9 +1130,22 @@
             return false;
         }
 
-        // Recreate the tile to be a spawn point.
-        this.mapTiles[tileIndex] = new game.Tile(game.SPAWN_TILE_GRAPHIC_INDEX, tileIndex, tile.x, tile.y);
         return true;
+    };
+
+    /**
+     * Attempts to create a new spawn location. For additional comments, see
+     * isValidTileToCreateSpawner.
+     */
+    window.game.Map.prototype.attemptToCreateSpawner = function(tileX, tileY, maxDistanceToAnotherSpawner) {
+        var valid = this.isValidTileToCreateSpawner(tileX, tileY, maxDistanceToAnotherSpawner);
+        if ( valid ) {
+            // Recreate the tile to be a spawn point.
+            var tileIndex = (tileX % this.numCols) + tileY * this.numCols;
+            this.mapTiles[tileIndex] = new game.Tile(game.SPAWN_TILE_GRAPHIC_INDEX, tileIndex, tileX, tileY);
+        }
+
+        return valid;
     };
 
     /**
