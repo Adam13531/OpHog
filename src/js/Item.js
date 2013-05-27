@@ -20,7 +20,8 @@
         DEAD_PLAYER_UNIT: 'dead player units',
         DEAD_PLAYER_AND_ENEMY_UNIT: 'dead player and enemy units',
         DEAD_ENEMY_UNIT: 'dead enemy units',
-        MAP: 'map',
+        MAP: 'anywhere on the map',
+        MAP_WALKABLE_ONLY: 'only on walkable tiles',
 
         // TODO: when I finally use this, I think the best way to code it would
         // be to highlight all units that are in a battle, that way we can
@@ -110,6 +111,17 @@
             startingQuantity:3,
             cssClass:'item-sprite greengem32-png'
         },
+        CREATE_SPAWNER: {
+            id: 7,
+            itemLevel:1,
+            name:'Spawn Creatorizer',
+            htmlDescription:'<font color="#a3a3cc"><b>Creates another spawn point on the map.<b/></font>',
+            usable:true,
+            useTarget: game.UseTarget.MAP_WALKABLE_ONLY,
+            stackable:true,
+            startingQuantity:3,
+            cssClass:'item-sprite greenrectangle-png'
+        },
     };
 
     // This is debug code to put the item name in the item's description. It's
@@ -142,7 +154,7 @@
      * @return {Item} - a random item
      */
     window.game.GenerateRandomItem = function() {
-        return new game.Item(Math.floor(Math.random() * 7));
+        return new game.Item(Math.floor(Math.random() * 8));
     };
 
     /**
@@ -236,13 +248,23 @@
         var tileX = Math.floor(x / tileSize);
         var tileY = Math.floor(y / tileSize);
 
-        // For now, every tile will be considered valid, so we'll always set
-        // 'used' to true.
-        used = true;
+        if ( this.itemID == game.ItemType.LEAF.id ) {
+            // For now, every tile will be considered valid, so we'll always set
+            // 'used' to true.
+            used = true;
+            if ( used ) {
+                // For now, the only effect is to clear fog, so we'll hard-code that
+                // here. Eventually, it should check item type or effect.
+                currentMap.setFog(tileX, tileY, 4, false, true);
+            }
+        }
+
+        // Only tiles close to spawners are valid.
+        if ( this.itemID == game.ItemType.CREATE_SPAWNER.id ) {
+            used = currentMap.attemptToCreateSpawner(tileX, tileY, 6);
+        }
+
         if ( used ) {
-            // For now, the only effect is to clear fog, so we'll hard-code that
-            // here. Eventually, it should check item type or effect.
-            currentMap.setFog(tileX, tileY, 4, false, true);
             this.quantity--;
             var particleSystem = new game.ParticleSystem(x, y);
             game.ParticleManager.addSystem(particleSystem);

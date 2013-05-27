@@ -225,7 +225,7 @@
                         break;
                     }
                 };
-            } else if ( useTarget == game.UseTarget.MAP ) {
+            } else if ( useTarget == game.UseTarget.MAP || useTarget == game.UseTarget.MAP_WALKABLE_ONLY ) {
                 used = this.usingItem.useOnMap(x, y);
             }
 
@@ -331,6 +331,10 @@
 
                 case game.UseTarget.MAP:
                     targetString = 'Tap the map';
+                    break;
+
+                case game.UseTarget.MAP_WALKABLE_ONLY:
+                    targetString = 'Tap a path tile';
                     break;
 
                 default:

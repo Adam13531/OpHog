@@ -1063,6 +1063,58 @@
     };
 
     /**
+     * Attempts to create a new spawn location.
+     * @param  {Number} tileX                       - coordinate of new spawner
+     * @param  {Number} tileY                       - coordniate of new spawner
+     * @param  {Number} maxDistanceToAnotherSpawner - the new spawner must be
+     * within this many tiles of any other spawner in order to be placed
+     * @return {Boolean}                             - true if it was created
+     */
+    window.game.Map.prototype.attemptToCreateSpawner = function(tileX, tileY, maxDistanceToAnotherSpawner) {
+        var tileIndex = (tileX % this.numCols) + tileY * this.numCols;
+        var tile = this.mapTiles[tileIndex];
+
+        // Can't already be a spawner
+        if ( tile.isSpawnerPoint ) {
+            return false;
+        }
+
+        // Must be walkable
+        if ( !tile.isWalkable ) {
+            return false;
+        }
+
+        // Can't be covered in fog
+        if ( this.fog[tileIndex] ) {
+            return false;
+        }
+
+        // Must be close to an existing spawner (otherwise you could just put it
+        // really close to the boss).
+        // 
+        // TODO: the way this would ideally work is this: you can only use this
+        // item when the target tile exists within X tiles ALONG A PATH from a
+        // spawn point. That way you can't make "jumps" across unconnected
+        // paths.
+        var allSpawners = this.getAllSpawnerTiles();
+        var closeEnough = false;
+        for (var i = 0; i < allSpawners.length; i++) {
+            if ( game.util.distance(allSpawners[i].x, allSpawners[i].y, tileX, tileY) <= maxDistanceToAnotherSpawner ) {
+                closeEnough = true;
+                break;
+            }
+        };
+
+        if ( !closeEnough ) {
+            return false;
+        }
+
+        // Recreate the tile to be a spawn point.
+        this.mapTiles[tileIndex] = new game.Tile(game.SPAWN_TILE_GRAPHIC_INDEX, tileIndex, tile.x, tile.y);
+        return true;
+    };
+
+    /**
      * Tells whether or not the tiles passed in point to a spawner point
      * @param  {Number}  tileX Tile X coordinate
      * @param  {Number}  tileY Tile Y coordinate

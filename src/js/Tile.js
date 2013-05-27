@@ -1,6 +1,13 @@
 ( function() {
 
     /**
+     * This is the graphic index of a spawner tile. We only use one tile sheet
+     * and all spawner tiles look the same for now.
+     * @type {Number}
+     */
+    window.game.SPAWN_TILE_GRAPHIC_INDEX = 67;
+
+    /**
      * Tiles do not currently have any other functions because there is only
      * data in this class and everything is essentially constant. This will
      * change when we add animation.
@@ -8,7 +15,7 @@
      */
     window.game.Tile = function Tile(graphicIndex, tileIndex, tileX, tileY) {
         this.graphicIndex = graphicIndex;
-        this.isSpawnerPoint = (this.graphicIndex == 67);
+        this.isSpawnerPoint = (this.graphicIndex == game.SPAWN_TILE_GRAPHIC_INDEX);
         this.isWalkable = (this.graphicIndex == 88) || this.isSpawnerPoint;
         this.tileIndex = tileIndex;
         this.x = tileX;

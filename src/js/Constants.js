@@ -26,11 +26,10 @@
     window.game.msPerFrame = 16;
 
     /**
-     * The most of one stackable item that can fit in a slot. This is arbitrary
-     * except for one thing: it's a low number so that we can test that stacking
-     * works correctly without needing to get 100+ of some item.
+     * The most of one stackable item that can fit in a slot. It's set to 99
+     * because that's the highest 2-digit number.
      * @type {Number}
      */
-    window.game.maxSlotQuantity = 5;
+    window.game.maxSlotQuantity = 99;
 
 }());
