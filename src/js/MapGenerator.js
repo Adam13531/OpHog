@@ -5,8 +5,6 @@
     window.game.MapGenerator = {
     	puzzlePieces: [],
 
-        puzzlePieceConfiguration: [],
-
         mapArray: [],
 
         previousColumn: [],
@@ -57,13 +55,6 @@
         	];
         	this.puzzlePieces.push(new game.PuzzlePiece(piece5Tiles, game.PuzzlePieceType.RIGHT));
 			// Piece 6
-            // var piece6Tiles = [
-            // 0,0,0,0,0,
-            // 0,0,0,0,0,
-            // 1,1,1,0,1,
-            // 0,0,1,0,1,
-            // 0,0,1,1,1,
-            // ];
             var piece6Tiles = [
             0,0,0,0,0,
             0,0,0,0,0,
@@ -90,12 +81,6 @@
             0,0,0,0,0,
             ];
             this.puzzlePieces.push(new game.PuzzlePiece(piece8Tiles, game.PuzzlePieceType.MIDDLE));
-
-            this.puzzlePieceConfiguration =  [
-            this.puzzlePieces[0],this.puzzlePieces[1],this.puzzlePieces[2],
-            this.puzzlePieces[3],this.puzzlePieces[4],this.puzzlePieces[5],
-            this.puzzlePieces[6],this.puzzlePieces[7],this.puzzlePieces[8]
-            ];
     	},
 
     	createBlankPuzzlePiece: function() {
@@ -224,15 +209,21 @@
         },
 
         generateLeftColumn: function() {
-            // var choices = [0, 3, 6];
-            var choices = [0, 3];
             var x = 0;
             var y = 0;
             var isGood = false;
             var numIterations = this.mapHeight / game.PUZZLE_PIECE_SIZE;
+            var possiblePuzzlePiecesList = [];
 
-            for ( var i = 0; i < numIterations; i++ ) {
-                var puzzlePiece = this.puzzlePieceConfiguration[choices[Math.floor(Math.random()*choices.length)]];
+            for (var i = 0; i < this.puzzlePieces.length; i++) {
+                if (this.puzzlePieces[i].pieceType & game.PuzzlePieceType.LEFT) {
+                    possiblePuzzlePiecesList.push(this.puzzlePieces[i]);
+                }
+            }
+
+            for (var i = 0; i < numIterations; i++) {
+                puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
+
                 // If at least one piece isn't blank, then we have a valid starting column.
                 if (!puzzlePiece.isBlank) {
                     isGood = true;
