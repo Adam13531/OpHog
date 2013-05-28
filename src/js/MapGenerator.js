@@ -249,7 +249,6 @@
             return isGood;
         },
 
-        // TODO: Move random code out of each if/else
         generateMiddleColumns: function(startingX) {
             var x = startingX;
             var y = 0;
@@ -265,114 +264,43 @@
             for ( var i = 0; i < numIterations; i++ ) {
                 var puzzlePiece;
                 var possiblePuzzlePiecesList = [];
+                var notWantedFlags = 0; // Used to make sure no dead ends will be created
+
+                // Makes sure there are no dead ends being created at the bottom of the column
+                if (i == numIterations - 1) {
+                    notWantedFlags |= game.FitFlags.DOWN;
+                }
 
                 if (this.previousColumn[i].isBlank == true) {
-                    if (i > 0) {
-                        // The piece above and the piece to the left are both blank
-                        if (this.middleColumn[index-1].isBlank) {
-                            puzzlePiece = this.createBlankPuzzlePiece();
-                        }
-                        // The piece above is not blank but doesn't have a bottom opening
-                        else if (this.middleColumn[index-1].hasBottomOpening == false){
-                            puzzlePiece = this.createBlankPuzzlePiece();
-                        }
-                        // The piece above has a bottom opening
-                        else {
-                            // var tempList = [];
-                            // tempList = this.getPossiblePuzzlePieces(this.middleColumn[index-1], game.FitFlags.TOP, game.PuzzlePieceType.MIDDLE);
-                            // for (var j = 0; j < tempList.length; j++) {
-                            //     // Makes sure there won't be a dead end created if the piece has left openings
-                            //     if (!tempList[j].hasLeftOpening) {
-                            //         possiblePuzzlePiecesList.push(tempList[j]);
-                            //     }
-                            // }
-                            var notWantedFlags = 0;
-                            notWantedFlags |= game.FitFlags.LEFT;
-                            if (i == numIterations - 1) {
-                                notWantedFlags |= game.FitFlags.DOWN;
-                            }
-                            possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.middleColumn[index-1], game.FitFlags.UP, notWantedFlags, game.PuzzlePieceType.MIDDLE);
-                            puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-                        }
+                    // The left piece is blank and the top one has a bottom opening
+                    if (i > 0 &&
+                        this.middleColumn[index-1].hasBottomOpening) {
+
+                        notWantedFlags |= game.FitFlags.LEFT;
+                        possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.middleColumn[index-1], game.FitFlags.UP, notWantedFlags, game.PuzzlePieceType.MIDDLE);
+                        puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
                     }
+                    // All other cases need a blank puzzle piece
                     else {
                         puzzlePiece = this.createBlankPuzzlePiece();
                     }
                 }
                 else {
-                    if (i > 0) {
-                        // The piece above is NOT blank and doesn't have a bottom opening
-                        // and the piece to the left is NOT blank
-                        if (this.middleColumn[index-1].isBlank == false &&
-                            this.middleColumn[index-1].hasBottomOpening == false) {
-                            // var tempList = [];
-                            // tempList = this.getPossiblePuzzlePieces(this.previousColumn[i], game.FitFlags.LEFT, game.PuzzlePieceType.MIDDLE);
-                            // for (var j = 0; j < tempList.length; j++) {
-                            //     // Makes sure there won't be a dead end created by getting rid of pieces with top openings
-                            //     if (!tempList[j].hasTopOpening &&
-                            //         i != numIterations - 1) {
-                            //         possiblePuzzlePiecesList.push(tempList[j]);
-                            //     }
-                            //     // If on the last iteration, get rid of any pieces with a bottom and top openings
-                            //     if (i == numIterations - 1 &&
-                            //         !tempList[j].hasTopOpening &&
-                            //         !tempList[j].hasBottomOpening) {
-                            //         possiblePuzzlePiecesList.push(tempList[j]);
-                            //     }
-                            // }
-                            var notWantedFlags = 0;
-                            notWantedFlags |= game.FitFlags.UP;
-                            if (i == numIterations - 1) {
-                                notWantedFlags |= game.FitFlags.DOWN;
+                    if (i > 0 &&
+                        this.middleColumn[index-1].isBlank == false && 
+                        this.middleColumn[index-1].hasBottomOpening == true) {
+
+                        for (var j = 0; j < this.puzzlePieces.length; j++) {
+                            if (this.puzzlePieces[j].hasTopOpening &&
+                                this.puzzlePieces[j].hasLeftOpening) {
+                                possiblePuzzlePiecesList.push(this.puzzlePieces[j]);
                             }
-                            possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.previousColumn[i], game.FitFlags.LEFT, notWantedFlags, game.PuzzlePieceType.MIDDLE);
-                            puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
                         }
-                        // The piece above is NOT blank but does have a bottom opening
-                        // and the piece to the left is NOT blank
-                        else if (this.middleColumn[index-1].isBlank == false && 
-                                 this.middleColumn[index-1].hasBottomOpening == true) {
-                            // possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.previousColumn[i], game.FitFlags.LEFT, game.PuzzlePieceType.MIDDLE);
-                            for (var j = 0; j < this.puzzlePieces.length; j++) {
-                                if (this.puzzlePieces[j].hasTopOpening &&
-                                    this.puzzlePieces[j].hasLeftOpening) {
-                                    possiblePuzzlePiecesList.push(this.puzzlePieces[j]);
-                                }
-                            }
-                            puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-                        }
-                        // The one above is blank and the one to the left isn't
-                        else {
-                            // var tempList = [];
-                            // tempList = this.getPossiblePuzzlePieces(this.previousColumn[i], game.FitFlags.LEFT, game.PuzzlePieceType.MIDDLE);
-                            // for (var j = 0; j < tempList.length; j++) {
-                            //     if (!tempList[j].hasTopOpening) {
-                            //         possiblePuzzlePiecesList.push(tempList[j]);
-                            //     }
-                            // }
-                            var notWantedFlags = 0;
-                            notWantedFlags |= game.FitFlags.UP;
-                            if (i == numIterations - 1) {
-                                notWantedFlags |= game.FitFlags.DOWN;
-                            }
-                            possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.previousColumn[i], game.FitFlags.LEFT, notWantedFlags, game.PuzzlePieceType.MIDDLE);
-                            puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-                        }
+                        puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
                     }
-                    // Nothing is above, so only check for left
+                    // No path is coming from above, so only check to the left
                     else {
-                        // var tempList = [];
-                        // tempList = this.getPossiblePuzzlePieces(this.previousColumn[i], game.FitFlags.LEFT, game.PuzzlePieceType.MIDDLE);
-                        // for (var j = 0; j < tempList.length; j++) {
-                        //     if (!tempList[j].hasTopOpening) {
-                        //         possiblePuzzlePiecesList.push(tempList[j]);
-                        //     }
-                        // }
-                        var notWantedFlags = 0;
                         notWantedFlags |= game.FitFlags.UP;
-                        if (i == numIterations - 1) {
-                            notWantedFlags |= game.FitFlags.DOWN;
-                        }
                         possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.previousColumn[i], game.FitFlags.LEFT, notWantedFlags, game.PuzzlePieceType.MIDDLE);
                         puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
                     }
@@ -385,8 +313,6 @@
                     y = 0;
                 }
                 index++;
-                this.printMap();
-                console.log('--------------------------------------------------------------------');
             }
         },
 
@@ -394,57 +320,51 @@
             var x = startingX;
             var y = 0;
             var numIterations = this.mapHeight / game.PUZZLE_PIECE_SIZE;
+
+
             for ( var i = 0; i < numIterations; i++ ) {
                 var puzzlePiece;
                 var possiblePuzzlePiecesList = [];
+                var notWantedFlags = 0; // Used to make sure no dead ends will be created
 
-                if (this.middleColumn[i].isBlank) {
-                    // if (i > 0) {
-                    //     if (this.rightColumn[i-1].isBlank) {
-                    //         puzzlePiece = this.createBlankPuzzlePiece();
-                    //     }
-                    //     else if (this.rightColumn[i-1].hasBottomOpening == false){
-                    //         var neededFlags;
-                    //         neededFlags |= game.FitFlags.LEFT;
-                    //         possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.middleColumn[i], neededFlags, game.PuzzlePieceType.RIGHT);
-                    //         puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-                    //     }
-                    //     else {
-                    //         var neededFlags;
-                    //         neededFlags |= game.FitFlags.TOP;
-                    //         possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.middleColumn[i], neededFlags, game.PuzzlePieceType.RIGHT);
-                    //         puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-                    //     }
-                    // }
-                    // else {
+                // Makes sure there are no dead ends being created at the bottom of the column
+                if (i == numIterations - 1) {
+                    notWantedFlags |= game.FitFlags.DOWN;
+                }
+
+                if (this.previousColumn[i].isBlank == true) {
+                    // The left piece is blank and the top one has a bottom opening
+                    if (i > 0 &&
+                        this.rightColumn[i-1].hasBottomOpening) {
+
+                        notWantedFlags |= game.FitFlags.LEFT;
+                        possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.rightColumn[i-1], game.FitFlags.UP, notWantedFlags, game.PuzzlePieceType.RIGHT);
+                        puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
+                    }
+                    // All other cases need a blank puzzle piece
+                    else {
                         puzzlePiece = this.createBlankPuzzlePiece();
-                    // }
+                    }
                 }
                 else {
-                    // if (i > 0) {
-                    //     // 6
-                    //     if (this.rightColumn[i-1].isBlank == false) {
-                    //         var neededFlags;
-                    //         neededFlags |= game.FitFlags.TOP;
-                    //         neededFlags |= game.FitFlags.LEFT;
-                    //         possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.middleColumn[i], neededFlags, game.PuzzlePieceType.RIGHT);
-                    //         puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-                    //     }
-                    //     // 7
-                    //     else {
-                            var neededFlags;
-                            neededFlags |= game.FitFlags.LEFT;
-                            possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.middleColumn[i], neededFlags, game.PuzzlePieceType.RIGHT);
-                            puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-                    //     }
-                    // }
-                    // TODO: 5
-                    // else {
-                    //     var neededFlags;
-                    //     neededFlags |= game.FitFlags.LEFT;
-                    //     possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.middleColumn[i], neededFlags, game.PuzzlePieceType.RIGHT);
-                    //     puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-                    // }
+                    if (i > 0 &&
+                        this.rightColumn[i-1].isBlank == false && 
+                        this.rightColumn[i-1].hasBottomOpening == true) {
+
+                        for (var j = 0; j < this.puzzlePieces.length; j++) {
+                            if (this.puzzlePieces[j].hasTopOpening &&
+                                this.puzzlePieces[j].hasLeftOpening) {
+                                possiblePuzzlePiecesList.push(this.puzzlePieces[j]);
+                            }
+                        }
+                        puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
+                    }
+                    // No path is coming from above, so only check to the left
+                    else {
+                        notWantedFlags |= game.FitFlags.UP;
+                        possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.previousColumn[i], game.FitFlags.LEFT, notWantedFlags, game.PuzzlePieceType.RIGHT);
+                        puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
+                    }
                 }
 
                 this.rightColumn.push(puzzlePiece);
@@ -487,8 +407,6 @@
                     this.leftColumn.length = 0;
                 }
             }
-            this.printMap();
-            console.log('--------------------------------------------------------------------');
 
             // if (width >= 2 * game.PUZZLE_PIECE_SIZE) {            
             // This is the starting x position for the first column
@@ -510,10 +428,19 @@
                     }
                 }
                 this.generateMiddleColumns(startingX);
+
+                // The loop is about to end, so prepare the previous column for the right column
+                if (i == numIterations - 1) {
+                    this.previousColumn.length = 0;
+                    for (var j = 0; j < this.mapHeight / game.PUZZLE_PIECE_SIZE; j++) {
+                        this.previousColumn.push(this.middleColumn[i*game.PUZZLE_PIECE_SIZE+j]);
+                    }
+                }
+
                 startingX += game.PUZZLE_PIECE_SIZE;
             }
 
-            // this.generateRightColumn(startingX);
+            this.generateRightColumn(startingX);
 
             return (new game.Map(this.mapArray, width));
     	}
