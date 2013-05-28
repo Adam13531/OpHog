@@ -241,6 +241,61 @@
     };
 
     /**
+     * Each enemy unit has a chance of dropping loot according to its loot
+     * table.
+     *
+     * We keep track here of what was dropped by all of the different units so
+     * that we can combine any stackable items. This way, the loot UI doesn't
+     * show something like "Obtained 3 gems. Obtained 3 gems. Obtained 3 gems."
+     * It will instead say "Obtained 9 gems.", even if 9 is greater than the
+     * maximum stack size.
+     * @return {undefined}
+     */
+    window.game.Battle.prototype.generateLoot = function() {
+        /**
+         * This array represents items that will be added to the inventory at
+         * the end of this function. Any item that can be combined will be
+         * combined into an item in this array.
+         * @type {Array:Item}
+         */
+        var allDroppedItems = [];
+
+        // Go through each unit and see if it will drop loot
+        for (var i = 0; i < this.enemyUnits.length; i++) {
+            var itemsDroppedByThisUnit = this.enemyUnits[i].produceLoot();
+
+            // Go through each item dropped by that unit and see if it's in
+            // allDroppedItems. If it is and it can be combined, then combine
+            // them.
+            for (var j = 0; j < itemsDroppedByThisUnit.length; j++) {
+                var combined = false;
+                var itemJ = itemsDroppedByThisUnit[j];
+
+                // Only check usable/stackable items.
+                if ( itemJ.usable && itemJ.stackable ) {
+                    for (var k = 0; k < allDroppedItems.length; k++) {
+                        var itemK = allDroppedItems[k];
+                        if ( itemJ.itemID == itemK.itemID ) {
+                            itemK.quantity += itemJ.quantity;
+                            combined = true;
+                            break;
+                        }
+                    };
+                }
+
+                if ( !combined ) {
+                    allDroppedItems.push(itemJ);
+                }
+            };
+        };
+
+        // Add all of the items we just obtained.
+        for (var i = 0; i < allDroppedItems.length; i++) {
+            game.Inventory.addItem(allDroppedItems[i]);
+        };
+    };
+
+    /**
      * This is called by the BattleManager RIGHT before the battle is removed
      * from existence. It will remove units from battle and guide them to their
      * original positions.
@@ -273,8 +328,8 @@
                 game.UnitPlacementUI.updateUnit(unit);
             };
 
-            // Give them a random item for every battle won.
-            game.Inventory.addItem(game.GenerateRandomItem());
+            // Generate items and give them to the player
+            this.generateLoot();
 
             // Let the quest manager know too so that it can update quests
             game.QuestManager.killedAnEnemyParty();

@@ -165,6 +165,7 @@
             this.atk = enemyData.finalAtk;
             this.def = enemyData.finalDef;
 
+            this.chanceToDropItem = enemyData.chanceToDropItem;
             this.itemsDropped = enemyData.itemsDropped;
         }
 
@@ -239,6 +240,39 @@
         }
     };
 
+    /**
+     * Potentially produces loot. This is according to the unit's loot table.
+     * This should only ever be called on enemy units.
+     *
+     * For now, each unit can only produce at most one type of item, but that
+     * item's quantity can be greater than one.
+     * @return {Array:Item} - any items produced
+     */
+    window.game.Unit.prototype.produceLoot = function() {
+        // This can happen right now because there are at least two ways right
+        // now to create invalid enemies (i.e. those without enemyData passed
+        // in): summoning, and pressing the number keys on the keyboard.
+        if ( this.itemsDropped === undefined ) {
+            // console.log('Warning: produceLoot was called on a unit that doesn\'t have "itemsDropped": ' + this.);
+            return [];
+        }
+
+        var dropRoll = Math.random();
+        var droppedItems = [];
+
+        // Use '<=' so that when chanceToDrop is 1, you always get an item
+        if ( dropRoll <= this.chanceToDropItem ) {
+            var itemData = game.util.randomFromWeights(this.itemsDropped);
+
+            // This is just a sanity check.
+            if ( itemData != null ) {
+                var newItem = new game.Item(itemData.id);
+                droppedItems.push(newItem);
+            }
+        }
+
+        return droppedItems;
+    };
 
     /**
      * Every unit needs to be placed, but player units should be "unplaced"
