@@ -111,8 +111,8 @@
 
         if ( canFitRight ) fitFlags |= game.FitFlags.RIGHT;
         if ( canFitLeft ) fitFlags |= game.FitFlags.LEFT;
-        if ( canFitBottom ) fitFlags |= game.FitFlags.BOTTOM;
-        if ( canFitTop ) fitFlags |= game.FitFlags.TOP;
+        if ( canFitBottom ) fitFlags |= game.FitFlags.DOWN;
+        if ( canFitTop ) fitFlags |= game.FitFlags.UP;
 
         // TODO: Testing
         // if ( fitFlags & game.FitFlags.RIGHT ) {
