@@ -262,11 +262,11 @@
 
         // Use '<=' so that when chanceToDrop is 1, you always get an item
         if ( dropRoll <= this.chanceToDropItem ) {
-            var itemData = game.util.randomFromWeights(this.itemsDropped);
+            var lootTableEntry = game.util.randomFromWeights(this.itemsDropped);
 
             // This is just a sanity check.
-            if ( itemData != null ) {
-                var newItem = new game.Item(itemData.id);
+            if ( lootTableEntry != null ) {
+                var newItem = new game.Item(lootTableEntry.itemID);
                 droppedItems.push(newItem);
             }
         }

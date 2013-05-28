@@ -289,6 +289,17 @@
                     finalUnit.statusEffects[j] = finalEffect;
                 };
 
+                // Change itemsDropped from Objects into LootTableEntrys
+                if ( finalUnit.itemsDropped !== undefined ) {
+                    for (var j = 0; j < finalUnit.itemsDropped.length; j++) {
+                        var lootTableEntry = finalUnit.itemsDropped[j];
+                        var finalEntry = new game.LootTableEntry(lootTableEntry.itemID, lootTableEntry.relativeWeight);
+
+                        this.copyProps(lootTableEntry, finalEntry, []);
+                        finalUnit.itemsDropped[j] = finalEntry;
+                    };
+                }
+
                 // Correct the battle data. Battles were created at this point,
                 // but they have no units yet.
                 if ( finalUnit.battleIndex !== undefined ) {

@@ -1,5 +1,43 @@
 ( function() {
 
+    /**
+     * Every possible item is in this array with a relative weight of 1.
+     *
+     * See setupLootClasses.
+     * @type {Array:LootTableEntry}
+     */
+    var equalChanceAllLoot = [];
+
+    /**
+     * Every possible item is in this array, but usable items are given a much
+     * higher weight than equippable items, meaning it should be rare to get
+     * equippable items.
+     *
+     * See setupLootClasses.
+     * @type {Array}
+     */
+    var higherChanceForUsableItems = [];
+
+    /**
+     * This function sets up loot "classes". It is called immediately after it
+     * is defined (it's an IIFE).
+     *
+     * Loot "classes" are arrays of LootTableEntry objects. They are all
+     * exclusive to this file and can be assigned to any enemy.
+     *
+     * Some will be unused and are only around for testing purposes should the
+     * need ever arise.
+     */
+    ( function setupLootClasses() {
+        for ( var key in game.ItemType ) {
+            var item = game.ItemType[key];
+            var highUsableWeight = item.usable ? 10 : 1;
+
+            equalChanceAllLoot.push(new game.LootTableEntry(item.id, 1));
+            higherChanceForUsableItems.push(new game.LootTableEntry(item.id, highUsableWeight));
+        }
+    }());
+
     // Enemy IDs are hard-coded instead of doing something like "id:
     // getNextAvailableID()" so that they don't change based on location in the
     // code, and also so that they don't change across game versions.
@@ -10,16 +48,14 @@
     //  height - Number - the height, in tiles, of the enemy
     //  name - String - the name of the enemy
     //  graphicIndexes - Array:Number - see Unit
-    //  chanceToDropItem - Number - the chance to drop any item
     //  atk - Object containing the below:
     //      start - Number - the starting value for this stat
     //      minGrowth - Number - when this unit levels, this is the minimum value that will be added to the stat
     //      maxGrowth - Number - when this unit levels, this is the maximum value that will be added to the stat
     //  def - see atk
     //  life - see atk
-    //  itemsDropped - Array:Object. The Object contains the following:
-    //      id - Number - the ID of the item that can be dropped
-    //      relativeWeight - Number - the relative weight of the item
+    //  chanceToDropItem - Number - the chance to drop any item
+    //  itemsDropped - Array:LootTableEntry
     window.game.EnemyType = {
         ORC: {
             id: 0,
@@ -27,7 +63,6 @@
             height: 1,
             name:'Orc',
             graphicIndexes:[138],
-            chanceToDropItem: .1,
 
             atk: {
                 start: 10,
@@ -45,10 +80,8 @@
                 maxGrowth: 10
             },
             
-            itemsDropped: [
-                {id: game.ItemType.STAT_GEM.id, relativeWeight: 1},
-                {id: game.ItemType.SHIELD.id, relativeWeight: 1},
-            ]
+            chanceToDropItem: .1,
+            itemsDropped: higherChanceForUsableItems
         },
 
         SPIDER: {
@@ -57,7 +90,6 @@
             height: 1,
             name:'Spider',
             graphicIndexes:[200],
-            chanceToDropItem: .1,
 
             atk: {
                 start: 10,
@@ -75,10 +107,8 @@
                 maxGrowth: 10
             },
             
-            itemsDropped: [
-                {id: game.ItemType.STAT_GEM.id, relativeWeight: 1},
-                {id: game.ItemType.SHIELD.id, relativeWeight: 1},
-            ]
+            chanceToDropItem: .1,
+            itemsDropped: higherChanceForUsableItems
         },
 
         SCORPION: {
@@ -87,7 +117,6 @@
             height: 1,
             name:'Scorpion',
             graphicIndexes:[198],
-            chanceToDropItem: .1,
 
             atk: {
                 start: 10,
@@ -105,10 +134,8 @@
                 maxGrowth: 10
             },
             
-            itemsDropped: [
-                {id: game.ItemType.STAT_GEM.id, relativeWeight: 1},
-                {id: game.ItemType.SHIELD.id, relativeWeight: 1},
-            ]
+            chanceToDropItem: .1,
+            itemsDropped: higherChanceForUsableItems
         },
 
         SNAKE: {
@@ -117,7 +144,6 @@
             height: 1,
             name:'Snake',
             graphicIndexes:[196],
-            chanceToDropItem: .1,
 
             atk: {
                 start: 10,
@@ -135,10 +161,8 @@
                 maxGrowth: 10
             },
             
-            itemsDropped: [
-                {id: game.ItemType.STAT_GEM.id, relativeWeight: 1},
-                {id: game.ItemType.SHIELD.id, relativeWeight: 1},
-            ]
+            chanceToDropItem: .1,
+            itemsDropped: higherChanceForUsableItems
         }
     };
 

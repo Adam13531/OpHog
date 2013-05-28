@@ -1,9 +1,9 @@
 ( function() {
 
     /**
-     * A very simple class to hold two things. This is just so that I don't cram
-     * them into an unnamed object like {foo:bar, baz:qux}, which really
-     * wouldn't be the worst thing...
+     * A very simple class to hold two things for the loot notification UI. This
+     * is just so that I don't cram them into an unnamed object like {foo:bar,
+     * baz:qux}, which really wouldn't be the worst thing...
      */
     window.game.LootObject = function LootObject($lootSpan, ttl) {
         /**
