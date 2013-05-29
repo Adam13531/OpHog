@@ -19,7 +19,6 @@
         mapHeight: 0,
         mapDifficulty: 0,
 
-        // puzzle pieces can only have ONE opening per side!
     	init: function() {
     		// Piece 0
         	this.puzzlePieces.push(this.createBlankPuzzlePiece());
@@ -59,8 +58,8 @@
             0,0,0,0,0,
             0,0,0,0,0,
             1,1,0,1,1,
+            0,1,0,1,0,
             0,1,1,1,0,
-            0,0,1,0,0,
             ];
         	this.puzzlePieces.push(new game.PuzzlePiece(piece6Tiles, game.PuzzlePieceType.MIDDLE));
         	// Piece 7

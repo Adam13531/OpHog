@@ -83,28 +83,32 @@
         var fitFlags = 0;
 
         // Check the right side of this piece with the left side of the other
-        var canFitRight = true;
-        var canFitLeft = true;
-        var canFitTop = true;
-        var canFitBottom = true;
+        // var canFitRight = true;
+        // var canFitLeft = true;
+        // var canFitTop = true;
+        // var canFitBottom = true;
+        var canFitRight = false;
+        var canFitLeft = false;
+        var canFitTop = false;
+        var canFitBottom = false;
         for (var i = 0; i < this.leftEdgeOpenings.length; i++) {
-            if ( this.leftEdgeOpenings[i] != otherPuzzlePiece.rightEdgeOpenings[i] ) {
-                canFitRight = false;
+            if ( this.leftEdgeOpenings[i] == otherPuzzlePiece.rightEdgeOpenings[i] ) {
+                canFitRight = true;
                 // break;
             }
 
-            if ( this.rightEdgeOpenings[i] != otherPuzzlePiece.leftEdgeOpenings[i] ) {
-                canFitLeft = false;
+            if ( this.rightEdgeOpenings[i] == otherPuzzlePiece.leftEdgeOpenings[i] ) {
+                canFitLeft = true;
                 // break;
             }
 
-            if ( this.topEdgeOpenings[i] != otherPuzzlePiece.bottomEdgeOpenings[i] ) {
-                canFitBottom = false;
+            if ( this.topEdgeOpenings[i] == otherPuzzlePiece.bottomEdgeOpenings[i] ) {
+                canFitBottom = true;
                 // break;
             }
 
-            if ( this.bottomEdgeOpenings[i] != otherPuzzlePiece.topEdgeOpenings[i] ) {
-                canFitTop = false;
+            if ( this.bottomEdgeOpenings[i] == otherPuzzlePiece.topEdgeOpenings[i] ) {
+                canFitTop = true;
                 // break;
             }
         }
