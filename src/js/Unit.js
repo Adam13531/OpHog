@@ -1,25 +1,6 @@
 ( function() {
 
     /**
-     * Unit types. For now, these double as representing graphic indices too in
-     * some cases.
-     * @type {Number}
-     */
-    window.game.UnitType = {
-        ARCHER: 0,
-        WARRIOR: 1,
-        WIZARD: 2,
-
-        // This is here just so that we have some indicator that it's NOT an
-        // archer/warrior/wizard
-        DEBUG: 3,
-
-        twoByOneUnit: 496,
-        oneByTwoUnit: 497,
-        twoByTwoUnit: 498
-    };
-
-    /**
      * See displayLifeBarForPlayer.
      * @type {Object}
      */
@@ -66,14 +47,15 @@
 
     /**
      * Creates a unit (player OR enemy).
-     * @param {UnitType}  unitType For now, this is the graphic index, or one of
-     * the special values above.
-     * @param {Boolean} isPlayer True if this is a player unit.
-     * @param {Object} enemyData - the enemy data used to populate this unit.
-     * This can be undefined.
+     * @param {Number}  unitDataID - an ID from game.EnemyType, e.g.
+     * game.EnemyType.ORC.id.
+     * @param {Boolean} isPlayer - true if this is a player unit.
+     * @param {Number} level - the level at which to start this unit.
      */
-    window.game.Unit = function Unit(unitType, isPlayer, enemyData) {
-        this.unitType = unitType;
+    window.game.Unit = function Unit(unitDataID, isPlayer, level) {
+        var enemyData = game.GetEnemyDataFromID(unitDataID, level);
+
+        this.unitDataID = unitDataID;
         this.widthInTiles = 1;
         this.heightInTiles = 1;
 
@@ -86,11 +68,8 @@
          */
         this.statusEffects = [];
 
-        this.level = 1;
+        this.level = level;
         this.experience = 0;
-        this.maxLife = 100;
-        this.atk = 30;
-        this.def = 0;
 
         // Note: there is only a base life stat; status and items only apply to
         // maxLife. Damage and healing are what apply to life, not [de]buffs.
@@ -111,56 +90,15 @@
         // For an enemy, it would draw them horizontally flipped.
         this.graphicIndexes = new Array();
 
-        if (unitType == game.UnitType.twoByOneUnit) {
-            this.width = tileSize * 2;
-            this.graphicIndexes.push(240);
-            this.graphicIndexes.push(241);
-            this.widthInTiles = 2;
-        } else if (unitType == game.UnitType.oneByTwoUnit) {
-            this.height = tileSize * 2;
-            this.graphicIndexes.push(421);
-            this.graphicIndexes.push(437);
-            this.heightInTiles = 2;
-        } else if (unitType == game.UnitType.twoByTwoUnit) {
-            this.width = tileSize * 2;
-            this.height = tileSize * 2;
-            this.graphicIndexes.push(302);
-            this.graphicIndexes.push(303);
-            this.graphicIndexes.push(318);
-            this.graphicIndexes.push(319);
-            this.widthInTiles = 2;
-            this.heightInTiles = 2;
-        } else {
-            // For 1x1 units, make them look like what you spawned.
-            var graphicIndex;
-
-            switch( this.unitType ) {
-                case game.PlaceableUnitType.ARCHER:
-                    graphicIndex = 0;
-                    break;
-                case game.PlaceableUnitType.WARRIOR:
-                    graphicIndex = 1;
-                    break;
-                case game.PlaceableUnitType.WIZARD:
-                    graphicIndex = 2;
-                    break;
-                default:
-                    graphicIndex = Math.floor(Math.random()*220);
-                    break;
-            }
-
-            this.graphicIndexes.push(graphicIndex);
-        }
-
         // If enemyData was passed in, then we basically ignore a lot of the
         // properties that were set earlier and set "correct" ones here.
         if ( enemyData !== undefined && enemyData != null ) {
             this.unitType = enemyData.id;
             this.widthInTiles = enemyData.width;
             this.heightInTiles = enemyData.height;
+            this.name = enemyData.name;
             this.graphicIndexes = enemyData.graphicIndexes;
 
-            this.level = enemyData.level;
             this.maxLife = enemyData.finalLife;
             this.atk = enemyData.finalAtk;
             this.def = enemyData.finalDef;
@@ -528,11 +466,8 @@
                 previousTile = this.whichPathToTake[this.indexInPath - 1];
             }
 
-            var newUnit = new game.Unit(game.UnitType.DEBUG,this.isPlayer);
+            var newUnit = new game.Unit(game.EnemyType.SPIDER.id,this.isPlayer,1);
             newUnit.placeUnit(previousTile.x, previousTile.y);
-
-            // Make the unit look like a dragon whelp
-            newUnit.graphicIndexes = [224 + Math.floor(Math.random() * 5)];
             game.UnitManager.addUnit(newUnit);
 
             // Force the unit to join this battle. We pass coordinates so that

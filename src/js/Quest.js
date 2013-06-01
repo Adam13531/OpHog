@@ -56,7 +56,7 @@
     /**
      * This is called when you place a unit, regardless of whether this
      * particular Quest cares.
-     * @param  {game.UnitType} unitType - the type of unit you placed. This
+     * @param  {Number} unitType - the unit type of the unit you placed. This
      * doesn't necessarily have to be a placeable unit, but that's all that's
      * going to trigger quest progress.
      */

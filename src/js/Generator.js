@@ -48,9 +48,7 @@
         // Add one here since randomInteger is exclusive.
         var level = game.util.randomInteger(possibleEnemy.minLevel, possibleEnemy.maxLevel + 1);
 
-        // Get the corresponding enemy data.
-        var enemyData = game.GetEnemyDataFromID(possibleEnemy.enemyID, level);
-        var newUnit = new game.Unit(game.UnitType.DEBUG,false, enemyData);
+        var newUnit = new game.Unit(possibleEnemy.enemyID, false, level);
 
         newUnit.placeUnit(this.tileX, this.tileY);
         game.UnitManager.addUnit(newUnit);

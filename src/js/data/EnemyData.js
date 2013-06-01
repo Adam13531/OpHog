@@ -19,6 +19,14 @@
     var higherChanceForUsableItems = [];
 
     /**
+     * There are no items in this array.
+     * 
+     * See setupLootClasses.
+     * @type {Array}
+     */
+    var noItems = [];
+
+    /**
      * This function sets up loot "classes". It is called immediately after it
      * is defined (it's an IIFE).
      *
@@ -70,7 +78,7 @@
                 maxGrowth: 1
             },
             def: {
-                start: 10,
+                start: 0,
                 minGrowth: 1,
                 maxGrowth: 1
             },
@@ -97,7 +105,7 @@
                 maxGrowth: 1
             },
             def: {
-                start: 10,
+                start: 0,
                 minGrowth: 1,
                 maxGrowth: 1
             },
@@ -124,7 +132,7 @@
                 maxGrowth: 1
             },
             def: {
-                start: 10,
+                start: 0,
                 minGrowth: 1,
                 maxGrowth: 1
             },
@@ -151,7 +159,7 @@
                 maxGrowth: 1
             },
             def: {
-                start: 10,
+                start: 0,
                 minGrowth: 1,
                 maxGrowth: 1
             },
@@ -163,6 +171,166 @@
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
+        },
+
+        TREE: {
+            id: 4,
+            width: 2,
+            height: 2,
+            name:'Treant',
+            graphicIndexes:[302,303,318,319],
+
+            atk: {
+                start: 10,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            def: {
+                start: 0,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            life: {
+                start: 50,
+                minGrowth: 5,
+                maxGrowth: 10
+            },
+            
+            chanceToDropItem: .1,
+            itemsDropped: higherChanceForUsableItems
+        },
+
+        CENTAUR: {
+            id: 5,
+            width: 1,
+            height: 2,
+            name:'Centaur',
+            graphicIndexes:[421,437],
+            atk: {
+                start: 10,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            def: {
+                start: 0,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            life: {
+                start: 50,
+                minGrowth: 5,
+                maxGrowth: 10
+            },
+            
+            chanceToDropItem: .1,
+            itemsDropped: higherChanceForUsableItems
+        },
+
+        DRAGON: {
+            id: 6,
+            width: 2,
+            height: 1,
+            name:'Dragon',
+            graphicIndexes:[240,241],
+            atk: {
+                start: 10,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            def: {
+                start: 0,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            life: {
+                start: 50,
+                minGrowth: 5,
+                maxGrowth: 10
+            },
+            
+            chanceToDropItem: .1,
+            itemsDropped: higherChanceForUsableItems
+        },
+
+        PLAYER_ARCHER: {
+            id: 7,
+            width: 1,
+            height: 1,
+            name:'Archer',
+            graphicIndexes:[0],
+
+            atk: {
+                start: 30,
+                minGrowth: 3,
+                maxGrowth: 9
+            },
+            def: {
+                start: 0,
+                minGrowth: 0,
+                maxGrowth: 3
+            },
+            life: {
+                start: 100,
+                minGrowth: 5,
+                maxGrowth: 15
+            },
+            
+            chanceToDropItem: 0,
+            itemsDropped: noItems
+        },
+
+        PLAYER_WARRIOR: {
+            id: 8,
+            width: 1,
+            height: 1,
+            name:'Warrior',
+            graphicIndexes:[1],
+
+            atk: {
+                start: 30,
+                minGrowth: 3,
+                maxGrowth: 9
+            },
+            def: {
+                start: 0,
+                minGrowth: 0,
+                maxGrowth: 3
+            },
+            life: {
+                start: 100,
+                minGrowth: 5,
+                maxGrowth: 15
+            },
+            
+            chanceToDropItem: 0,
+            itemsDropped: noItems
+        },
+
+        PLAYER_WIZARD: {
+            id: 9,
+            width: 1,
+            height: 1,
+            name:'Wizard',
+            graphicIndexes:[2],
+
+            atk: {
+                start: 30,
+                minGrowth: 3,
+                maxGrowth: 9
+            },
+            def: {
+                start: 0,
+                minGrowth: 0,
+                maxGrowth: 3
+            },
+            life: {
+                start: 100,
+                minGrowth: 5,
+                maxGrowth: 15
+            },
+            
+            chanceToDropItem: 0,
+            itemsDropped: noItems
         }
     };
 
@@ -201,30 +369,38 @@
         }
 
         if ( enemyData == null ) {
-            console.log('Error - ' + enemyID + ' is not a valid enemy ID.');
+            console.log('Error - ' + enemyID + ' is not a valid enemy ID');
+            if ( typeof(enemyID) !== 'number' ) {
+                // If you hit this, it's likely that you passed in the entire
+                // enemyData instead of just the ID.
+                console.log('The above error happened because enemyID isn\'t even a number.');
+            }
         }
 
         return enemyData;
     };
 
-    // Verify that you didn't duplicate any enemy IDs. This code is run
-    // immediately after we define the other things in this file.
-    var enemyIDs = [];
-    for ( var key in game.EnemyType ) {
-        var enemyType = game.EnemyType[key];
-        var id = enemyType.id;
-        if ( enemyIDs.indexOf(id) != -1 ) {
-            // Get the first enemy with that ID
-            var first = game.GetEnemyDataFromID(id, 1);
-            console.log('Major error! You duplicated an enemy id (' + id + 
-                '). Duplicates: ' + first.name + ' and ' + enemyType.name);
-            debugger;
-        }
+    /**
+     * This function ensures you didn't define an enemy ID twice. It is called
+     * immediately after it is defined (it's an IIFE).
+     */
+    ( function warnAboutDuplicates() {
+        var enemyIDs = [];
+        for ( var key in game.EnemyType ) {
+            var enemyType = game.EnemyType[key];
+            var id = enemyType.id;
+            if ( enemyIDs.indexOf(id) != -1 ) {
+                // Get the first enemy with that ID
+                var first = game.GetEnemyDataFromID(id, 1);
+                console.log('Major error! You duplicated an enemy id (' + id + 
+                    '). Duplicates: ' + first.name + ' and ' + enemyType.name);
 
-        enemyIDs.push(id);
-    }
-    // This should be deleted when enemyIDs goes out of scope below, but we'll
-    // manually delete it regardless.
-    delete enemyIDs;
+                game.util.debugDisplayText('Check console log - duplicate enemy ID detected.', 'enemy');
+                debugger;
+            }
+
+            enemyIDs.push(id);
+        }
+    }());
 
 }());

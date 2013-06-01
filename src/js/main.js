@@ -104,12 +104,12 @@
         $createUnits.click(function() {
             $settingsDialog.dialog('close');
             for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.UnitType.DEBUG,true);
+                var newUnit = new game.Unit(game.EnemyType.ORC.id,true,1);
                 newUnit.placeUnit(1,9);
                 game.UnitManager.addUnit(newUnit);
             };
             for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.UnitType.DEBUG,false);
+                var newUnit = new game.Unit(game.EnemyType.ORC.id,false,1);
                 newUnit.placeUnit(23,9);
                 game.UnitManager.addUnit(newUnit);
             };
@@ -364,52 +364,52 @@
 
             var unitType = null;
             if (evt.keyCode == game.Key.DOM_VK_1) {
-                unitType = game.UnitType.DEBUG;
+                unitType = game.EnemyType.ORC;
             }
             if (evt.keyCode == game.Key.DOM_VK_2) {
-                unitType = game.UnitType.twoByOneUnit;
+                unitType = game.EnemyType.DRAGON;
             }
             if (evt.keyCode == game.Key.DOM_VK_3) {
-                unitType = game.UnitType.oneByTwoUnit;
+                unitType = game.EnemyType.CENTAUR;
             }
             if (evt.keyCode == game.Key.DOM_VK_4) {
-                unitType = game.UnitType.twoByTwoUnit;
+                unitType = game.EnemyType.TREE;
             }
             if ( unitType != null ) {
-                var newUnit = new game.Unit(unitType,true);
+                var newUnit = new game.Unit(unitType.id,true,1);
                 newUnit.placeUnit(1, 9);
                 game.UnitManager.addUnit(newUnit);
             }
 
             var enemyUnitType = null;
             if (evt.keyCode == game.Key.DOM_VK_5) {
-                enemyUnitType = game.UnitType.DEBUG;
+                enemyUnitType = game.EnemyType.ORC;
             }
             if (evt.keyCode == game.Key.DOM_VK_6) {
-                enemyUnitType = game.UnitType.twoByOneUnit;
+                enemyUnitType = game.EnemyType.DRAGON;
             }
             if (evt.keyCode == game.Key.DOM_VK_7) {
-                enemyUnitType = game.UnitType.oneByTwoUnit;
+                enemyUnitType = game.EnemyType.CENTAUR;
             }
             if (evt.keyCode == game.Key.DOM_VK_8) {
-                enemyUnitType = game.UnitType.twoByTwoUnit;
+                enemyUnitType = game.EnemyType.TREE;
             }
             if ( enemyUnitType != null ) {
-                var newUnit = new game.Unit(enemyUnitType,false);
+                var newUnit = new game.Unit(enemyUnitType.id,false,1);
                 newUnit.placeUnit(23,9);
                 game.UnitManager.addUnit(newUnit);
             }
 
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.DEBUG,true);
+                    var newUnit = new game.Unit(game.EnemyType.ORC.id,true,1);
                     newUnit.placeUnit(1,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.DEBUG,false);
+                    var newUnit = new game.Unit(game.EnemyType.ORC.id,false,1);
                     newUnit.placeUnit(23,9);
                     game.UnitManager.addUnit(newUnit);
                 };

@@ -3,13 +3,13 @@
 	/**
      * Defines the types of units that can be placed. These are used to
      * distinguish between the other unit types because these are the only types
-     * that can actually be placed by a player
-     * @type {game.UnitType}
+     * that can actually be placed by a player.
+     * @type {Number}
 	 */
 	window.game.PlaceableUnitType = {
-		ARCHER: game.UnitType.ARCHER,
-		WARRIOR: game.UnitType.WARRIOR,
-		WIZARD: game.UnitType.WIZARD
+		ARCHER: game.EnemyType.PLAYER_ARCHER.id,
+		WARRIOR: game.EnemyType.PLAYER_WARRIOR.id,
+		WIZARD: game.EnemyType.PLAYER_WIZARD.id
 	};
 
 	/**
@@ -163,23 +163,29 @@
         },
 
         /**
-         * Returns the index of the unit that will show when you click the left
-         * arrow.
-         * Pages are ordered: [0,1,..., Object.keys(game.PlaceableUnitType).length]
+         * Returns the ID of the unit that will show on the left arrow.
+         *
+         * The IDs representing the placeable unit types aren't guaranteed to be
+         * in any sort of order, although the members of PlaceableUnitTypes
+         * itself WILL have a guarantee. However, we don't use that because this
+         * logic is cleaner/easier to understand.
          * @return {Number}             Index of the page to the left
          */
         getLeftPage: function() {
-            return (this.unitType == 0) ? game.NUM_PLACEABLE_UNIT_CLASSES - 1 : this.unitType - 1;
+            if ( this.unitType == game.PlaceableUnitType.ARCHER ) return game.PlaceableUnitType.WIZARD;
+            if ( this.unitType == game.PlaceableUnitType.WIZARD ) return game.PlaceableUnitType.WARRIOR;
+            return game.PlaceableUnitType.ARCHER;
         },
 
         /**
-         * Returns the index of the unit that will show when you click the right
-         * arrow.
-         * Pages are ordered: [0,1,..., Object.keys(game.PlaceableUnitType).length]
-         * @return {Number}             Index of the page to the right
+         * See getLeftPage.
+         * @return {Number} - the ID of the unit that will show on the right
+         * arrow
          */
         getRightPage: function() {
-            return (this.unitType == game.NUM_PLACEABLE_UNIT_CLASSES - 1) ? 0 : this.unitType + 1;
+            if ( this.unitType == game.PlaceableUnitType.ARCHER ) return game.PlaceableUnitType.WARRIOR;
+            if ( this.unitType == game.PlaceableUnitType.WIZARD ) return game.PlaceableUnitType.ARCHER;
+            return game.PlaceableUnitType.WIZARD;
         },
 
         /**
@@ -352,7 +358,7 @@
             var oldBuyYPosition = $('#buySlotButton').position().top;
             var containerY = $('#buyingScreenContainer').parent().position().top;
 
-			newUnit = new game.Unit(this.unitType, true);
+			newUnit = new game.Unit(this.unitType, true, 1);
 			game.UnitManager.addUnit(newUnit);
 			game.UnitPlacementUI.addSlotToPage(newUnit);
 
