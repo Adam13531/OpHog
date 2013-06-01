@@ -7,9 +7,9 @@
      * @type {Number}
 	 */
 	window.game.PlaceableUnitType = {
-		ARCHER: game.EnemyType.PLAYER_ARCHER.id,
-		WARRIOR: game.EnemyType.PLAYER_WARRIOR.id,
-		WIZARD: game.EnemyType.PLAYER_WIZARD.id
+		ARCHER: game.UnitType.PLAYER_ARCHER.id,
+		WARRIOR: game.UnitType.PLAYER_WARRIOR.id,
+		WIZARD: game.UnitType.PLAYER_WIZARD.id
 	};
 
 	/**

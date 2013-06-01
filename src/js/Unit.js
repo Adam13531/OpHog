@@ -47,17 +47,15 @@
 
     /**
      * Creates a unit (player OR enemy).
-     * @param {Number}  unitDataID - an ID from game.EnemyType, e.g.
-     * game.EnemyType.ORC.id.
+     * @param {Number}  unitType - an ID from game.UnitType, e.g.
+     * game.UnitType.ORC.id.
      * @param {Boolean} isPlayer - true if this is a player unit.
      * @param {Number} level - the level at which to start this unit.
      */
-    window.game.Unit = function Unit(unitDataID, isPlayer, level) {
-        var enemyData = game.GetEnemyDataFromID(unitDataID, level);
+    window.game.Unit = function Unit(unitType, isPlayer, level) {
+        var unitData = game.GetUnitDataFromID(unitType, level);
 
-        this.unitDataID = unitDataID;
-        this.widthInTiles = 1;
-        this.heightInTiles = 1;
+        this.unitType = unitType;
 
         this.id = window.game.unitID++;
         this.hasBeenPlaced = false;
@@ -88,24 +86,18 @@
         // 0  5
         // 19 24
         // For an enemy, it would draw them horizontally flipped.
-        this.graphicIndexes = new Array();
+        this.graphicIndexes = unitData.graphicIndexes;
 
-        // If enemyData was passed in, then we basically ignore a lot of the
-        // properties that were set earlier and set "correct" ones here.
-        if ( enemyData !== undefined && enemyData != null ) {
-            this.unitType = enemyData.id;
-            this.widthInTiles = enemyData.width;
-            this.heightInTiles = enemyData.height;
-            this.name = enemyData.name;
-            this.graphicIndexes = enemyData.graphicIndexes;
+        this.widthInTiles = unitData.width;
+        this.heightInTiles = unitData.height;
+        this.name = unitData.name;
 
-            this.maxLife = enemyData.finalLife;
-            this.atk = enemyData.finalAtk;
-            this.def = enemyData.finalDef;
+        this.maxLife = unitData.finalLife;
+        this.atk = unitData.finalAtk;
+        this.def = unitData.finalDef;
 
-            this.chanceToDropItem = enemyData.chanceToDropItem;
-            this.itemsDropped = enemyData.itemsDropped;
-        }
+        this.chanceToDropItem = unitData.chanceToDropItem;
+        this.itemsDropped = unitData.itemsDropped;
 
         this.restoreLife();
 
@@ -188,7 +180,7 @@
      */
     window.game.Unit.prototype.produceLoot = function() {
         // This can happen right now because there are at least two ways right
-        // now to create invalid enemies (i.e. those without enemyData passed
+        // now to create invalid enemies (i.e. those without unitData passed
         // in): summoning, and pressing the number keys on the keyboard.
         if ( this.itemsDropped === undefined ) {
             // console.log('Warning: produceLoot was called on a unit that doesn\'t have "itemsDropped": ' + this.);
@@ -466,7 +458,7 @@
                 previousTile = this.whichPathToTake[this.indexInPath - 1];
             }
 
-            var newUnit = new game.Unit(game.EnemyType.SPIDER.id,this.isPlayer,1);
+            var newUnit = new game.Unit(game.UnitType.SPIDER.id,this.isPlayer,1);
             newUnit.placeUnit(previousTile.x, previousTile.y);
             game.UnitManager.addUnit(newUnit);
 
