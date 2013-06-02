@@ -259,7 +259,7 @@
          * mirrors of the LTR paths.
          * @type {Array:(Array:Tile)}
          */
-        this.paths = []
+        this.paths = [];
 
         // First, figure out all right endpoints. A right endpoint is a walkable
         // tile without any adjacent up/upright/right/downright/down neighbors
@@ -1142,7 +1142,7 @@
         if ( valid ) {
             // Recreate the tile to be a spawn point.
             var tileIndex = (tileX % this.numCols) + tileY * this.numCols;
-            this.mapTiles[tileIndex] = new game.Tile(game.SPAWN_TILE_GRAPHIC_INDEX, tileIndex, tileX, tileY);
+            this.mapTiles[tileIndex].convertToSpawner();
         }
 
         return valid;

@@ -36,5 +36,18 @@
         return this.y * tileSize + tileSize / 2;
     };
 
+    /**
+     * Converts this tile into a spawner point.
+     * @return {[type]} [description]
+     */
+    window.game.Tile.prototype.convertToSpawner = function() {
+        if ( !this.isWalkable ) {
+            console.log('Can\'t convert a non-walkable tile into a spawner, ' + 
+                'because it wouldn\'t be in any of the map\'s paths. Tile index: ' + this.tileIndex);
+            return;
+        }
+        this.graphicIndex = game.SPAWN_TILE_GRAPHIC_INDEX;
+        this.isSpawnerPoint = true;
+    };
 
 }());
