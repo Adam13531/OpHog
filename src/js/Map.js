@@ -16,19 +16,19 @@
             5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
             93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
             5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,67,88,88,88,88,88,88,88,88,88,88,88,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
+            93,88,88,88,88,88,88,88,88,88,88,88,88,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
             5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
             93,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
             5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
             93,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
             5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,67,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,93,
+            93,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,93,
             5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,
             93,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,93,
             5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,
             93,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,93,
             5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-            93,67,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
+            93,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
             5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
             93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
             5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 
@@ -65,8 +65,24 @@
 
         this.computePaths();
 
+        this.convertAllPathStartPointsToSpawners();
+
         // Now that we have paths, place some generators.
         this.placeGenerators();
+    };
+
+    /**
+     * Every walkable tile is guaranteed to belong to a path, and every path
+     * should start with a spawner, so it makes sense to convert the first tile
+     * in each path to a spawner.
+     * @return {undefined}
+     */
+    window.game.Map.prototype.convertAllPathStartPointsToSpawners = function() {
+        // Go through each left-to-right path
+        for ( var i=0; i < this.paths.length / 2; i++ ) {
+            var tile = this.paths[i][0];
+            tile.convertToSpawner();
+        }
     };
 
     /**
@@ -249,6 +265,60 @@
     };
     
     /**
+     * Returns true if the tile passed in is an endpoint. An endpoint is either
+     * the very beginning or very end of a path.
+     *
+     * Right-endpoints cannot have right-neighbors, i.e. a left-to-right path
+     * must ALWAYS end with a positive X movement (in clearer terms: "a path
+     * can't end by with a vertical section"). The reason we can't allow this is
+     * simple: imagine a '+'-shaped map. The top and bottom points are
+     * left-endpoints (which is fine), but they would also be right-endpoints if
+     * we allowed right-endpoints to have right-neighbors! That could lead to
+     * paths that end before the enemy's castle.
+     * @param  {Tile} tile                - the tile to test
+     * @param  {Boolean} testForLeftEndpoint - if true, this will return test to
+     * see if the tile passed in is a left-endpoint. If false, it'll check if
+     * it's a right-endpoint.
+     * @return {Boolean}
+     */
+    window.game.Map.prototype.isTileAnEndpoint = function(tile, testForLeftEndpoint) {
+        var leftNeighbors = this.getAdjacentTiles(tile, false);
+        var rightNeighbors = this.getAdjacentTiles(tile, true);
+
+        // Right-endpoints cannot have right-neighbors. See the function
+        // comments.
+        if ( !testForLeftEndpoint ) {
+            return rightNeighbors.length == 0;
+        }
+
+        // If there are no left-neighbors, then yes, this is an endpoint.
+        if ( leftNeighbors.length == 0 ) {
+            return true;
+        }
+
+        // Otherwise, it must have right-neighbors, and all of them must also be
+        // a left-neighbor.
+        if ( rightNeighbors.length == 0 ) {
+            return false;
+        }
+
+        for (var i = 0; i < rightNeighbors.length; i++) {
+            var found = false;
+            for (var j = 0; j < leftNeighbors.length; j++) {
+                if ( rightNeighbors[i] === leftNeighbors[j] ) {
+                    found = true;
+                    break;
+                }
+                if ( !found ) {
+                    return false;
+                }
+            };
+        };
+
+        return true;
+    };
+
+    /**
      * Compute the set of paths that we want to use. This will return optimized,
      * non-duplicated, non-zero paths both from right-to-left and left-to-right.
      */
@@ -271,13 +341,11 @@
             // We only consider walkable tiles
             if ( !tile.isWalkable ) continue;
 
-            var rightNeighbors = this.getAdjacentTiles(tile, true);
-            if ( rightNeighbors.length == 0 ) {
+            if ( this.isTileAnEndpoint(tile, false) ) {
                 rightEndpoints.push(tile);
             }
             
-            var leftNeighbors = this.getAdjacentTiles(tile, false);
-            if ( leftNeighbors.length == 0 ) {
+            if ( this.isTileAnEndpoint(tile, true) ) {
                 leftEndpoints.push(tile);
             }
         }
