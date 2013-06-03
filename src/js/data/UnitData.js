@@ -73,6 +73,7 @@
     //  itemsDropped - Array:LootTableEntry
     window.game.UnitType = {
         ORC: {
+            id:0,
             graphicIndexes:[138],
 
             atk: {
