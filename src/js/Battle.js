@@ -267,7 +267,7 @@
 
         // Go through each unit and see if it will drop loot
         for (var i = 0; i < this.enemyUnits.length; i++) {
-            coinsGranted += this.enemyUnits[i].level * 5;
+            coinsGranted += this.enemyUnits[i].getCoinsGranted();
             var itemsDroppedByThisUnit = this.enemyUnits[i].produceLoot();
 
             // Go through each item dropped by that unit and see if it's in

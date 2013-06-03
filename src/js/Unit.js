@@ -636,8 +636,34 @@
                 this.battleData.battle.unitDied(this);
             } else {
                 this.removeFromMap = true;
+
+                // If an enemy unit is killed outside of battle, they should
+                // still give items/coins.
+                if ( !this.isPlayer ) {
+                    // Grant loot
+                    var itemsDroppedByThisUnit = this.produceLoot();
+                    for (var i = 0; i < itemsDroppedByThisUnit.length; i++) {
+                        game.Inventory.addItem(itemsDroppedByThisUnit[i]);
+                    };
+
+                    // Grant coins
+                    var coinsGranted = this.getCoinsGranted();
+                    game.Player.modifyCoins(coinsGranted);
+
+                    var coinString = '+' + coinsGranted + ' coin' + (coinsGranted != 1 ? 's' : '');
+                    var textObj = new game.TextObj(this.x, this.y, coinString, true, '#0f0');
+                    game.TextManager.addTextObj(textObj);
+                }
             }
         }
+    };
+
+    /**
+     * @return {Number} - the number of coins this unit should grant when it's
+     * killed.
+     */
+    window.game.Unit.prototype.getCoinsGranted = function() {
+        return this.level * 5;
     };
 
     /**
