@@ -46,11 +46,18 @@
         }
     }());
 
+    var DEFAULT_UNIT_WIDTH = 1;
+    var DEFAULT_UNIT_HEIGHT = 1;
+
     // Unit IDs are hard-coded instead of doing something like "id:
     // getNextAvailableID()" so that they don't change based on location in the
     // code, and also so that they don't change across game versions.
     //
-    // Required properties:
+    // If any of the following properties are ignored, a default will be used
+    // when possible (see constants in this file). If not possible, you will get
+    // a warning.
+    //
+    // Properties:
     //  id - Number - the unit's ID
     //  width - Number - the width, in tiles, of the unit
     //  height - Number - the height, in tiles, of the unit
@@ -66,10 +73,6 @@
     //  itemsDropped - Array:LootTableEntry
     window.game.UnitType = {
         ORC: {
-            id: 0,
-            width: 1,
-            height: 1,
-            name:'Orc',
             graphicIndexes:[138],
 
             atk: {
@@ -94,9 +97,6 @@
 
         SPIDER: {
             id: 1,
-            width: 1,
-            height: 1,
-            name:'Spider',
             graphicIndexes:[200],
 
             atk: {
@@ -121,9 +121,6 @@
 
         SCORPION: {
             id: 2,
-            width: 1,
-            height: 1,
-            name:'Scorpion',
             graphicIndexes:[198],
 
             atk: {
@@ -148,9 +145,6 @@
 
         SNAKE: {
             id: 3,
-            width: 1,
-            height: 1,
-            name:'Snake',
             graphicIndexes:[196],
 
             atk: {
@@ -202,9 +196,7 @@
 
         CENTAUR: {
             id: 5,
-            width: 1,
             height: 2,
-            name:'Centaur',
             graphicIndexes:[421,437],
             atk: {
                 start: 10,
@@ -229,8 +221,6 @@
         DRAGON: {
             id: 6,
             width: 2,
-            height: 1,
-            name:'Dragon',
             graphicIndexes:[240,241],
             atk: {
                 start: 10,
@@ -254,8 +244,6 @@
 
         PLAYER_ARCHER: {
             id: 7,
-            width: 1,
-            height: 1,
             name:'Archer',
             graphicIndexes:[0],
 
@@ -281,8 +269,6 @@
 
         PLAYER_WARRIOR: {
             id: 8,
-            width: 1,
-            height: 1,
             name:'Warrior',
             graphicIndexes:[1],
 
@@ -308,8 +294,6 @@
 
         PLAYER_WIZARD: {
             id: 9,
-            width: 1,
-            height: 1,
             name:'Wizard',
             graphicIndexes:[2],
 
@@ -381,18 +365,56 @@
     };
 
     /**
-     * This function ensures you didn't define an unit ID twice. It is called
-     * immediately after it is defined (it's an IIFE).
+     * This function sets 'property' in unitType with defaultValue if it doesn't
+     * already exist. It's used so that you can define units without common
+     * things like width and height.
+     *
+     * For example, calling it like (game.UnitType.ORC, 'width', 1) will set the
+     * orc's width to 1 if it didn't already have a width.
+     * @param  {game.UnitType} unitType
+     * @param  {String} property
+     * @param  {Object} defaultValue
+     * @return {undefined}
      */
-    ( function warnAboutDuplicates() {
+    function useDefaultIfUndefined(unitType, property, defaultValue) {
+        if ( unitType[property] === undefined ) {
+            unitType[property] = defaultValue;
+        }
+    };
+
+    /**
+     * This function ensures you didn't define an unit ID twice, and it will
+     * insert default values where necessary. It is called immediately after it
+     * is defined (it's an IIFE).
+     */
+    ( function verifyAllUnitData() {
         var unitIDs = [];
         for ( var key in game.UnitType ) {
             var unitType = game.UnitType[key];
+
+            // ID is necessary
+            if ( unitType.id === undefined ) {
+                game.util.debugDisplayText('Fatal error: there is a unitType missing an ID!', 'id missing');
+            }
+
+            // If you left off a name, form it based on the name of the key.
+            if ( unitType.name === undefined ) {
+                if ( key.length > 1 ) {
+                    // ORC --> Orc
+                    unitType.name = key[0] + key.substring(1).toLowerCase();
+                } else {
+                    unitType.name = key;
+                }
+            }
+
+            useDefaultIfUndefined(unitType, 'width', DEFAULT_UNIT_WIDTH);
+            useDefaultIfUndefined(unitType, 'height', DEFAULT_UNIT_HEIGHT);
+
             var id = unitType.id;
             if ( unitIDs.indexOf(id) != -1 ) {
                 // Get the first unit with that ID
                 var first = game.GetUnitDataFromID(id, 1);
-                console.log('Major error! You duplicated an unit id (' + id + 
+                console.log('Fatal error! You duplicated an unit id (' + id + 
                     '). Duplicates: ' + first.name + ' and ' + unitType.name);
 
                 game.util.debugDisplayText('Check console log - duplicate unit ID detected.', 'unit');

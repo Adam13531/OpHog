@@ -276,6 +276,9 @@
         // If you didn't supply an argument, set the ID to 1
         if ( typeof labelIdentifierNumber === "undefined" ) labelIdentifierNumber = "1";
 
+        // Get rid of spaces since they screw this up somehow.
+        labelIdentifierNumber = labelIdentifierNumber.replace(' ', '');
+        
         var divID = 'debugOutput' + labelIdentifierNumber;
 
         // See if the div already exists
