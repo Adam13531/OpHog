@@ -157,7 +157,7 @@
                 return;
             }
 
-            var sellPrice = this.getSellPrice(this.selectedSlotUI.slot.item);
+            var sellPrice = this.getSellPrice(this.selectedSlotUI.getItem());
             game.Player.modifyCoins(sellPrice);
 
             this.selectedSlotUI.slot.setItem(null);
@@ -290,7 +290,7 @@
          */
         getSlotUIWithItem: function(item) {
             for (var i = 0; i < this.slots.length; i++) {
-                if ( this.slots[i].slot.item === this.usingItem ) {
+                if ( this.slots[i].getItem() === this.usingItem ) {
                     return this.slots[i];
                 }
             };
@@ -382,7 +382,7 @@
                 return;
             }
 
-            var item = this.selectedSlotUI.slot.item;
+            var item = this.selectedSlotUI.getItem();
             this.usingItem = item;
 
             this.updateUseInstructions();
@@ -421,7 +421,7 @@
                 return;
             }
 
-            var item = this.selectedSlotUI.slot.item;
+            var item = this.selectedSlotUI.getItem();
 
             this.$sellItemButton.button('enable');
             var sellPrice = this.getSellPrice(item);
@@ -588,10 +588,9 @@
             var selectedSlotUI = this.selectedSlotUI;
             if ( selectedSlotUI == null ) return;
             var slot = selectedSlotUI.slot;
-            var item = slot.item;
 
             // If we selected a usable item, enable the 'Use' button.
-            if ( game.GameStateManager.isNormalGameplay() && item != null && slot.isUsableSlot() ) {
+            if ( game.GameStateManager.isNormalGameplay() && !slot.isEmpty() && slot.isUsableSlot() ) {
                 this.$useItemButton.button('enable');
             } else {
                 this.$useItemButton.button('disable');

@@ -310,6 +310,14 @@
     };
 
     /**
+     * Gets this slot's item.
+     * @return {Item} - this slot's item
+     */
+    window.game.SlotUI.prototype.getItem = function() {
+        return this.slot.item;
+    };
+
+    /**
      * Changes the background image of this slot back to normal.
      * @return {null}
      */
