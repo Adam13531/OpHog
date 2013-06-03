@@ -249,6 +249,8 @@
      * show something like "Obtained 3 gems. Obtained 3 gems. Obtained 3 gems."
      * It will instead say "Obtained 9 gems.", even if 9 is greater than the
      * maximum stack size.
+     *
+     * This function also generates coins.
      * @return {undefined}
      */
     window.game.Battle.prototype.generateLoot = function() {
@@ -260,8 +262,12 @@
          */
         var allDroppedItems = [];
 
+        // For now, all enemies will always drop coins.
+        var coinsGranted = 0;
+
         // Go through each unit and see if it will drop loot
         for (var i = 0; i < this.enemyUnits.length; i++) {
+            coinsGranted += this.enemyUnits[i].level * 5;
             var itemsDroppedByThisUnit = this.enemyUnits[i].produceLoot();
 
             // Go through each item dropped by that unit and see if it's in
@@ -289,6 +295,12 @@
             };
         };
 
+        game.Player.modifyCoins(coinsGranted);
+
+        var coinString = '+' + coinsGranted + ' coin' + (coinsGranted != 1 ? 's' : '');
+        var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY + 35, coinString, true, '#0f0');
+        game.TextManager.addTextObj(textObj);
+
         // Add all of the items we just obtained.
         for (var i = 0; i < allDroppedItems.length; i++) {
             game.Inventory.addItem(allDroppedItems[i]);
@@ -308,7 +320,7 @@
         if ( this.battleWinner == game.BattleWinner.PLAYER ) {
             // Hard-code this for now
             var experienceGranted = 50;
-            var expString = "+" + experienceGranted + " exp";
+            var expString = '+' + experienceGranted + ' exp';
 
             // Spawn a text object where the enemies used to be
             var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true, '#0f0');

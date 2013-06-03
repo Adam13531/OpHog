@@ -33,14 +33,6 @@
 	 * @type {Number}
 	 */
 	window.game.NUM_PLACEABLE_UNIT_CLASSES = Object.keys(game.PlaceableUnitType).length;
-    
-    /**
-	 * Computes the cost to buy a slot for a specific unit type
-	 * @return {Number}           Amount that the new slot will cost
-	 */
-	function costToPurchaseSlot() {
-		return game.UNIT_PLACEMENT_SLOT_COST * (game.UnitManager.getNumOfPlayerUnits(this.unitType) + 1);
-	};
 
 	/**
 	 * Calculates the cost to place the unit
@@ -83,6 +75,15 @@
          */
         lastYPosition: null,
 		
+        /**
+         * Computes the cost to buy a slot for the current unit type
+         * @return {Number}           Amount that the new slot will cost
+         */
+        costToPurchaseSlot: function() {
+            return game.UNIT_PLACEMENT_SLOT_COST * 
+                (game.UnitManager.getNumOfPlayerUnits(this.unitType) + 1);
+        },
+
 		/**
          * Sets up the entire unit placement UI.
          */
@@ -221,7 +222,7 @@
 
 			// Add a button to allow the player to buy a new slot
 			$('#buyingScreenContainer').append('<button id="buySlotButton">'+ 
-												costToPurchaseSlot(this.unitType) +
+												this.costToPurchaseSlot(this.unitType) +
 												'</button>' +
 												'<span id=buySlotButtonDescription>- Buy slot</span>');
 			$('#buySlotButton').click(function() {
@@ -271,6 +272,9 @@
                 });
             }
 
+            // Call this after we set the page so that the buy button will be
+            // enabled/disabled appropriately.
+            this.playerCoinsChanged();
         },
 
         /**
@@ -292,14 +296,50 @@
             // UI, so there's nothing to update here.
         	if ( $costTag.length == 0 || $levelTag.length == 0 || $expTag.length == 0 ) return;
 
-        	$costTag.text(costToPlaceUnit(unit));
+            var cost = costToPlaceUnit(unit);
+        	$costTag.text(cost);
         	$levelTag.text(unit.level);
         	$expTag.text(unit.experience);
+
+            if ( !unit.hasBeenPlaced && !game.Player.hasThisMuchMoney(cost) ) {
+                $costTag.css({'color':'#b00'});
+            } else {
+                $costTag.css({'color':'#fff'});
+            }
 
             var opacity = unit.hasBeenPlaced ? game.UNIT_OPACITY_PLACED : game.UNIT_OPACITY_NOT_PLACED;
 
             // Modify the opacity of the entire div
             $('#unit' + id).css({'opacity': opacity});
+        },
+
+        /**
+         * Call this function any time the player's coin total changes. This
+         * will properly enable/disable/color/etc. any part of the UI that
+         * depends on how many coins you have.
+         * @return {undefined}
+         */
+        playerCoinsChanged: function() {
+            this.updateAllUnits();
+
+            // Update the "buy" button
+            var cost = this.costToPurchaseSlot();
+            if ( !game.Player.hasThisMuchMoney(cost) ) {
+                $('#buySlotButton').attr('disabled', 'disabled');
+            } else {
+                $('#buySlotButton').removeAttr('disabled');
+            }
+        },
+
+        /**
+         * This simply calls updateUnit on each unit that this page holds.
+         * @return {undefined}
+         */
+        updateAllUnits: function() {
+            var units = game.UnitManager.getUnits(this.unitType);
+            for (var i = 0; i < units.length; i++) {
+                this.updateUnit(units[i]);
+            };
         },
 
         /**
@@ -325,16 +365,19 @@
 			$('#unit'+id).click({unitClicked: unit}, unitClicked);
 			function unitClicked(event) {
                 var unit = event.data.unitClicked;
-				if (unit.hasBeenPlaced) {
-					return;
-				}
+                var cost = costToPlaceUnit(unit);
+                if (unit.hasBeenPlaced || !game.Player.hasThisMuchMoney(cost)) {
+                    return;
+                }
+
 				unit.placeUnit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY);
+                game.Player.modifyCoins(-cost);
 				game.UnitPlacementUI.updateUnit(unit);
 			}
 
 			// Update the text of the button to show the new cost of buying
 			// this unit
-			$('#buySlotButton').text(costToPurchaseSlot(unit.unitType));
+			$('#buySlotButton').text(this.costToPurchaseSlot(unit.unitType));
 
             this.updateUnit(unit);
         },
@@ -353,6 +396,12 @@
          * Adds a unit to the UI
          */
         addUnit: function() {
+            var cost = this.costToPurchaseSlot();
+            if (!game.Player.hasThisMuchMoney(cost)) {
+                return;
+            }
+            game.Player.modifyCoins(-cost);
+
             // Keep track of where the 'buy' button is so that we can restore
             // that position at the end of this function.
             var oldBuyYPosition = $('#buySlotButton').position().top;

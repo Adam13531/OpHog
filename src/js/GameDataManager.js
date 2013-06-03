@@ -64,6 +64,8 @@
             this.saveCollectibles();
             console.log('Saving the inventory');
             this.saveInventory();
+            console.log('Saving the player');
+            this.savePlayer();
         },
 
         /**
@@ -125,6 +127,9 @@
             // having to do with mis-ordering.
             console.log('Loading the inventory');
             this.loadInventory();
+
+            console.log('Loading the player');
+            this.loadPlayer();
         },
 
         /**
@@ -545,6 +550,30 @@
                 if ( k === "" ) return;
 
                 game.Camera[k] = v;
+            });
+        },
+
+        /**
+         * Saves the player.
+         * @return {undefined}
+         */
+        savePlayer: function() {
+            // The Player is a simple object with no reference loops, so we can
+            // simply stringify it and restore it later
+            localStorage.player = JSON.stringify(game.Player);
+        },
+
+        /**
+         * Loads the player.
+         * @return {undefined}
+         */
+        loadPlayer: function() {
+            // Set each property of the camera.
+            JSON.parse(localStorage.player, function(k, v) {
+                // The last property will be the empty string with no value.
+                if ( k === "" ) return;
+
+                game.Player[k] = v;
             });
         }
     };

@@ -312,14 +312,14 @@
                 };
             }
 
-            // Save game
+            // 'Z' - save game
             if ( evt.keyCode == game.Key.DOM_VK_Z ) {
                 game.GameDataManager.saveGame();
                 var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'SAVING', true, '#0f0');
                 game.TextManager.addTextObj(textObj);
             }
 
-            // Load game
+            // 'X' - load game
             if ( evt.keyCode == game.Key.DOM_VK_X ) {
                 game.GameDataManager.loadGame();
                 var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'LOADING', true, '#0f0');
@@ -332,7 +332,7 @@
                 game.displayLifeBarsInBattle = !game.displayLifeBarsInBattle;
             }
 
-            // Shake the camera when you press 'U'
+            // 'U' - shake the camera
             if (evt.keyCode == game.Key.DOM_VK_U) {
                 // Shake the camera for approximately 20 game loops
                 game.Camera.shakeTimer = 20 * 16;
@@ -343,11 +343,13 @@
                 game.QuestManager.addNewQuest();
             }
 
-            // Pressing 'C' will generate a collectible on the map
+            // 'C' - generate a collectible on the map
             if (evt.keyCode == game.Key.DOM_VK_C) {
                 game.CollectibleManager.addNewCollectible();
             }
 
+            // 'O' - add shield to inventory
+            // 'P' - add Oculeaf to inventory
             var itemID = null;
             if (evt.keyCode == game.Key.DOM_VK_O) {
                 itemID = game.ItemType.SHIELD.id;
@@ -360,7 +362,12 @@
                 game.Inventory.addItem(new game.Item(itemID));
             }
 
-
+            // 'M' - if not positive, bring to 1000. Otherwise, double it.
+            if (evt.keyCode == game.Key.DOM_VK_M) {
+                var coins = game.Player.coins;
+                coins = coins <= 0 ? (-coins + 1000) : coins;
+                game.Player.modifyCoins(coins);
+            }
 
             var unitType = null;
             if (evt.keyCode == game.Key.DOM_VK_1) {
@@ -481,6 +488,7 @@
 
         // Update battles before units so that when the battle is over, the dead
         // units can be removed immediately by the UnitManager
+        game.Player.update(delta);
         game.LootUI.update(delta);
         game.GeneratorManager.update(delta);
         game.CollectibleManager.update(delta);
@@ -507,6 +515,7 @@
         // projectiles).
         currentMap.drawFog(ctx);
         game.TextManager.draw(ctx);
+        game.Player.drawCoinTotal(ctx);
 
         ctx.restore();
     }
