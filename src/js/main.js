@@ -14,7 +14,8 @@
      * [Global] The map we're looking at right now.
      * @type {Map}
      */
-    currentMap = new game.Map();
+    currentMap = null;
+    game.GameStateManager.switchToNewMap();
 
     // Time (in MS) of the last update.
     var lastUpdate;

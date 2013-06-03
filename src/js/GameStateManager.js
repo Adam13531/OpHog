@@ -79,6 +79,19 @@
         },
 
         /**
+         * This will remove any map-specific entities and generate a new map.
+         * @return {undefined}
+         */
+        switchToNewMap: function() {
+            game.BattleManager.removeAllBattles();
+            game.UnitManager.removeAllUnitsFromMap();
+            game.GeneratorManager.removeAllGenerators();
+            game.CollectibleManager.removeAllCollectibles();
+            currentMap = new game.Map();
+            currentMap.addBossUnit();
+        },
+
+        /**
          * Sets the state of the game.
          * @param  {game.GameStates} newState - the new state
          * @return {undefined}
@@ -92,10 +105,7 @@
 
             // You're transitioning from a win state to normal gameplay.
             if ( this.inWinState() && newState == game.GameStates.NORMAL_GAMEPLAY ) {
-                // Generate a new map
-                game.GeneratorManager.removeAllGenerators();
-                game.CollectibleManager.removeAllCollectibles();
-                currentMap = new game.Map();
+                this.switchToNewMap();
             }
 
             // You're transitioning from to normal gameplay to a lose state.

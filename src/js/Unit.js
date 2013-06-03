@@ -10,6 +10,18 @@
         PLAYER_AND_ENEMY:3
     };
 
+    /**
+     * These are the movement AIs. Each individual AI is commented.
+     */
+    window.game.MovementAI = {
+        // Units with this AI will follow a path from start to finish.
+        FOLLOW_PATH: 'follow path',
+
+        // Units with this AI will be leashed to a certain point. They are given
+        // leashTileX and leashTileY.
+        BOSS: 'boss'
+    };
+
     // This represents a 2x1 unit. 496 was chosen because it's the first index
     // that doesn't correspond to a valid sprite.
 
@@ -59,6 +71,12 @@
 
         this.id = window.game.unitID++;
         this.hasBeenPlaced = false;
+
+        // This can only be set to true by convertToBoss.
+        this.isBoss = false;
+
+        // Give the unit a standard movement AI.
+        this.movementAI = game.MovementAI.FOLLOW_PATH;
 
         /**
          * StatusEffects affecting this unit.
@@ -141,6 +159,19 @@
          * @type {Number}
          */
         this.indexInPath = 0;
+    };
+
+    /**
+     * This will turn this enemy into a boss.
+     * @return {undefined}
+     */
+    window.game.Unit.prototype.convertToBoss = function() {
+        this.isBoss = true;
+        this.movementAI = game.MovementAI.BOSS;
+
+        // The above AI relies on these variables
+        this.leashTileX = this.getCenterTileX();
+        this.leashTileY = this.getCenterTileY();
     };
 
     /**
@@ -239,6 +270,34 @@
     window.game.Unit.prototype.canJoinABattle = function() {
         return this.hasBeenPlaced && !this.isInBattle();
     }
+    /**
+     * Acquires a new destination based on the movement AI that the unit has.
+     * @return {undefined}
+     */
+    window.game.Unit.prototype.acquireNewDestination = function() {
+        if ( this.movementAI == game.MovementAI.FOLLOW_PATH ) {
+            this.acquireNewDestinationFollowPath();
+        } else if ( this.movementAI == game.MovementAI.BOSS ) {
+            this.acquireNewDestinationBoss();
+        } else {
+            console.log('Unreconized movement AI: ' + this.movementAI);
+        }
+    }
+
+    /**
+     * acquireNewDestination for the BOSS AI. It moves around the general
+     * vicinity while staying leashed to the starting tile.
+     * @return {undefined}
+     */
+    window.game.Unit.prototype.acquireNewDestinationBoss = function() {
+        // Get a random tile within RADIUS of the leash tile.
+        var radius = 2;
+        var tileX = this.leashTileX - radius + game.util.randomInteger(0, radius * 2 + 1);
+        var tileY = this.leashTileY - radius + game.util.randomInteger(0, radius * 2 + 1);
+
+        this.destX = tileX * tileSize + tileSize / 2;
+        this.destY = tileY * tileSize + tileSize / 2;
+    };
 
     /**
      * If a unit doesn't have a path, this will find one for the unit. If a unit
@@ -246,7 +305,7 @@
      * tile in that path.
      * @return {null}
      */
-    window.game.Unit.prototype.acquireNewDestination = function() {
+    window.game.Unit.prototype.acquireNewDestinationFollowPath = function() {
         // All pathfinding is based on centers to account for non- 1x1 units
         var centerTileX = this.getCenterTileX();
         var centerTileY = this.getCenterTileY();
@@ -326,8 +385,8 @@
                 if ( this.isPlayer ) {
                     var centerTileX = this.getCenterTileX();
                     var centerTileY = this.getCenterTileY();
-                    // game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
-                     
+                    game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
+
                     game.CollectibleManager.collectAtLocation(this, centerTileX, centerTileY);
                 }
             }
@@ -349,7 +408,7 @@
 
         // Clear some fog every loop, even if we're in battle.
         if ( this.isPlayer ) {
-            currentMap.setFog(this.getTileX(), this.getTileY(), 3, false, true);
+            currentMap.setFog(this.getCenterTileX(), this.getCenterTileY(), 3, false, true);
         }
 
         this.updateStatusEffects(delta);
@@ -431,7 +490,8 @@
 
 
         // Revive
-        if ( (this.id % 15) == 0 ) {
+        if ( (this.id % 15) == 0 && !this.isBoss ) {
+
             // There needs to be a dead unit for this to work.
             var flags = game.RandomUnitFlags.DEAD;
             if ( this.isPlayer ) {
@@ -449,7 +509,7 @@
         }
 
         // Summon
-        if ( !this.isPlayer && (this.id % 16) == 0 ) {
+        if ( !this.isPlayer && !this.isBoss && (this.id % 16) == 0 ) {
             // Create it at the previous tile in this unit's path, that way it's
             // guaranteed to be walkable, because originalX and originalY may
             // not be walkable if the unit was traveling diagonally.
@@ -593,14 +653,6 @@
 
     window.game.Unit.prototype.getCenterY = function() {
         return this.y + this.height / 2;
-    };
-
-    window.game.Unit.prototype.getTileX = function() {
-        return Math.floor(this.x / tileSize);
-    };
-
-    window.game.Unit.prototype.getTileY = function() {
-        return Math.floor(this.y / tileSize);
     };
 
     window.game.Unit.prototype.getCenterTileX = function() {
@@ -750,6 +802,9 @@
      * @return {Boolean} true if a life bar should be displayed for this unit
      */
     window.game.Unit.prototype.shouldDisplayLifeBar = function() {
+        // Bosses always have their lifebars displayed
+        if ( this.isBoss ) return true;
+
         // If you pressed a key
         if ( game.keyPressedToDisplayLifeBars ) return true;
 

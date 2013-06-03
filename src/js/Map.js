@@ -72,6 +72,19 @@
     };
 
     /**
+     * This adds a boss unit to the map. This cannot be done in the constructor
+     * because placing the boss depends on a fully constructed map.
+     * @return {undefined}
+     */
+    window.game.Map.prototype.addBossUnit = function() {
+        // Make a lv. 20 tree
+        var bossUnit = new game.Unit(game.UnitType.TREE.id,false,20);
+        bossUnit.placeUnit(22, 9);
+        bossUnit.convertToBoss();
+        game.UnitManager.addUnit(bossUnit);
+    };
+
+    /**
      * Every walkable tile is guaranteed to belong to a path, and every path
      * should start with a spawner, so it makes sense to convert the first tile
      * in each path to a spawner.

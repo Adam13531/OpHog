@@ -182,22 +182,22 @@
 
             atk: {
                 start: 10,
-                minGrowth: 1,
-                maxGrowth: 1
+                minGrowth: 0,
+                maxGrowth: 10
             },
             def: {
                 start: 0,
-                minGrowth: 1,
+                minGrowth: 0,
                 maxGrowth: 1
             },
             life: {
                 start: 50,
-                minGrowth: 5,
-                maxGrowth: 10
+                minGrowth: 100,
+                maxGrowth: 200
             },
             
             chanceToDropItem: .1,
-            itemsDropped: higherChanceForUsableItems
+            itemsDropped: equalChanceAllLoot
         },
 
         CENTAUR: {

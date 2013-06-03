@@ -81,6 +81,10 @@
                         this.gameUnits.splice(i, 1);
                         i--;
                     }
+
+                    if ( unit.isBoss ) {
+                        game.GameStateManager.enterWinState();
+                    }
                     
                     continue;
                 }
