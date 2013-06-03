@@ -366,7 +366,7 @@
 			function unitClicked(event) {
                 var unit = event.data.unitClicked;
                 var cost = costToPlaceUnit(unit);
-                if (unit.hasBeenPlaced || !game.Player.hasThisMuchMoney(cost)) {
+                if (!game.GameStateManager.isNormalGameplay() || unit.hasBeenPlaced || !game.Player.hasThisMuchMoney(cost)) {
                     return;
                 }
 

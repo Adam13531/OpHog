@@ -144,7 +144,7 @@
             }
 
             // Check to see if the user tapped a spawner
-            if (currentMap.isSpawnerPoint(tileX, tileY)) {
+            if (game.GameStateManager.isNormalGameplay() && currentMap.isSpawnerPoint(tileX, tileY)) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
                 $('#buyingScreenContainer').dialog('open');
             } else {
@@ -369,6 +369,24 @@
                 game.Player.modifyCoins(coins);
             }
 
+            // 'G' - return to normal gameplay from a win/lose state. This is
+            // 'the only way you can revert for now.
+            if (evt.keyCode == game.Key.DOM_VK_G) {
+                game.GameStateManager.returnToNormalGameplay();
+            }
+
+            // 'H' - win the game. This is the only way you can enter this state
+            // 'for now.
+            if (evt.keyCode == game.Key.DOM_VK_H) {
+                game.GameStateManager.enterWinState();
+            }
+
+            // 'J' - lose the game. This is the only way you can enter this
+            // 'state for now.
+            if (evt.keyCode == game.Key.DOM_VK_J) {
+                game.GameStateManager.enterLoseState();
+            }
+
             var unitType = null;
             if (evt.keyCode == game.Key.DOM_VK_1) {
                 unitType = game.UnitType.ORC;
@@ -515,6 +533,9 @@
         // projectiles).
         currentMap.drawFog(ctx);
         game.TextManager.draw(ctx);
+
+        game.GameStateManager.draw(ctx);
+
         game.Player.drawCoinTotal(ctx);
 
         ctx.restore();

@@ -1122,7 +1122,17 @@
             };
         }
         ctx.restore();
-    }
+    };
+
+    /**
+     * This clears all of the fog on the map.
+     * @return {undefined}
+     */
+    window.game.Map.prototype.clearAllFog = function() {
+        for (var i = 0; i < this.fog.length; i++) {
+            this.fog[i] = false;
+        };
+    };
 
     /**
      * Sets or clears fog in an area.
@@ -1136,6 +1146,10 @@
      */
     window.game.Map.prototype.setFog = function(x, y, radius, foggy, drawCircular) {
         var index;
+
+        // Cap the radius at a reasonable maximum.
+        radius = Math.min(radius, Math.max(this.numCols, this.numRows) * 2);
+
         for (var i = x - radius; i < x + radius + 1; i++) {
             for (var j = y - radius; j < y + radius + 1; j++) {
 

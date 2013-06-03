@@ -157,6 +157,9 @@
                 return;
             }
 
+            var sellPrice = this.getSellPrice(this.selectedSlotUI.slot.item);
+            game.Player.modifyCoins(sellPrice);
+
             this.selectedSlotUI.slot.setItem(null);
         },
 
@@ -394,6 +397,19 @@
         },
 
         /**
+         * Gets the sell price of the specified item.
+         * @param  {Item} item - the item whose sell price you want
+         * @return {Number}      - the sell price
+         */
+        getSellPrice: function(item) {
+            if ( item == null ) {
+                return 0;
+            }
+
+            return item.itemID * 1000;
+        },
+
+        /**
          * Updates the sell button with the appropriate text. Also
          * enables/disables the button.
          * @return {null}
@@ -408,7 +424,8 @@
             var item = this.selectedSlotUI.slot.item;
 
             this.$sellItemButton.button('enable');
-            this.$sellItemButton.html('<span class="ui-button-text" style="font-size:.75em">Sell</span><span style="font-size:.6em">$' + item.itemID * 1000 + '</span>');
+            var sellPrice = this.getSellPrice(item);
+            this.$sellItemButton.html('<span class="ui-button-text" style="font-size:.75em">Sell</span><span style="font-size:.6em">$' + sellPrice + '</span>');
         },
         
         /**
@@ -562,6 +579,24 @@
         getSlot: function(slotIndex) {
             return this.slots[slotIndex];
         },
+
+        /**
+         * Enables or disables the useItemButton appropriately.
+         * @return {undefined}
+         */
+        setUseItemButtonState: function() {
+            var selectedSlotUI = this.selectedSlotUI;
+            if ( selectedSlotUI == null ) return;
+            var slot = selectedSlotUI.slot;
+            var item = slot.item;
+
+            // If we selected a usable item, enable the 'Use' button.
+            if ( game.GameStateManager.isNormalGameplay() && item != null && slot.isUsableSlot() ) {
+                this.$useItemButton.button('enable');
+            } else {
+                this.$useItemButton.button('disable');
+            }
+        },
         
         /**
          * Updates the description based on which item is selected.
@@ -590,12 +625,7 @@
 
             $('#item-description').html(desc);
 
-            // If we selected a usable item, enable the 'Use' button.
-            if ( item != null && slot.isUsableSlot() ) {
-                this.$useItemButton.button('enable');
-            } else {
-                this.$useItemButton.button('disable');
-            }
+            this.setUseItemButtonState();
         }
         
     };

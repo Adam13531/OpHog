@@ -92,6 +92,16 @@
         },
 
         /**
+         * Marks all units so that they will be removed from the map.
+         * @return {undefined}
+         */
+        removeAllUnitsFromMap: function() {
+            for (var i = 0; i < this.gameUnits.length; i++) {
+                this.gameUnits[i].removeFromMap = true;
+            };
+        },
+
+        /**
          * Gets the number of units that belong to a player and are of the type
          * that was passed in.
          * @param  {UnitType} unitType Type of unit

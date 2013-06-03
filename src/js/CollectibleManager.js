@@ -64,6 +64,14 @@
         },
 
         /**
+         * Removes all collectibles.
+         * @return {undefined}
+         */
+        removeAllCollectibles: function() {
+            this.collectibles = [];
+        },
+
+        /**
          * @param  {Number} tileX - tile coord
          * @param  {Number} tileY - tile coord
          * @return {Array:Collectible} - list of collectibles at the specified
