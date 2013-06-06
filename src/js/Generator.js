@@ -4,10 +4,13 @@
      * A generator creates enemies.
      * @param {Number} tileX - x coordinate
      * @param {Number} tileY - y coordinate
+     * @param {Array:PossibleEnemy} possibleEnemies - the set of possible
+     * enemies that this generator can produce.
      */
-    window.game.Generator = function Generator(tileX, tileY) {
+    window.game.Generator = function Generator(tileX, tileY, possibleEnemies) {
         this.tileX = tileX;
         this.tileY = tileY;
+        this.possibleEnemies = possibleEnemies;
     };
 
     /**
@@ -16,6 +19,9 @@
      * @return {null}
      */
     window.game.Generator.prototype.draw = function(ctx) {
+        // Only draw if the camera can see this
+        if ( !game.Camera.canSeeTileCoordinates(this.tileX, this.tileY) ) return; 
+
         envSheet.drawSprite(ctx, 91, this.tileX * tileSize, this.tileY * tileSize);
     };
 
@@ -37,8 +43,13 @@
      * @return {null}
      */
     window.game.Generator.prototype.produceEnemy = function() {
-        // For now, every enemy will be the DEBUG type.
-        var newUnit = new game.Unit(game.UnitType.DEBUG,false);
+        var possibleEnemy = game.util.randomFromWeights(this.possibleEnemies);
+
+        // Add one here since randomInteger is exclusive.
+        var level = game.util.randomInteger(possibleEnemy.minLevel, possibleEnemy.maxLevel + 1);
+
+        var newUnit = new game.Unit(possibleEnemy.enemyID, false, level);
+
         newUnit.placeUnit(this.tileX, this.tileY);
         game.UnitManager.addUnit(newUnit);
     };

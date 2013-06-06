@@ -11,6 +11,13 @@
     };
 
     /**
+     * This is the how much we expand a unit's rectangle by when we draw the
+     * status effect. It is purely a visual thing.
+     * @type {Number}
+     */
+    game.STATUS_EFFECT_PADDING = 5;
+
+    /**
      * StatusEffect affect units, and are typically buffs or debuffs.
      *
      * @param {Unit} target - the target of this status effect
@@ -93,7 +100,7 @@
         var target = this.target;
 
         // Pad the rectangle that we draw
-        var padding = 5;
+        var padding = game.STATUS_EFFECT_PADDING;
 
         // Save the canvas context because we modify the fillStyle
         ctx.save();
@@ -136,10 +143,10 @@
     window.game.StatusEffect.prototype.proc = function() {
         switch(this.type) {
             case game.EffectType.REGEN:
-                this.target.modifyLife(50, true);
+                this.target.modifyLife(50, true, false);
                 break;
             case game.EffectType.POISON:
-                this.target.modifyLife(-50, true);
+                this.target.modifyLife(-50, true, false);
 
                 // Spawn a particle system too
                 var particleSystem = new game.ParticleSystem(this.target.getCenterX(), this.target.getCenterY());

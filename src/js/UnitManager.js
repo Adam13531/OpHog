@@ -51,6 +51,19 @@
         },
 
         /**
+         * Gets a unit based on its ID.
+         * @param  {Number} unitID - the unit's ID
+         * @return {Unit}        - the unit with that ID
+         */
+        getUnitByID: function(unitID) {
+            for (var i = 0; i < this.gameUnits.length; i++) {
+                if ( this.gameUnits[i].id == unitID ) return this.gameUnits[i];
+            };
+
+            return null;
+        },
+
+        /**
          * Updates the units, removing when necessary.
          *
          * This also checks for battles.
@@ -68,6 +81,10 @@
                         this.gameUnits.splice(i, 1);
                         i--;
                     }
+
+                    if ( unit.isBoss ) {
+                        game.GameStateManager.enterWinState();
+                    }
                     
                     continue;
                 }
@@ -76,6 +93,16 @@
             };
 
             game.BattleManager.checkForBattles(this.gameUnits);
+        },
+
+        /**
+         * Marks all units so that they will be removed from the map.
+         * @return {undefined}
+         */
+        removeAllUnitsFromMap: function() {
+            for (var i = 0; i < this.gameUnits.length; i++) {
+                this.gameUnits[i].removeFromMap = true;
+            };
         },
 
         /**

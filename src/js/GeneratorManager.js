@@ -27,6 +27,7 @@
          * @return {null}
          */
         update: function(delta) {
+            if ( !game.GameStateManager.isNormalGameplay() ) return;
             for (var i = 0; i < this.generators.length; i++) {
                 this.generators[i].update(delta);
             }
@@ -64,6 +65,14 @@
                 // it'll result in a hang that is just miserable to debug
                 this.removeGenerator(generatorList[i]);
             };
+        },
+
+        /**
+         * Removes all generators.
+         * @return {undefined}
+         */
+        removeAllGenerators: function() {
+            this.generators = [];
         },
 
         /**

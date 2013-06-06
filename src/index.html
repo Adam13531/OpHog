@@ -60,7 +60,8 @@
                 </div>
     			<div id="equippable-item-scroll-pane" style="margin-right:5px;" class="scroll-pane"></div>
     			<div id="usable-item-scroll-pane" style="margin-right:5px;" class="scroll-pane"></div>
-                <button id='useItemButton'>Use</button>
+                <button id='useItemButton' style="margin-bottom:50px">Use</button><br/>
+                <button id='sellItemButton'>Sell</button>
             </div>
 
             <!-- Bottom part -->
@@ -81,9 +82,12 @@
 
         <!-- Constants.js should come first since it defines window.game and window.game.util -->
         <script src="js/Constants.js"></script>
+        <script src="js/JSONDecycle.js"></script>
         <script src="js/Util.js"></script>
         <script src="js/KeyEventConstants.js"></script>
         <script src="js/Camera.js"></script>
+        <script src="js/Player.js"></script>
+        <script src="js/GameStateManager.js"></script>
         <script src="js/SpriteSheet.js"></script>
         <script src="js/Particle.js"></script>
         <script src="js/ParticleSystem.js"></script>
@@ -91,6 +95,9 @@
         <script src="js/Inventory.js"></script>
         <script src="js/InventoryUI.js"></script>
         <script src="js/Item.js"></script>
+        <script src="js/data/LootTableEntry.js"></script>
+        <script src="js/data/UnitData.js"></script>
+        <script src="js/PossibleEnemy.js"></script>
         <script src="js/Slot.js"></script>
         <script src="js/SlotUI.js"></script>
         <script src="js/Unit.js"></script>
@@ -98,6 +105,12 @@
         <script src="js/UnitPlacementUI.js"></script>
         <script src="js/LootObject.js"></script>
         <script src="js/LootUI.js"></script>
+        <script src="js/Quest.js"></script>
+        <script src="js/quest/CollectItem.js"></script>
+        <script src="js/quest/KillEnemyParty.js"></script>
+        <script src="js/quest/PlaceUnit.js"></script>
+        <script src="js/QuestManager.js"></script>
+        <script src="js/QuestUI.js"></script>
         <script src="js/scrollable.js"></script>
         <script src="js/Battle.js"></script>
         <script src="js/BattleManager.js"></script>
@@ -109,8 +122,11 @@
         <script src="js/MapGenerator.js"></script>
         <script src="js/StatusEffect.js"></script>
         <script src="js/Tile.js"></script>
+        <script src="js/Collectible.js"></script>
+        <script src="js/CollectibleManager.js"></script>
         <script src="js/PuzzlePiece.js"></script>
         <script src="js/Map.js"></script>
+        <script src="js/GameDataManager.js"></script>
         <script src="js/main.js"></script>
         
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -122,9 +138,12 @@
         </script>
 
         <div id="loot-ui" title="Loot"></div>
+        <div id="quest-ui" title="Quests"></div>
 
         <!-- This is used for styling the loot UI -->
         <span style="opacity:.95" class="le-frog" id="lootUIDialogThemeSpan"></span>
+        <!-- This is used for styling the quest UI -->
+        <span style="opacity:.95" class="le-frog" id="questUIDialogThemeSpan"></span>
         <!-- This is used for styling the inventory UI -->
         <span style="opacity:.95;" class="le-frog" id="inventoryThemeSpan"></span>
         <!-- This is used for styling the settings UI -->
@@ -141,6 +160,7 @@
         <div style="border:1px solid gray;background-color:#373737;" id="settingsDialog" title="Settings">
             <input type="checkbox" id="toggleParticlesButton"/><label for="toggleParticlesButton">Disable particles</label><br/>
             <button style="margin-top:5px;" id='showInventory'>Show inventory</button><br/>
+            <button style="margin-top:5px;" id='showQuests'>View quests</button><br/>
             <button style="margin-top:5px;" id='showUnitPlacement'>Place Units</button><br/>
             <button style="margin-top:5px;" id='createUnits'>Create Units</button><br/>
         </div>

@@ -14,10 +14,14 @@
     // 
     // They represent the possible target for an item.
     window.game.UseTarget = {
-        PLAYER_UNIT: 'player units',
-        PLAYER_AND_ENEMY_UNIT: 'player and enemy units',
-        ENEMY_UNIT: 'enemy units',
-        MAP: 'map',
+        LIVING_PLAYER_UNIT: 'player units',
+        LIVING_PLAYER_AND_ENEMY_UNIT: 'player and enemy units',
+        LIVING_ENEMY_UNIT: 'enemy units',
+        DEAD_PLAYER_UNIT: 'dead player units',
+        DEAD_PLAYER_AND_ENEMY_UNIT: 'dead player and enemy units',
+        DEAD_ENEMY_UNIT: 'dead enemy units',
+        MAP: 'anywhere on the map',
+        MAP_WALKABLE_ONLY: 'only on walkable tiles',
 
         // TODO: when I finally use this, I think the best way to code it would
         // be to highlight all units that are in a battle, that way we can
@@ -42,7 +46,7 @@
             name:'The Gem of All Knowledge',
             htmlDescription:'<font color="#a3a3cc"><b>Greatly increases the stats of the target unit.<b/></font>',
             usable:true,
-            useTarget: game.UseTarget.PLAYER_UNIT,
+            useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
             cssClass:'item-sprite redgem32-png'
@@ -69,7 +73,7 @@
             name:'Gem of Regen',
             htmlDescription:'<font color="#a3a3cc"><b>Slowly restores the target unit\'s life.<b/></font>',
             usable:true,
-            useTarget: game.UseTarget.PLAYER_UNIT,
+            useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
             cssClass:'item-sprite pinkgem32-png'
@@ -80,7 +84,7 @@
             name:'Joachim\'s Wisdom',
             htmlDescription:'<font color="#a3a3cc"><b>Drinking this will make you smart.<b/></font>',
             usable:true,
-            useTarget: game.UseTarget.PLAYER_UNIT,
+            useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
             cssClass:'item-sprite potion32-png'
@@ -102,10 +106,21 @@
             name:'Essence of Poison',
             htmlDescription:'<font color="#a3a3cc"><b>Poisons the target unit, slowly destroying it.<b/></font>',
             usable:true,
-            useTarget: game.UseTarget.ENEMY_UNIT,
+            useTarget: game.UseTarget.LIVING_ENEMY_UNIT,
             stackable:true,
             startingQuantity:3,
             cssClass:'item-sprite greengem32-png'
+        },
+        CREATE_SPAWNER: {
+            id: 7,
+            itemLevel:1,
+            name:'Spawn Creatorizer',
+            htmlDescription:'<font color="#a3a3cc"><b>Creates another spawn point on the map.<b/></font>',
+            usable:true,
+            useTarget: game.UseTarget.MAP_WALKABLE_ONLY,
+            stackable:true,
+            startingQuantity:3,
+            cssClass:'item-sprite greenrectangle-png'
         },
     };
 
@@ -132,6 +147,14 @@
 
         console.log('Error - ' + itemID + ' is not a valid item ID.');
         return null;
+    };
+
+    /**
+     * This is a debug function to generate a random item of any type.
+     * @return {Item} - a random item
+     */
+    window.game.GenerateRandomItem = function() {
+        return new game.Item(Math.floor(Math.random() * 8));
     };
 
     /**
@@ -225,13 +248,23 @@
         var tileX = Math.floor(x / tileSize);
         var tileY = Math.floor(y / tileSize);
 
-        // For now, every tile will be considered valid, so we'll always set
-        // 'used' to true.
-        used = true;
+        if ( this.itemID == game.ItemType.LEAF.id ) {
+            // For now, every tile will be considered valid, so we'll always set
+            // 'used' to true.
+            used = true;
+            if ( used ) {
+                // For now, the only effect is to clear fog, so we'll hard-code that
+                // here. Eventually, it should check item type or effect.
+                currentMap.setFog(tileX, tileY, 4, false, true);
+            }
+        }
+
+        // Only tiles close to spawners are valid.
+        if ( this.itemID == game.ItemType.CREATE_SPAWNER.id ) {
+            used = currentMap.attemptToCreateSpawner(tileX, tileY, 6);
+        }
+
         if ( used ) {
-            // For now, the only effect is to clear fog, so we'll hard-code that
-            // here. Eventually, it should check item type or effect.
-            currentMap.setFog(tileX, tileY, 4, false, true);
             this.quantity--;
             var particleSystem = new game.ParticleSystem(x, y);
             game.ParticleManager.addSystem(particleSystem);

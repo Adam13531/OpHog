@@ -116,6 +116,8 @@
     window.game.Projectile.prototype.draw = function(ctx) {
         if ( this.isMelee ) return;
 
+        if ( !game.Camera.canSeeRect(this.x, this.y, tileSize, tileSize) ) return;
+
         objSheet.drawSprite(ctx, this.graphicIndex, this.x, this.y);
     };
 

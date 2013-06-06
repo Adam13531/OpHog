@@ -19,7 +19,7 @@
      * @param {String} text    The text to display
      * @param {Boolean} bigFont If true, this'll make the font big and green
      */
-    window.game.TextObj = function TextObj(centerX, centerY, text, bigFont) {
+    window.game.TextObj = function TextObj(centerX, centerY, text, bigFont, fontColor) {
         this.text = text;
 
         this.bigFont = bigFont;
@@ -39,15 +39,15 @@
         // Speed in pixels/second that the font moves
         this.speed = 100;
 
+        this.fontColor = fontColor;
+
         if ( this.bigFont ) {
             this.font = game.BigFont;
-            this.fontColor = '#0f0';
             this.ttl = 2;
             this.height = 40;
             this.speed = 50;
         } else {
             this.font = game.TextObjFont;
-            this.fontColor = '#f00';
             this.ttl = 1;
             this.height = 12;
             this.speed = 100;

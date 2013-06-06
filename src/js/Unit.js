@@ -1,24 +1,26 @@
 ( function() {
 
     /**
-     * Unit types. For now, these double as representing graphic indices too in
-     * some cases.
-     * @type {Number}
+     * See displayLifeBarForPlayer.
+     * @type {Object}
      */
-    window.game.UnitType = {
-        ARCHER: 0,
-        WARRIOR: 1,
-        WIZARD: 2,
-
-        // This is here just so that we have some indicator that it's NOT an
-        // archer/warrior/wizard
-        DEBUG: 3,
-
-        twoByOneUnit: 496,
-        oneByTwoUnit: 497,
-        twoByTwoUnit: 498
+    window.game.DisplayLifeBarFor = {
+        PLAYER:1,
+        ENEMY:2,
+        PLAYER_AND_ENEMY:3
     };
 
+    /**
+     * These are the movement AIs. Each individual AI is commented.
+     */
+    window.game.MovementAI = {
+        // Units with this AI will follow a path from start to finish.
+        FOLLOW_PATH: 'follow path',
+
+        // Units with this AI will be leashed to a certain point. They are given
+        // leashTileX and leashTileY.
+        BOSS: 'boss'
+    };
 
     // This represents a 2x1 unit. 496 was chosen because it's the first index
     // that doesn't correspond to a valid sprite.
@@ -35,19 +37,46 @@
     window.game.alphaBlink = 0;
 
     /**
-     * Creates a unit (player OR enemy).
-     * @param {UnitType}  unitType For now, this is the graphic index, or one
-     *                           of the special values above.
-     * @param {Boolean} isPlayer True if this is a player unit.
+     * When you press the display-life-bar key, this will be set to true. It is
+     * set to false when you let go of the key.
+     * @type {Boolean}
      */
-    window.game.Unit = function Unit(unitType, isPlayer) {
+    window.game.keyPressedToDisplayLifeBars = false;
+
+    /**
+     * This is some combination of the DisplayLifeBarFor flags. When non-zero,
+     * life bars will always be displayed for player units, enemy units, or
+     * both.
+     * @type {game.DisplayLifeBarFor}
+     */
+    window.game.displayLifeBarForPlayer = 0;
+
+    /**
+     * If true, this will draw life bars when a unit is in battle.
+     * @type {Boolean}
+     */
+    window.game.displayLifeBarsInBattle = false;
+
+    /**
+     * Creates a unit (player OR enemy).
+     * @param {Number}  unitType - an ID from game.UnitType, e.g.
+     * game.UnitType.ORC.id.
+     * @param {Boolean} isPlayer - true if this is a player unit.
+     * @param {Number} level - the level at which to start this unit.
+     */
+    window.game.Unit = function Unit(unitType, isPlayer, level) {
+        var unitData = game.GetUnitDataFromID(unitType, level);
+
         this.unitType = unitType;
-        this.width = tileSize;
-        this.height = tileSize;
-        this.widthInTiles = 1;
-        this.heightInTiles = 1;
+
         this.id = window.game.unitID++;
         this.hasBeenPlaced = false;
+
+        // This can only be set to true by convertToBoss.
+        this.isBoss = false;
+
+        // Give the unit a standard movement AI.
+        this.movementAI = game.MovementAI.FOLLOW_PATH;
 
         /**
          * StatusEffects affecting this unit.
@@ -55,15 +84,15 @@
          */
         this.statusEffects = [];
 
-        this.level = 1;
+        this.level = level;
         this.experience = 0;
-        this.maxLife = 100;
-        this.atk = 30;
-        this.def = 0;
 
-        // Note: there is only a base life stat. Status/items only apply to
+        // Note: there is only a base life stat; status and items only apply to
         // maxLife. Damage and healing are what apply to life, not [de]buffs.
-        this.restoreLife();
+        // 
+        // We set it to 0 here simply so that when we call restoreLife, it isn't
+        // equal to 'undefined'.
+        this.life = 0;
 
         // You have a graphic index for each tile that you take up.
         // 'graphicIndexes' represents all of the tiles, from left to right, top
@@ -75,48 +104,23 @@
         // 0  5
         // 19 24
         // For an enemy, it would draw them horizontally flipped.
-        this.graphicIndexes = new Array();
+        this.graphicIndexes = unitData.graphicIndexes;
 
-        if (unitType == game.UnitType.twoByOneUnit) {
-            this.width = tileSize * 2;
-            this.graphicIndexes.push(240);
-            this.graphicIndexes.push(241);
-            this.widthInTiles = 2;
-        } else if (unitType == game.UnitType.oneByTwoUnit) {
-            this.height = tileSize * 2;
-            this.graphicIndexes.push(421);
-            this.graphicIndexes.push(437);
-            this.heightInTiles = 2;
-        } else if (unitType == game.UnitType.twoByTwoUnit) {
-            this.width = tileSize * 2;
-            this.height = tileSize * 2;
-            this.graphicIndexes.push(302);
-            this.graphicIndexes.push(303);
-            this.graphicIndexes.push(318);
-            this.graphicIndexes.push(319);
-            this.widthInTiles = 2;
-            this.heightInTiles = 2;
-        } else {
-            // For 1x1 units, make them look like what you spawned.
-            var graphicIndex;
+        this.widthInTiles = unitData.width;
+        this.heightInTiles = unitData.height;
+        this.name = unitData.name;
 
-            switch( this.unitType ) {
-                case game.PlaceableUnitType.ARCHER:
-                    graphicIndex = 0;
-                    break;
-                case game.PlaceableUnitType.WARRIOR:
-                    graphicIndex = 1;
-                    break;
-                case game.PlaceableUnitType.WIZARD:
-                    graphicIndex = 2;
-                    break;
-                default:
-                    graphicIndex = Math.floor(Math.random()*220);
-                    break;
-            }
+        this.maxLife = unitData.finalLife;
+        this.atk = unitData.finalAtk;
+        this.def = unitData.finalDef;
 
-            this.graphicIndexes.push(graphicIndex);
-        }
+        this.chanceToDropItem = unitData.chanceToDropItem;
+        this.itemsDropped = unitData.itemsDropped;
+
+        this.restoreLife();
+
+        this.width = tileSize * this.widthInTiles;
+        this.height = tileSize * this.heightInTiles;
 
         this.areaInTiles = this.widthInTiles * this.heightInTiles;
         this.isPlayer = isPlayer;
@@ -137,6 +141,37 @@
         // they represent (in world coordinates) where to move.
         this.preBattleX = null;
         this.preBattleY = null;
+
+        // The destination along the path, in pixels. This will be the center of
+        // some tile; we use the center so that we can account for non-1x1
+        // units.
+        this.destX = null;
+        this.destY = null;
+
+        /**
+         * A reference to one of the current map's paths.
+         * @type {Array:Tile}
+         */
+        this.whichPathToTake = null;
+
+        /**
+         * This represents which Tile we're on in the path.
+         * @type {Number}
+         */
+        this.indexInPath = 0;
+    };
+
+    /**
+     * This will turn this enemy into a boss.
+     * @return {undefined}
+     */
+    window.game.Unit.prototype.convertToBoss = function() {
+        this.isBoss = true;
+        this.movementAI = game.MovementAI.BOSS;
+
+        // The above AI relies on these variables
+        this.leashTileX = this.getCenterTileX();
+        this.leashTileY = this.getCenterTileY();
     };
 
     /**
@@ -154,10 +189,51 @@
         this.movingToPreBattlePosition = false;
         this.hasBeenPlaced = true;
 
+        // Make sure to remove our current path so that we find a new one
+        this.whichPathToTake = null;
+        this.acquireNewDestination();
+
         // Purge status effects
         this.statusEffects = [];
+
+        if ( this.isPlayer ) {
+            game.QuestManager.placedAUnit(this.unitType);
+        }
     };
 
+    /**
+     * Potentially produces loot. This is according to the unit's loot table.
+     * This should only ever be called on enemy units.
+     *
+     * For now, each unit can only produce at most one type of item, but that
+     * item's quantity can be greater than one.
+     * @return {Array:Item} - any items produced
+     */
+    window.game.Unit.prototype.produceLoot = function() {
+        // This can happen right now because there are at least two ways right
+        // now to create invalid enemies (i.e. those without unitData passed
+        // in): summoning, and pressing the number keys on the keyboard.
+        if ( this.itemsDropped === undefined ) {
+            // console.log('Warning: produceLoot was called on a unit that doesn\'t have "itemsDropped": ' + this.);
+            return [];
+        }
+
+        var dropRoll = Math.random();
+        var droppedItems = [];
+
+        // Use '<=' so that when chanceToDrop is 1, you always get an item
+        if ( dropRoll <= this.chanceToDropItem ) {
+            var lootTableEntry = game.util.randomFromWeights(this.itemsDropped);
+
+            // This is just a sanity check.
+            if ( lootTableEntry != null ) {
+                var newItem = new game.Item(lootTableEntry.itemID);
+                droppedItems.push(newItem);
+            }
+        }
+
+        return droppedItems;
+    };
 
     /**
      * Every unit needs to be placed, but player units should be "unplaced"
@@ -194,6 +270,76 @@
     window.game.Unit.prototype.canJoinABattle = function() {
         return this.hasBeenPlaced && !this.isInBattle();
     }
+    /**
+     * Acquires a new destination based on the movement AI that the unit has.
+     * @return {undefined}
+     */
+    window.game.Unit.prototype.acquireNewDestination = function() {
+        if ( this.movementAI == game.MovementAI.FOLLOW_PATH ) {
+            this.acquireNewDestinationFollowPath();
+        } else if ( this.movementAI == game.MovementAI.BOSS ) {
+            this.acquireNewDestinationBoss();
+        } else {
+            console.log('Unreconized movement AI: ' + this.movementAI);
+        }
+    }
+
+    /**
+     * acquireNewDestination for the BOSS AI. It moves around the general
+     * vicinity while staying leashed to the starting tile.
+     * @return {undefined}
+     */
+    window.game.Unit.prototype.acquireNewDestinationBoss = function() {
+        // Get a random tile within RADIUS of the leash tile.
+        var radius = 2;
+        var tileX = this.leashTileX - radius + game.util.randomInteger(0, radius * 2 + 1);
+        var tileY = this.leashTileY - radius + game.util.randomInteger(0, radius * 2 + 1);
+
+        this.destX = tileX * tileSize + tileSize / 2;
+        this.destY = tileY * tileSize + tileSize / 2;
+    };
+
+    /**
+     * If a unit doesn't have a path, this will find one for the unit. If a unit
+     * DOES have a path, then this will set its current destination to the next
+     * tile in that path.
+     * @return {null}
+     */
+    window.game.Unit.prototype.acquireNewDestinationFollowPath = function() {
+        // All pathfinding is based on centers to account for non- 1x1 units
+        var centerTileX = this.getCenterTileX();
+        var centerTileY = this.getCenterTileY();
+
+        if ( this.whichPathToTake == null ) {
+
+            var pathAndIndex = currentMap.getPathStartingWith(centerTileX, centerTileY, this.isPlayer);
+            if ( pathAndIndex == null ) {
+                // Here's how I think this happened before, which might give
+                // insight into how this could happen again if you see this: a
+                // unit was moving diagonally, and in the process of moving to
+                // the next tile, the coordinates that are used to say which
+                // tiles it is on happened to line up with a non-walkable tile.
+                console.log('Error: couldn\'t generate a path for unit #' + 
+                    this.id + ' at coordinates (' + centerTileX + ', ' + 
+                    centerTileY + ')');
+            }
+            this.whichPathToTake = pathAndIndex.path;
+            this.indexInPath = pathAndIndex.indexInPath;
+        }
+
+        if ( this.indexInPath == this.whichPathToTake.length - 1) {
+            // You're done with the path. For now, we'll make the units still
+            // move off of the map so that they'll get destroyed, but
+            // eventually, we'll remove this debug logic.
+            this.destX += this.isPlayer ? tileSize : -tileSize;
+        } else {
+            this.indexInPath++;
+            var nextTile = this.whichPathToTake[this.indexInPath];
+
+            this.destX = nextTile.getPixelCenterX();
+            this.destY = nextTile.getPixelCenterY();
+        }
+    }
 
     /**
      * Updates this unit, moving it, making it execute its battle turn, etc.
@@ -208,6 +354,8 @@
         // var speed = Math.random()*120 + 500;
         var speed = 60;
         var change = speed * deltaAsSec;
+        var centerX = this.getCenterX();
+        var centerY = this.getCenterY();
         if (!this.isInBattle()) {
             if ( this.movingToPreBattlePosition ) {
                 var desiredX = this.preBattleX;
@@ -221,13 +369,25 @@
                     this.movingToPreBattlePosition = false;
                 }
             } else {
-                this.x += this.isPlayer ? change : -change;
+                var desiredX = this.destX;
+                var desiredY = this.destY;
 
-                // Remove any generators that the player steps on
+                var newCoords = game.util.chaseCoordinates(centerX, centerY, desiredX, desiredY, change, true);
+                this.setCenterX(newCoords.x);
+                this.setCenterY(newCoords.y);
+
+                if ( newCoords.atDestination ) {
+                    this.acquireNewDestination();
+                }
+
+                // Remove generators that the player steps on. Collect things
+                // too.
                 if ( this.isPlayer ) {
                     var centerTileX = this.getCenterTileX();
                     var centerTileY = this.getCenterTileY();
                     game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
+
+                    game.CollectibleManager.collectAtLocation(this, centerTileX, centerTileY);
                 }
             }
 
@@ -248,7 +408,7 @@
 
         // Clear some fog every loop, even if we're in battle.
         if ( this.isPlayer ) {
-            currentMap.setFog(this.getTileX(), this.getTileY(), 3, false, true);
+            currentMap.setFog(this.getCenterTileX(), this.getCenterTileY(), 3, false, true);
         }
 
         this.updateStatusEffects(delta);
@@ -330,7 +490,8 @@
 
 
         // Revive
-        if ( (this.id % 15) == 0 ) {
+        if ( (this.id % 15) == 0 && !this.isBoss ) {
+
             // There needs to be a dead unit for this to work.
             var flags = game.RandomUnitFlags.DEAD;
             if ( this.isPlayer ) {
@@ -348,28 +509,24 @@
         }
 
         // Summon
-        if ( !this.isPlayer && (this.id % 16) == 0 ) {
-            // Create it at the center of the battle. It may also make sense to
-            // create at it this unit's original battle X/Y.
-            var createX;
-            var createY;
-            if ( this.isPlayer ) {
-                createX = Math.floor(battle.playerCenterX / tileSize);
-                createY = Math.floor(battle.playerCenterY / tileSize);
-            } else {
-                createX = Math.floor(battle.enemyCenterX / tileSize);
-                createY = Math.floor(battle.enemyCenterY / tileSize);
+        if ( !this.isPlayer && !this.isBoss && (this.id % 16) == 0 ) {
+            // Create it at the previous tile in this unit's path, that way it's
+            // guaranteed to be walkable, because originalX and originalY may
+            // not be walkable if the unit was traveling diagonally.
+            var previousTile = this.whichPathToTake[this.indexInPath];
+            if ( this.indexInPath > 0 ) {
+                previousTile = this.whichPathToTake[this.indexInPath - 1];
             }
 
-            var newUnit = new game.Unit(game.UnitType.DEBUG,this.isPlayer);
-            newUnit.placeUnit(createX,createY);
-
-            // Make the unit look like a dragon whelp
-            newUnit.graphicIndexes = [224 + Math.floor(Math.random() * 5)];
+            var newUnit = new game.Unit(game.UnitType.SPIDER.id,this.isPlayer,1);
+            newUnit.placeUnit(previousTile.x, previousTile.y);
             game.UnitManager.addUnit(newUnit);
 
-            // Force the unit to join this battle
-            battle.summonedUnit(this, newUnit);
+            // Force the unit to join this battle. We pass coordinates so that
+            // the unit can go back to the walkable tile that we assigned
+            // earlier, otherwise it would go to the summoner's origin, which
+            // may be further in the path than "previousTile".
+            battle.summonedUnit(this, newUnit, previousTile.x * tileSize, previousTile.y * tileSize);
 
             return;
         }
@@ -405,7 +562,7 @@
             damage = Math.max(0, damage);
 
             // Apply the damage
-            targetUnit.modifyLife(-damage, true);
+            targetUnit.modifyLife(-damage, true, false);
         } else {
             // If the target is already alive, then we don't do anything here.
             // This is better than just killing the projectile as soon as the
@@ -426,27 +583,87 @@
      * negative is damage.
      * @param  {Boolean} spawnTextEffect - if true, this will spawn a text
      * effect at the unit showing what happened.
+     * @param {Boolean} letLifeGoAboveMax - if true, your life can go higher
+     * than your maximum. If false, your life will not be added to beyond the
+     * maximum, but it won't be capped at your max if it was already that way
+     * when this function was called. For example, if a unit has 105% life
+     * already and you call this function with 'false' and try to add 10 more
+     * life, you'll still be at 105% (no change).
      * @return {null}
      */
-    window.game.Unit.prototype.modifyLife = function(amount, spawnTextEffect) {
+    window.game.Unit.prototype.modifyLife = function(amount, spawnTextEffect, letLifeGoAboveMax) {
         // Modify life
-        this.life += amount;
+        var maxLife = this.getMaxLife();
+
+        // Special-case the heal logic
+        if ( amount > 0 ) {
+            var atMaxAlready = this.life >= maxLife;
+
+            // If we aren't at maximum or if we're allowed to heal past maximum,
+            // then we can add life now.
+            if ( !atMaxAlready || letLifeGoAboveMax ) {
+                this.life += amount;
+
+                var atMaxNow = this.life >= maxLife;
+
+                // If you were already at the maximum to begin with, then we
+                // don't ever want to cap your life since that could end up
+                // doing damage to you. We only want to cap it if this specific
+                // healing pushed us beyond the maximum.
+                if ( !atMaxAlready && atMaxNow && !letLifeGoAboveMax ) {
+                    this.life = Math.min(this.life, maxLife);
+                }
+            }
+
+        } else {
+            this.life += amount;
+        }
 
         // Spawn a text effect if specified
         if ( spawnTextEffect ) {
             var lifeChangeString = "" + Math.round(amount);
-            var textObj = new game.TextObj(this.getCenterX(), this.y, lifeChangeString, false);
+            var fontColor = amount >= 0 ? '#0f0' : '#f00';
+            var textObj = new game.TextObj(this.getCenterX(), this.y, lifeChangeString, false, fontColor);
             game.TextManager.addTextObj(textObj);
         }
 
         // Check to see if we killed the unit
         if ( !this.isLiving() ) {
+            // Wipe out any status effects so that we don't do something stupid
+            // like regen ourselves back to life
+            this.statusEffects = [];
             if ( this.battleData != null ) {
                 this.battleData.battle.unitDied(this);
             } else {
                 this.removeFromMap = true;
+
+                // If an enemy unit is killed outside of battle, they should
+                // still give items/coins.
+                if ( !this.isPlayer ) {
+                    // Grant loot
+                    var itemsDroppedByThisUnit = this.produceLoot();
+                    for (var i = 0; i < itemsDroppedByThisUnit.length; i++) {
+                        game.Inventory.addItem(itemsDroppedByThisUnit[i]);
+                    };
+
+                    // Grant coins
+                    var coinsGranted = this.getCoinsGranted();
+                    game.Player.modifyCoins(coinsGranted);
+
+                    var coinString = '+' + coinsGranted + ' coin' + (coinsGranted != 1 ? 's' : '');
+                    var textObj = new game.TextObj(this.x, this.y, coinString, true, '#0f0');
+                    game.TextManager.addTextObj(textObj);
+                }
             }
         }
+    };
+
+    /**
+     * @return {Number} - the number of coins this unit should grant when it's
+     * killed.
+     */
+    window.game.Unit.prototype.getCoinsGranted = function() {
+        return this.level * 5;
     };
 
     /**
@@ -462,14 +679,6 @@
 
     window.game.Unit.prototype.getCenterY = function() {
         return this.y + this.height / 2;
-    };
-
-    window.game.Unit.prototype.getTileX = function() {
-        return Math.floor(this.x / tileSize);
-    };
-
-    window.game.Unit.prototype.getTileY = function() {
-        return Math.floor(this.y / tileSize);
     };
 
     window.game.Unit.prototype.getCenterTileX = function() {
@@ -538,10 +747,13 @@
         return this.maxLife + maxLifeBonus;
     };
     /**
-     * Restores life to full (maxLife will have buffs taken into account)
+     * Restores life to full (maxLife will have buffs taken into account).
+     *
+     * If you were already beyond your maximum, then this won't bring your life
+     * down.
      */
     window.game.Unit.prototype.restoreLife = function() {
-        this.life = this.getMaxLife();
+        this.life = Math.max(this.life, this.getMaxLife());
     };
 
     /**
@@ -571,9 +783,79 @@
         this.restoreLife();
     };    
 
+    /**
+     * Draws this unit's life bar.
+     * @param  {Object} ctx - the canvas context
+     * @return {null}
+     */
+    window.game.Unit.prototype.drawLifeBar = function(ctx) {
+        ctx.save();
+        var alpha = .75;
+
+        // Properties of the life bar rectangle
+        var w = this.width;
+        var h = 10;
+        var x = this.x;
+        var y = this.y + this.height - h;
+
+        var percentLife = Math.min(1, Math.max(0, this.life / this.getMaxLife()));
+
+        // Draw a rectangle as the background
+        ctx.fillStyle = 'rgba(0, 0, 0, ' + alpha + ')';
+        ctx.fillRect(x,y,w,h);
+
+        // Draw a rectangle to show how much life you have
+        ctx.fillStyle = 'rgba(200, 0, 0, ' + alpha + ')';
+        ctx.fillRect(x,y,w * percentLife, h);
+
+        // Draw a border
+        ctx.strokeStyle = 'rgba(255, 0, 0, ' + alpha + ')';
+        ctx.strokeRect(x,y,w, h);
+
+        // Draw the percentage
+        ctx.font = '12px Futura, Helvetica, sans-serif';
+        var text = '' + Math.ceil(percentLife * 100) + '%';
+        var width = ctx.measureText(text).width;
+
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = '#fff';
+        ctx.fillText(text, x + w / 2 - width / 2, y - 2);
+
+        ctx.restore();
+    };
+
+    /**
+     * @return {Boolean} true if a life bar should be displayed for this unit
+     */
+    window.game.Unit.prototype.shouldDisplayLifeBar = function() {
+        // Bosses always have their lifebars displayed
+        if ( this.isBoss ) return true;
+
+        // If you pressed a key
+        if ( game.keyPressedToDisplayLifeBars ) return true;
+
+        // If you're displaying life bars for players and this is a player unit
+        if ( (game.displayLifeBarForPlayer & game.DisplayLifeBarFor.PLAYER) && this.isPlayer ) return true;
+
+        // If you're displaying life bars for enemies and this is an enemy unit
+        if ( (game.displayLifeBarForPlayer & game.DisplayLifeBarFor.ENEMY) && !this.isPlayer ) return true;
+
+        // If you're displaying life bars while in battle
+        if ( game.displayLifeBarsInBattle && this.isInBattle() ) return true;
+
+        // If you're using an item and this unit is a target
+        if (game.InventoryUI.isUnitAUseTarget(this)) return true;
+
+        return false;
+    }
+
     window.game.Unit.prototype.draw = function(ctx) {
         // Don't draw any units that haven't been placed
         if ( !this.hasBeenPlaced ) return;
+
+        // Don't draw if the camera can't even see this. We supply a padding
+        // because status effects can be drawn outside the unit's rect.
+        if (!game.Camera.canSeeUnit(this, game.STATUS_EFFECT_PADDING)) return;
 
         // Dead units always look like a 1x1 tombstone for now.
         if ( this.isInBattle() && !this.isLiving() ) {
@@ -611,12 +893,16 @@
                     index++;
                 };
             };
+
+            // Draw the life bar
+            if ( this.shouldDisplayLifeBar() ) {
+                this.drawLifeBar(ctx);
+            }
         }
 
         // Draw a green highlight box over the unit if we're in use mode and
         // this unit is a target
-        if ( game.InventoryUI.isInUseMode() && 
-                game.InventoryUI.isUnitAUseTarget(this) ) {
+        if ( game.InventoryUI.isUnitAUseTarget(this) ) {
 
             // Save the canvas context because we modify the fillStyle
             ctx.save();

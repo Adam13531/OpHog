@@ -19,6 +19,14 @@
             };
         },
 
+        /**
+         * Removes all battles.
+         * @return {undefined}
+         */
+        removeAllBattles: function() {
+            this.battles = [];
+        },
+
         update: function(delta) {
             // Remove dead battles first
             for (var i = 0; i < this.battles.length; i++) {

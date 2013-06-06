@@ -190,7 +190,7 @@
             }
         };
 
-        return window.game.util.randomArrayElement(unitsToChooseFrom);
+        return game.util.randomArrayElement(unitsToChooseFrom);
     };
 
     /**
@@ -241,6 +241,73 @@
     };
 
     /**
+     * Each enemy unit has a chance of dropping loot according to its loot
+     * table.
+     *
+     * We keep track here of what was dropped by all of the different units so
+     * that we can combine any stackable items. This way, the loot UI doesn't
+     * show something like "Obtained 3 gems. Obtained 3 gems. Obtained 3 gems."
+     * It will instead say "Obtained 9 gems.", even if 9 is greater than the
+     * maximum stack size.
+     *
+     * This function also generates coins.
+     * @return {undefined}
+     */
+    window.game.Battle.prototype.generateLoot = function() {
+        /**
+         * This array represents items that will be added to the inventory at
+         * the end of this function. Any item that can be combined will be
+         * combined into an item in this array.
+         * @type {Array:Item}
+         */
+        var allDroppedItems = [];
+
+        // For now, all enemies will always drop coins.
+        var coinsGranted = 0;
+
+        // Go through each unit and see if it will drop loot
+        for (var i = 0; i < this.enemyUnits.length; i++) {
+            coinsGranted += this.enemyUnits[i].getCoinsGranted();
+            var itemsDroppedByThisUnit = this.enemyUnits[i].produceLoot();
+
+            // Go through each item dropped by that unit and see if it's in
+            // allDroppedItems. If it is and it can be combined, then combine
+            // them.
+            for (var j = 0; j < itemsDroppedByThisUnit.length; j++) {
+                var combined = false;
+                var itemJ = itemsDroppedByThisUnit[j];
+
+                // Only check usable/stackable items.
+                if ( itemJ.usable && itemJ.stackable ) {
+                    for (var k = 0; k < allDroppedItems.length; k++) {
+                        var itemK = allDroppedItems[k];
+                        if ( itemJ.itemID == itemK.itemID ) {
+                            itemK.quantity += itemJ.quantity;
+                            combined = true;
+                            break;
+                        }
+                    };
+                }
+
+                if ( !combined ) {
+                    allDroppedItems.push(itemJ);
+                }
+            };
+        };
+
+        game.Player.modifyCoins(coinsGranted);
+
+        var coinString = '+' + coinsGranted + ' coin' + (coinsGranted != 1 ? 's' : '');
+        var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY + 35, coinString, true, '#0f0');
+        game.TextManager.addTextObj(textObj);
+
+        // Add all of the items we just obtained.
+        for (var i = 0; i < allDroppedItems.length; i++) {
+            game.Inventory.addItem(allDroppedItems[i]);
+        };
+    };
+
+    /**
      * This is called by the BattleManager RIGHT before the battle is removed
      * from existence. It will remove units from battle and guide them to their
      * original positions.
@@ -253,10 +320,10 @@
         if ( this.battleWinner == game.BattleWinner.PLAYER ) {
             // Hard-code this for now
             var experienceGranted = 50;
-            var expString = "+" + experienceGranted + " exp";
+            var expString = '+' + experienceGranted + ' exp';
 
             // Spawn a text object where the enemies used to be
-            var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true);
+            var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true, '#0f0');
             game.TextManager.addTextObj(textObj);
 
             // Give the experience to all living player units
@@ -273,8 +340,11 @@
                 game.UnitPlacementUI.updateUnit(unit);
             };
 
-            // Give them a random item for every battle won.
-            game.Inventory.addItem(new game.Item(Math.floor(Math.random() * 7)));
+            // Generate items and give them to the player
+            this.generateLoot();
+
+            // Let the quest manager know too so that it can update quests
+            game.QuestManager.killedAnEnemyParty();
         }
 
         for (var i = 0; i < this.units.length; i++) {
@@ -307,13 +377,15 @@
      * is over.
      * @param  {Unit} summoner     - the unit doing the summoning
      * @param  {Unit} summonedUnit - the unit being summoned
+     * @param  {Number} returnX    - world coordinate to return to after battle
+     * @param  {Number} returnY    - world coordinate to return to after battle
      * @return {null}
      */
-    window.game.Battle.prototype.summonedUnit = function(summoner, summonedUnit) {
+    window.game.Battle.prototype.summonedUnit = function(summoner, summonedUnit, returnX, returnY) {
         this.addUnit(summonedUnit);
 
-        summonedUnit.battleData.originalX = summoner.battleData.originalX;
-        summonedUnit.battleData.originalY = summoner.battleData.originalY;
+        summonedUnit.battleData.originalX = returnX;
+        summonedUnit.battleData.originalY = returnY;
     },
 
     /**
@@ -371,10 +443,8 @@
             // The order in which they joined the whole battle
             absoluteOrder: absoluteOrder,
 
-            // These are the X and Y coordinates that the unit should return to
-            // if he's alive when the battle ends. These coordinates should
-            // always refer to a path so that the unit knows where to move when
-            // it's done with battle.
+            // These are the X and Y world coordinates that the unit should
+            // return to if he's alive when the battle ends.
             originalX: originalX,
             originalY: originalY
         };

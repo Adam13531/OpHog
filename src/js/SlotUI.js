@@ -190,7 +190,11 @@
         this.updateItem();
 
         $(this.$spanSelector).click(this.clickedSlot(this));
-        $(this.$spanSelector).dblclick(this.setOrRemoveSlotItem(this));
+
+        // For usable slots, double-clicking will enter USE mode.
+        if ( this.slot.isUsableSlot() ) {
+            $(this.$spanSelector).dblclick(this.useItem(this));
+        }
     };
 
     window.game.SlotUI.prototype.highlight = function(isGreen, isRed) {
@@ -234,28 +238,14 @@
     };
 
     /**
-     * Gets a dblclick function to set a slot's item.
+     * Gets a dblclick function to enter USE mode.
      * @param  {Slot} slot - the slot you double-clicked
      * @return {Object} the dblclick function
      */
-    window.game.SlotUI.prototype.setOrRemoveSlotItem = function(slotUI) {
+    window.game.SlotUI.prototype.useItem = function(slotUI) {
         return function() {
-            var slot = slotUI.slot;
-            if (slot.item == null) {
-
-                var itemID = 0;
-                if (slot.isEquipSlot()) {
-                    itemID = 1;
-                } else {
-                    if ( Math.random() > .3 ) {
-                        itemID = 4 + Math.round(Math.random());
-                    }
-                }
-
-                var newItem = new game.Item(itemID);
-                slot.setItem(newItem);
-            } else {
-                slot.setItem(null);
+            if (!slotUI.isEmpty()) {
+                game.InventoryUI.enterUseMode();
             }
         };
     };
@@ -317,6 +307,14 @@
         }
 
         return img;
+    };
+
+    /**
+     * Gets this slot's item.
+     * @return {Item} - this slot's item
+     */
+    window.game.SlotUI.prototype.getItem = function() {
+        return this.slot.item;
     };
 
     /**

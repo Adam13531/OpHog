@@ -43,8 +43,13 @@
      * @param {Object} ctx - the canvas context
      */
     window.game.Particle.prototype.draw = function(ctx) {
-        var alpha = this.ttl;
         var radius = 5;
+
+        // Only draw the particle if we can see it. Circles are centered on x,y,
+        // so we need to subtract radius here.
+        if ( !game.Camera.canSeeRect(this.x - radius, this.y - radius, radius * 2, radius * 2) ) return;
+
+        var alpha = this.ttl;
         ctx.save();
         var gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, radius);
 

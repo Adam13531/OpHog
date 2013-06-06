@@ -34,7 +34,7 @@
         /**
          * This attempts to add the item to the inventory. If the item is
          * stackable, then existing stacks will be topped off before searching
-         * for an empty slot.
+         * for empty slot(s).
          * @param {Item} item - the item to add
          * @return {Boolean} true if the item was completely added, false if
          * partially added (in the case of stackable items) or not at all added
@@ -80,20 +80,75 @@
                     }
                 };
 
-                // If there's still something left after that, see if there's an
-                // empty slot. If so, cram the rest in there (guaranteed to fit
-                // unless we found more than an entire stack of an item).
-                emptySlot = this.getFirstEmptySlot(game.SlotTypes.USABLE);
-                if ( emptySlot != null ) {
+                // If there's still something left after that, then we need to
+                // keep finding empty slots to fill.
+                while ( quantityLeft > 0 ) {
+                    emptySlot = this.getFirstEmptySlot(game.SlotTypes.USABLE);
+                    if ( emptySlot == null ) {
+                        break;
+                    }
+
+                    // Make a new item so that multiple slots don't reference
+                    // the same item.
+                    var newItem = new game.Item(item.itemID);
+                    newItem.quantity = Math.min(quantityLeft, game.maxSlotQuantity);
+                    emptySlot.setItem(newItem);
+                    quantityLeft -= newItem.quantity;
+                }
+
+                if ( quantityLeft == 0 ) {
                     addedItem = true;
-                    item.quantity = quantityLeft;
-                    emptySlot.setItem(item);
                 }
             }
 
+            // Notify appropriate listeners
             game.LootUI.addItemNotification(item, addedItem, originalQuantity);
+            game.QuestManager.collectedAnItem();
 
             return addedItem;
+        },
+
+        /**
+         * This function tells you how many of a given item you have in the
+         * entire inventory.
+         * @param  {Item} item - the item to check for
+         * @return {Number}      the amount of that item you have
+         */
+        getQuantityAcrossAllSlots: function(item) {
+            if ( item == null ) return 0;
+
+            var quantity = 0;
+
+            for (var i = 0; i < this.slots.length; i++) {
+                var itemInSlot = this.slots[i].item;
+                if ( itemInSlot == null ) continue;
+                if( item.itemID == itemInSlot.itemID ) {
+                    quantity += itemInSlot.quantity;
+                }
+            };
+
+            return quantity;
+        },
+
+        /**
+         * This will return a slot that contains an item equivalent to the one
+         * you pass in.
+         * @param  {Item} item - an item to check for. This is not an '==='
+         * check, just an item-type check.
+         * @return {Slot}      the first slot that contains that item
+         */
+        getSlotWithItem: function(item) {
+            if ( item == null ) return null;
+
+            for (var i = 0; i < this.slots.length; i++) {
+                var itemInSlot = this.slots[i].item;
+                if ( itemInSlot == null ) continue;
+                if( item.itemID == itemInSlot.itemID ) {
+                    return this.slots[i];
+                }
+            };
+
+            return null;
         },
 
         /**
@@ -129,12 +184,12 @@
             };
 
             // Fill some of the slots (this is debug code)
+            this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.CREATE_SPAWNER.id));
             this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.STAT_GEM.id));
             this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.POTION.id));
             this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.LEAF.id));
             this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.HEAL_GEM.id));
             this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.POISON_GEM.id));
-            this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.LEAF.id));
             this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(game.ItemType.SHIELD.id));
             this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(game.ItemType.SHIELD.id));
             this.getFirstEmptySlot(game.SlotTypes.WAR).setItem(new game.Item(game.ItemType.SHIELD.id));

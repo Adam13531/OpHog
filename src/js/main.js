@@ -11,55 +11,9 @@
     var ctxOrigZoom;
 
     /**
-     * The map we're looking at right now.
+     * [Global] The map we're looking at right now.
      * @type {Map}
      */
-    // currentMap = new game.Map();
-    game.MapGenerator.init();
-    // var mapArray = game.MapGenerator.generateRandomMap(15, 15, 1);
-    //TODO: For testing
-    // var mapArray = new Array(
-    //     0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0,
-    //     0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 0,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0, 0,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0,
-    //     0, 0 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,0, 0,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
-    //     0, 0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0,
-    //     0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0 ,0
-    //     );
-    // var mapArray = new Array(
-    //         5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-    //         93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-    //         5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-    //         93,67,88,88,88,88,88,88,88,88,88,88,88,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-    //         5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-    //         93,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-    //         5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-    //         93,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-    //         5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-    //         93,67,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,93,
-    //         5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,
-    //         93,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,93,
-    //         5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,
-    //         93,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,93,
-    //         5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-    //         93,67,88,88,88,88,88,88,88,88,88,88,88,88,88,88,88,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-    //         5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,
-    //         93,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,93,
-    //         5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5 ,5
-    //         );
-    // currentMap = game.MapGenerator.generateRandomMap(15, 15, 1);
-    currentMap = game.MapGenerator.generateRandomMap(20, 25, 1);
-    if (currentMap == 0) return;
-
     // Time (in MS) of the last update.
     var lastUpdate;
 
@@ -107,6 +61,7 @@
 
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
+        var $showQuests = $('#showQuests');
         var $showUnitPlacement = $('#showUnitPlacement');
         var $createUnits = $('#createUnits');
         $settingsButton.button({
@@ -121,6 +76,12 @@
         $showInventory.click(function() {
             $settingsDialog.dialog('close');
             game.InventoryUI.show();
+        });
+
+        $showQuests.button();
+        $showQuests.click(function() {
+            $(settingsDialog).dialog('close');
+            $('#quest-ui').dialog('open');
         });
 
         $showUnitPlacement.button(); // Turns the button into a JQuery UI button
@@ -141,13 +102,13 @@
         $createUnits.click(function() {
             $settingsDialog.dialog('close');
             for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.UnitType.DEBUG,true);
+                var newUnit = new game.Unit(game.UnitType.ORC.id,true,1);
                 newUnit.placeUnit(1,9);
                 game.UnitManager.addUnit(newUnit);
             };
             for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.UnitType.DEBUG,false);
-                newUnit.placeUnit(24,9);
+                var newUnit = new game.Unit(game.UnitType.ORC.id,false,1);
+                newUnit.placeUnit(23,9);
                 game.UnitManager.addUnit(newUnit);
             };
         });
@@ -164,6 +125,11 @@
             var worldY = game.Camera.canvasYToWorldY(offsetY);
             var tileX = Math.floor(worldX / tileSize);
             var tileY = Math.floor(worldY / tileSize);
+
+            // Make sure the tile is in-bounds
+            if ( tileX < 0 || tileX >= currentMap.numCols || tileY < 0 || tileY >= currentMap.numRows ) {
+                return;
+            }
             
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target
@@ -176,7 +142,7 @@
             }
 
             // Check to see if the user tapped a spawner
-            if (currentMap.isSpawnerPoint(tileX, tileY)) {
+            if (game.GameStateManager.isNormalGameplay() && currentMap.isSpawnerPoint(tileX, tileY)) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
                 $('#buyingScreenContainer').dialog('open');
             } else {
@@ -274,8 +240,12 @@
         // Initialize the slots of our inventory.
         game.Inventory.initialize();
 
+        // Initialize the quest slots
+        game.QuestManager.initialize();
+
         game.UnitPlacementUI.setupUI();
         game.LootUI.setupUI();
+        game.QuestUI.setupUI();
     }
 
     function initSettings() {
@@ -286,6 +256,8 @@
         //Calculate screen height and width
         screenWidth = parseInt($('#canvas').attr('width'));
         screenHeight = parseInt($('#canvas').attr('height'));
+
+        game.Camera.initialize();
 
         addKeyboardListeners();
 
@@ -304,9 +276,81 @@
                 evt.preventDefault();
             }
 
+            // Press ALT to show life bars
+            if ( evt.keyCode == game.Key.DOM_VK_ALT ) {
+                game.keyPressedToDisplayLifeBars = true;
+
+                // Stop the browser from going to the alt menu
+                evt.preventDefault();
+            }
+
         });
 
         $(document).keyup(function(evt) {
+
+            if ( evt.keyCode == game.Key.DOM_VK_ALT ) {
+                game.keyPressedToDisplayLifeBars = false;
+            }
+
+            // Pressing 'L' will toggle life bars between the following:
+            // * Display for player
+            // * Display for enemy
+            // * Display for both
+            // * Don't display
+            if ( evt.keyCode == game.Key.DOM_VK_L ) {
+                if ( game.displayLifeBarForPlayer == game.DisplayLifeBarFor.PLAYER_AND_ENEMY ) {
+                    game.displayLifeBarForPlayer = 0;
+                } else {
+                    game.displayLifeBarForPlayer++;
+                }
+            }
+
+            // Debug function to randomly morph the map in order to test
+            // saving/loading.
+            if ( evt.keyCode == game.Key.DOM_VK_R ) {
+                for (var i = 0; i < currentMap.mapTiles.length; i++) {
+                    currentMap.mapTiles[i].graphicIndex = Math.floor(Math.random() * 200);
+                };
+            }
+
+            // 'Z' - save game
+            if ( evt.keyCode == game.Key.DOM_VK_Z ) {
+                game.GameDataManager.saveGame();
+                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'SAVING', true, '#0f0');
+                game.TextManager.addTextObj(textObj);
+            }
+
+            // 'X' - load game
+            if ( evt.keyCode == game.Key.DOM_VK_X ) {
+                game.GameDataManager.loadGame();
+                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'LOADING', true, '#0f0');
+                game.TextManager.addTextObj(textObj);
+            }
+
+            // Pressing 'B' will toggle between showing life bars while units
+            // are battling and not showing them
+            if ( evt.keyCode == game.Key.DOM_VK_B ) {
+                game.displayLifeBarsInBattle = !game.displayLifeBarsInBattle;
+            }
+
+            // 'U' - shake the camera
+            if (evt.keyCode == game.Key.DOM_VK_U) {
+                // Shake the camera for approximately 20 game loops
+                game.Camera.shakeTimer = 20 * 16;
+            }
+
+            // 'K' - add quest
+            if (evt.keyCode == game.Key.DOM_VK_K) {
+                game.QuestManager.addNewQuest();
+            }
+
+            // 'C' - generate a collectible on the map
+            if (evt.keyCode == game.Key.DOM_VK_C) {
+                game.CollectibleManager.addNewCollectible();
+            }
+
+            // 'O' - add shield to inventory
+            // 'P' - add Oculeaf to inventory
             var itemID = null;
             if (evt.keyCode == game.Key.DOM_VK_O) {
                 itemID = game.ItemType.SHIELD.id;
@@ -319,57 +363,80 @@
                 game.Inventory.addItem(new game.Item(itemID));
             }
 
+            // 'M' - if not positive, bring to 1000. Otherwise, double it.
+            if (evt.keyCode == game.Key.DOM_VK_M) {
+                var coins = game.Player.coins;
+                coins = coins <= 0 ? (-coins + 1000) : coins;
+                game.Player.modifyCoins(coins);
+            }
 
+            // 'G' - return to normal gameplay from a win/lose state. This is
+            // 'the only way you can revert for now.
+            if (evt.keyCode == game.Key.DOM_VK_G) {
+                game.GameStateManager.returnToNormalGameplay();
+            }
+
+            // 'H' - win the game. This is the only way you can enter this state
+            // 'for now.
+            if (evt.keyCode == game.Key.DOM_VK_H) {
+                game.GameStateManager.enterWinState();
+            }
+
+            // 'J' - lose the game. This is the only way you can enter this
+            // 'state for now.
+            if (evt.keyCode == game.Key.DOM_VK_J) {
+                game.GameStateManager.enterLoseState();
+            }
 
             var unitType = null;
             if (evt.keyCode == game.Key.DOM_VK_1) {
-                unitType = game.UnitType.DEBUG;
+                unitType = game.UnitType.ORC;
             }
             if (evt.keyCode == game.Key.DOM_VK_2) {
-                unitType = game.UnitType.twoByOneUnit;
+                unitType = game.UnitType.DRAGON;
             }
             if (evt.keyCode == game.Key.DOM_VK_3) {
-                unitType = game.UnitType.oneByTwoUnit;
+                unitType = game.UnitType.CENTAUR;
             }
             if (evt.keyCode == game.Key.DOM_VK_4) {
-                unitType = game.UnitType.twoByTwoUnit;
+                unitType = game.UnitType.TREE;
             }
             if ( unitType != null ) {
-                var newUnit = new game.Unit(unitType,true);
+                var newUnit = new game.Unit(unitType.id,true,1);
                 newUnit.placeUnit(1, 9);
                 game.UnitManager.addUnit(newUnit);
             }
 
             var enemyUnitType = null;
             if (evt.keyCode == game.Key.DOM_VK_5) {
-                enemyUnitType = game.UnitType.DEBUG;
+                enemyUnitType = game.UnitType.ORC;
             }
             if (evt.keyCode == game.Key.DOM_VK_6) {
-                enemyUnitType = game.UnitType.twoByOneUnit;
+                enemyUnitType = game.UnitType.DRAGON;
             }
             if (evt.keyCode == game.Key.DOM_VK_7) {
-                enemyUnitType = game.UnitType.oneByTwoUnit;
+                enemyUnitType = game.UnitType.CENTAUR;
             }
             if (evt.keyCode == game.Key.DOM_VK_8) {
-                enemyUnitType = game.UnitType.twoByTwoUnit;
+                enemyUnitType = game.UnitType.TREE;
             }
             if ( enemyUnitType != null ) {
-                var newUnit = new game.Unit(enemyUnitType,false);
-                newUnit.placeUnit(24,9);
+                var newUnit = new game.Unit(enemyUnitType.id,false,1);
+                newUnit.placeUnit(23,9);
                 game.UnitManager.addUnit(newUnit);
             }
 
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.DEBUG,true);
+                    var newUnit = new game.Unit(game.UnitType.ORC.id,true,1);
                     newUnit.placeUnit(1,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.DEBUG,false);
-                    newUnit.placeUnit(24,9);
+                    var newUnit = new game.Unit(game.UnitType.ORC.id,false,1);
+                    newUnit.placeUnit(23,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
@@ -378,9 +445,19 @@
             if (evt.keyCode == game.Key.DOM_VK_I) {
                 var $invScreen = $('#inventory-screen');
                 if ( $invScreen.is(":visible") ) {
-                    $('#inventory-screen').dialog('close');
+                    game.InventoryUI.hide();
                 } else {
                     game.InventoryUI.show();
+                }
+            }
+
+            // Pressing 'q' will toggle the quest UI
+            if (evt.keyCode == game.Key.DOM_VK_Q) {
+                var $questUI = $('#quest-ui');
+                if ( $questUI.is(":visible") ) {
+                    $('#quest-ui').dialog('close');
+                } else {
+                    $('#quest-ui').dialog('open');
                 }
             }
 
@@ -417,7 +494,7 @@
 
         game.alphaBlink += deltaAsSec;
 
-        game.Camera.handleInput(keysDown, delta);
+        game.Camera.update(keysDown, delta);
 
         // Draw a solid background on the canvas in case anything is transparent
         // This should eventually be unnecessary - we should instead draw a
@@ -430,8 +507,10 @@
 
         // Update battles before units so that when the battle is over, the dead
         // units can be removed immediately by the UnitManager
+        game.Player.update(delta);
         game.LootUI.update(delta);
         game.GeneratorManager.update(delta);
+        game.CollectibleManager.update(delta);
         game.BattleManager.update(delta);
         game.UnitManager.update(delta);
         game.ParticleManager.update(delta);
@@ -440,12 +519,13 @@
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
 
-        currentMap.draw(ctx);
+        currentMap.draw(ctx, false);
         ctx.restore();
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
 
         game.GeneratorManager.draw(ctx);
+        game.CollectibleManager.draw(ctx);
         game.UnitManager.draw(ctx);
         game.BattleManager.draw(ctx);
         game.ParticleManager.draw(ctx);
@@ -454,6 +534,10 @@
         // projectiles).
         currentMap.drawFog(ctx);
         game.TextManager.draw(ctx);
+
+        game.GameStateManager.draw(ctx);
+
+        game.Player.drawCoinTotal(ctx);
 
         ctx.restore();
     }
