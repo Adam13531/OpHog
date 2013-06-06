@@ -20,6 +20,32 @@
         this.tileIndex = tileIndex;
         this.x = tileX;
         this.y = tileY;
+
+        // If true, this tile is a left endpoint. See Map.js - isTileAnEndpoint.
+        // This is set by the map.
+        this.isLeftEndpoint = false;
+
+        // See this.isLeftEndpoint
+        this.isRightEndpoint = false;
+
+        // This is an object that relates a left-neighbor's tileIndex (keys in a
+        // dict can only be strings, otherwise it would be the left-neighbor
+        // itself and not the tileInex) to an array of right-neighbors. It
+        // represents that when you come from a specific left-neighbor, any of
+        // the right-neighbors are valid.
+        //
+        // Not all left-neighbors will exist in this list, for example, if A is
+        // cardinally above B and B is not a right-endpoint, then B will not have A
+        // in its leftList.
+        // 
+        // If this tile is a left-endpoint, then there will be a single left-
+        // neighbor in this list, and it will be the tile itself.
+        // 
+        // If this tile is a right-endpoint, then any right-neighbors stored in
+        // here will be this tile itself.
+        // 
+        // This is only set for walkable tiles.
+        this.leftList = {};
     };
 
     /**

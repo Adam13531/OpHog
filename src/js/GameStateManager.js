@@ -87,8 +87,15 @@
             game.UnitManager.removeAllUnitsFromMap();
             game.GeneratorManager.removeAllGenerators();
             game.CollectibleManager.removeAllCollectibles();
-            currentMap = new game.Map();
+
+
+            game.MapGenerator.init();
+            currentMap = game.MapGenerator.generateRandomMap(25,25, 1);
             currentMap.addBossUnit();
+
+            // Initialize the camera so that the zoom and pan values aren't out
+            // of bounds.
+            game.Camera.initialize();
         },
 
         /**

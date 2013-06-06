@@ -15,7 +15,6 @@
      * @type {Map}
      */
     currentMap = null;
-    game.GameStateManager.switchToNewMap();
 
     // Time (in MS) of the last update.
     var lastUpdate;
@@ -260,7 +259,7 @@
         screenWidth = parseInt($('#canvas').attr('width'));
         screenHeight = parseInt($('#canvas').attr('height'));
 
-        game.Camera.initialize();
+        game.GameStateManager.switchToNewMap();
 
         addKeyboardListeners();
     }
@@ -538,6 +537,7 @@
         game.GameStateManager.draw(ctx);
 
         game.Player.drawCoinTotal(ctx);
+        currentMap.drawPaths(ctx);
 
         ctx.restore();
     }
