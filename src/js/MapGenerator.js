@@ -348,22 +348,12 @@
                             }
                         }
                         puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-
-                        if ( puzzlePiece === undefined ) {
-                            game.util.debugDisplayText('FATAL MAP ERROR - puzzle piece undefined', 'map');
-                            return;
-                        }
                     }
                     // No path is coming from above, so only check to the left
                     else {
                         notWantedFlags |= game.FitFlags.UP;
                         possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(this.previousColumn[i], game.FitFlags.LEFT, notWantedFlags, game.PuzzlePieceType.RIGHT);
                         puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-                        
-                        if ( puzzlePiece === undefined ) {
-                            game.util.debugDisplayText('FATAL MAP ERROR - puzzle piece undefined', 'map');
-                            return;
-                        }
                     }
                 }
 
@@ -399,12 +389,7 @@
 
             // Make sure the left column isn't blank
             var goodLeftColumn = false;
-            var infiniteDetector = 0;
             while (goodLeftColumn == false) {
-                if ( infiniteDetector++ == 10000 ) {
-                    game.util.debugDisplayText('FATAL MAP ERROR', 'map');
-                    return;
-                }
                 if (this.generateLeftColumn() == true) {
                     goodLeftColumn = true;
                 } 

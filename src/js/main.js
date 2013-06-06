@@ -14,8 +14,6 @@
      * [Global] The map we're looking at right now.
      * @type {Map}
      */
-    currentMap = null;
-
     // Time (in MS) of the last update.
     var lastUpdate;
 

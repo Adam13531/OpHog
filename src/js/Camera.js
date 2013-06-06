@@ -15,7 +15,7 @@
          * well.
          * @type {Number}
          */
-        minZoom: 1,
+        minZoom: .3,
 
         /**
          * Maximum zoom value.
@@ -271,6 +271,7 @@
          * @return {null}
          */
         clampPanValues: function() {
+            return;
             this.curPanX = Math.min(Math.max(0, this.curPanX), this.maxPanX);
             this.curPanY = Math.min(Math.max(0, this.curPanY), this.maxPanY);
         },

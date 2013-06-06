@@ -113,6 +113,7 @@
          * @return {null}
          */
         update: function(delta) {
+            return;
             // Random chance to generate a collectible is very low and gets
             // lower as we spawn more.
             var chanceToSpawnCollectible = .004 / (this.collectibles.length + 1);
