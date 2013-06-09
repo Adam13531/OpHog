@@ -168,10 +168,6 @@
     window.game.Unit.prototype.convertToBoss = function() {
         this.isBoss = true;
         this.movementAI = game.MovementAI.BOSS;
-
-        // The above AI relies on these variables
-        this.leashTileX = this.getCenterTileX();
-        this.leashTileY = this.getCenterTileY();
     };
 
     /**
@@ -260,6 +256,8 @@
         this.statusEffects = [];
         this.hasBeenPlaced = false;
         this.removeFromMap = false;
+        delete this.tileCameFrom;
+
         game.UnitPlacementUI.updateUnit(this);
     };
 
@@ -290,6 +288,11 @@
      * @return {undefined}
      */
     window.game.Unit.prototype.acquireNewDestinationBoss = function() {
+        if ( this.leashTileX === undefined ) {
+            this.leashTileX = this.getCenterTileX();
+            this.leashTileY = this.getCenterTileY();
+        }
+
         // Get a random tile within RADIUS of the leash tile.
         var radius = 2;
         var tileX = this.leashTileX - radius + game.util.randomInteger(0, radius * 2 + 1);
@@ -309,36 +312,88 @@
         // All pathfinding is based on centers to account for non- 1x1 units
         var centerTileX = this.getCenterTileX();
         var centerTileY = this.getCenterTileY();
-
-        if ( this.whichPathToTake == null ) {
-
-            var pathAndIndex = currentMap.getPathStartingWith(centerTileX, centerTileY, this.isPlayer);
-            if ( pathAndIndex == null ) {
-                // Here's how I think this happened before, which might give
-                // insight into how this could happen again if you see this: a
-                // unit was moving diagonally, and in the process of moving to
-                // the next tile, the coordinates that are used to say which
-                // tiles it is on happened to line up with a non-walkable tile.
-                console.log('Error: couldn\'t generate a path for unit #' + 
-                    this.id + ' at coordinates (' + centerTileX + ', ' + 
-                    centerTileY + ')');
-            }
-            this.whichPathToTake = pathAndIndex.path;
-            this.indexInPath = pathAndIndex.indexInPath;
-        }
-
-        if ( this.indexInPath == this.whichPathToTake.length - 1) {
-            // You're done with the path. For now, we'll make the units still
-            // move off of the map so that they'll get destroyed, but
-            // eventually, we'll remove this debug logic.
+        var tile = this.getCenterTile();
+        if ( tile == null || tile === undefined ) {
             this.destX += this.isPlayer ? tileSize : -tileSize;
-        } else {
-            this.indexInPath++;
-            var nextTile = this.whichPathToTake[this.indexInPath];
-
-            this.destX = nextTile.getPixelCenterX();
-            this.destY = nextTile.getPixelCenterY();
+            return;
         }
+
+        // From the current tile, look at the left list.
+        if ( this.tileCameFrom === undefined ) {
+
+            // There are no left neighbors
+            if ( tile.isLeftEndpoint ) {
+                this.tileCameFrom = tile;
+            } else {
+                // Randomly pick a left neighbor.
+                // 
+                // TODO: make this left neighbor such that there is actually a
+                // path leading from this to the end given that we came from the
+                // one we chose.
+                var leftNeighborIndices = game.util.getDictKeysAsArray(tile.leftList);
+                // Remove any left neighbors that would not lead to an endpoint.
+                // This is possible in this case:
+                // 0 0
+                //   X
+                //   Y 0 0
+                //   
+                // You place a unit on the X. If it picks 'Y' as the left
+                // neighbor, then you're forced to backtrack.
+                for (var i = 0; i < leftNeighborIndices.length; i++) {
+                    leftNeighborIndices[i] = Number(leftNeighborIndices[i]);
+                    var leftNeighbor = currentMap.mapTiles[leftNeighborIndices[i]];
+                    if ( !currentMap.newAlgoExistsPathFromHereToAnyEndpoint(tile, leftNeighbor) ) {
+                        leftNeighborIndices.splice(i, 1);
+                        i--;
+                    }
+                };
+                
+                var leftNeighborIndex = game.util.randomArrayElement(leftNeighborIndices);
+                this.tileCameFrom = currentMap.mapTiles[leftNeighborIndex];
+            }
+
+        }
+
+        var validRightNeighbors = tile.leftList[this.tileCameFrom.tileIndex];
+        var nextTile = game.util.randomArrayElement(validRightNeighbors);
+        if ( nextTile == null ) {
+            this.destX += this.isPlayer ? tileSize : -tileSize;
+            return;
+        }
+
+        this.destX = nextTile.getPixelCenterX();
+        this.destY = nextTile.getPixelCenterY();
+
+        this.tileCameFrom = tile;
+        // if ( this.whichPathToTake == null ) {
+
+        //     var pathAndIndex = currentMap.getPathStartingWith(centerTileX, centerTileY, this.isPlayer);
+        //     if ( pathAndIndex == null ) {
+        //         // Here's how I think this happened before, which might give
+        //         // insight into how this could happen again if you see this: a
+        //         // unit was moving diagonally, and in the process of moving to
+        //         // the next tile, the coordinates that are used to say which
+        //         // tiles it is on happened to line up with a non-walkable tile.
+        //         console.log('Error: couldn\'t generate a path for unit #' + 
+        //             this.id + ' at coordinates (' + centerTileX + ', ' + 
+        //             centerTileY + ')');
+        //     }
+        //     this.whichPathToTake = pathAndIndex.path;
+        //     this.indexInPath = pathAndIndex.indexInPath;
+        // }
+
+        // if ( this.indexInPath == this.whichPathToTake.length - 1) {
+        //     // You're done with the path. For now, we'll make the units still
+        //     // move off of the map so that they'll get destroyed, but
+        //     // eventually, we'll remove this debug logic.
+        //     this.destX += this.isPlayer ? tileSize : -tileSize;
+        // } else {
+        //     this.indexInPath++;
+        //     var nextTile = this.whichPathToTake[this.indexInPath];
+
+        //     this.destX = nextTile.getPixelCenterX();
+        //     this.destY = nextTile.getPixelCenterY();
+        // }
     }
 
     /**
@@ -397,7 +452,7 @@
             // map (because they will attack the castle when they get to the
             // boundary), but for now, it happens a lot and there's no way to
             // use or kill the unit.
-            var outOfBounds = 20 * tileSize;
+            var outOfBounds = 2 * tileSize;
             if ( this.x < -outOfBounds || this.x > currentMap.numCols * tileSize + outOfBounds ) {
                 this.removeFromMap = true;
             }
@@ -679,6 +734,12 @@
 
     window.game.Unit.prototype.getCenterY = function() {
         return this.y + this.height / 2;
+    };
+
+    window.game.Unit.prototype.getCenterTile = function() {
+        var tY = this.getCenterTileY();
+        var tX = this.getCenterTileX();
+        return currentMap.mapTiles[tY * currentMap.numCols + tX];
     };
 
     window.game.Unit.prototype.getCenterTileX = function() {

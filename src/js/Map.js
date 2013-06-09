@@ -9,6 +9,17 @@
      */
     window.game.Map = function Map(arrayOfOnesAndZeroes, width) {
 
+        arrayOfOnesAndZeroes = [
+            // 1,0,0,0,0,
+            // 1,0,0,0,0,
+            1,0,0,0,0,
+            1,0,0,0,0,
+            1,1,1,0,0,
+            1,0,1,0,0,
+            1,1,1,1,1,
+        ];
+        width = 5;
+
         // Convert the array of 0s and 1s to map tiles
         var mapTilesIndices = [];
         for (var i = 0; i < arrayOfOnesAndZeroes.length; i++) {
@@ -34,7 +45,7 @@
          */
         this.fog = [];
         for (var i = 0; i < this.mapTiles.length; i++) {
-            this.fog.push(true);
+            this.fog.push(false);
         };
 
         this.widthInPixels = this.numCols * tileSize;
@@ -51,7 +62,7 @@
         this.convertAllLeftEndpointsToSpawners();
 
         // Now that we have paths, place some generators.
-        this.placeGenerators();
+        // this.placeGenerators();
     };
 
     /**
@@ -62,6 +73,7 @@
     window.game.Map.prototype.addBossUnit = function() {
         // Make a lv. 20 tree
         var bossUnit = new game.Unit(game.UnitType.TREE.id,false,20);
+        bossUnit.movementAI = game.MovementAI.BOSS;
         bossUnit.convertToBoss();
         bossUnit.placeUnit(22, 9);
         game.UnitManager.addUnit(bossUnit);
@@ -84,7 +96,7 @@
         var generatorCoords = [];
         var spawnerTiles = this.getAllSpawnerTiles();
         var minimumDistanceFromSpawn = 7;
-        var numberOfGeneratorsToPlace = 7;
+        var numberOfGeneratorsToPlace = 1;
         var possibleGeneratorTiles;
 
         // Start with all walkable tiles as candidates for possible generator
@@ -286,6 +298,18 @@
             return true;
         }
 
+        // Otherwise, it can have at most one left neighbor, and that neighbor
+        // must be vertical.
+        if ( leftNeighbors.length > 1 ) {
+            return false;
+        }
+
+        // debugger
+        // var leftNeighbor = leftNeighbors[0];
+        // if ( leftNeighbor.x != tile.x ) {
+        //     return false;
+        // }
+
         // Otherwise, it must have right-neighbors, and all of them must also be
         // a left-neighbor.
         if ( rightNeighbors.length == 0 ) {
@@ -355,15 +379,26 @@
             var rightNeighbors = this.getAdjacentTiles(tile, true);
 
             // leftKeys and rightKeys will simply refer to the neighbors UNLESS
-            // this is a left or right endpoint, in which case it refers to
+            // this is a left or right endpoint, in which case it also refers to
             // itself.
             var leftKeys = leftNeighbors;
             var rightKeys = rightNeighbors;
-            if ( tile.isLeftEndpoint ) {
-                leftKeys = [tile];
+
+            if ( !tile.isRightEndpoint ) {
+                // Make it refer to itself for this case:
+                // 0 1 2
+                // 3   4
+                // 5 6 7 8 9
+                // 
+                // 0 only has one left neighbor, 3, so all paths would go right
+                // unless you also add 0 as a left neighbor.
+                leftKeys.push(tile);
             }
             if ( tile.isRightEndpoint ) {
-                rightKeys = [tile];
+                // This should ONLY contain 'tile' based on the definition of
+                // isRightEndpoint, but I'm not going to assert that here in
+                // case we ever change what right endpoints are.
+                rightKeys.push(tile);
             }
 
             if ( rightKeys.length >= 2 ) {
@@ -387,7 +422,6 @@
             };
         };
 
-        debugger;
         // Prune out any entries in leftList that don't need to exist
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
@@ -470,6 +504,14 @@
                     };
 
 
+                    // TODO: this code is to allow this map to work:
+                    // oooo.
+                    // ...OO
+                    // oooo.
+                    // 
+                    // The capital 'O's are where this comes into play so that
+                    // no lowercase 'o's lead to the goal.
+                    //
                     // The code below should be made to work, but it's not working now.
                     // if pruned contains an endpoint, then you can prune
                     // all non-endpoints.
@@ -487,6 +529,25 @@
 
                 }
 
+                // Of the remaining, make sure that there's still a path from
+                // there to the end. There's a very specific case where this can
+                // happen. Picture the following:
+                // 
+                // 0 1 2
+                // 3   4
+                // 5 6 7 8 9
+                // 
+                // At first, when we try to form leftList originally, we figure
+                // out that 7 can go to 4 via this path: 0 3 5 6 7 4 8 9.
+                // However, we spliced out the "7 4 8" sequence because "7 8"
+                // should be preferred, so now, 7 shouldn't be able to go to 4.
+                for (var j = 0; j < pruned.length; j++) {
+                    if ( !this.newAlgoExistsPathFromHereToAnyEndpoint(pruned[j], tile) ) {
+                        pruned.splice(j, 1);
+                        j--;
+                    }
+                };
+
                 if ( pruned.length == 0 ) {
                     delete tile.leftList[tileIndex];
                 } else {
@@ -501,33 +562,61 @@
             }
         };
 
+        // Now that we have each leftList set, form rightList.
+        // Reversing it won't work...
+        // for (var i = 0; i < this.mapTiles.length; i++) {
+        //     if ( i == 17 ) debugger;
+        //     var leftList = this.mapTiles[i].leftList;
+        //     var rightList = {};
 
-        // Now that we have each leftList set, go through each start point and
-        // compute paths to each endpoint.
-        for (var i = 0; i < leftEndpoints.length; i++) {
-            var tile = leftEndpoints[i];
-            var paths = this.newAlgoGetPathsFrom(tile);
+        //     for( var leftNeighborIndex in leftList ) {
+        //         // (leftNeighborIndex is a string)
+        //         var leftNeighbor = this.mapTiles[Number(leftNeighborIndex)];
+        //         var rightNeighbors = leftList[leftNeighborIndex];
+        //         var allRightNeighbors = [];
 
-            // Add the newly found paths to this.paths
-            game.util.pushAllToArray(this.paths, paths);
-        };
+        //         for (var j = 0; j < rightNeighbors.length; j++) {
+        //             var rightNeighbor = rightNeighbors[j];
+                    
+        //             if ( rightList[rightNeighbor] === undefined ) {
+        //                 rightList[rightNeighbor.tileIndex] = [];
+        //             } 
 
-        // Now reverse all of the paths so that we get the right-to-left paths
-        var reversedPaths = [];
-        for (var i = 0; i < this.paths.length; i++) {
-            var reversedPath = game.util.copyAndReverseArray(this.paths[i]);
-            reversedPaths.push(reversedPath);
-        };
+        //             rightList[rightNeighbor.tileIndex].push(leftNeighbor);
+        //         };
+        //     }
 
-        for (var i = 0; i < reversedPaths.length; i++) {
-            this.paths.push(reversedPaths[i]);
-        };
 
-        if ( this.paths.length == 0 ) {
-            console.log('Fatal error - no paths generated.');
-        }
+        //     this.mapTiles[i].rightList = rightList;
+        // };
 
-        this.ensureAllWalkableTilesAreInAPath();
+
+        // // Now that we have each leftList set, go through each start point and
+        // // compute paths to each endpoint.
+        // for (var i = 0; i < leftEndpoints.length; i++) {
+        //     var tile = leftEndpoints[i];
+        //     var paths = this.newAlgoGetPathsFrom(tile);
+
+        //     // Add the newly found paths to this.paths
+        //     game.util.pushAllToArray(this.paths, paths);
+        // };
+
+        // // Now reverse all of the paths so that we get the right-to-left paths
+        // var reversedPaths = [];
+        // for (var i = 0; i < this.paths.length; i++) {
+        //     var reversedPath = game.util.copyAndReverseArray(this.paths[i]);
+        //     reversedPaths.push(reversedPath);
+        // };
+
+        // for (var i = 0; i < reversedPaths.length; i++) {
+        //     this.paths.push(reversedPaths[i]);
+        // };
+
+        // if ( this.paths.length == 0 ) {
+        //     console.log('Fatal error - no paths generated.');
+        // }
+
+        // this.ensureAllWalkableTilesAreInAPath();
 
     };
 
@@ -671,7 +760,7 @@
 
                 var neighbors = this.getAdjacentTiles(next, true);
 
-                if ( neighbors.length == 1 ) {
+                if ( neighbors.length == 1 && seen.indexOf(neighbors[0]) == -1 ) {
                     stack.push(neighbors[0]);
                 } else {
                     for (var i = 0; i < neighbors.length; i++) {
@@ -690,6 +779,98 @@
             }
         }
 
+        return false;
+    };
+
+
+    // go through the leftList recursively and keep track of all paths found
+    window.game.Map.prototype.newAlgoExistsPathFromHereToAnyEndpoint = function(startTile, fromTile) {
+        /**
+         * Despite being a 'stack', this never actually contains more than one
+         * item, because every time we get to a fork, we push to forkList.
+         * @type {Array:Tile}
+         */
+        var stack = [];
+
+        /**
+         * A list of Tiles that have been seen already.
+         * @type {Array:Tile}
+         */
+        var seen = [];
+
+        /**
+         * Every time we see a fork, we push to this list. It contains the state
+         * mentioned in the function-level comments:
+         *
+         * startTile - the fork to take (it is not the origin of the fork,
+         * rather it is one of the origin's neighbors)
+         * seen - an array of Tiles that have already been seen
+         * path - an array of Tiles that form the path leading up to the fork
+         * @type {Array}
+         */
+        var forkList = [ {startTile:startTile, seen:[startTile, fromTile], path:[]}];
+
+        /**
+         * The current path that we're building.
+         * @type {Array:Tile}
+         */
+        var path = [];
+
+        /**
+         * The next Tile to look at.
+         * @type {Tile}
+         */
+        var next = null;
+
+        while ( forkList.length > 0 ) {
+            var fork = forkList.pop();
+            var forkStartTile = fork.startTile;
+            var forkSeen = fork.seen;
+            var forkPath = fork.path;
+
+            // Revert the state to what it looked like when we forked
+            stack = [forkStartTile];
+            seen = forkSeen.slice(0); // copy the array
+            path = forkPath.slice(0); // copy the array
+
+            while ( stack.length > 0 ) {
+                next = stack.pop();
+                path.push(next);
+
+                if ( next.isRightEndpoint ) {
+                    return true;
+                }
+
+                var cameFrom = fromTile;
+
+                if ( path.length > 1 ) {
+                    cameFrom = path[path.length - 2];
+                }
+
+                var neighbors = next.leftList[cameFrom.tileIndex];
+                if ( neighbors === undefined ) {
+                    return false;
+                }
+
+                if ( neighbors.length == 1 && seen.indexOf(neighbors[0]) == -1 ) {
+                    stack.push(neighbors[0]);
+                } else {
+                    for (var i = 0; i < neighbors.length; i++) {
+                        var n = neighbors[i];
+                        if ( seen.indexOf(n) != -1 ) continue;
+
+                        // The neighbor will only be considered 'seen' for the
+                        // fork snapshot, which is why we pop it right after
+                        // this. If we didn't, then we would prevent ourselves
+                        // from checking certain paths.
+                        seen.push(n);
+                        forkList.push({startTile:n, seen:seen.slice(0), path:path.slice(0)});
+                        seen.pop();
+                    }
+                }
+            }
+        }
+        
         return false;
     };
 
@@ -750,7 +931,6 @@
             path = forkPath.slice(0); // copy the array
 
             while ( stack.length > 0 ) {
-                debugger;
                 next = stack.pop();
                 path.push(next);
 

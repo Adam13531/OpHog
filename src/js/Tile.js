@@ -44,8 +44,12 @@
         // If this tile is a right-endpoint, then any right-neighbors stored in
         // here will be this tile itself.
         // 
+        // A tile cannot be both a left and right endpoint.
+        // 
         // This is only set for walkable tiles.
         this.leftList = {};
+
+        // if ( this.isWalkable ) this.convertToSpawner();
     };
 
     /**

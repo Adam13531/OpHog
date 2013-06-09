@@ -176,8 +176,12 @@
      * @return {Object}      a key in that dictionary, e.g. 'a' or 'b'
      */
     window.game.util.randomKeyFromDict = function(dict) {
-        if ( dict === undefined || dict == null ) return null;
-        
+        return game.util.randomArrayElement(game.util.getDictKeysAsArray(dict));
+    };
+
+    window.game.util.getDictKeysAsArray = function(dict) {
+        if ( dict === undefined || dict == null ) return [];
+
         var key;
         var allKeys = [];
         for(key in dict) {
@@ -186,8 +190,9 @@
             }
         }
 
-        return game.util.randomArrayElement(allKeys);
-    };
+        return allKeys;
+    }
+
     /**
      * This will modify the 'current' coordinates so that they get closer to the
      * desired coordinates.
