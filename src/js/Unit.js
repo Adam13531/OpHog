@@ -345,24 +345,27 @@
                 //   
                 // You place a unit on the X. If it picks 'Y' as the left
                 // neighbor, then you're forced to backtrack.
-                for (var i = 0; i < leftNeighborIndices.length; i++) {
-                    leftNeighborIndices[i] = Number(leftNeighborIndices[i]);
-                    var leftNeighbor = currentMap.mapTiles[leftNeighborIndices[i]];
-                    if ( !currentMap.newAlgoExistsPathFromHereToAnyEndpoint(tile, leftNeighbor, this.isPlayer) ) {
-                        leftNeighborIndices.splice(i, 1);
-                        i--;
-                    }
-                };
+                // for (var i = 0; i < leftNeighborIndices.length; i++) {
+                //     leftNeighborIndices[i] = Number(leftNeighborIndices[i]);
+                //     var leftNeighbor = currentMap.mapTiles[leftNeighborIndices[i]];
+                //     if ( !currentMap.newAlgoExistsPathFromHereToAnyEndpoint(tile, leftNeighbor, this.isPlayer) ) {
+                //         leftNeighborIndices.splice(i, 1);
+                //         i--;
+                //     }
+                // };
                 
                 var leftNeighborIndex = game.util.randomArrayElement(leftNeighborIndices);
                 this.tileCameFrom = currentMap.mapTiles[leftNeighborIndex];
+                if ( this.tileCameFrom === undefined ) {
+                    debugger;
+                }
             }
 
         }
 
         var validRightNeighbors = listToUse[this.tileCameFrom.tileIndex];
         var nextTile = game.util.randomArrayElement(validRightNeighbors);
-        if ( nextTile == null ) {
+        if ( nextTile == null || !nextTile.isWalkable) {
             this.destX += this.isPlayer ? tileSize : -tileSize;
             return;
         }

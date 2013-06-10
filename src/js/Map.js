@@ -9,16 +9,38 @@
      */
     window.game.Map = function Map(arrayOfOnesAndZeroes, width) {
 
-        arrayOfOnesAndZeroes = [
-            // 1,0,0,0,0,
-            // 1,0,0,0,0,
-            1,0,0,0,0,
-            1,0,0,0,0,
-            1,1,1,0,0,
-            1,0,1,0,0,
-            1,1,1,1,1,
-        ];
-        width = 5;
+        // arrayOfOnesAndZeroes = [
+        //     // 1,1,1,0,1,1,1,
+        //     // 0,0,1,0,1,0,0,
+        //     // 0,0,1,1,1,0,0,
+        //     // 0,0,0,1,0,0,0,
+        //     // 0,0,0,1,0,0,0,
+        //     // 0,0,0,1,1,1,1
+        //     1,1,1,0,1,1,1,
+        //     0,0,1,0,1,0,0,
+        //     0,0,1,1,1,0,0,
+        //     0,0,0,1,0,0,0,
+        //     0,0,0,1,0,0,0,
+        //     1,1,1,1,1,1,1
+        //     // 1,0,0,0,0,
+        //     // 1,0,0,0,0,
+        //     // 1,0,0,0,0,
+        //     // 1,0,0,0,0,
+        //     // 1,1,1,0,0,
+        //     // 1,0,1,0,0,
+        //     // 1,1,1,1,1,
+        // ];
+
+        // arrayOfOnesAndZeroes = [
+        //     1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,
+        //     0,0,0,1,0,1,0,0,1,0,1,0,0,0,0,
+        //     0,0,0,1,1,1,0,0,1,1,1,0,0,0,0,
+        //     0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,
+        //     0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,
+        //     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+        // ];
+
+        // width = 15;
 
         // Convert the array of 0s and 1s to map tiles
         var mapTilesIndices = [];
@@ -96,7 +118,7 @@
         var generatorCoords = [];
         var spawnerTiles = this.getAllSpawnerTiles();
         var minimumDistanceFromSpawn = 1;
-        var numberOfGeneratorsToPlace = 2;
+        var numberOfGeneratorsToPlace = 2000;
         var possibleGeneratorTiles;
 
         // Start with all walkable tiles as candidates for possible generator
@@ -304,12 +326,6 @@
             return false;
         }
 
-        // debugger
-        // var leftNeighbor = leftNeighbors[0];
-        // if ( leftNeighbor.x != tile.x ) {
-        //     return false;
-        // }
-
         // Otherwise, it must have right-neighbors, and all of them must also be
         // a left-neighbor.
         if ( rightNeighbors.length == 0 ) {
@@ -377,7 +393,6 @@
     window.game.Map.prototype.buildTileList = function(buildingLeftList) {
         // Go through each walkable tile and form its leftList.
         for (var i = 0; i < this.mapTiles.length; i++) {
-            if ( i == 15 ) debugger;
             var tile = this.mapTiles[i];
             var listToUse = buildingLeftList ? tile.leftList : tile.rightList;
 
@@ -442,6 +457,7 @@
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
             var listToUse = buildingLeftList ? tile.leftList : tile.rightList;
+            if ( i == 23 && !buildingLeftList ) debugger;
 
             for ( var tileIndex in listToUse ) {
                 // leftNeighbor just represents any tile that you could've come
@@ -568,9 +584,17 @@
                 // However, we spliced out the "7 4 8" sequence because "7 8"
                 // should be preferred, so now, 7 shouldn't be able to go to 4.
                 for (var j = 0; j < pruned.length; j++) {
-                    if ( !this.newAlgoExistsPathFromHereToAnyEndpoint(pruned[j], tile, buildingLeftList) ) {
-                        pruned.splice(j, 1);
-                        j--;
+                    // start,from,buildingLeftList
+                    if ( true || buildingLeftList ) {
+                        if ( !this.newAlgoExistsPathFromHereToAnyEndpoint(pruned[j], tile, buildingLeftList) ) {
+                            pruned.splice(j, 1);
+                            j--;
+                        }
+                    } else {
+                        if ( !this.newAlgoExistsPathFromHereToAnyEndpoint(tile, pruned[j], buildingLeftList) ) {
+                            pruned.splice(j, 1);
+                            j--;
+                        }
                     }
                 };
 
@@ -591,7 +615,59 @@
 
             }
         };
+
+        // Go through one more time and remove any paths that don't connect. This is in this case:
+        // 111.ABC
+        // ..1.D..
+        // ..111..
+        // ...1...
+        // ...1...
+        // ...1111
+        // 
+        // When considering tile D coming from tile A, there IS a path to the
+        // end: A D B C. Why does B show up in D's leftList? Simply because A
+        // shows up in mapTiles before D does, so at that point in the 'for'
+        // loop, D'd neighbors wouldn't have been pruned. However, at this
+        // point, they HAVE been pruned, so now we're working with up-to-date
+        // information.
+        // 
+        // The indices are as follows:
+        // 
+        // 0  1  2  3  4  5  6
+        // 7  8  9  10 11 12 13
+        // 14 15 16 17 18 19 20
+        // 21 22 23 24 25 26 27
+        // 28 29 30 31 32 33 34
+        // 35 36 37 38 39 40 41
+        for (var i = 0; i < this.mapTiles.length; i++) {
+            if ( i == 38 && !buildingLeftList ) debugger;
+            var tile = this.mapTiles[i];
+            var listToUse = buildingLeftList ? tile.leftList : tile.rightList;
+
+            for ( var tileIndex in listToUse ) {
+
+                // rightNeighbors represents the tiles you can go to from this
+                // tile when you came from leftNeighbor
+                var rightNeighbors = listToUse[tileIndex];
+
+                for (var j = 0; j < rightNeighbors.length; j++) {
+                    if ( true || buildingLeftList ) {
+                        if ( !this.newAlgoExistsPathFromHereToAnyEndpoint(rightNeighbors[j], tile, buildingLeftList) ) {
+                            rightNeighbors.splice(j, 1);
+                            j--;
+                        }
+                    } else {
+                        if ( !this.newAlgoExistsPathFromHereToAnyEndpoint(tile, rightNeighbors[j], buildingLeftList) ) {
+                            rightNeighbors.splice(j, 1);
+                            j--;
+                        }
+                    }
+                };
+            };
+        };
+
     };
+
 
     /**
      * If there's a walkable tile on the map, then there had better be at least
@@ -736,6 +812,7 @@
 
                 if ( neighbors.length == 1 && seen.indexOf(neighbors[0]) == -1 ) {
                     stack.push(neighbors[0]);
+                    seen.push(neighbors[0]);
                 } else {
                     for (var i = 0; i < neighbors.length; i++) {
                         var n = neighbors[i];
@@ -834,6 +911,7 @@
 
                 if ( neighbors.length == 1 && seen.indexOf(neighbors[0]) == -1 ) {
                     stack.push(neighbors[0]);
+                    seen.push(neighbors[0]);
                 } else {
                     for (var i = 0; i < neighbors.length; i++) {
                         var n = neighbors[i];
