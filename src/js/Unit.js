@@ -318,19 +318,25 @@
             return;
         }
 
+        var listToUse = this.isPlayer ? tile.leftList : tile.rightList;
+
         // From the current tile, look at the left list.
         if ( this.tileCameFrom === undefined ) {
 
+
+
             // There are no left neighbors
-            if ( tile.isLeftEndpoint ) {
+            if ( (this.isPlayer && tile.isLeftEndpoint) || (!this.isPlayer && tile.isRightEndpoint) ) {
                 this.tileCameFrom = tile;
             } else {
                 // Randomly pick a left neighbor.
                 // 
+                // TODO: the below code shouldn't need to exist
+                // 
                 // TODO: make this left neighbor such that there is actually a
                 // path leading from this to the end given that we came from the
                 // one we chose.
-                var leftNeighborIndices = game.util.getDictKeysAsArray(tile.leftList);
+                var leftNeighborIndices = game.util.getDictKeysAsArray(listToUse);
                 // Remove any left neighbors that would not lead to an endpoint.
                 // This is possible in this case:
                 // 0 0
@@ -342,7 +348,7 @@
                 for (var i = 0; i < leftNeighborIndices.length; i++) {
                     leftNeighborIndices[i] = Number(leftNeighborIndices[i]);
                     var leftNeighbor = currentMap.mapTiles[leftNeighborIndices[i]];
-                    if ( !currentMap.newAlgoExistsPathFromHereToAnyEndpoint(tile, leftNeighbor) ) {
+                    if ( !currentMap.newAlgoExistsPathFromHereToAnyEndpoint(tile, leftNeighbor, this.isPlayer) ) {
                         leftNeighborIndices.splice(i, 1);
                         i--;
                     }
@@ -354,7 +360,7 @@
 
         }
 
-        var validRightNeighbors = tile.leftList[this.tileCameFrom.tileIndex];
+        var validRightNeighbors = listToUse[this.tileCameFrom.tileIndex];
         var nextTile = game.util.randomArrayElement(validRightNeighbors);
         if ( nextTile == null ) {
             this.destX += this.isPlayer ? tileSize : -tileSize;

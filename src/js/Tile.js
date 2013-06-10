@@ -48,8 +48,31 @@
         // 
         // This is only set for walkable tiles.
         this.leftList = {};
+        this.rightList = {};
 
         // if ( this.isWalkable ) this.convertToSpawner();
+    };
+    window.game.Tile.prototype.printList = function(printLeftList) {
+        this.realPrintList(true);
+        this.realPrintList(false);
+    };
+    window.game.Tile.prototype.realPrintList = function(printLeftList) {
+        var listToUse = printLeftList ? this.leftList : this.rightList;
+        var stringToUse = printLeftList ? 'left' : 'right';
+        console.log('tileIndex ' + this.tileIndex + '\'s ' + stringToUse + 'List: ');
+        for( var stringIndex in listToUse ) {
+            var indexAsNumber = Number(stringIndex);
+            var rightString = '';
+            var rightNeighbors = listToUse[stringIndex];
+            for (var i = 0; i < rightNeighbors.length; i++) {
+                if ( i > 0 ) rightString += ' ';
+                rightString += rightNeighbors[i].tileIndex;
+            };
+
+            console.log(indexAsNumber + ': ' + rightString);
+        }
+
+        return ''
     };
 
     /**
