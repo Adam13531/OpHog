@@ -353,7 +353,7 @@
                 itemID = game.ItemType.SHIELD.id;
             }
             if (evt.keyCode == game.Key.DOM_VK_P) {
-                itemID = game.ItemType.LEAF.id;
+                itemID = game.ItemType.CREATE_SPAWNER.id;
             }
 
             if ( itemID != null ) {
@@ -535,7 +535,6 @@
         game.GameStateManager.draw(ctx);
 
         game.Player.drawCoinTotal(ctx);
-        currentMap.drawPaths(ctx);
 
         ctx.restore();
     }

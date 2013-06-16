@@ -9,38 +9,25 @@
      */
     window.game.Map = function Map(arrayOfOnesAndZeroes, width) {
 
-        // arrayOfOnesAndZeroes = [
-        //     // 1,1,1,0,1,1,1,
-        //     // 0,0,1,0,1,0,0,
-        //     // 0,0,1,1,1,0,0,
-        //     // 0,0,0,1,0,0,0,
-        //     // 0,0,0,1,0,0,0,
-        //     // 0,0,0,1,1,1,1
-        //     1,1,1,0,1,1,1,
-        //     0,0,1,0,1,0,0,
-        //     0,0,1,1,1,0,0,
-        //     0,0,0,1,0,0,0,
-        //     0,0,0,1,0,0,0,
-        //     1,1,1,1,1,1,1
-        //     // 1,0,0,0,0,
-        //     // 1,0,0,0,0,
-        //     // 1,0,0,0,0,
-        //     // 1,0,0,0,0,
-        //     // 1,1,1,0,0,
-        //     // 1,0,1,0,0,
-        //     // 1,1,1,1,1,
-        // ];
+        // Go through arrayOfOnesAndZeroes, and remove any blank rows at the
+        // start.
+        // 
+        // Need to save 'numRows' here because otherwise the value would change
+        // as we iterated
+        var numRows = arrayOfOnesAndZeroes.length / width;
+        var found = false;
+        for (var i = 0; i < numRows; i++) {
+            for (var j = 0; j < width; j++) {
+                if ( arrayOfOnesAndZeroes[j] == 1 ) {
+                    found = true;
+                    break;
+                }
+            };    
+            if ( found ) break;
 
-        // arrayOfOnesAndZeroes = [
-        //     1,1,1,1,0,1,1,1,1,0,1,1,1,1,1,
-        //     0,0,0,1,0,1,0,0,1,0,1,0,0,0,0,
-        //     0,0,0,1,1,1,0,0,1,1,1,0,0,0,0,
-        //     0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,
-        //     0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,
-        //     1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-        // ];
-
-        // width = 15;
+            // Remove that row
+            arrayOfOnesAndZeroes.splice(0, width);
+        };
 
         // Convert the array of 0s and 1s to map tiles
         var mapTilesIndices = [];
@@ -79,11 +66,17 @@
         this.setFog(1,9,3,false);
         this.setFog(1,15,3,false);
 
-        this.computePaths();
+        // The endpoints need to be calculated so that we can figure out the
+        // tile lists.
+        this.figureOutEndpoints();
+
+        // This is what essentially computes "paths"
+        this.buildTileList(true);
+        this.buildTileList(false);
 
         this.convertAllLeftEndpointsToSpawners();
 
-        // Now that we have paths, place some generators.
+        // Now that we have spawn points, we can place the generators.
         this.placeGenerators();
     };
 
@@ -97,10 +90,19 @@
         var bossUnit = new game.Unit(game.UnitType.TREE.id,false,20);
         bossUnit.movementAI = game.MovementAI.BOSS;
         bossUnit.convertToBoss();
-        bossUnit.placeUnit(22, 9);
+
+        // Pick an x and y coordinate that will work on any map.
+        var x = this.numCols - 3;
+        var y = Math.floor(this.numRows / 2);
+
+        bossUnit.placeUnit(x, y);
         game.UnitManager.addUnit(bossUnit);
     };
 
+    /**
+     * This simply goes through each left-endpoint and makes them all spawners.
+     * @return {undefined}
+     */
     window.game.Map.prototype.convertAllLeftEndpointsToSpawners = function() {
         for (var i = 0; i < this.mapTiles.length; i++) {
             if ( this.mapTiles[i].isLeftEndpoint ) { 
@@ -117,8 +119,8 @@
         // Coordinates of generators
         var generatorCoords = [];
         var spawnerTiles = this.getAllSpawnerTiles();
-        var minimumDistanceFromSpawn = 1;
-        var numberOfGeneratorsToPlace = 2000;
+        var minimumDistanceFromSpawn = 7;
+        var numberOfGeneratorsToPlace = 7;
         var possibleGeneratorTiles;
 
         // Start with all walkable tiles as candidates for possible generator
@@ -196,70 +198,12 @@
     };
 
     /**
-     * Given a tile, this will return a random path that contains that tile.
-     * There is an equal chance of picking any path from the possible paths.
-     *
-     * Something minor to keep in mind: because you can pass in an arbitrary
-     * tile, if you were to calculate the paths from that arbitrary tile to all
-     * of the endpoints, you MAY find paths that aren't in this.paths. Those
-     * paths can't be chosen because they aren't in this.paths.Picture this
-     * path:
-     *
-     * 111111
-     *   2
-     *   1111
-     *   
-     * If you call this function and pass in tile '2' and facingRight==true, it
-     * will ALWAYS go down, because there is no left-to-right path that goes
-     * from 2 upward, despite that it would be a possible path if '2' were an
-     * endpoint on the path.
-     * 
-     * @param  {Number} tileX - coordinate in tiles
-     * @param  {Number} tileY - coordinate in tiles
-     * @param  {Boolean} facingRight - if true, this will find a left-to-right
-     * path
-     * @return {Object with path (Array:Tile) and indexInPath (Number)}
-     */
-    window.game.Map.prototype.getPathStartingWith = function(tileX, tileY, facingRight) {
-        var possiblePaths = [];
-        var path = null;
-        var firstPathIndex = 0;
-        var halfNumPaths = this.paths.length / 2;
-        var lastPathIndex = halfNumPaths;
-
-        if ( !facingRight ) {
-            firstPathIndex += halfNumPaths;
-            lastPathIndex += halfNumPaths;
-        }
-
-        for (var i = firstPathIndex; i < lastPathIndex; i++) {
-            path = this.paths[i];
-            for (var j = 0; j < path.length; j++) {
-                if ( path[j].x == tileX && path[j].y == tileY ) {
-                    possiblePaths.push({path:path, indexInPath:j});
-                }
-            };
-        };
-
-        return game.util.randomArrayElement(possiblePaths);
-    };
-
-    /**
-      * @param {Boolean} useEvenDistribution - if true, each walkable tile will
-      * have an even chance of being chosen. If false, each walkable tile gets a
-      * number of chances equal to the number of paths that it's in. For example,
-      * if your map's paths is simply an 'X', then the tile at which the two
-      * beams of the 'X' cross will be chosen slightly more often than the
-      * others.
+      * Each walkable tile will have an even chance of being chosen.
+      * 
       * @return {Tile} a random, walkable tile
      */
-    window.game.Map.prototype.getRandomWalkableTile = function(useEvenDistribution) {
-        if ( useEvenDistribution ) {
-            return game.util.randomArrayElement(this.getAllWalkableTiles());
-        } else {
-            var randomPath = game.util.randomArrayElement(this.paths);
-            return game.util.randomArrayElement(randomPath);
-        }
+    window.game.Map.prototype.getRandomWalkableTile = function() {
+        return game.util.randomArrayElement(this.getAllWalkableTiles());
     };
 
     /**
@@ -349,20 +293,10 @@
     };
 
     /**
-     * Compute the set of paths that we want to use. This will return optimized,
-     * non-duplicated, non-zero paths both from right-to-left and left-to-right.
+     * This function will set isRightEndpoint and isLeftEndpoint in each tile.
+     * @return {undefined}
      */
-    window.game.Map.prototype.computePaths = function() {
-        /**
-         * Array of paths for this map. All left-to-right paths go in the first
-         * half. Right-to-left paths take up the second half and are simply
-         * mirrors of the LTR paths.
-         * @type {Array:(Array:Tile)}
-         */
-        this.paths = [];
-
-        // Figure out all of the endpoints. We only need to keep track of the
-        // left ones so that we know where to start computing paths.
+    window.game.Map.prototype.figureOutEndpoints = function() {
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
 
@@ -375,23 +309,31 @@
             
             if ( this.isTileAnEndpoint(tile, true) ) {
                 if ( tile.isRightEndpoint ) {
-                    game.util.debugDisplayText('Fatal error: a tile is both a left and right endpoint. Index: ' + tile.tileIndex, 'two endpoints');
+                    game.util.debugDisplayText('Fatal error: a tile is both ' +
+                        'a left and right endpoint. Index: ' + tile.tileIndex + 
+                        'two endpoints');
                 }
                 tile.isLeftEndpoint = true;
             }
         }
-
-        this.buildTileList(true);
-        this.buildTileList(false);
-
-
-
-        // this.ensureAllWalkableTilesAreInAPath();
-
     };
 
+    /**
+     * This function will build leftList or rightList depending on the argument
+     * that you pass in.
+     *
+     * IMPORTANT NOTE: this entire function has comments and variable names like
+     * "startNeighbors" and "endNeighbors" instead of "left" and "right". When
+     * buildingLeftList==true, "start" refers to the left and "end" refers to
+     * the right.
+     *
+     * See Tile.js for comments on what leftList and rightList represent.
+     * @param  {Boolean} buildingLeftList - if true, build leftList, otherwise
+     * rightList
+     * @return {undefined}
+     */
     window.game.Map.prototype.buildTileList = function(buildingLeftList) {
-        // Go through each walkable tile and form its leftList.
+        // Form the very basic left/rightList. This  
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
             var listToUse = buildingLeftList ? tile.leftList : tile.rightList;
@@ -400,130 +342,122 @@
                 continue;
             }
 
-            var leftNeighbors = this.getAdjacentTiles(tile, !buildingLeftList);
-            var rightNeighbors = this.getAdjacentTiles(tile, buildingLeftList);
+            var startNeighbors = this.getAdjacentTiles(tile, !buildingLeftList);
+            var endNeighbors = this.getAdjacentTiles(tile, buildingLeftList);
 
-            // leftKeys and rightKeys will simply refer to the neighbors UNLESS
+            // startKeys and endKeys will simply refer to the neighbors UNLESS
             // this is a left or right endpoint, in which case it also refers to
             // itself.
-            var leftKeys = leftNeighbors;
-            var rightKeys = rightNeighbors;
+            var startKeys = startNeighbors;
+            var endKeys = endNeighbors;
 
+            var tileIsEndEndpoint = buildingLeftList ? tile.isRightEndpoint : tile.isLeftEndpoint;
 
-            var tileIsRightEndpoint = tile.isRightEndpoint;
-            if ( !buildingLeftList ) tileIsRightEndpoint = tile.isLeftEndpoint;
-
-            // TODO: it's very likely that there's a bug here when
-            // buildingLeftList == false, because a left endpoint doesn't have
-            // the same stipulations as a right endpoint.
-            if ( tileIsRightEndpoint ) {
-                // This should ONLY contain 'tile' based on the definition of
-                // isRightEndpoint, but I'm not going to assert that here in
-                // case we ever change what right endpoints are.
-                rightKeys.push(tile);
+            // If the tile is an "end" endpoint, then we push the tile itself to
+            // its end-keys. If we didn't, right-endpoints would not have any
+            // endKeys because they don't have any right-neighbors.
+            if ( tileIsEndEndpoint ) {
+                endKeys.push(tile);
             } else {
-                // Make it refer to itself for this case:
+                // If it's not an "end" endpoint, then we push the tile itself
+                // to the start-keys in case the unit is ever placed directly on
+                // this tile without coming from another tile.
+                //
+                // For example:
                 // 0 1 2
                 // 3   4
                 // 5 6 7 8 9
                 // 
                 // 0 only has one left neighbor, 3, so all paths would go right
                 // unless you also add 0 as a left neighbor.
-                leftKeys.push(tile);
+                startKeys.push(tile);
             }
 
-            if ( rightKeys.length >= 2 ) {
-                // 2 or more neighbors: go through each neighbor and figure out:
-                // can I reach ANY endpoint from that neighbor without
-                // backtracking? If no, then that neighbor should be removed
-                // from rightKeys.
-                for (var j = 0; j < rightKeys.length; j++) {
-                    if ( !this.existsPathFromHereToAnyEndpoint(rightKeys[j], tile, buildingLeftList) ) {
-                        rightKeys.splice(j, 1);
+            // If there's only one endKey, then we HAVE to go to that tile from
+            // our startKeys. However, if there are 2 or more, then we go
+            // through each neighbor and figure out: can I reach ANY endpoint
+            // from that neighbor without backtracking? If no, then that
+            // neighbor should be removed from endKeys.
+            if ( endKeys.length >= 2 ) {
+                for (var j = 0; j < endKeys.length; j++) {
+                    if ( !this.combinedAlgoExistsPathFromHereToAnyEndpoint(endKeys[j], tile, buildingLeftList, false) ) {
+                        endKeys.splice(j, 1);
                         j--;
                     }
                 };
             }
 
             // Regardless of what we did, set the keys now.
-            for (var j = 0; j < leftKeys.length; j++) {
+            for (var j = 0; j < startKeys.length; j++) {
                 // Make a copy of the array by slicing so that we don't modify
-                // all left-neighbors when we delete keys in the pruning phase.
-                listToUse[leftKeys[j].tileIndex] = rightKeys.slice(0);
+                // all start-neighbors when we delete keys in the pruning phase.
+                listToUse[startKeys[j].tileIndex] = endKeys.slice(0);
             };
         };
 
-        // Prune out any entries in leftList that don't need to exist
+        // Prune out any entries in the left/rightList that don't need to exist.
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
             var listToUse = buildingLeftList ? tile.leftList : tile.rightList;
-            if ( i == 23 && !buildingLeftList ) debugger;
 
             for ( var tileIndex in listToUse ) {
-                // leftNeighbor just represents any tile that you could've come
-                // from to get to this tile ("this tile" === 'tile').
-                var leftNeighbor = this.mapTiles[tileIndex];
+                // startNeighbor just represents any tile that you could've come
+                // from to get to this tile.
+                var startNeighbor = this.mapTiles[tileIndex];
 
-                // rightNeighbors represents the tiles you can go to from this
-                // tile when you came from leftNeighbor
-                var rightNeighbors = listToUse[tileIndex];
+                // endNeighbors represents the tiles you can go to from this
+                // tile when you came from startNeighbor
+                var endNeighbors = listToUse[tileIndex];
 
-                // If leftNeighbor is in rightNeighbors, remove it. A tile is
+                // If startNeighbor is in endNeighbors, remove it. A tile is
                 // both a left and right neighbor when it's vertically adjacent,
                 // and it doesn't make sense to go from A to B back to A again.
-                var removedleftNeighbor = this.removeTileFromArray(leftNeighbor, rightNeighbors);
+                var removedstartNeighbor = this.removeTileFromArray(startNeighbor, endNeighbors);
 
-                // If we did just remove the leftNeighbor, then we should remove
-                // any tiles that are *cardinally* adjacent to leftNeighbor too,
+                // If we did just remove the startNeighbor, then we should remove
+                // any tiles that are *cardinally* adjacent to startNeighbor too,
                 // because of this scenario:
                 //
                 // 0
                 // 1 2
                 // 
-                // We're looking at 0, and 1 is our leftNeighbor in this case. 1
-                // is also a right-neighbor of 0, so we remove it in the code
-                // above. However, 0 still thinks it can go to 2 when it comes
-                // from 1, which is unnecessary because 1 could've gone directly
-                // to 2.
+                // Suppose we're looking at 0, and 1 is our startNeighbor in
+                // this case. 1 is also a right-neighbor of 0, so we remove it
+                // in the code above. However, 0 still thinks it can go to 2
+                // when it comes from 1, which is unnecessary because 1 could've
+                // gone directly to 2.
                 //
                 // It turns out that the only neighbor we could remove in such a
-                // case is the right-neighbor since we're talking about vertical
+                // case is the end-neighbor since we're talking about vertical
                 // paths here.
-                if ( removedleftNeighbor ) {
-                    // We don't need to delete this tile from leftNeighbor's
-                    // leftList because that'll be done when leftNeighbor is
-                    // 'tile' in the 'for' loop. In that case, what is currently
-                    // 'tile' will be 'leftNeighbor', and since it will also be
-                    // a right-neighbor, it will get removed.
+                if ( removedstartNeighbor ) {
+                    // If we're building the left list, then check the tile to
+                    // the right.
                     if ( buildingLeftList ) {
-                        if ( leftNeighbor.x < this.numCols && this.mapTiles[leftNeighbor.tileIndex + 1].isWalkable ) {
-                            this.removeTileFromArray(this.mapTiles[leftNeighbor.tileIndex + 1], rightNeighbors);
+                        if ( startNeighbor.x < this.numCols && this.mapTiles[startNeighbor.tileIndex + 1].isWalkable ) {
+                            this.removeTileFromArray(this.mapTiles[startNeighbor.tileIndex + 1], endNeighbors);
                         }
                     } else {
-                        if ( leftNeighbor.x > 0 && this.mapTiles[leftNeighbor.tileIndex - 1].isWalkable ) {
-                            this.removeTileFromArray(this.mapTiles[leftNeighbor.tileIndex - 1], rightNeighbors);
+                        // Otherwise, check the tile to the left.
+                        if ( startNeighbor.x > 0 && this.mapTiles[startNeighbor.tileIndex - 1].isWalkable ) {
+                            this.removeTileFromArray(this.mapTiles[startNeighbor.tileIndex - 1], endNeighbors);
                         }
                     }
-
-                            // I'm not entirely sure that this is necessary, The
-                            // algorithm works with or without it, so it's
-                            // likely that there's a case that I'm missing or
-                            // that this is redundant.
-                            // delete this.mapTiles[leftNeighbor.tileIndex + 1].leftList[tile.tileIndex];
                 }
 
                 // Any time you go to a diagonal when you could've gone to a
                 // cardinal, remove the diagonal entirely.
-                var pruned = this.pruneDiagonalIfCardinalExist(tile, rightNeighbors);
+                var pruned = this.pruneDiagonalIfCardinalExist(tile, endNeighbors);
 
-                // Suppose you are considering 1 and you prune 12 as a right neighbor. Then you need to remove '1' from '12's leftList because 1 is a left neighbor of 12,
-
-                if ( pruned.length != rightNeighbors.length ) {
+                // Suppose you are considering 1 and you prune 12 as a right
+                // neighbor. Then you need to remove '1' from '12's leftList
+                // because 1 is a left neighbor of 12,
+                if ( pruned.length != endNeighbors.length ) {
 
                     // find what we pruned
                     var theseWereRemoved = [];
-                    for (var j = 0; j < rightNeighbors.length; j++) {
-                        var rnToCheck = rightNeighbors[j];
+                    for (var j = 0; j < endNeighbors.length; j++) {
+                        var rnToCheck = endNeighbors[j];
                         var found = false;
                         for (var k = 0; k < pruned.length; k++) {
                             if ( pruned[k].tileIndex == rnToCheck.tileIndex ) {
@@ -533,15 +467,6 @@
                         };
                         if ( !found ) {
                             theseWereRemoved.push(rnToCheck);
-                        }
-                    };
-
-                    // Now, go through the ones we pruned and remove tile.tileIndex from their leftList
-                    for (var j = 0; j < theseWereRemoved.length; j++) {
-                        if ( buildingLeftList ) { 
-                            delete theseWereRemoved[j].leftList[tile.tileIndex];
-                        } else {
-                            delete theseWereRemoved[j].rightList[tile.tileIndex];
                         }
                     };
 
@@ -584,17 +509,9 @@
                 // However, we spliced out the "7 4 8" sequence because "7 8"
                 // should be preferred, so now, 7 shouldn't be able to go to 4.
                 for (var j = 0; j < pruned.length; j++) {
-                    // start,from,buildingLeftList
-                    if ( true || buildingLeftList ) {
-                        if ( !this.newAlgoExistsPathFromHereToAnyEndpoint(pruned[j], tile, buildingLeftList) ) {
-                            pruned.splice(j, 1);
-                            j--;
-                        }
-                    } else {
-                        if ( !this.newAlgoExistsPathFromHereToAnyEndpoint(tile, pruned[j], buildingLeftList) ) {
-                            pruned.splice(j, 1);
-                            j--;
-                        }
+                    if ( !this.combinedAlgoExistsPathFromHereToAnyEndpoint(pruned[j], tile, buildingLeftList, true) ) {
+                        pruned.splice(j, 1);
+                        j--;
                     }
                 };
 
@@ -607,12 +524,6 @@
                         tile.rightList[tileIndex] = pruned;
                     }
                 }
-
-                // This is only here for debugging. When you step OVER the code
-                // directly above this, it will go back to the 'for' loop unless
-                // there's any line of code right here.
-                var h = 5;
-
             }
         };
 
@@ -624,108 +535,78 @@
         // ...1...
         // ...1111
         // 
-        // When considering tile D coming from tile A, there IS a path to the
-        // end: A D B C. Why does B show up in D's leftList? Simply because A
-        // shows up in mapTiles before D does, so at that point in the 'for'
-        // loop, D'd neighbors wouldn't have been pruned. However, at this
-        // point, they HAVE been pruned, so now we're working with up-to-date
-        // information.
-        // 
-        // The indices are as follows:
-        // 
-        // 0  1  2  3  4  5  6
-        // 7  8  9  10 11 12 13
-        // 14 15 16 17 18 19 20
-        // 21 22 23 24 25 26 27
-        // 28 29 30 31 32 33 34
-        // 35 36 37 38 39 40 41
+        // When considering tile D coming from tile A and
+        // buildingLeftList==true, there IS a path to the end: A D B C. Why does
+        // B show up in D's leftList? Simply because A shows up in mapTiles
+        // before D does, so at that point in the 'for' loop, D'd neighbors
+        // wouldn't have been pruned. However, at this point, they HAVE been
+        // pruned, so now we're working with up-to-date information.
         for (var i = 0; i < this.mapTiles.length; i++) {
-            if ( i == 38 && !buildingLeftList ) debugger;
             var tile = this.mapTiles[i];
             var listToUse = buildingLeftList ? tile.leftList : tile.rightList;
 
             for ( var tileIndex in listToUse ) {
 
-                // rightNeighbors represents the tiles you can go to from this
-                // tile when you came from leftNeighbor
-                var rightNeighbors = listToUse[tileIndex];
+                // endNeighbors represents the tiles you can go to from this
+                // tile when you came from startNeighbor
+                var endNeighbors = listToUse[tileIndex];
 
-                for (var j = 0; j < rightNeighbors.length; j++) {
-                    if ( true || buildingLeftList ) {
-                        if ( !this.newAlgoExistsPathFromHereToAnyEndpoint(rightNeighbors[j], tile, buildingLeftList) ) {
-                            rightNeighbors.splice(j, 1);
-                            j--;
-                        }
-                    } else {
-                        if ( !this.newAlgoExistsPathFromHereToAnyEndpoint(tile, rightNeighbors[j], buildingLeftList) ) {
-                            rightNeighbors.splice(j, 1);
-                            j--;
-                        }
+                for (var j = 0; j < endNeighbors.length; j++) {
+                    if ( !this.combinedAlgoExistsPathFromHereToAnyEndpoint(endNeighbors[j], tile, buildingLeftList, true) ) {
+                        endNeighbors.splice(j, 1);
+                        j--;
                     }
                 };
             };
         };
 
-    };
-
-
-    /**
-     * If there's a walkable tile on the map, then there had better be at least
-     * one path that includes that tile, otherwise, anything that spawns there
-     * might be unreachable.
-     * @return {null}
-     */
-    window.game.Map.prototype.ensureAllWalkableTilesAreInAPath = function() {
+        // Finally, remove any entries in the left/rightList that don't connect.
+        // I don't think this step is entirely necessary; I don't know what
+        // would happen if it were completely commented out.
+        //
+        // For example, if we have this when buildingLeftList==true:
+        // 0
+        // 1 2
+        // 
+        // 2 has a leftList containing 0, but it shouldn't because there is no
+        // path from 0 to 2, which we know because 0 doesn't have '2' in ITS
+        // leftList's rightNeighbors.
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
-            if ( !tile.isWalkable ) continue;
+            var listToUse = buildingLeftList ? tile.leftList : tile.rightList;
 
-            if ( !this.tileInAnyPath(tile) ) {
-                console.log('WARNING: the tile at (' + tile.x + ', ' + tile.y + 
-                    ') doesn\'t appear in any path. This should probably just be removed from the map entirely.');
-                game.util.debugDisplayText('Check console log - tile found without a path.');
+            // Go through each startNeighbor in listToUse...
+            for ( var tileIndex in listToUse ) {
+
+                var startNeighbor = this.mapTiles[Number(tileIndex)];
+
+                // Don't remove references to onesself or you'll totally screw
+                // up when units spawn on the tile.
+                if ( startNeighbor.tileIndex == tile.tileIndex ) continue;
+
+                var found = false;
+
+                // Go through the entire left/rightList of startNeighbor and see
+                // if tile.tileIndex appears as any endNeighbor.
+                var neighborListToUse = buildingLeftList ? startNeighbor.leftList : startNeighbor.rightList;
+                
+                for ( var neighborTileIndex in neighborListToUse ) {
+                    var endNeighbors = neighborListToUse[neighborTileIndex];
+                    for (var j = 0; j < endNeighbors.length; j++) {
+                        if ( endNeighbors[j].tileIndex == tile.tileIndex ) {
+                            found = true;
+                            break;
+                        }
+                    };
+                    if ( found ) break;
+                }
+                if ( !found ) {
+                    // console.log('Removing ' + startNeighbor.tileIndex + ' from ' + tile.tileIndex);
+                    delete listToUse[startNeighbor.tileIndex];
+                }
             }
         };
-    };
 
-    /**
-     * Returns true if any path in this map contains the tile passed in.
-     * @param  {Tile} tile - the tile to check for
-     * @return {Boolean}      true if a path contains that tile
-     */
-    window.game.Map.prototype.tileInAnyPath = function(tile) {
-        for (var j = 0; j < this.paths.length; j++) {
-            var path = this.paths[j];
-            for (var k = 0; k < path.length; k++) {
-                if ( path[k].tileIndex == tile.tileIndex ) {
-                    return true;
-                }
-            };
-        };
-        return false;
-    };
-
-    /**
-     * This is just a debug function that prints paths like this:
-     * Path #0: (1, 3) (2, 3) (3, 3)
-     * Path #1: (1, 3) (2, 3) (3, 2)
-     * @param  {Boolean} onlyPrintLeftToRightPaths - if true, this will only
-     * print paths that go left-to-right.
-     * @return {null}
-     */
-    window.game.Map.prototype.printPaths = function(onlyPrintLeftToRightPaths) {
-        var lastPathToPrint = this.paths.length;
-        if ( onlyPrintLeftToRightPaths ) lastPathToPrint /= 2;
-        for (var i = 0; i < lastPathToPrint; i++) {
-            var path = this.paths[i];
-            var pString = '';
-            for (var j = 0; j < path.length; j++) {
-                if ( j > 0 ) pString += ' ';
-                // pString += path[j].tileIndex;
-                pString += '(' + path[j].x + ', ' + path[j].y + ')';
-            };
-            console.log('Path #' + i + ': ' + pString);
-        };
     };
 
     /**
@@ -735,7 +616,7 @@
      * may not be the same, so we compare tileIndex.
      * @param  {Tile} tile  - the tile to remove
      * @param  {Array:Tile} array - an array of Tiles
-     * @return {null}
+     * @return {Boolean} - true if we removed the tile
      */
     window.game.Map.prototype.removeTileFromArray = function(tile, array) {
         for (var i = 0; i < array.length; i++) {
@@ -747,8 +628,21 @@
         return false;
     };
 
-
-    window.game.Map.prototype.existsPathFromHereToAnyEndpoint = function(startTile, fromTile, formingLeftToRightPath) {
+    /**
+     * Figures out if there's any path leading from fromTile->startTile->any
+     * endpoint.
+     * @param  {Tile} startTile              - the tile to start at
+     * @param  {Tile} fromTile               - the tile you came from to get to
+     * startTile
+     * @param  {Boolean} formingLeftToRightPath - if true, then you're aiming
+     * for right-endpoints, otherwise left-endpoints.
+     * @param  {Boolean} useLeftRightList       - if true, this will use
+     * left/rightList to find neighbors to traverse. Otherwise, it will simply
+     * call getAdjacentTiles.
+     * @return {Boolean}                        - true if any path exists from
+     * the given tiles to any left/right endpoint.
+     */
+    window.game.Map.prototype.combinedAlgoExistsPathFromHereToAnyEndpoint = function(startTile, fromTile, formingLeftToRightPath, useLeftRightList) {
         /**
          * Despite being a 'stack', this never actually contains more than one
          * item, because every time we get to a fork, we push to forkList.
@@ -763,99 +657,13 @@
         var seen = [];
 
         /**
-         * Every time we see a fork, we push to this list. It contains the state
-         * mentioned in the function-level comments:
+         * Every time we see a fork, we push to this list so that there's a
+         * snapshot of the state.
          *
          * startTile - the fork to take (it is not the origin of the fork,
          * rather it is one of the origin's neighbors)
-         * seen - an array of Tiles that have already been seen
-         * path - an array of Tiles that form the path leading up to the fork
-         * @type {Array}
-         */
-
-         // IMPORTANT NOTE: MARK THE FROMTILE AS SEEN!
-        var forkList = [ {startTile:startTile, seen:[startTile, fromTile], path:[]}];
-
-        /**
-         * The current path that we're building.
-         * @type {Array:Tile}
-         */
-        var path = [];
-
-        /**
-         * The next Tile to look at.
-         * @type {Tile}
-         */
-        var next = null;
-
-        while ( forkList.length > 0 ) {
-            var fork = forkList.pop();
-            var forkStartTile = fork.startTile;
-            var forkSeen = fork.seen;
-            var forkPath = fork.path;
-
-            // Revert the state to what it looked like when we forked
-            stack = [forkStartTile];
-            seen = forkSeen.slice(0); // copy the array
-            path = forkPath.slice(0); // copy the array
-
-            while ( stack.length > 0 ) {
-                next = stack.pop();
-                path.push(next);
-
-
-                if ( (formingLeftToRightPath && next.isRightEndpoint) || (!formingLeftToRightPath && next.isLeftEndpoint) ) {
-                    return true;
-                }
-
-                var neighbors = this.getAdjacentTiles(next, formingLeftToRightPath);
-
-                if ( neighbors.length == 1 && seen.indexOf(neighbors[0]) == -1 ) {
-                    stack.push(neighbors[0]);
-                    seen.push(neighbors[0]);
-                } else {
-                    for (var i = 0; i < neighbors.length; i++) {
-                        var n = neighbors[i];
-                        if ( seen.indexOf(n) != -1 ) continue;
-
-                        // The neighbor will only be considered 'seen' for the
-                        // fork snapshot, which is why we pop it right after
-                        // this. If we didn't, then we would prevent ourselves
-                        // from checking certain paths.
-                        seen.push(n);
-                        forkList.push({startTile:n, seen:seen.slice(0), path:path.slice(0)});
-                        seen.pop();
-                    }
-                }
-            }
-        }
-
-        return false;
-    };
-
-
-    // go through the leftList recursively and keep track of all paths found
-    window.game.Map.prototype.newAlgoExistsPathFromHereToAnyEndpoint = function(startTile, fromTile, formingLeftToRightPath) {
-        /**
-         * Despite being a 'stack', this never actually contains more than one
-         * item, because every time we get to a fork, we push to forkList.
-         * @type {Array:Tile}
-         */
-        var stack = [];
-
-        /**
-         * A list of Tiles that have been seen already.
-         * @type {Array:Tile}
-         */
-        var seen = [];
-
-        /**
-         * Every time we see a fork, we push to this list. It contains the state
-         * mentioned in the function-level comments:
-         *
-         * startTile - the fork to take (it is not the origin of the fork,
-         * rather it is one of the origin's neighbors)
-         * seen - an array of Tiles that have already been seen
+         * seen - an array of Tiles that have already been seen. It's very
+         * important that we start with our original two tiles seen.
          * path - an array of Tiles that form the path leading up to the fork
          * @type {Array}
          */
@@ -888,459 +696,49 @@
                 next = stack.pop();
                 path.push(next);
 
+                // If we're at an endpoint then we're done.
                 if ( (formingLeftToRightPath && next.isRightEndpoint) || (!formingLeftToRightPath && next.isLeftEndpoint) ) {
                     return true;
-                }
-
-                var cameFrom = fromTile;
-
-                if ( path.length > 1 ) {
-                    cameFrom = path[path.length - 2];
                 }
 
                 var neighbors;
-                if ( formingLeftToRightPath )  {
-                    neighbors = next.leftList[cameFrom.tileIndex];
-                } else {
-                    neighbors = next.rightList[cameFrom.tileIndex];
-                }
+                if ( useLeftRightList ) {
+                    var cameFrom = fromTile;
 
-                if ( neighbors === undefined ) {
-                    return false;
-                }
-
-                if ( neighbors.length == 1 && seen.indexOf(neighbors[0]) == -1 ) {
-                    stack.push(neighbors[0]);
-                    seen.push(neighbors[0]);
-                } else {
-                    for (var i = 0; i < neighbors.length; i++) {
-                        var n = neighbors[i];
-                        if ( seen.indexOf(n) != -1 ) continue;
-
-                        // The neighbor will only be considered 'seen' for the
-                        // fork snapshot, which is why we pop it right after
-                        // this. If we didn't, then we would prevent ourselves
-                        // from checking certain paths.
-                        seen.push(n);
-                        forkList.push({startTile:n, seen:seen.slice(0), path:path.slice(0)});
-                        seen.pop();
+                    if ( path.length > 1 ) {
+                        cameFrom = path[path.length - 2];
                     }
+
+                    if ( formingLeftToRightPath )  {
+                        neighbors = next.leftList[cameFrom.tileIndex];
+                    } else {
+                        neighbors = next.rightList[cameFrom.tileIndex];
+                    }
+
+                    // This won't lead us to a path, but we can't just return here
+                    if ( neighbors === undefined ) {
+                        break;
+                    }
+                } else {
+                    neighbors = this.getAdjacentTiles(next, formingLeftToRightPath);
+                }
+
+                for (var i = 0; i < neighbors.length; i++) {
+                    var n = neighbors[i];
+                    if ( seen.indexOf(n) != -1 ) continue;
+
+                    // The neighbor will only be considered 'seen' for the
+                    // fork snapshot, which is why we pop it right after
+                    // this. If we didn't, then we would prevent ourselves
+                    // from checking certain paths.
+                    seen.push(n);
+                    forkList.push({startTile:n, seen:seen.slice(0), path:path.slice(0)});
+                    seen.pop();
                 }
             }
         }
         
         return false;
-    };
-
-    // go through the leftList recursively and keep track of all paths found
-    // window.game.Map.prototype.newAlgoGetPathsFrom = function(startTile) {
-    //     /**
-    //      * The paths that we'll return.
-    //      * @type {Array:(Array:Tile)}
-    //      */
-    //     var paths = [];
-
-    //     /**
-    //      * Despite being a 'stack', this never actually contains more than one
-    //      * item, because every time we get to a fork, we push to forkList.
-    //      * @type {Array:Tile}
-    //      */
-    //     var stack = [];
-
-    //     /**
-    //      * A list of Tiles that have been seen already.
-    //      * @type {Array:Tile}
-    //      */
-    //     var seen = [];
-
-    //     /**
-    //      * Every time we see a fork, we push to this list. It contains the state
-    //      * mentioned in the function-level comments:
-    //      *
-    //      * startTile - the fork to take (it is not the origin of the fork,
-    //      * rather it is one of the origin's neighbors)
-    //      * seen - an array of Tiles that have already been seen
-    //      * path - an array of Tiles that form the path leading up to the fork
-    //      * @type {Array}
-    //      */
-    //     var forkList = [ {startTile:startTile, seen:[startTile], path:[]}];
-
-    //     /**
-    //      * The current path that we're building.
-    //      * @type {Array:Tile}
-    //      */
-    //     var path = [];
-
-    //     /**
-    //      * The next Tile to look at.
-    //      * @type {Tile}
-    //      */
-    //     var next = null;
-
-    //     while ( forkList.length > 0 ) {
-    //         var fork = forkList.pop();
-    //         var forkStartTile = fork.startTile;
-    //         var forkSeen = fork.seen;
-    //         var forkPath = fork.path;
-
-    //         // Revert the state to what it looked like when we forked
-    //         stack = [forkStartTile];
-    //         seen = forkSeen.slice(0); // copy the array
-    //         path = forkPath.slice(0); // copy the array
-
-    //         while ( stack.length > 0 ) {
-    //             next = stack.pop();
-    //             path.push(next);
-
-    //             if ( next.isRightEndpoint ) {
-    //                 // We found a valid path!
-    //                 var pathCopy = path.slice(0);
-    //                 paths.push(pathCopy);
-    //                 break;
-    //             }
-
-    //             var cameFrom = next;
-    //             if ( path.length > 1 ) {
-    //                 cameFrom = path[path.length - 2];
-    //             }
-
-    //             var neighbors = next.leftList[cameFrom.tileIndex];
-    //             if ( neighbors === undefined ) {
-    //                 debugger;
-    //             }
-
-    //             // for (var key in next.leftList){
-    //             //     neighbors.push(next.leftList[cameFrom]);
-    //             // var neighbors = next.leftList;
-
-
-    //             if ( neighbors.length == 1 ) {
-    //                 stack.push(neighbors[0]);
-    //             } else {
-    //                 for (var i = 0; i < neighbors.length; i++) {
-    //                     var n = neighbors[i];
-    //                     if ( seen.indexOf(n) != -1 ) continue;
-
-    //                     // The neighbor will only be considered 'seen' for the
-    //                     // fork snapshot, which is why we pop it right after
-    //                     // this. If we didn't, then we would prevent ourselves
-    //                     // from checking certain paths.
-    //                     seen.push(n);
-    //                     forkList.push({startTile:n, seen:seen.slice(0), path:path.slice(0)});
-    //                     seen.pop();
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     game.util.debugDisplayText(paths.length + ' paths generated', ''+game.util.randomInteger(0,10000000000) );
-
-    //     // I highly suggest you read the comment for optimizePaths
-    //     this.optimizePaths(paths);
-
-    //     // Remove duplicate paths
-    //     this.removeDuplicatePaths(paths);
-        
-    //     return paths;
-    // };
-
-    /**
-     * Gets left-to-right paths between startTile and endTile. We only calculate
-     * LTR paths because RTL paths are simply the reverse of those (this is
-     * possible because we don't have any one-way tiles), so this allows us to
-     * compute half the number of paths we actually need. Paths cannot involve
-     * backtracking.
-     *
-     * We start by getting every single possible path, then we prune the list of
-     * paths to only the set of paths that "make sense". See optimizePaths for
-     * that logic. We also remove duplicate paths so that one path doesn't have
-     * a higher chance to be taken than any other path. Note that this pruning
-     * is substantial - our test map has 197 paths that are eventually pruned to
-     * five.
-     *
-     * The algorithm is actually pretty simple even though it took me several
-     * hours to come to it:
-     * 1. Start at startTile.
-     * 2. Get the neighbors of the current tile. If there's only one, then 
-     *    advance to that as the new "current" tile. If there is more than one,
-     *    then we're at a fork. Capture a snapshot of the current state and add
-     *    this snapshot to a list of things yet to be explored. The state 
-     *    consists of the path thus far and a list of tiles that have been seen
-     *    already.
-     * 3. When the current tile is endTile, we've found a path.
-     * 4. Keep pulling our fork snapshots off the list until we've explored
-     *    absolutely everything.
-     *    
-     * This algorithm is needed because it is not possible for units to figure 
-     * out where to go based on the tile they're on; they need to look ahead to
-     * make sure they don't have to backtrack.
-     *
-     * Also, I'm 99% certain (but I haven't mathematically proven) that it's
-     * not possible to REPRODUCE the state when you backtrack, so an algorithm
-     * like "DFS with backtracking" won't work. This is why we take snapshots
-     * instead, that way we don't have to reproduce it.
-     * 
-     * @param  {Tile} startTile - the tile to start at
-     * @param  {Tile} endTile   - the tile to end at
-     * @return {Array:(Array:Tile)}           a list of valid paths
-     */
-    window.game.Map.prototype.getPathsFrom = function(startTile, endTile) {
-        /**
-         * The paths that we'll return.
-         * @type {Array:(Array:Tile)}
-         */
-        var paths = [];
-
-        /**
-         * Despite being a 'stack', this never actually contains more than one
-         * item, because every time we get to a fork, we push to forkList.
-         * @type {Array:Tile}
-         */
-        var stack = [];
-
-        /**
-         * A list of Tiles that have been seen already.
-         * @type {Array:Tile}
-         */
-        var seen = [];
-
-        /**
-         * Every time we see a fork, we push to this list. It contains the state
-         * mentioned in the function-level comments:
-         *
-         * startTile - the fork to take (it is not the origin of the fork,
-         * rather it is one of the origin's neighbors)
-         * seen - an array of Tiles that have already been seen
-         * path - an array of Tiles that form the path leading up to the fork
-         * @type {Array}
-         */
-        var forkList = [ {startTile:startTile, seen:[startTile], path:[]}];
-
-        /**
-         * The current path that we're building.
-         * @type {Array:Tile}
-         */
-        var path = [];
-
-        /**
-         * The next Tile to look at.
-         * @type {Tile}
-         */
-        var next = null;
-
-        while ( forkList.length > 0 ) {
-            var fork = forkList.pop();
-            var forkStartTile = fork.startTile;
-            var forkSeen = fork.seen;
-            var forkPath = fork.path;
-
-            // Revert the state to what it looked like when we forked
-            stack = [forkStartTile];
-            seen = forkSeen.slice(0); // copy the array
-            path = forkPath.slice(0); // copy the array
-
-            while ( stack.length > 0 ) {
-                next = stack.pop();
-                path.push(next);
-
-                if ( next.tileIndex == endTile.tileIndex ) {
-                    // We found a valid path!
-                    var pathCopy = path.slice(0);
-                    paths.push(pathCopy);
-                    break;
-                }
-
-                var neighbors = this.getAdjacentTiles(next, true);
-
-                if ( neighbors.length == 1 ) {
-                    stack.push(neighbors[0]);
-                } else {
-                    for (var i = 0; i < neighbors.length; i++) {
-                        var n = neighbors[i];
-                        if ( seen.indexOf(n) != -1 ) continue;
-
-                        // The neighbor will only be considered 'seen' for the
-                        // fork snapshot, which is why we pop it right after
-                        // this. If we didn't, then we would prevent ourselves
-                        // from checking certain paths.
-                        seen.push(n);
-                        forkList.push({startTile:n, seen:seen.slice(0), path:path.slice(0)});
-                        seen.pop();
-                    }
-                }
-            }
-        }
-
-        // I highly suggest you read the comment for optimizePaths
-        this.optimizePaths(paths);
-
-        // Remove duplicate paths
-        this.removeDuplicatePaths(paths);
-        
-        return paths;
-    };
-
-    /**
-     * Returns true if two paths contain all of the same tiles in the same order
-     * @param  {Array:Tile} path1 - one path to compare
-     * @param  {Array:Tile} path2 - the other path to compare
-     * @return {Boolean}       true if they're equal
-     */
-    window.game.Map.prototype.arePathsEqual = function(path1, path2) {
-        // They can only be equal if their lengths are equal
-        if ( path1.length != path2.length ) return false;
-
-        // Compare each tile now
-        for (var i = 0; i < path1.length; i++) {
-            if ( path1[i].tileIndex != path2[i].tileIndex ) {
-                return false;
-            }
-        };
-        return true;
-    };
-
-    /**
-     * Given a set of paths, this will remove all duplicates from. The removal
-     * is done by brute force, which is O(n²) in this case.
-     * @param  {Array:(Array:Tile)} paths - an array of paths
-     * @return {null}
-     */
-    window.game.Map.prototype.removeDuplicatePaths = function(paths) {
-        // Compare every path to every other path
-        for (var i = 0; i < paths.length; i++) {
-            for (var j = 0; j < paths.length; j++) {
-                if ( i == j ) continue;
-                if ( this.arePathsEqual(paths[i], paths[j]) ) {
-                    paths.splice(j,1);
-                    j--;
-                }
-            };
-        };
-    }
-
-    /**
-     * This removes any path that violates any of the rules listed in this
-     * function (each rule is clearly commented in the function).
-     *
-     * Paths can be safely removed rather than "fixing" them because
-     * computePaths will have generated EVERY possible path, so the "fixed" path
-     * will also exist in "paths", but it won't violate any rules.
-     * @param  {Array:(Array:Tile)} paths - a set of paths
-     * @return {null}
-     */
-    window.game.Map.prototype.optimizePaths = function(paths) {
-        for (var i = 0; i < paths.length; i++) {
-            var path = paths[i];
-
-            //
-            // RULE: paths cannot be empty
-            //
-            if ( path.length == 0 ) {
-                console.log('A 0-length path was found in this map. This should be impossible. Removing it for now.');
-                paths.splice(i,1);
-                i--;
-                continue;
-            }
-
-            if ( path.length < 3 ) continue;
-            for (var j = 0; j < path.length - 2; j++) {
-                var tile1 = path[j];
-                var tile2 = path[j+1];
-                var tile3 = path[j+2];
-                var tile2TouchesTile4 = true;
-                var tile3IsEndPoint = (j+2 == path.length - 1);
-                if ( j+3 < path.length ) {
-                    var neighbors2 = this.getAdjacentTiles(tile2, true);
-                    var tile4 = path[j+3];
-                    tile2TouchesTile4 = (neighbors2.indexOf(tile4) != -1);
-                }
-
-                //
-                // RULE: if tile3 is a cardinal neighbor of tile1, then there
-                // was no point in having tile2. To illustrate this, see below.
-                // There are four tiles that you visit in the order shown so
-                // that the movement is (down+right, up, right):
-                // 
-                //     0 2 3
-                //       1
-                //       
-                // Instead, we want this: 0 2 3
-                //
-                var neighbors1 = this.getAdjacentTiles(tile1, true);
-                if ( neighbors1.indexOf(tile3) != -1 ) {
-
-                    if ( this.areTilesCardinal(tile1, tile3) ) {
-                        paths.splice(i,1);
-                        i--;
-                        break;
-                    }
-                }
-            };
-        };
-
-        //
-        // RULE: any time there is a path that goes start-->diagonal-->diagonal
-        // that COULD be done as start-->cardinal-->cardinal should be removed.
-        // 
-        // For example, consider the below paths ('-' is a walkable tile that
-        // does not appear in the path):
-        //   1 
-        // 0 - 2     0 - 2
-        //             1
-        //             
-        // Both of the above paths should look like this: 0 1 2
-        // 
-        // Those are the only two cases where start-->diagonal-->diagonal can
-        // even exist since there is no moving backwards.
-        //
-        for (var i = 0; i < paths.length; i++) {
-            var path = paths[i];
-            if ( path.length < 3 ) continue;
-            for (var j = 0; j < path.length - 2; j++) {
-                var tile1 = path[j];
-                var tile2 = path[j+1];
-                var tile3 = path[j+2];
-                var potentialMiddleTile = this.mapTiles[tile1.tileIndex + 1];
-                if ( tile2.x == tile1.x + 1 && tile2.y != tile1.y && tile3.y == tile1.y && tile3.x == tile1.x + 2 && potentialMiddleTile.isWalkable ) {
-                    paths.splice(i,1);
-                    i--;
-                    break;
-                }
-            };
-        };
-
-        //
-        // RULE: no cutting corners. Any time you have a diagonal neighbor and
-        // you could've gone through a cardinal neighbor to get there, remove
-        // the path entirely.  For example, imagine the path below ('-' is a
-        // walkable tile that does not appear in the path):
-        // 
-        // 0
-        // - 1
-        // 
-        // The above should look like this:
-        // 
-        // 0
-        // 1 2
-        // 
-        // This rule is in place so that the '-' tile above can actually be
-        // navigated to.
-        // 
-        for (var i = 0; i < paths.length; i++) {
-            var path = paths[i];
-            if ( path.length < 2 ) continue;
-            for (var j = 0; j < path.length - 1; j++) {
-                var tile1 = path[j];
-                var tile2 = path[j+1];
-                var neighbors1 = this.getAdjacentTiles(tile1, true);
-                neighbors1 = this.pruneDiagonalIfCardinalExist(tile1, neighbors1);
-                if ( neighbors1.indexOf(tile2) == -1 ) {
-                    paths.splice(i,1);
-                    i--;
-                    break;
-                }
-            };
-        };
     };
 
     /**
@@ -1656,56 +1054,6 @@
                     }
                 }
             }
-        }
-        ctx.restore();
-    };
-
-    /**
-     * Debug function to draw a path, that way you don't have to read a string
-     * representation or wait for units to take the path.
-     * @param  {Object} ctx - canvas context
-     * @return {null}
-     */
-    window.game.Map.prototype.drawPaths = function(ctx) {
-        ctx.save();
-
-        // Inject these variables into the class when you call this function,
-        // that way they don't need to exist for non-debug code.
-        // 
-        // 'cooldown' is how long to wait before switching which path we draw
-        // 'drawPathNumber' is which path we're drawing
-        if ( undefined === this.cooldown ) this.cooldown = 16;
-        if ( undefined === this.drawPathNumber ) this.drawPathNumber = 0;
-
-        if ( this.cooldown-- == 0 )  { 
-            this.cooldown = 25
-            this.drawPathNumber++;
-            // "/2" is so we only draw the paths from left to right
-            if ( this.drawPathNumber == this.paths.length / 2) {
-                this.drawPathNumber = 0;
-            }
-            game.util.debugDisplayText(this.drawPathNumber + ' / ' + (this.paths.length/2 - 1));
-        }
-
-        var blink = Math.sin(game.alphaBlink * 4);
-        var alpha = blink * .1 + .3;
-        var drawPath = this.paths[this.drawPathNumber];
-        if ( drawPath != null ) {
-            for (var i = 0; i < drawPath.length; i++) {
-                var tile = drawPath[i];
-
-                // Alternate between RGB so that you can tell what order the
-                // path is in.
-                var mod = i % 3;
-                if ( mod == 0 ) {
-                    ctx.fillStyle = 'rgba(255, 0, 0, ' + alpha + ')';
-                } else if ( mod == 1 ) {
-                    ctx.fillStyle = 'rgba(0, 255, 0, ' + alpha + ')';
-                } else {
-                    ctx.fillStyle = 'rgba(0, 0, 255, ' + alpha + ')';
-                }
-                ctx.fillRect(tile.x * tileSize, tile.y * tileSize, tileSize, tileSize);
-            };
         }
         ctx.restore();
     };

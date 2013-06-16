@@ -275,14 +275,6 @@
                 // battleData will be set when the unit is added to a battle
                 this.copyProps(parsedUnit, finalUnit, ['battleData']);
 
-                // Change whichPathToTake from Objects to Tiles
-                if ( finalUnit.whichPathToTake != null ) {
-                    for (var j = 0; j < finalUnit.whichPathToTake.length; j++) {
-                        var tileIndex = finalUnit.whichPathToTake[j].tileIndex;
-                        finalUnit.whichPathToTake[j] = currentMap.mapTiles[tileIndex];
-                    };
-                }
-
                 // Change statusEffects from Objects into StatusEffects
                 for (var j = 0; j < parsedUnit.statusEffects.length; j++) {
                     var effect = parsedUnit.statusEffects[j];
@@ -512,21 +504,6 @@
             };
 
             currentMap.mapTiles = finalMapTiles;
-
-            var finalPaths = [];
-            for (var i = 0; i < parsedMap.paths.length; i++) {
-                var parsedPath = parsedMap.paths[i];
-                var finalPath = [];
-                for (var j = 0; j < parsedPath.length; j++) {
-                    var parsedTile = parsedPath[j];
-                    var finalTile = new game.Tile(parsedTile.graphicIndex, parsedTile.tileIndex, parsedTile.x, parsedTile.y);
-                    this.copyProps(parsedTile, finalTile, []);
-                    finalPath.push(finalTile);      
-                };
-                finalPaths.push(finalPath);
-            };
-
-            currentMap.paths = finalPaths;
         },
 
         /**

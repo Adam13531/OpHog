@@ -444,7 +444,9 @@
             absoluteOrder: absoluteOrder,
 
             // These are the X and Y world coordinates that the unit should
-            // return to if he's alive when the battle ends.
+            // return to if he's alive when the battle ends. The tile that these
+            // correspond to is not guaranteed to be walkable if the unit was
+            // moving diagonally.
             originalX: originalX,
             originalY: originalY
         };

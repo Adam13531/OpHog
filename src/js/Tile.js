@@ -30,7 +30,7 @@
 
         // This is an object that relates a left-neighbor's tileIndex (keys in a
         // dict can only be strings, otherwise it would be the left-neighbor
-        // itself and not the tileInex) to an array of right-neighbors. It
+        // itself and not the tileIndex) to an array of right-neighbors. It
         // represents that when you come from a specific left-neighbor, any of
         // the right-neighbors are valid.
         //
@@ -38,24 +38,41 @@
         // cardinally above B and B is not a right-endpoint, then B will not have A
         // in its leftList.
         // 
-        // If this tile is a left-endpoint, then there will be a single left-
-        // neighbor in this list, and it will be the tile itself.
-        // 
+        // This tile itself will always appear as a key in leftList, because a
+        // spawner can be placed on any tile. When units are spawned, they are
+        // placed as though they came from that tile, which is why this is
+        // necessary.
+        //
         // If this tile is a right-endpoint, then any right-neighbors stored in
-        // here will be this tile itself.
+        // here will be this tile itself just to have a sane value.
         // 
         // A tile cannot be both a left and right endpoint.
         // 
         // This is only set for walkable tiles.
         this.leftList = {};
+
+        // This is basically the same thing as leftList except it relates a
+        // right-neighbor's tileIndex to an array of left-neighbors.
         this.rightList = {};
 
         // if ( this.isWalkable ) this.convertToSpawner();
     };
-    window.game.Tile.prototype.printList = function(printLeftList) {
+
+    /**
+     * Debug function to print a tile's lists.
+     * @return {undefined}
+     */
+    window.game.Tile.prototype.printList = function() {
         this.realPrintList(true);
         this.realPrintList(false);
     };
+
+    /**
+     * Debug function to print a tile's lists.
+     * @param  {Boolean} printLeftList - if true, this will print leftList.
+     * @return {String} - an empty string simply so that Chrome doesn't print
+     * "undefined"
+     */
     window.game.Tile.prototype.realPrintList = function(printLeftList) {
         var listToUse = printLeftList ? this.leftList : this.rightList;
         var stringToUse = printLeftList ? 'left' : 'right';
@@ -70,9 +87,9 @@
             };
 
             console.log(indexAsNumber + ': ' + rightString);
-        }
+        };
 
-        return ''
+        return '';
     };
 
     /**
