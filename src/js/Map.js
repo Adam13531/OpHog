@@ -60,12 +60,6 @@
         this.widthInPixels = this.numCols * tileSize;
         this.heightInPixels = this.numRows * tileSize;
 
-        // Clear some fog around the spawners. These coordinates are hard-coded
-        // for now.
-        this.setFog(1,3,3,false);
-        this.setFog(1,9,3,false);
-        this.setFog(1,15,3,false);
-
         // The endpoints need to be calculated so that we can figure out the
         // tile lists.
         this.figureOutEndpoints();
@@ -76,8 +70,21 @@
 
         this.convertAllLeftEndpointsToSpawners();
 
+        this.clearFogAroundSpawners();
+
         // Now that we have spawn points, we can place the generators.
         this.placeGenerators();
+    };
+
+    /**
+     * Clears an area of fog around each spawner.
+     * @return {undefined}
+     */
+    window.game.Map.prototype.clearFogAroundSpawners = function() {
+        var spawners = this.getAllSpawnerTiles();
+        for (var i = 0; i < spawners.length; i++) {
+            this.setFog(spawners[i].x, spawners[i].y, 3, false);
+        };
     };
 
     /**
