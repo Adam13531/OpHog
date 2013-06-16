@@ -179,6 +179,13 @@
         return game.util.randomArrayElement(game.util.getDictKeysAsArray(dict));
     };
 
+    /**
+     * Returns all of the keys of a dict as an array.
+     *
+     * E.g. calling this on {'hi':1, 'there':2} will return ['hi', 'there']
+     * @param  {Object} dict - any dictionary
+     * @return {Array}      - that dictionary's keys
+     */
     window.game.util.getDictKeysAsArray = function(dict) {
         if ( dict === undefined || dict == null ) return [];
 

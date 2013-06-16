@@ -690,7 +690,7 @@
     window.game.Unit.prototype.getCenterTile = function() {
         var tY = this.getCenterTileY();
         var tX = this.getCenterTileX();
-        if ( tX >= 0 && tX < currentMap.numCols - 1 && tY >= 0 && tY < currentMap.numRows - 1 ) {
+        if ( tX >= 0 && tX <= currentMap.numCols - 1 && tY >= 0 && tY <= currentMap.numRows - 1 ) {
             return currentMap.mapTiles[tY * currentMap.numCols + tX];
         } else {
             return null;
