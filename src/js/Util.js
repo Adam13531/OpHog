@@ -288,8 +288,9 @@
         // If you didn't supply an argument, set the ID to 1
         if ( typeof labelIdentifierNumber === "undefined" ) labelIdentifierNumber = "1";
 
-        // Get rid of spaces since they screw this up somehow.
-        labelIdentifierNumber = labelIdentifierNumber.replace(' ', '');
+        // Get rid of spaces since they screw this up somehow. The '/g' is
+        // needed to replace all of the spaces.
+        labelIdentifierNumber = labelIdentifierNumber.replace(/ /g, '');
         
         var divID = 'debugOutput' + labelIdentifierNumber;
 

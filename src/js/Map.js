@@ -297,6 +297,8 @@
      * @return {undefined}
      */
     window.game.Map.prototype.figureOutEndpoints = function() {
+        var foundRightEndpoint = false;
+        var foundLeftEndpoint = false;
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
 
@@ -305,6 +307,7 @@
 
             if ( this.isTileAnEndpoint(tile, false) ) {
                 tile.isRightEndpoint = true;
+                foundRightEndpoint = true;
             }
             
             if ( this.isTileAnEndpoint(tile, true) ) {
@@ -314,7 +317,18 @@
                         'two endpoints');
                 }
                 tile.isLeftEndpoint = true;
+                foundLeftEndpoint = true;
             }
+        }
+
+        if ( !foundRightEndpoint ) {
+            game.util.debugDisplayText('Fatal error: no right-endpoints found.', 
+                'no right endpoints');
+        }
+
+        if ( !foundLeftEndpoint ) {
+            game.util.debugDisplayText('Fatal error: no left-endpoints found.', 
+                'no left endpoints');
         }
     };
 
