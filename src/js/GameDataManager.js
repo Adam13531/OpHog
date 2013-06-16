@@ -34,6 +34,9 @@
     // references to be the same (there are definitely some "===" comparisons in
     // the code that should remain true). If the current system works, then I
     // wouldn't change it.
+    // 
+    // Remember: everything in localStorage is a string, so if you want to load
+    // a number, call Number() yourself.
     window.game.GameDataManager = {
 
         /**
@@ -47,6 +50,18 @@
 
             localStorage.saveVersion = version;
             localStorage.saveTime = curTime;
+
+            var leftLists = [];
+            var rightLists = [];
+
+            // Go through each tile and get rid of its left/rightList. We can't
+            // save these because they are absolutely massive when stringified.
+            for (var i = 0; i < currentMap.mapTiles.length; i++) {
+                leftLists.push(currentMap.mapTiles[i].leftList);
+                rightLists.push(currentMap.mapTiles[i].rightList);
+                delete currentMap.mapTiles[i].leftList;
+                delete currentMap.mapTiles[i].rightList;
+            };
 
             console.log('Saving the map');
             this.saveMap();
@@ -66,6 +81,13 @@
             this.saveInventory();
             console.log('Saving the player');
             this.savePlayer();
+
+            // Restore leftList and rightList so that our current game still
+            // works.
+            for (var i = 0; i < currentMap.mapTiles.length; i++) {
+                currentMap.mapTiles[i].leftList = leftLists[i];
+                currentMap.mapTiles[i].rightList = rightLists[i];
+            };
         },
 
         /**
@@ -193,7 +215,7 @@
          * @return {undefined}
          */
         loadInventory: function() {
-            game.slotID = localStorage.lastSlotID;
+            game.slotID = Number(localStorage.lastSlotID);
 
             var parsedInventory = JSON.parse(localStorage.inventory);
             JSON.retrocycle(parsedInventory);
@@ -275,6 +297,12 @@
                 // battleData will be set when the unit is added to a battle
                 this.copyProps(parsedUnit, finalUnit, ['battleData']);
 
+                // Change tiles so that they point to the correct objects with
+                // leftList and rightList set (tileIndex is still valid).
+                if ( finalUnit.previousTile != null ) {
+                    finalUnit.previousTile = currentMap.mapTiles[finalUnit.previousTile.tileIndex];
+                }
+
                 // Change statusEffects from Objects into StatusEffects
                 for (var j = 0; j < parsedUnit.statusEffects.length; j++) {
                     var effect = parsedUnit.statusEffects[j];
@@ -315,7 +343,7 @@
                 finalUnits.push(finalUnit);
             };
             game.UnitManager.gameUnits = finalUnits;
-            game.unitID = localStorage.lastUnitID;
+            game.unitID = Number(localStorage.lastUnitID);
 
             // Set the unit placement UI's page to the current one so that it
             // refreshes
@@ -477,11 +505,14 @@
         },
 
         /**
-         * Saves the map.
+         * Saves the map. This will save the map's raw data, so tile "paths"
+         * will be recomputed when we load.
          * @return {undefined}
          */
         saveMap: function() {
-            localStorage.map = JSON.stringify(JSON.decycle(currentMap));
+            localStorage.mapArrayOfOnesAndZeroes = JSON.stringify(currentMap.arrayOfOnesAndZeroes);
+            localStorage.numCols = currentMap.numCols;
+            localStorage.fog = JSON.stringify(currentMap.fog);
         },
 
         /**
@@ -489,21 +520,15 @@
          * @return {undefined}
          */
         loadMap: function() {
-            var parsedMap = JSON.parse(localStorage.map);
-            JSON.retrocycle(parsedMap);
+            var mapArrayOfOnesAndZeroes = JSON.parse(localStorage.mapArrayOfOnesAndZeroes);
+            var numCols = Number(localStorage.numCols);
+            var fog = JSON.parse(localStorage.fog);
 
-            // This will restore fog, width, height, etc.
-            this.copyProps(parsedMap, currentMap);
+            // This will reform all tiles' leftList and rightList.
+            currentMap = new game.Map(mapArrayOfOnesAndZeroes, numCols);
 
-            var finalMapTiles = [];
-            for (var i = 0; i < parsedMap.mapTiles.length; i++) {
-                var parsedTile = parsedMap.mapTiles[i];
-                var finalTile = new game.Tile(parsedTile.graphicIndex, parsedTile.tileIndex, parsedTile.x, parsedTile.y);
-                this.copyProps(parsedTile, finalTile, []);
-                finalMapTiles.push(finalTile);
-            };
-
-            currentMap.mapTiles = finalMapTiles;
+            // Restore fog
+            currentMap.fog = fog;
         },
 
         /**

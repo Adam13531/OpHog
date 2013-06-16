@@ -1,7 +1,8 @@
 ( function() {
 
     /**
-     * Makes a new map.
+     * Makes a new map. This will also call this.initialize(), because the
+     * constructor itself only sets up very basic things.
      * @param {Array:Number} arrayOfOnesAndZeroes - an array whose length must
      * be a multiple of 'width'. A 0 represents a nonwalkable tile, a 1
      * represents a walkable tile.
@@ -28,6 +29,10 @@
             // Remove that row
             arrayOfOnesAndZeroes.splice(0, width);
         };
+
+        // For now, since we're only passing in ones and zeroes, we need to save
+        // this variable here so that the GameDataManager can save this array.
+        this.arrayOfOnesAndZeroes = arrayOfOnesAndZeroes;
 
         // Convert the array of 0s and 1s to map tiles
         var mapTilesIndices = [];
@@ -60,6 +65,15 @@
         this.widthInPixels = this.numCols * tileSize;
         this.heightInPixels = this.numRows * tileSize;
 
+        this.initialize();
+    };
+
+    /**
+     * After setting up this.mapTiles, call this function. Without calling this,
+     * various parts of the map will be broken.
+     * @return {undefined}
+     */
+    window.game.Map.prototype.initialize = function() {
         // The endpoints need to be calculated so that we can figure out the
         // tile lists.
         this.figureOutEndpoints();
@@ -75,7 +89,7 @@
         // Now that we have spawn points, we can place the generators.
         this.placeGenerators();
     };
-
+    
     /**
      * Clears an area of fog around each spawner.
      * @return {undefined}
