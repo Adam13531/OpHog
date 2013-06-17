@@ -88,9 +88,14 @@
         // We need the canvas in order to position the text since that's what
         // lets us compute width needed.
         if ( !this.hasBeenPositioned ) {
+            this.hasBeenPositioned = true;
+
             this.x = this.x - width / 2;
             this.y = this.y - this.height / 2;
-            this.hasBeenPositioned = true;
+
+            // Make sure the text object can't start off-screen.
+            this.x = Math.min(currentMap.widthInPixels - width, Math.max(0, this.x));
+            this.y = Math.min(currentMap.heightInPixels - this.height, Math.max(0, this.y));
         }
 
         ctx.textBaseline = 'top';
