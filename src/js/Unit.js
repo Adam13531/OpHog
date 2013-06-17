@@ -628,7 +628,14 @@
         // Spawn a text effect if specified
         if ( spawnTextEffect ) {
             var lifeChangeString = "" + Math.round(amount);
-            var fontColor = amount >= 0 ? '#0f0' : '#f00';
+            var fontColor;
+            if ( amount < 0 ) {
+                fontColor = '#f00';
+            } else if ( amount == 0 ) {
+                fontColor = '#666';
+            } else {
+                fontColor = '#0f0';
+            }
             var textObj = new game.TextObj(this.getCenterX(), this.y, lifeChangeString, false, fontColor);
             game.TextManager.addTextObj(textObj);
         }

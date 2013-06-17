@@ -368,7 +368,8 @@
      * @return {undefined}
      */
     window.game.Map.prototype.buildTileList = function(buildingLeftList) {
-        // Form the very basic left/rightList. This  
+        // Form the very basic left/rightList. This will be pruned repeatedly in
+        // this function.
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
             var listToUse = buildingLeftList ? tile.leftList : tile.rightList;
@@ -504,31 +505,6 @@
                             theseWereRemoved.push(rnToCheck);
                         }
                     };
-
-
-                    // TODO: this code is to allow this map to work:
-                    // oooo.
-                    // ...OO
-                    // oooo.
-                    // 
-                    // The capital 'O's are where this comes into play so that
-                    // no lowercase 'o's lead to the goal.
-                    //
-                    // The code below should be made to work, but it's not working now.
-                    // if pruned contains an endpoint, then you can prune
-                    // all non-endpoints.
-                    // var containsRightEndpoint = -1;
-                    // for (var j = 0; j < pruned.length; j++) {
-                    //     if ( pruned[j].isRightEndpoint ) {
-                    //         containsRightEndpoint = j;
-                    //         break;
-                    //     }
-                    // };
-
-                    // if ( containsRightEndpoint != -1 ) {
-                    //     pruned = [pruned[containsRightEndpoint]];
-                    // }
-
                 }
 
                 // Of the remaining, make sure that there's still a path from

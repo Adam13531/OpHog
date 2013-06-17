@@ -532,7 +532,11 @@
         currentMap.drawFog(ctx);
         game.TextManager.draw(ctx);
 
+        // Restore so that the camera will stop affecting the following draw
+        // commands.
+        ctx.restore();
         game.GameStateManager.draw(ctx);
+        ctx.save();
 
         game.Player.drawCoinTotal(ctx);
 
