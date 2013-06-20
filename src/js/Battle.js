@@ -377,15 +377,37 @@
      * is over.
      * @param  {Unit} summoner     - the unit doing the summoning
      * @param  {Unit} summonedUnit - the unit being summoned
-     * @param  {Number} returnX    - world coordinate to return to after battle
-     * @param  {Number} returnY    - world coordinate to return to after battle
      * @return {null}
      */
-    window.game.Battle.prototype.summonedUnit = function(summoner, summonedUnit, returnX, returnY) {
+    window.game.Battle.prototype.summonedUnit = function(summoner, summonedUnit) {
         this.addUnit(summonedUnit);
 
-        summonedUnit.battleData.originalX = returnX;
-        summonedUnit.battleData.originalY = returnY;
+        // At the time of writing this, I know this code is going to have to
+        // change, but it's not worth implementing now.
+        // 
+        // Right now, bosses have a movement AI that lets them walk on non-
+        // walkable tiles, and all summoned units follow a path right now. The
+        // problem is when a boss summons a unit - the summoned unit may be
+        // nowhere near a path, and the boss doesn't even have a valid
+        // previousTile.
+        if ( summoner.movementAI != game.MovementAI.FOLLOW_PATH ) {
+            game.util.debugDisplayText('A unit was summoned and may not have a valid path.', 'unit summoned wrong');
+        }
+
+        // These point to the center of the summoner
+        summonedUnit.battleData.originalX = summoner.battleData.originalX;
+        summonedUnit.battleData.originalY = summoner.battleData.originalY;
+
+        // This code would only work for units with a certain movement AI. This
+        // code is needed because the unit is placed at a certain spot and tries
+        // to find a new destination immediately. Then, we override its pre-
+        // battle coordinates here, so once it's done moving to the original
+        // spot, it will use the very-old destX and destY
+        summonedUnit.destX = summoner.destX;
+        summonedUnit.destY = summoner.destY;
+
+        // Make sure the summoned unit comes from the same tile
+        summonedUnit.previousTile = summoner.previousTile;
     },
 
     /**
@@ -411,8 +433,11 @@
             teamOrder = numPlayers - 1;
         }
 
-        var originalX = unit.x;
-        var originalY = unit.y;
+        // The original coordinates should always point to the center of the
+        // unit so that they're independent of the size of the unit (the centers
+        // of units are what align approximately with the center of tiles).
+        var originalX = unit.getCenterX();
+        var originalY = unit.getCenterY();
 
         // If the unit was already in a battle, then we need to pull some data
         // from battleData. This takes place in this function so that everything

@@ -369,6 +369,10 @@
         // var speed = Math.random()*120 + 500;
         var speed = 60;
         var change = speed * deltaAsSec;
+
+        // All movement should be based on center coordinates so that two
+        // differently sized units can have the same destination values and not
+        // end up going to different places.
         var centerX = this.getCenterX();
         var centerY = this.getCenterY();
         if (!this.isInBattle()) {
@@ -376,9 +380,9 @@
                 var desiredX = this.preBattleX;
                 var desiredY = this.preBattleY;
 
-                var newCoords = game.util.chaseCoordinates(this.x, this.y, desiredX, desiredY, change, true);
-                this.x = newCoords.x;
-                this.y = newCoords.y;
+                var newCoords = game.util.chaseCoordinates(centerX, centerY, desiredX, desiredY, change, true);
+                this.setCenterX(newCoords.x);
+                this.setCenterY(newCoords.y);
 
                 if ( newCoords.atDestination ) {
                     this.movingToPreBattlePosition = false;
@@ -388,6 +392,7 @@
                 var desiredY = this.destY;
 
                 var newCoords = game.util.chaseCoordinates(centerX, centerY, desiredX, desiredY, change, true);
+
                 this.setCenterX(newCoords.x);
                 this.setCenterY(newCoords.y);
 
@@ -532,7 +537,7 @@
             // Force the unit to join this battle. We pass coordinates so that
             // the unit can go back to the summoner's original position when the
             // battle ends.
-            battle.summonedUnit(this, newUnit, this.battleData.originalX, this.battleData.originalY);
+            battle.summonedUnit(this, newUnit);
 
             return;
         }
@@ -938,7 +943,7 @@
             ctx.fillRect(this.x, this.y, this.width, this.height);
             ctx.restore();
         }
-        
+
     };
 
 }());
