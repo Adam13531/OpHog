@@ -176,8 +176,19 @@
      * @return {Object}      a key in that dictionary, e.g. 'a' or 'b'
      */
     window.game.util.randomKeyFromDict = function(dict) {
-        if ( dict === undefined || dict == null ) return null;
-        
+        return game.util.randomArrayElement(game.util.getDictKeysAsArray(dict));
+    };
+
+    /**
+     * Returns all of the keys of a dict as an array.
+     *
+     * E.g. calling this on {'hi':1, 'there':2} will return ['hi', 'there']
+     * @param  {Object} dict - any dictionary
+     * @return {Array}      - that dictionary's keys
+     */
+    window.game.util.getDictKeysAsArray = function(dict) {
+        if ( dict === undefined || dict == null ) return [];
+
         var key;
         var allKeys = [];
         for(key in dict) {
@@ -186,8 +197,9 @@
             }
         }
 
-        return game.util.randomArrayElement(allKeys);
-    };
+        return allKeys;
+    }
+
     /**
      * This will modify the 'current' coordinates so that they get closer to the
      * desired coordinates.
@@ -276,8 +288,9 @@
         // If you didn't supply an argument, set the ID to 1
         if ( typeof labelIdentifierNumber === "undefined" ) labelIdentifierNumber = "1";
 
-        // Get rid of spaces since they screw this up somehow.
-        labelIdentifierNumber = labelIdentifierNumber.replace(' ', '');
+        // Get rid of spaces since they screw this up somehow. The '/g' is
+        // needed to replace all of the spaces.
+        labelIdentifierNumber = labelIdentifierNumber.replace(/ /g, '');
         
         var divID = 'debugOutput' + labelIdentifierNumber;
 

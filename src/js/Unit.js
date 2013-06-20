@@ -72,6 +72,11 @@
         this.id = window.game.unitID++;
         this.hasBeenPlaced = false;
 
+        // This will be set when we place the unit. It is the last tile that we
+        // were on, or, if there is no such last tile, it refers to the current
+        // tile.
+        this.previousTile = null;
+
         // This can only be set to true by convertToBoss.
         this.isBoss = false;
 
@@ -147,18 +152,6 @@
         // units.
         this.destX = null;
         this.destY = null;
-
-        /**
-         * A reference to one of the current map's paths.
-         * @type {Array:Tile}
-         */
-        this.whichPathToTake = null;
-
-        /**
-         * This represents which Tile we're on in the path.
-         * @type {Number}
-         */
-        this.indexInPath = 0;
     };
 
     /**
@@ -168,10 +161,6 @@
     window.game.Unit.prototype.convertToBoss = function() {
         this.isBoss = true;
         this.movementAI = game.MovementAI.BOSS;
-
-        // The above AI relies on these variables
-        this.leashTileX = this.getCenterTileX();
-        this.leashTileY = this.getCenterTileY();
     };
 
     /**
@@ -188,9 +177,10 @@
         this.restoreLife();
         this.movingToPreBattlePosition = false;
         this.hasBeenPlaced = true;
+        this.previousTile = null;
+        this.destX = null;
+        this.destY = null;
 
-        // Make sure to remove our current path so that we find a new one
-        this.whichPathToTake = null;
         this.acquireNewDestination();
 
         // Purge status effects
@@ -260,6 +250,7 @@
         this.statusEffects = [];
         this.hasBeenPlaced = false;
         this.removeFromMap = false;
+
         game.UnitPlacementUI.updateUnit(this);
     };
 
@@ -290,6 +281,11 @@
      * @return {undefined}
      */
     window.game.Unit.prototype.acquireNewDestinationBoss = function() {
+        if ( this.leashTileX === undefined ) {
+            this.leashTileX = this.getCenterTileX();
+            this.leashTileY = this.getCenterTileY();
+        }
+
         // Get a random tile within RADIUS of the leash tile.
         var radius = 2;
         var tileX = this.leashTileX - radius + game.util.randomInteger(0, radius * 2 + 1);
@@ -300,45 +296,64 @@
     };
 
     /**
-     * If a unit doesn't have a path, this will find one for the unit. If a unit
-     * DOES have a path, then this will set its current destination to the next
-     * tile in that path.
+     * Navigates to a random valid neighbor, which is based on the tile's
+     * leftList or rightList.
      * @return {null}
      */
     window.game.Unit.prototype.acquireNewDestinationFollowPath = function() {
-        // All pathfinding is based on centers to account for non- 1x1 units
+        // All pathfinding is based on centers to account for non-1x1 units
         var centerTileX = this.getCenterTileX();
         var centerTileY = this.getCenterTileY();
+        var tile = this.getCenterTile();
 
-        if ( this.whichPathToTake == null ) {
+        var listToUse;
+        var isTileALeftEndpoint;
+        var isTileARightEndpoint
 
-            var pathAndIndex = currentMap.getPathStartingWith(centerTileX, centerTileY, this.isPlayer);
-            if ( pathAndIndex == null ) {
-                // Here's how I think this happened before, which might give
-                // insight into how this could happen again if you see this: a
-                // unit was moving diagonally, and in the process of moving to
-                // the next tile, the coordinates that are used to say which
-                // tiles it is on happened to line up with a non-walkable tile.
-                console.log('Error: couldn\'t generate a path for unit #' + 
-                    this.id + ' at coordinates (' + centerTileX + ', ' + 
-                    centerTileY + ')');
+        if ( tile != null ) {
+            listToUse = this.isPlayer ? tile.leftList : tile.rightList;
+            isTileALeftEndpoint = this.isPlayer ? tile.isLeftEndpoint : tile.isRightEndpoint;
+            isTileARightEndpoint = this.isPlayer ? tile.isRightEndpoint : tile.isLeftEndpoint;
+        }
+
+        // If we're at or past the end of a path, or if we're off the map, then
+        // just keep moving off the map.
+        if ( tile == null || !tile.isWalkable || isTileARightEndpoint ) {
+            // These may not be set yet if we placed a unit right at the end of
+            // the path.
+            if ( this.destX == null || this.destY == null ) {
+                this.destX = this.getCenterX();
+                this.destY = this.getCenterY();
             }
-            this.whichPathToTake = pathAndIndex.path;
-            this.indexInPath = pathAndIndex.indexInPath;
-        }
 
-        if ( this.indexInPath == this.whichPathToTake.length - 1) {
-            // You're done with the path. For now, we'll make the units still
-            // move off of the map so that they'll get destroyed, but
-            // eventually, we'll remove this debug logic.
             this.destX += this.isPlayer ? tileSize : -tileSize;
-        } else {
-            this.indexInPath++;
-            var nextTile = this.whichPathToTake[this.indexInPath];
-
-            this.destX = nextTile.getPixelCenterX();
-            this.destY = nextTile.getPixelCenterY();
+            return;
         }
+
+        // In order to find the next tile, we need to know our previous tile. If
+        // we just placed this unit, then there is no previousTile, so we need
+        // to set a reasonable previousTile.
+        if ( this.previousTile == null ) {
+
+            // If we're an endpoint, then our only choice is the current tile.
+            if ( isTileALeftEndpoint ) {
+                this.previousTile = tile;
+            } else {
+                // Otherwise, we can randomly pick a leftNeighbor.
+                var leftNeighborIndex = game.util.randomKeyFromDict(listToUse);
+                this.previousTile = currentMap.mapTiles[leftNeighborIndex];
+            }
+        }
+
+        // Randomly choose a valid neighbor
+        var validRightNeighbors = listToUse[this.previousTile.tileIndex];
+        var nextTile = game.util.randomArrayElement(validRightNeighbors);
+        if ( nextTile == null ) debugger;
+
+        this.destX = nextTile.getPixelCenterX();
+        this.destY = nextTile.getPixelCenterY();
+
+        this.previousTile = tile;
     }
 
     /**
@@ -354,6 +369,10 @@
         // var speed = Math.random()*120 + 500;
         var speed = 60;
         var change = speed * deltaAsSec;
+
+        // All movement should be based on center coordinates so that two
+        // differently sized units can have the same destination values and not
+        // end up going to different places.
         var centerX = this.getCenterX();
         var centerY = this.getCenterY();
         if (!this.isInBattle()) {
@@ -361,9 +380,9 @@
                 var desiredX = this.preBattleX;
                 var desiredY = this.preBattleY;
 
-                var newCoords = game.util.chaseCoordinates(this.x, this.y, desiredX, desiredY, change, true);
-                this.x = newCoords.x;
-                this.y = newCoords.y;
+                var newCoords = game.util.chaseCoordinates(centerX, centerY, desiredX, desiredY, change, true);
+                this.setCenterX(newCoords.x);
+                this.setCenterY(newCoords.y);
 
                 if ( newCoords.atDestination ) {
                     this.movingToPreBattlePosition = false;
@@ -373,6 +392,7 @@
                 var desiredY = this.destY;
 
                 var newCoords = game.util.chaseCoordinates(centerX, centerY, desiredX, desiredY, change, true);
+
                 this.setCenterX(newCoords.x);
                 this.setCenterY(newCoords.y);
 
@@ -397,7 +417,7 @@
             // map (because they will attack the castle when they get to the
             // boundary), but for now, it happens a lot and there's no way to
             // use or kill the unit.
-            var outOfBounds = 20 * tileSize;
+            var outOfBounds = 4 * tileSize;
             if ( this.x < -outOfBounds || this.x > currentMap.numCols * tileSize + outOfBounds ) {
                 this.removeFromMap = true;
             }
@@ -510,23 +530,14 @@
 
         // Summon
         if ( !this.isPlayer && !this.isBoss && (this.id % 16) == 0 ) {
-            // Create it at the previous tile in this unit's path, that way it's
-            // guaranteed to be walkable, because originalX and originalY may
-            // not be walkable if the unit was traveling diagonally.
-            var previousTile = this.whichPathToTake[this.indexInPath];
-            if ( this.indexInPath > 0 ) {
-                previousTile = this.whichPathToTake[this.indexInPath - 1];
-            }
-
-            var newUnit = new game.Unit(game.UnitType.SPIDER.id,this.isPlayer,1);
-            newUnit.placeUnit(previousTile.x, previousTile.y);
+            var newUnit = new game.Unit(game.UnitType.TREE.id,this.isPlayer,1);
+            newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY());
             game.UnitManager.addUnit(newUnit);
 
             // Force the unit to join this battle. We pass coordinates so that
-            // the unit can go back to the walkable tile that we assigned
-            // earlier, otherwise it would go to the summoner's origin, which
-            // may be further in the path than "previousTile".
-            battle.summonedUnit(this, newUnit, previousTile.x * tileSize, previousTile.y * tileSize);
+            // the unit can go back to the summoner's original position when the
+            // battle ends.
+            battle.summonedUnit(this, newUnit);
 
             return;
         }
@@ -622,7 +633,14 @@
         // Spawn a text effect if specified
         if ( spawnTextEffect ) {
             var lifeChangeString = "" + Math.round(amount);
-            var fontColor = amount >= 0 ? '#0f0' : '#f00';
+            var fontColor;
+            if ( amount < 0 ) {
+                fontColor = '#f00';
+            } else if ( amount == 0 ) {
+                fontColor = '#666';
+            } else {
+                fontColor = '#0f0';
+            }
             var textObj = new game.TextObj(this.getCenterX(), this.y, lifeChangeString, false, fontColor);
             game.TextManager.addTextObj(textObj);
         }
@@ -679,6 +697,16 @@
 
     window.game.Unit.prototype.getCenterY = function() {
         return this.y + this.height / 2;
+    };
+
+    window.game.Unit.prototype.getCenterTile = function() {
+        var tY = this.getCenterTileY();
+        var tX = this.getCenterTileX();
+        if ( tX >= 0 && tX <= currentMap.numCols - 1 && tY >= 0 && tY <= currentMap.numRows - 1 ) {
+            return currentMap.mapTiles[tY * currentMap.numCols + tX];
+        } else {
+            return null;
+        }
     };
 
     window.game.Unit.prototype.getCenterTileX = function() {
@@ -915,7 +943,7 @@
             ctx.fillRect(this.x, this.y, this.width, this.height);
             ctx.restore();
         }
-        
+
     };
 
 }());

@@ -272,6 +272,11 @@
             // Generate a map array with all zeroes
             var sizeInTiles = width * height;
             // var mapArray = [];
+            this.mapArray = [];
+            this.previousColumn = [];
+            this.leftColumn = [];
+            this.middleColumn = [];
+            this.rightColumn = [];
             for (var i = 0; i < sizeInTiles; i++) {
                 this.mapArray.push(0);
             };
