@@ -21,6 +21,13 @@
             game.InventoryUI.addedSlot(slot);
         },
 
+        /**
+         * Gets the first empty slot of the specified slot type.
+         * @param  {game.SlotTypes} slotType - the type you're interested in
+         * retrieving
+         * @return {Slot}          the first empty slot of that type, or null if
+         * all of those slots were filled.
+         */
         getFirstEmptySlot: function(slotType) {
             for (var i = 0; i < this.slots.length; i++) {
                 if ( this.slots[i].isEmpty() && this.slots[i].slotType == slotType ) {
@@ -29,6 +36,23 @@
             };
 
             return null;
+        },
+
+        /**
+         * Gets all slots of the specified slot type.
+         * @param  {game.SlotTypes} slotType - the type you're interested in
+         * retrieving
+         * @return {Array:Slot} slots of that type
+         */
+        getAllSlotsOfType: function(slotType) {
+            var matchingSlots = [];
+            for (var i = 0; i < this.slots.length; i++) {
+                if ( this.slots[i].slotType == slotType ) {
+                    matchingSlots.push(this.slots[i]);
+                }
+            };
+
+            return matchingSlots;
         },
 
         /**
@@ -194,6 +218,7 @@
             this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(game.ItemType.SHIELD.id));
             this.getFirstEmptySlot(game.SlotTypes.WAR).setItem(new game.Item(game.ItemType.SHIELD.id));
             this.getFirstEmptySlot(game.SlotTypes.WAR).setItem(new game.Item(game.ItemType.SWORD.id));
+            this.getFirstEmptySlot(game.SlotTypes.ARCH).setItem(new game.Item(game.ItemType.SWORD.id));
         }
         
     };

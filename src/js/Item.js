@@ -36,6 +36,7 @@
      *
      * Optional properties:
      * stackable (if this is provided, then startingQuantity can also be provided, otherwise the default is 1)
+     * mods - an Array:ItemMod. If this is provided, these mods will be applied to units who equip the items.
      *
      * Note: the htmlDescription will have '[name]<br/>' prepended to it.
      */
@@ -65,7 +66,8 @@
             name:'Skull Stab',
             htmlDescription:'<font color="#660000"><b>It is said that this sword can actually only pierce hearts.<b/></font>',
             equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
-            cssClass:'item-sprite sword32-png'
+            cssClass:'item-sprite sword32-png',
+            mods: [new game.LifeLeech(.5, .5)]
         },
         HEAL_GEM: {
             id: 3,
@@ -129,6 +131,17 @@
     for ( var key in game.ItemType ) {
         var item = game.ItemType[key];
         item.htmlDescription = item.name + '<br/>' + item.htmlDescription;
+
+        // Add mods to the item's description.
+        if ( item.mods !== undefined ) {
+            if ( item.usable ) {
+                console.log('Usable item found with mods! This should be disallowed: ' + item.name);
+            }
+
+            for (var i = 0; i < item.mods.length; i++) {
+                item.htmlDescription += '<br/>' + item.mods[i].getDescription();
+            };
+        }
     }
 
     /**
@@ -189,6 +202,17 @@
             }
         } else {
             this.equippableBy = itemData.equippableBy;
+        }
+
+        this.mods = [];
+
+        // Make sure to COPY mods over in case we ever modify them through the
+        // unit. We wouldn't want to change the item's template, otherwise we'd
+        // be modifying all future copies of that item.
+        if ( itemData.mods !== undefined ) {
+            for (var i = 0; i < itemData.mods.length; i++) {
+                this.mods.push(itemData.mods[i].copy());
+            };
         }
 
         this.cssClass = itemData.cssClass;

@@ -152,6 +152,19 @@
         // units.
         this.destX = null;
         this.destY = null;
+
+        // These point to the mods on the items. They are not copies.
+        /**
+         * These mods point to mods on whatever items this class is using (they
+         * are not copies of the mods that appear on the item). They are stored
+         * so that they don't need to be computed every time there's a mod event
+         * (e.g. onAttack).
+         * @type {Array:ItemMod}
+         */
+        this.mods = [];
+
+        // Populate this.mods
+        this.equipmentChanged();
     };
 
     /**
@@ -556,6 +569,66 @@
         battle.addProjectile(newProjectile);
     };
 
+    /**
+     * Call this function any time this unit's equipment changes. It will set up
+     * this.mods.
+     * @return {undefined}
+     */
+    window.game.Unit.prototype.equipmentChanged = function() {
+        this.mods = [];
+
+        // Go through each equipped items and add its mods to this unit's mods.
+        var equippedItems = this.getClassEquippedItems();
+        for (var i = 0; i < equippedItems.length; i++) {
+            var equippedItem = equippedItems[i];
+            for (var j = 0; j < equippedItem.mods.length; j++) {
+                this.mods.push(equippedItem.mods[j]);
+            };
+        }; 
+    };
+
+    /**
+     * Gets the items that are equipped to this class. This does not work for
+     * enemies because it looks in your inventory.
+     * @return {Array:Item} - the items that are equipped to this class.
+     */
+    window.game.Unit.prototype.getClassEquippedItems = function() {
+        if ( !this.isPlayer ) {
+            return [];
+        }
+
+        var slotType = null;
+        var classSlots;
+        var equippedItems = [];
+
+        switch ( this.unitType ) {
+            case game.PlaceableUnitType.ARCHER:
+                slotType = game.SlotTypes.ARCH;
+                break;
+            case game.PlaceableUnitType.WARRIOR:
+                slotType = game.SlotTypes.WAR;
+                break;
+            case game.PlaceableUnitType.WIZARD:
+                slotType = game.SlotTypes.WIZ;
+                break;
+            default:
+                slotType = null;
+                break;
+        }
+
+        if ( slotType != null ) {
+            classSlots = game.Inventory.getAllSlotsOfType(slotType);
+
+            for (var i = 0; i < classSlots.length; i++) {
+                if ( !classSlots[i].isEmpty() ) {
+                    equippedItems.push(classSlots[i].item);
+                }
+            };
+        }
+
+        return equippedItems;
+    };
+
     window.game.Unit.prototype.projectileCallback = function(projectile) {
         // Short hand
         var battle = this.battleData.battle;
@@ -573,7 +646,11 @@
             damage = Math.max(0, damage);
 
             // Apply the damage
-            targetUnit.modifyLife(-damage, true, false);
+            var actualDamage = -targetUnit.modifyLife(-damage, true, false);
+
+            for (var i = 0; i < this.mods.length; i++) {
+                this.mods[i].onAttack(this, targetUnit, actualDamage);
+            };
         } else {
             // If the target is already alive, then we don't do anything here.
             // This is better than just killing the projectile as soon as the
@@ -600,9 +677,14 @@
      * when this function was called. For example, if a unit has 105% life
      * already and you call this function with 'false' and try to add 10 more
      * life, you'll still be at 105% (no change).
-     * @return {null}
+     * @return {Number} - the amount that changed. If you were dealing damage,
+     * then this can not be higher than the life this unit had to begin with
+     * (e.g. dealing 100 damage to a unit with 40 life will return 40). The
+     * return value is positive if you healed life.
      */
     window.game.Unit.prototype.modifyLife = function(amount, spawnTextEffect, letLifeGoAboveMax) {
+        var oldLife = this.life;
+
         // Modify life
         var maxLife = this.getMaxLife();
 
@@ -674,6 +756,10 @@
                 }
             }
         }
+
+        var amountChanged = this.life - oldLife;
+        amountChanged = Math.max(-oldLife, amountChanged);
+        return amountChanged;
     };
 
     /**
@@ -842,7 +928,7 @@
 
         // Draw the percentage
         ctx.font = '12px Futura, Helvetica, sans-serif';
-        var text = '' + Math.ceil(percentLife * 100) + '%';
+        var text = game.util.formatPercentString(percentLife, 0) + '%';
         var width = ctx.measureText(text).width;
 
         ctx.textBaseline = 'top';

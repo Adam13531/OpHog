@@ -42,6 +42,50 @@
     };
 
     /**
+     * This function is really simple: it generates a number in the range [0,1)
+     * and returns true if that number is less than the one you passed in.
+     *
+     * You should use this function whenever you're computing a percent chance
+     * for something to happen, e.g. "I want this attack to hit 50% of the
+     * time", so put "if (game.util.percentChance(.5))" in your code.
+     * @param  {Number} percent - a number, typically representing a percent
+     * chance for something to happen, so it will probably be in the range
+     * [0,1], but it can really be any number.
+     * @return {Boolean}
+     */
+    window.game.util.percentChance = function(percent) {
+        // Math.random() generates in the range [0,1)
+        return Math.random() < percent;
+    };
+
+    /**
+     * Formats a number into a string. It's easiest to see what this does with
+     * examples:
+     *
+     * game.util.formatPercentString(.5, 0)
+     * "50"     <-- this represents "50%"
+     * game.util.formatPercentString(.5552, 0)
+     * "55"
+     * game.util.formatPercentString(.5552, 1)
+     * "55.5"
+     * game.util.formatPercentString(.5552, 2)
+     * "55.52"
+     * game.util.formatPercentString(.5552, 3)
+     * "55.52"  <-- doesn't add a zero for padding
+     * 
+     * @param  {Number} percentFromZeroToOne - a number representing a percent
+     * @param  {Number} numDecimalPoints     - the number of decimal points you
+     * want. This will not add zeroes for padding.
+     * @return {String}                      - a string representing the percent
+     */
+    window.game.util.formatPercentString = function(percentFromZeroToOne, numDecimalPoints) {
+        var percentFromZeroToOneHundred = percentFromZeroToOne * 100;
+        var powerOfTen = Math.pow(10, numDecimalPoints);
+        var formatted = Math.floor(percentFromZeroToOneHundred * powerOfTen) / powerOfTen;
+        return '' + formatted;
+    };
+
+    /**
      * Given a list of weighted items, this will return one at random (according
      * to the weights).
      *
