@@ -4,7 +4,7 @@
      * ItemMod of type LIFE_LEECH. This inherits from ItemMod. For detailed
      * function comments, see ItemMod.js.
      * @extends {ItemMod}
-     * @param {Number} chanceToLeech - the chance to leech life on attack.
+     * @param {Number} chanceToLeech - the chance to leech life on damage dealt.
      * Range: [0,1].
      * @param {Number} leechPercentage - the percent of damage dealt to leech. 1
      * represents 100%, 2 represents 200%, etc.
@@ -18,7 +18,7 @@
 
     window.game.LifeLeech.prototype = new game.ItemMod;
 
-    window.game.LifeLeech.prototype.onAttack = function(attacker, target, damageDealt) {
+    window.game.LifeLeech.prototype.onDamageDealt = function(attacker, target, damageDealt) {
         var lifeLeeched = damageDealt * this.leechPercentage;
         if ( lifeLeeched <= 0 || !game.util.percentChance(this.chanceToLeech)) return;
 

@@ -158,7 +158,7 @@
          * These mods point to mods on whatever items this class is using (they
          * are not copies of the mods that appear on the item). They are stored
          * so that they don't need to be computed every time there's a mod event
-         * (e.g. onAttack).
+         * (e.g. onDamageDealt).
          * @type {Array:ItemMod}
          */
         this.mods = [];
@@ -645,11 +645,21 @@
             var damage = myAtk + bonusDamage - targetDef;
             damage = Math.max(0, damage);
 
+            // Run target's mods to possibly reduce the damage toward that
+            // specific target.
+            for (var i = 0; i < targetUnit.mods.length; i++) {
+                damage = targetUnit.mods[i].beforeReceiveDamage(this, targetUnit, damage);
+            };
+
             // Apply the damage
             var actualDamage = -targetUnit.modifyLife(-damage, true, false);
 
             for (var i = 0; i < this.mods.length; i++) {
-                this.mods[i].onAttack(this, targetUnit, actualDamage);
+                this.mods[i].onDamageDealt(this, targetUnit, actualDamage);
+            };
+            
+            for (var i = 0; i < targetUnit.mods.length; i++) {
+                targetUnit.mods[i].onDamageReceived(this, targetUnit, actualDamage);
             };
         } else {
             // If the target is already alive, then we don't do anything here.
@@ -683,6 +693,10 @@
      * return value is positive if you healed life.
      */
     window.game.Unit.prototype.modifyLife = function(amount, spawnTextEffect, letLifeGoAboveMax) {
+        // Can't bring units back from the dead with this function.
+        if ( !this.isLiving() ) {
+            return;
+        }
         var oldLife = this.life;
 
         // Modify life

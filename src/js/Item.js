@@ -58,7 +58,8 @@
             name:'Grugtham\'s Shield',
             htmlDescription:'<font color="#660000"><b>500000 Dragon Kill Points<b/></font>',
             equippableBy: game.EquippableBy.ALL,
-            cssClass:'item-sprite shield32-png'
+            cssClass:'item-sprite shield32-png',
+            mods: [new game.Thorns(5), new game.ReduceDamage(5)]
         },
         SWORD: {
             id: 2,
