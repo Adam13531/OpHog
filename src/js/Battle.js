@@ -162,12 +162,11 @@
     /**
      * Gets a random unit from either the player's team or the enemy's team.
      * @param {RandomUnitFlags} flags A bitwise-or'd set of flags representing
-     *                                the units you're interested in choosing from.
-     * @return {Unit}              A random unit matching the flags.
-     *                               WARNING: THIS CAN ALSO RETURN NULL IF THERE
-     *                               IS NO SUCH UNIT (e.g. no living enemies).
+     * the units you're interested in choosing from.
+     * @return {Array:Unit} All units matching the flags (or an empty array if
+     * there are none).
      */
-    window.game.Battle.prototype.getRandomUnit = function(flags) {
+    window.game.Battle.prototype.getUnitsMatchingFlags = function(flags) {
         var unitsToChooseFrom = new Array();
 
         if (flags & game.RandomUnitFlags.PLAYER_UNIT) {
@@ -189,6 +188,19 @@
                 i--;
             }
         };
+
+        return unitsToChooseFrom;
+    };
+
+    /**
+     * Gets a random unit that matches the flags passed in. See
+     * getUnitsMatchingFlags.
+     *
+     * Note: this can also return null if there is no such unit (e.g. no
+     * living enemies).
+     */
+    window.game.Battle.prototype.getRandomUnitMatchingFlags = function(flags) {
+        var unitsToChooseFrom = this.getUnitsMatchingFlags(flags);
 
         return game.util.randomArrayElement(unitsToChooseFrom);
     };

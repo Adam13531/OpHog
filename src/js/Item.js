@@ -65,10 +65,10 @@
             id: 2,
             itemLevel:1,
             name:'Skull Stab',
-            htmlDescription:'<font color="#660000"><b>It is said that this sword can actually only pierce hearts.<b/></font>',
+            htmlDescription:'<font color="#660000"><b>This sword can actually only pierce hearts.<b/></font>',
             equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
             cssClass:'item-sprite sword32-png',
-            mods: [new game.LifeLeech(.5, .5)]
+            mods: [new game.LifeLeech(.5, .5), new game.MultipleProjectiles(2)]
         },
         HEAL_GEM: {
             id: 3,

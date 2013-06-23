@@ -6,7 +6,8 @@
     window.game.ItemModType = {
         LIFE_LEECH: 'life leech',
         THORNS: 'thorns',
-        REDUCE_DAMAGE: 'reduce damage'
+        REDUCE_DAMAGE: 'reduce damage',
+        MULTIPLE_PROJECTILES: 'multiple projectiles'
     };
   
     /**
@@ -47,6 +48,17 @@
      * Same args/return as onDamageDealt (so see that function for comments).
      */
     window.game.ItemMod.prototype.onDamageReceived = function(attacker, target, damageDealt) {};
+
+    /**
+     * This function can modify your actual attack. Only one mod is allowed to
+     * do this, although they're all allowed to TRY (e.g. if you have three mods
+     * and each one has a chance to modify it, then they can all attempt that
+     * chance).
+     * 
+     * @param  {Unit} attacker - the attacker
+     * @return {Boolean}          true if the attack was modified.
+     */
+    window.game.ItemMod.prototype.onBattleTurn = function(attacker) { return false; };
 
     /**
      * @return {ItemMod} a copy of this mod

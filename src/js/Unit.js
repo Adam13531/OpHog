@@ -521,7 +521,6 @@
         // Short hand
         var battle = this.battleData.battle;
 
-
         // Revive
         if ( (this.id % 15) == 0 && !this.isBoss ) {
 
@@ -533,7 +532,7 @@
                 flags |= game.RandomUnitFlags.ENEMY_UNIT;
             }
 
-            var targetUnit = battle.getRandomUnit(flags);
+            var targetUnit = battle.getRandomUnitMatchingFlags(flags);
             if ( targetUnit != null ) {
                 var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),1,this,targetUnit);
                 battle.addProjectile(newProjectile);
@@ -555,18 +554,33 @@
             return;
         }
 
-        // First, acquire a living target of the opposite team
-        var flags = game.RandomUnitFlags.ALIVE;
-        if ( this.isPlayer ) {
-            flags |= game.RandomUnitFlags.ENEMY_UNIT;
-        } else {
-            flags |= game.RandomUnitFlags.PLAYER_UNIT;
+        // There's only a single attack modifier allowed, and we'll check for
+        // that here.
+        var modifiedAttack = false;
+        for (var i = 0; i < this.mods.length; i++) {
+            debugger;
+            if ( this.mods[i].onBattleTurn(this) ) {
+                modifiedAttack = true;
+                break;
+            }
+        };
+
+        // If we didn't modify the attack, then we attack normally.
+        if ( !modifiedAttack ) {
+            // First, acquire a living target of the opposite team
+            var flags = game.RandomUnitFlags.ALIVE;
+            if ( this.isPlayer ) {
+                flags |= game.RandomUnitFlags.ENEMY_UNIT;
+            } else {
+                flags |= game.RandomUnitFlags.PLAYER_UNIT;
+            }
+
+            var targetUnit = battle.getRandomUnitMatchingFlags(flags);
+
+            var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),0,this,targetUnit);
+            battle.addProjectile(newProjectile);
         }
 
-        var targetUnit = battle.getRandomUnit(flags);
-
-        var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),0,this,targetUnit);
-        battle.addProjectile(newProjectile);
     };
 
     /**
@@ -657,7 +671,7 @@
             for (var i = 0; i < this.mods.length; i++) {
                 this.mods[i].onDamageDealt(this, targetUnit, actualDamage);
             };
-            
+
             for (var i = 0; i < targetUnit.mods.length; i++) {
                 targetUnit.mods[i].onDamageReceived(this, targetUnit, actualDamage);
             };
