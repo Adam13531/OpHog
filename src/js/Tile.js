@@ -1,26 +1,19 @@
 ( function() {
 
-    /**
-     * This is the graphic index of a spawner tile. We only use one tile sheet
-     * and all spawner tiles look the same for now.
-     * @type {Number}
-     */
-    window.game.SPAWN_TILE_GRAPHIC_INDEX = 65;
-
-    window.game.NONWALKABLE_TILE_GRAPHIC_INDEX = 70;
-    window.game.WALKABLE_TILE_GRAPHIC_INDEX = 72;
     window.game.CASTLE_GRAPHIC_INDEX = 93;
 
     /**
      * Tiles do not currently have any other functions because there is only
      * data in this class and everything is essentially constant. This will
      * change when we add animation.
+     * @param {Tileset} tileset - the tileset used for this map
      * @param {Number} graphicIndex - the index used to represent this tile
      */
-    window.game.Tile = function Tile(graphicIndex, tileIndex, tileX, tileY) {
+    window.game.Tile = function Tile(tileset, graphicIndex, tileIndex, tileX, tileY) {
+        this.tileset = tileset;
         this.graphicIndex = graphicIndex;
-        this.isSpawnerPoint = (this.graphicIndex == game.SPAWN_TILE_GRAPHIC_INDEX);
-        this.isWalkable = (this.graphicIndex == game.WALKABLE_TILE_GRAPHIC_INDEX) || this.isSpawnerPoint;
+        this.isSpawnerPoint = (this.graphicIndex == this.tileset.spawnTileGraphic);
+        this.isWalkable = (this.graphicIndex == this.tileset.walkableTileGraphic) || this.isSpawnerPoint;
         this.tileIndex = tileIndex;
         this.x = tileX;
         this.y = tileY;
@@ -118,7 +111,7 @@
                 'because it wouldn\'t be in any of the map\'s paths. Tile index: ' + this.tileIndex);
             return;
         }
-        this.graphicIndex = game.SPAWN_TILE_GRAPHIC_INDEX;
+        this.graphicIndex = this.tileset.spawnTileGraphic;
         this.isSpawnerPoint = true;
     };
 

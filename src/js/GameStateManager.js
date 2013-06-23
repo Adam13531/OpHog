@@ -88,6 +88,7 @@
             game.GeneratorManager.removeAllGenerators();
             game.CollectibleManager.removeAllCollectibles();
 
+            game.TilesetManager.init();
             game.MapGenerator.init();
             currentMap = game.MapGenerator.generateRandomMap(50,25, 1);
             currentMap.addBossUnit();

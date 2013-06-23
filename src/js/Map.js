@@ -9,9 +9,11 @@
      * undefined if there is no doodad at that location.
      * @param {Number} width                - width of this map
      */
-    window.game.Map = function Map(mapTilesIndices, doodadIndices, width) {
+    window.game.Map = function Map(mapTilesIndices, doodadIndices, tileset, width) {
         this.numCols = width;
         this.numRows = mapTilesIndices.length / this.numCols;
+
+        this.tileset = tileset;
 
         /**
          * The tiles representing this map.
@@ -20,7 +22,7 @@
         this.mapTiles = [];
         for (var i = 0; i < mapTilesIndices.length; i++) {
             var index = mapTilesIndices[i];
-            this.mapTiles.push(new game.Tile(index, i, i % this.numCols, Math.floor(i/this.numCols)));
+            this.mapTiles.push(new game.Tile(this.tileset, index, i, i % this.numCols, Math.floor(i/this.numCols)));
         };
 
         // Save this so that the GameDataManager can easily restore the map

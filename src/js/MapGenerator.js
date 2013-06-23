@@ -21,10 +21,10 @@
         mapArray: [],
 
         /**
-         * The possible doodads to choose from.
-         * @type {Array:Doodad}
+         * The tileset to use when creating a map.
+         * @type {Tileset}
          */
-        doodads: [],
+        tileset: null,
 
         /**
          * The doodad graphic indices for this map. They are indexed like the
@@ -69,7 +69,6 @@
             // Wipe out all of the arrays
             this.mapArray = [];
             this.doodadIndices = [];
-            this.doodads = [];
             this.puzzlePieces = [];
             this.columns = [];
 
@@ -134,55 +133,6 @@
                                  1,1,1,0,0,
                                  0,0,0,0,0,
                                  0,0,0,0,0,], game.PuzzlePieceType.RIGHT);
-
-            var water1 = 130;
-            var water2 = 114;
-            var greenTree = 73;
-            var bareBrownTree = 75;
-            var fullGreenTree = 77;
-            var greenBush1 = 78;
-            var greenBush2 = 79;
-            var smallGrayRock = 105;
-            var smallMushroom = 108;
-            var bigMushroom = 109;
-            var greenPlants = 126;
-
-            // A big pond
-            this.doodads.push(new game.Doodad(
-                [
-                water1,water1,water1,water1,water1,
-                water1,water1,water1,water1,water1,
-                water1,water1,water1,water1,water1,
-                water1,water1,water1,water1,water1,
-                water1,water1,water1,water1,water1,
-                ], 5, 1
-                ));
-
-            // Medium-sized ponds
-            this.doodads.push(new game.Doodad(
-                [
-                water1,water1,water1,
-                water1,water1,water1,
-                water1,water1,water1,
-                ], 3, 1
-                ));
-            this.doodads.push(new game.Doodad(
-                [
-                water2,water2,water2,
-                water2,water2,water2,
-                water2,water2,water2,
-                ], 3, 1
-                ));
-
-            // Single-tile doodads
-            this.doodads.push(new game.Doodad([greenTree], 1, 1));
-            this.doodads.push(new game.Doodad([bareBrownTree], 1, 1));
-            this.doodads.push(new game.Doodad([fullGreenTree], 1, 1));
-            this.doodads.push(new game.Doodad([greenBush1], 1, 1));
-            this.doodads.push(new game.Doodad([greenBush2], 1, 1));
-            this.doodads.push(new game.Doodad([smallGrayRock], 1, 1));
-            this.doodads.push(new game.Doodad([smallMushroom], 1, 5));
-            this.doodads.push(new game.Doodad([bigMushroom], 1, 5));
     	},
 
         /**
@@ -357,6 +307,8 @@
          * @return {undefined}
          */
         computeDoodads: function() {
+            var doodads = this.tileset.doodads;
+
             this.doodadIndices = new Array(this.mapArray.length);
 
             var doodadDensity = 5; // approximately 1 doodad every 5 tiles
@@ -367,10 +319,10 @@
             //
             // 1250 tiles in a 50x25 map, divided by the density == 125, divided
             // by number of doodads == ~20.
-            var attemptsPerSquare = this.widthInTiles * this.heightInTiles / doodadDensity / this.doodads.length;
+            var attemptsPerSquare = this.widthInTiles * this.heightInTiles / doodadDensity / doodads.length;
 
-            for (var i = 0; i < this.doodads.length; i++) {
-                var doodad = this.doodads[i];
+            for (var i = 0; i < doodads.length; i++) {
+                var doodad = doodads[i];
                 var numAttemptsToPlace = doodad.width * doodad.height * attemptsPerSquare;
                 numAttemptsToPlace = Math.min(numAttemptsToPlace, 250) / doodad.rarity;
                 numAttemptsToPlace = Math.ceil(numAttemptsToPlace);
@@ -459,6 +411,8 @@
 
             var sizeInTiles = this.widthInTiles * this.heightInTiles;
 
+            this.tileset = game.util.randomArrayElement(game.TilesetManager.tilesets);
+
             // Generate a map array with all zeroes
             for (var i = 0; i < sizeInTiles; i++) {
                 this.mapArray.push(0);
@@ -507,16 +461,15 @@
 
             // Convert the array of 0s and 1s to map tiles
             for (var i = 0; i < this.mapArray.length; i++) {
-                this.mapArray[i] = (this.mapArray[i] == 0 ? game.NONWALKABLE_TILE_GRAPHIC_INDEX : game.WALKABLE_TILE_GRAPHIC_INDEX);
+                this.mapArray[i] = (this.mapArray[i] == 0 ? this.tileset.nonwalkableTileGraphic : this.tileset.walkableTileGraphic);
             };
 
-            var map = new game.Map(this.mapArray, this.doodadIndices, width);
+            var map = new game.Map(this.mapArray, this.doodadIndices, this.tileset, width);
 
             // We don't need these any longer, so free the memory.
             delete this.columns;
             delete this.mapArray;
             delete this.puzzlePieces;
-            delete this.doodads;
 
             return map;
     	}
