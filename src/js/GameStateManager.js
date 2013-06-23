@@ -89,8 +89,8 @@
             game.CollectibleManager.removeAllCollectibles();
 
             game.MapGenerator.init();
-            currentMap = game.MapGenerator.generateRandomMap(100,25, 1);
-            // currentMap.addBossUnit();
+            currentMap = game.MapGenerator.generateRandomMap(50,25, 1);
+            currentMap.addBossUnit();
 
             // Initialize the camera so that the zoom and pan values aren't out
             // of bounds.

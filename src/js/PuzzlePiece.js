@@ -25,7 +25,8 @@
 
     /**
      * Constructor.
-     * @param {Array:Tile} tiles     tiles that make up the puzzle piece
+     * @param {Array:Number} tiles     tiles that make up the puzzle piece. 1
+     * means walkable, 0 means not walkable.
      * @param {game.PuzzlePieceType} pieceType Type of puzzle piece
      */
     window.game.PuzzlePiece = function PuzzlePiece(tiles, pieceType) {
@@ -154,7 +155,7 @@
      * 0 0 0 0 0|0 0 0 0 0
      * 0 0 0 0 0|0 0 0 0 0 
      * 
-     * @param  {Array:Tile} mapArray Map array that will be modified
+     * @param  {Array:Number} mapArray Map array that will be modified
      * @param  {Number} width    width of the map in tiles
      * @param  {Number} x        Starting x position in tiles of where to add the puzzle piece
      * @param  {Number} y        Starting y position in tiles of where to add the puzzle piece

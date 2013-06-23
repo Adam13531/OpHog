@@ -5,7 +5,11 @@
      * and all spawner tiles look the same for now.
      * @type {Number}
      */
-    window.game.SPAWN_TILE_GRAPHIC_INDEX = 67;
+    window.game.SPAWN_TILE_GRAPHIC_INDEX = 65;
+
+    window.game.NONWALKABLE_TILE_GRAPHIC_INDEX = 70;
+    window.game.WALKABLE_TILE_GRAPHIC_INDEX = 72;
+    window.game.CASTLE_GRAPHIC_INDEX = 93;
 
     /**
      * Tiles do not currently have any other functions because there is only
@@ -16,7 +20,7 @@
     window.game.Tile = function Tile(graphicIndex, tileIndex, tileX, tileY) {
         this.graphicIndex = graphicIndex;
         this.isSpawnerPoint = (this.graphicIndex == game.SPAWN_TILE_GRAPHIC_INDEX);
-        this.isWalkable = (this.graphicIndex == 88) || this.isSpawnerPoint;
+        this.isWalkable = (this.graphicIndex == game.WALKABLE_TILE_GRAPHIC_INDEX) || this.isSpawnerPoint;
         this.tileIndex = tileIndex;
         this.x = tileX;
         this.y = tileY;
@@ -54,8 +58,6 @@
         // This is basically the same thing as leftList except it relates a
         // right-neighbor's tileIndex to an array of left-neighbors.
         this.rightList = {};
-
-        // if ( this.isWalkable ) this.convertToSpawner();
     };
 
     /**

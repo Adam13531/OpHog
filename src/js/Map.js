@@ -3,43 +3,13 @@
     /**
      * Makes a new map. This will also call this.initialize(), because the
      * constructor itself only sets up very basic things.
-     * @param {Array:Number} arrayOfOnesAndZeroes - an array whose length must
-     * be a multiple of 'width'. A 0 represents a nonwalkable tile, a 1
-     * represents a walkable tile.
+     * @param {Array:Number} mapTilesIndices - the graphic indices for each tile
+     * in the map
+     * @param {Array:Number} doodadIndices - the graphic indices for doodads, or
+     * undefined if there is no doodad at that location.
      * @param {Number} width                - width of this map
      */
-    window.game.Map = function Map(arrayOfOnesAndZeroes, width) {
-
-        // Go through arrayOfOnesAndZeroes, and remove any blank rows at the
-        // start.
-        // 
-        // Need to save 'numRows' here because otherwise the value would change
-        // as we iterated
-        var numRows = arrayOfOnesAndZeroes.length / width;
-        var found = false;
-        for (var i = 0; i < numRows; i++) {
-            for (var j = 0; j < width; j++) {
-                if ( arrayOfOnesAndZeroes[j] == 1 ) {
-                    found = true;
-                    break;
-                }
-            };    
-            if ( found ) break;
-
-            // Remove that row
-            arrayOfOnesAndZeroes.splice(0, width);
-        };
-
-        // For now, since we're only passing in ones and zeroes, we need to save
-        // this variable here so that the GameDataManager can save this array.
-        this.arrayOfOnesAndZeroes = arrayOfOnesAndZeroes;
-
-        // Convert the array of 0s and 1s to map tiles
-        var mapTilesIndices = [];
-        for (var i = 0; i < arrayOfOnesAndZeroes.length; i++) {
-            mapTilesIndices.push((arrayOfOnesAndZeroes[i] == 0) ? 5 : 88);
-        };
-
+    window.game.Map = function Map(mapTilesIndices, doodadIndices, width) {
         this.numCols = width;
         this.numRows = mapTilesIndices.length / this.numCols;
 
@@ -52,6 +22,8 @@
             var index = mapTilesIndices[i];
             this.mapTiles.push(new game.Tile(index, i, i % this.numCols, Math.floor(i/this.numCols)));
         };
+
+        this.doodadIndices = doodadIndices;
 
         /**
          * Array of booleans representing whether there's fog over a tile.
@@ -128,6 +100,11 @@
         for (var i = 0; i < this.mapTiles.length; i++) {
             if ( this.mapTiles[i].isLeftEndpoint ) { 
                 this.mapTiles[i].convertToSpawner();
+
+                // Put castles to the left of each spawn point and delete any
+                // doodads over it.
+                this.mapTiles[i-1].graphicIndex = game.CASTLE_GRAPHIC_INDEX;
+                delete this.doodadIndices[i-1];
             }
         };
     };
@@ -334,7 +311,7 @@
             if ( this.isTileAnEndpoint(tile, true) ) {
                 if ( tile.isRightEndpoint ) {
                     game.util.debugDisplayText('Fatal error: a tile is both ' +
-                        'a left and right endpoint. Index: ' + tile.tileIndex + 
+                        'a left and right endpoint. Index: ' + tile.tileIndex,
                         'two endpoints');
                 }
                 tile.isLeftEndpoint = true;
@@ -978,6 +955,7 @@
     window.game.Map.prototype.draw = function(ctx, drawingFogLayer) {
         var index;
         var graphic;
+        var doodadGraphic;
         var tile;
 
         // Set up greenFillstyle, which we'll use to draw a highlight if a tile
@@ -1000,7 +978,8 @@
                 if ( game.Camera.canSeeTile(tile) ) {
 
                     graphic = tile.graphicIndex;
-                    
+                    doodadGraphic = this.doodadIndices[index];
+
                     if ( drawingFogLayer ) {
                         if ( this.fog[index] ) {
 
@@ -1011,6 +990,9 @@
                             // castles.
                             ctx.fillRect(0, 0, tileSize, tileSize);
                             envSheet.drawSprite(ctx, graphic, 0,0);
+                            if ( doodadGraphic !== undefined ) {
+                                envSheet.drawSprite(ctx, doodadGraphic, 0,0);
+                            }
                             if ( game.InventoryUI.isTileAUseTarget(x,y) ) {
                                 ctx.fillStyle = greenFillStyle;
                                 ctx.fillRect(0,0,tileSize,tileSize);
@@ -1022,6 +1004,9 @@
                         // layer, then we just draw the map normally.
                         if ( !this.fog[index] ) {
                             envSheet.drawSprite(ctx, graphic, 0,0);
+                            if ( doodadGraphic !== undefined ) {
+                                envSheet.drawSprite(ctx, doodadGraphic, 0,0);
+                            }
                             if ( game.InventoryUI.isTileAUseTarget(x,y) ) {
                                 ctx.fillStyle = greenFillStyle;
                                 ctx.fillRect(0,0,tileSize,tileSize);
@@ -1029,7 +1014,7 @@
                             }
                         }
                     }
-                }
+                }                    
 
                 ctx.translate(tileSize, 0);
             }
