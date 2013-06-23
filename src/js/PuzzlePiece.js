@@ -7,14 +7,28 @@
         LEFT: 8   // 1000
     };
 
+    /**
+     * Indicates where
+     * on the map the piece should fall. LEFT would be the left column. MIDDLE
+     * Would indicate in any of the middle columns. RIGHT indicates the last
+     * column.
+     */
     window.game.PuzzlePieceType = {
         LEFT: 1,
         MIDDLE: 2,
         RIGHT: 4
     }
 
-    window.game.PUZZLE_PIECE_SIZE = 5; // Length of a side
+    /**
+     * Length of a side of a puzzle piece
+     */
+    window.game.PUZZLE_PIECE_SIZE = 5;
 
+    /**
+     * Constructor.
+     * @param {Array} tiles     tiles that make of the puzzle piece
+     * @param {game.PuzzlePieceType} pieceType Type of puzzle piece
+     */
     window.game.PuzzlePiece = function PuzzlePiece(tiles, pieceType) {
         this.tiles = tiles;
         this.pieceType = pieceType;
@@ -32,6 +46,10 @@
         this.generateEdges();
     };
 
+    /**
+     * Generates all the edges of the puzzle piece. This function needs to be
+     * called in order for the puzzle piece to be considered initialized.
+     */
     window.game.PuzzlePiece.prototype.generateEdges = function() {
 
         for (var i = 0; i < game.PUZZLE_PIECE_SIZE; i++) {
@@ -69,7 +87,6 @@
      * Prints the puzzle piece to the console.
      * @param  {String} optionalLabel - if specified, this will simply be
      * printed to the console.
-     * @return {undefined}
      */
     window.game.PuzzlePiece.prototype.print = function(optionalLabel) {
         if ( optionalLabel !== undefined ) {
@@ -83,10 +100,52 @@
             };
             console.log(str);
         };
-
         console.log('');
     };
 
+    /**
+     * Puts the puzzle piece into the array the way in which it actually looks
+     * like a puzzle piece. For example, Let's say you have a blank map and a
+     * puzzle piece of size 5. The blank map will be 2 x 2 in terms of puzzle
+     * pieces. It looks like this:
+     *
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     *
+     * Here is how the puzzle piece looks:
+     *
+     * 0 0 1 1 1
+     * 0 0 0 0 0 
+     * 0 0 1 1 1
+     * 0 0 0 0 0
+     * 0 0 1 1 1
+     *
+     * After this function is done, the map array will look like this:
+     *
+     * 0 0 1 1 1 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 1 1 1 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 1 1 1 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0 0 0 0 0 0 
+     * 
+     * @param  {Array} mapArray Map array that will be modified
+     * @param  {Number} width    width of the map in tiles
+     * @param  {Number} x        Starting x position in tiles of where to add the puzzle piece
+     * @param  {Number} y        Starting y position in tiles of where to add the puzzle piece
+     */
     window.game.PuzzlePiece.prototype.applyToMapArray = function(mapArray, width, x, y) {
         // Go through each tile in the puzzle piece...
         for (var i = 0; i < this.tiles.length; i++) {
@@ -100,15 +159,22 @@
             mapArray[index2] = this.tiles[i];
         }
     };
+
     /**
+    * Figures out if this puzzle piece fits together with the one that is passed
+    * in. It can either fit UP, DOWN, LEFT, or RIGHT.
+    *
+    * Example:
     *  A    B
     * 010  000  
     * 011  110
     * 000  010
     *
     * A.canFitTogether(B) would return FitFlags.LEFT | FitFlags.BOTTOM
-    * @param  {[type]} otherPuzzlePiece [description]
-    * @return {[type]}                  [description]
+    * @param  {game.PuzzlePiece} otherPuzzlePiece Puzzle piece to be compared to
+    * @return {game.DirectionFlags}               Directional flags of how the
+    *                                             other piece will fit with this
+    *                                             one
     */
     window.game.PuzzlePiece.prototype.canFitTogether = function(otherPuzzlePiece) {
         if ( otherPuzzlePiece == null ||
@@ -116,28 +182,24 @@
 
         var DirectionFlags = 0;
 
-        // Check the right side of this piece with the left side of the other
         var canFitRight = true;
         var canFitLeft = true;
         var canFitTop = true;
         var canFitBottom = true;
         for (var i = 0; i < game.PUZZLE_PIECE_SIZE; i++) {
-            console.log('test');
-            if (this.leftEdgeOpenings[i] != otherPuzzlePiece.rightEdgeOpenings[i] ) {
+            if ( this.leftEdgeOpenings[i] != otherPuzzlePiece.rightEdgeOpenings[i] ) {
                 canFitRight = false;
             }
 
-            if (this.rightEdgeOpenings[i] != otherPuzzlePiece.leftEdgeOpenings[i] ) {
+            if ( this.rightEdgeOpenings[i] != otherPuzzlePiece.leftEdgeOpenings[i] ) {
                 canFitLeft = false;
             }
 
-            if ( //this.topEdgeOpenings[i] == 1 &&
-                 this.topEdgeOpenings[i] != otherPuzzlePiece.bottomEdgeOpenings[i] ) {
+            if ( this.topEdgeOpenings[i] != otherPuzzlePiece.bottomEdgeOpenings[i] ) {
                 canFitBottom = false;
             }
 
-            if ( //this.bottomEdgeOpenings[i] == 1 &&
-                 this.bottomEdgeOpenings[i] != otherPuzzlePiece.topEdgeOpenings[i] ) {
+            if ( this.bottomEdgeOpenings[i] != otherPuzzlePiece.topEdgeOpenings[i] ) {
                 canFitTop = false;
             }
         }

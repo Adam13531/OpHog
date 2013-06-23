@@ -16,127 +16,104 @@
         mapHeight: 0,
         mapDifficulty: 0,
 
+        /**
+         * Initialization function. Creates the puzzle pieces
+         */
     	init: function() {
-        	// Piece 2
-        	this.puzzlePieces.push(this.createBlankPuzzlePiece());
-        	// Piece 3
-        	var piece3Tiles = [
-        	0,0,0,0,0,
-            0,0,0,0,0,
-            0,0,1,1,1,
-            0,0,0,0,0,
-            0,0,0,0,0,
-        	];
-        	this.puzzlePieces.push(new game.PuzzlePiece(piece3Tiles, game.PuzzlePieceType.LEFT));
-        	// Piece 4
-        	var piece4Tiles = [
-        	0,0,0,0,0,
-            0,0,0,0,0,
-            1,1,1,1,1,
-            0,0,0,0,0,
-            0,0,0,0,0,
-        	];
-        	this.puzzlePieces.push(new game.PuzzlePiece(piece4Tiles, game.PuzzlePieceType.MIDDLE));
-        	// Piece 5
-        	var piece5Tiles = [
-        	0,0,0,0,0,
-            0,0,0,0,0,
-            1,1,1,0,0,
-            0,0,0,0,0,
-            0,0,0,0,0,
-        	];
-        	this.puzzlePieces.push(new game.PuzzlePiece(piece5Tiles, game.PuzzlePieceType.RIGHT));
-			// Piece 6
-            var piece6Tiles = [
-            0,0,0,0,0,
-            0,0,0,0,0,
-            1,1,0,1,1,
-            0,1,0,1,0,
-            0,1,1,1,0,
-            ];
-            // 0,0,0,0,0,
-            // 0,0,0,0,0,
-            // 1,1,0,1,1,
-            // 0,1,1,1,0,
-            // 0,0,1,0,0,
-            // ];
-        	this.puzzlePieces.push(new game.PuzzlePiece(piece6Tiles, game.PuzzlePieceType.MIDDLE));
-        	// Piece 7
-            var piece7Tiles = [
-            0,0,1,0,0,
-            0,0,1,0,0,
-            0,0,1,1,1,
-            0,0,0,0,0,
-            0,0,0,0,0,
-            ];
-        	this.puzzlePieces.push(new game.PuzzlePiece(piece7Tiles, game.PuzzlePieceType.MIDDLE));
-        	// Piece 8
-        	var piece8Tiles = [
-            0,0,1,0,0,
-            0,0,1,0,0,
-            1,1,1,1,1,
-            0,0,0,0,0,
-            0,0,0,0,0,
-            ];
-            this.puzzlePieces.push(new game.PuzzlePiece(piece8Tiles, game.PuzzlePieceType.MIDDLE));
 
-            // Piece 9
-            var piece9Tiles = [
-            0,1,1,1,0,
-            0,1,0,1,0,
-            0,1,0,1,1,
-            0,1,1,0,0,
-            0,0,1,0,0,
-            ];
-            this.puzzlePieces.push(new game.PuzzlePiece(piece9Tiles, game.PuzzlePieceType.MIDDLE));
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.LEFT | 
+                                              game.PuzzlePieceType.MIDDLE | 
+                                              game.PuzzlePieceType.RIGHT);
 
-            // Piece 10
-            var piece10Tiles = [
-            0,1,1,1,0,
-            0,1,0,1,0,
-            1,1,0,1,1,
-            0,0,0,0,0,
-            0,0,0,0,0,
-            ];
-            this.puzzlePieces.push(new game.PuzzlePiece(piece10Tiles, game.PuzzlePieceType.MIDDLE));
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,0,0,0,0,
+                                 0,0,1,1,1,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.LEFT);
 
-            // Piece 11
-            var piece10Tiles = [
-            0,1,1,1,0,
-            0,1,0,1,0,
-            0,1,1,1,1,
-            0,0,1,1,0,
-            0,0,0,0,0,
-            ];
-            this.puzzlePieces.push(new game.PuzzlePiece(piece10Tiles, game.PuzzlePieceType.MIDDLE));
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,0,0,0,0,
+                                 1,1,1,1,1,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,0,0,0,0,
+                                 1,1,0,1,1,
+                                 0,1,0,1,0,
+                                 0,1,1,1,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,1,0,0,
+                                 0,0,1,0,0,
+                                 0,0,1,1,1,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,1,0,0,
+                                 0,0,1,0,0,
+                                 1,1,1,1,1,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,1,1,1,0,
+                                 0,1,0,1,0,
+                                 0,1,0,1,1,
+                                 0,1,1,0,0,
+                                 0,0,1,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,1,1,1,0,
+                                 0,1,0,1,0,
+                                 1,1,0,1,1,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,1,1,1,0,
+                                 0,1,0,1,0,
+                                 0,1,1,1,1,
+                                 0,0,1,1,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,0,0,0,0,
+                                 1,1,1,0,0,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.RIGHT);
     	},
 
-    	createBlankPuzzlePiece: function() {
-    		
-    		var tiles = [
-    		0,0,0,0,0,
-            0,0,0,0,0,
-            0,0,0,0,0,
-            0,0,0,0,0,
-            0,0,0,0,0,
-    		]; 
+        /**
+         * Adds a puzzle piece to the list of puzzle pieces
+         * @param  {Array} tiles           tiles that make up the puzzle piece
+         * @param  {game.PuzzlePieceType} puzzlePieceType indicates the type of puzzle piece
+         */
+        addPuzzlePiece: function(tiles, puzzlePieceType) {
+            this.puzzlePieces.push(new game.PuzzlePiece(tiles, puzzlePieceType));
+        },
 
-    		var puzzlePiece = new game.PuzzlePiece(tiles, game.PuzzlePieceType.LEFT | 
-                                                          game.PuzzlePieceType.MIDDLE | 
-                                                          game.PuzzlePieceType.RIGHT);
-    		return (puzzlePiece);
-    	},
-
+        /**
+         * Prints the column at the column index
+         * @param {Number} columnIndex The column index
+         */
         printColumn: function(columnIndex) {
             for (var i = columnIndex; i < columnIndex + this.columnLength; i++) {
                 this.columns[i].print();
             };
         },
 
+        /**
+         * Gets the puzzle piece that is next to, above, or below the one that's
+         * passed in.
+         *
+         * @param  {game.DirectionFlags} direction   Direction to look in
+         * @param  {Number} fromThisPieceIndex Index of the puzzle piece
+         * @return {game.PuzzlePiece}               Puzzle piece
+         */
         getPuzzlePiece: function(direction, fromThisPieceIndex) {
             var y = fromThisPieceIndex % this.columnLength;
             var x = Math.floor(fromThisPieceIndex / this.columnLength);
-            debugger;
             switch(direction) {
                 case game.DirectionFlags.LEFT:
                     if ( x == 0 ) return null;
@@ -153,7 +130,9 @@
             }
         },
 
-        // TODO: for debugging
+        /**
+         * Prints the generated map
+         */
         printMap: function() {
             // Print the map
             for (var i = 0; i < this.mapHeight; i ++ ) {
@@ -166,6 +145,12 @@
             }
         },
 
+        /**
+         * Gets all the possible puzzle pieces that will fit at the puzzle piece
+         * index that's passed in.
+         * @param  {Number} index Index in the map array
+         * @return {List}       List of possible puzzle pieces
+         */
         getPossiblePuzzlePieces: function(index) {
             var possiblePuzzlePiecesList = [];
             var flags = 0;
@@ -218,12 +203,15 @@
                 console.log('Fatal error: couldn\'t place piece at index: ' + index + ' flags: ' + flags + ' row: ' + row + ' columnLength: ' + this.columnLength);
                 if ( row == 0 && flags == game.PuzzlePieceType.MIDDLE ) console.log('This piece can\'t have top openings.');
                 if ( row == this.columnLength - 1 && flags == game.PuzzlePieceType.MIDDLE ) console.log('This piece can\'t have bottom openings.');
-                debugger;
             }
 
             return possiblePuzzlePiecesList;
         },
 
+        /**
+         * Generates a column of the map
+         * @param  {Number} columnIndex Column index
+         */
         generateColumn: function(columnIndex) {
             var validColumn = false
             while (validColumn == false) {
@@ -253,6 +241,14 @@
             }
         },
 
+        /**
+         * Generates a random map
+         * @param  {Number} width      width of the map to be generated
+         * @param  {Number} height     Height of the map to be generated
+         * @param  {Number} difficulty Difficulty of the map. The higher the
+         *                             difficulty, the harder the map
+         * @return {game.Map}            New auto-generated map
+         */
     	generateRandomMap: function(width, height, difficulty) {
             if (difficulty < 1 || difficulty > 4) return 0;
             // Make sure we can use whole puzzle pieces
