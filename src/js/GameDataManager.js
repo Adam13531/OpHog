@@ -238,10 +238,14 @@
                 if ( parsedItem != null ) {
                     finalItem = new game.Item(parsedItem.itemID);
                     this.copyProps(parsedItem, finalItem, []);
+
+                    var finalMods = game.ItemMod.rehydrateMods(parsedItem.mods);
+                    finalItem.mods = finalMods;
                 }
 
                 // This will update the UI; it is called even if the item is
-                // null.
+                // null. It will also update each unit's mods for equipped
+                // items.
                 finalSlot.setItem(finalItem);
             };
             game.Inventory.slots = finalSlots;
@@ -294,8 +298,9 @@
                 var parsedUnit = parsedUnits[i];
                 var finalUnit = new game.Unit(parsedUnit.unitType, parsedUnit.isPlayer, parsedUnit.level);
 
-                // battleData will be set when the unit is added to a battle
-                this.copyProps(parsedUnit, finalUnit, ['battleData']);
+                // battleData will be set when the unit is added to a battle.
+                // mods will be set after the inventory is loaded.
+                this.copyProps(parsedUnit, finalUnit, ['battleData', 'mods']);
 
                 // Change tiles so that they point to the correct objects with
                 // leftList and rightList set (tileIndex is still valid).
