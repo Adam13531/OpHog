@@ -23,6 +23,9 @@
             this.mapTiles.push(new game.Tile(index, i, i % this.numCols, Math.floor(i/this.numCols)));
         };
 
+        // Save this so that the GameDataManager can easily restore the map
+        // simply by calling the constructor.
+        this.mapTilesIndices = mapTilesIndices;
         this.doodadIndices = doodadIndices;
 
         /**
@@ -990,7 +993,7 @@
                             // castles.
                             ctx.fillRect(0, 0, tileSize, tileSize);
                             envSheet.drawSprite(ctx, graphic, 0,0);
-                            if ( doodadGraphic !== undefined ) {
+                            if ( doodadGraphic != null ) {
                                 envSheet.drawSprite(ctx, doodadGraphic, 0,0);
                             }
                             if ( game.InventoryUI.isTileAUseTarget(x,y) ) {
@@ -1004,7 +1007,7 @@
                         // layer, then we just draw the map normally.
                         if ( !this.fog[index] ) {
                             envSheet.drawSprite(ctx, graphic, 0,0);
-                            if ( doodadGraphic !== undefined ) {
+                            if ( doodadGraphic != null ) {
                                 envSheet.drawSprite(ctx, doodadGraphic, 0,0);
                             }
                             if ( game.InventoryUI.isTileAUseTarget(x,y) ) {

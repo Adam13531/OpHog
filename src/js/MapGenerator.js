@@ -28,8 +28,7 @@
 
         /**
          * The doodad graphic indices for this map. They are indexed like the
-         * mapArray is, and undefined indicates that there's no doodad at that
-         * tile.
+         * mapArray is, and null indicates that there's no doodad at that tile.
          * @type {Array}
          */
         doodadIndices: [],
@@ -412,7 +411,7 @@
                 // Apply our offsets to the passed-in coordinates
                 var index2 = (y + row) * this.widthInTiles + x + column;
                 if ( justCheck ) {
-                    if ( this.mapArray[index2] == 1 || this.doodadIndices[index2] !== undefined ) {
+                    if ( this.mapArray[index2] == 1 || this.doodadIndices[index2] != null ) {
                         return false;
                     }
                 } else {
