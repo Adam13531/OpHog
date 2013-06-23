@@ -558,7 +558,6 @@
         // that here.
         var modifiedAttack = false;
         for (var i = 0; i < this.mods.length; i++) {
-            debugger;
             if ( this.mods[i].onBattleTurn(this) ) {
                 modifiedAttack = true;
                 break;

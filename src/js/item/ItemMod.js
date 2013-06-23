@@ -76,4 +76,45 @@
         return 'Unrecognized ItemMod type: ' + this.type;
     };
 
+    /**
+     * This function takes in mods (as Objects) from localStorage and will turn
+     * them back into their original classes.
+     *
+     * It may be a better design to put this function in each mod itself.
+     * @param  {Array:Object} mods - the mods you loaded
+     * @return {Array:ItemMod}      - the mods as their real objects
+     */
+    window.game.ItemMod.rehydrateMods = function(mods) {
+        var finalMods = [];
+        for (var i = 0; i < mods.length; i++) {
+            var modObject = mods[i];
+            var finalMod;
+            var itemModType = modObject.type;
+            switch( itemModType ) {
+                case game.ItemModType.LIFE_LEECH:
+                    finalMod = new game.LifeLeech(modObject.chanceToLeech, modObject.leechPercentage);
+                    break;
+                case game.ItemModType.THORNS:
+                    finalMod = new game.Thorns(modObject.thornsDamage);
+                    break;
+                case game.ItemModType.REDUCE_DAMAGE: 
+                    finalMod = new game.ReduceDamage(modObject.reduceDamageAmount);
+                    break;
+                case game.ItemModType.MULTIPLE_PROJECTILES: 
+                    finalMod = new game.MultipleProjectiles(modObject.numberOfProjectiles);
+                    break;
+                default:
+                    finalMod = null;
+                    console.log('Unrecognized ItemModType: ' + itemModType);
+                    break;
+            };
+
+            if ( finalMod != null ) {
+                finalMods.push(finalMod);
+            }
+        };
+
+        return finalMods;
+    };
+
 }());
