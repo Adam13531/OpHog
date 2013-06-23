@@ -8,10 +8,9 @@
     };
 
     /**
-     * Indicates where
-     * on the map the piece should fall. LEFT would be the left column. MIDDLE
-     * Would indicate in any of the middle columns. RIGHT indicates the last
-     * column.
+     * Indicates where on the map the piece should fall. LEFT would be the left
+     * column. MIDDLE would indicate in any of the middle columns. RIGHT
+     * indicates the last column.
      */
     window.game.PuzzlePieceType = {
         LEFT: 1,
@@ -26,12 +25,24 @@
 
     /**
      * Constructor.
-     * @param {Array} tiles     tiles that make of the puzzle piece
+     * @param {Array:Tile} tiles     tiles that make up the puzzle piece
      * @param {game.PuzzlePieceType} pieceType Type of puzzle piece
      */
     window.game.PuzzlePiece = function PuzzlePiece(tiles, pieceType) {
         this.tiles = tiles;
         this.pieceType = pieceType;
+
+        /**
+         * These arrays describe where the openings are in a piece. For example,
+         * if you have this piece:
+         *
+         * 100
+         * 000
+         * 100
+         *
+         * Its leftEdgeOpenings would be [1,0,1] because that's the left edge.
+         * @type {Array:Boolean}
+         */
         this.leftEdgeOpenings = [];
         this.rightEdgeOpenings = [];
         this.topEdgeOpenings = [];
@@ -105,20 +116,21 @@
 
     /**
      * Puts the puzzle piece into the array the way in which it actually looks
-     * like a puzzle piece. For example, Let's say you have a blank map and a
-     * puzzle piece of size 5. The blank map will be 2 x 2 in terms of puzzle
-     * pieces. It looks like this:
+     * like a puzzle piece. For example, Let's say you have a blank map of size
+     * 10 x 10 and a puzzle piece of size 5. The blank map will be 2 x 2 in
+     * terms of puzzle pieces. It looks like this:
      *
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * ---------+---------
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
      *
      * Here is how the puzzle piece looks:
      *
@@ -128,20 +140,21 @@
      * 0 0 0 0 0
      * 0 0 1 1 1
      *
-     * After this function is done, the map array will look like this:
+     * If you call this with x==5 and y==0, the map array will look like this:
      *
-     * 0 0 1 1 1 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 1 1 1 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 1 1 1 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0
-     * 0 0 0 0 0 0 0 0 0 0 
+     * 0 0 0 0 0|0 0 1 1 1
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 1 1 1
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 1 1 1
+     * ---------+---------
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0
+     * 0 0 0 0 0|0 0 0 0 0 
      * 
-     * @param  {Array} mapArray Map array that will be modified
+     * @param  {Array:Tile} mapArray Map array that will be modified
      * @param  {Number} width    width of the map in tiles
      * @param  {Number} x        Starting x position in tiles of where to add the puzzle piece
      * @param  {Number} y        Starting y position in tiles of where to add the puzzle piece
@@ -150,7 +163,8 @@
         // Go through each tile in the puzzle piece...
         for (var i = 0; i < this.tiles.length; i++) {
 
-            // Figure out "row" and "column", which are offsets from the beginning of the puzzle piece
+            // Figure out "row" and "column", which are offsets from the
+            // beginning of the puzzle piece
             var row = Math.floor(i / game.PUZZLE_PIECE_SIZE);
             var column = i % game.PUZZLE_PIECE_SIZE;
 
@@ -161,26 +175,26 @@
     };
 
     /**
-    * Figures out if this puzzle piece fits together with the one that is passed
-    * in. It can either fit UP, DOWN, LEFT, or RIGHT.
-    *
-    * Example:
-    *  A    B
-    * 010  000  
-    * 011  110
-    * 000  010
-    *
-    * A.canFitTogether(B) would return FitFlags.LEFT | FitFlags.BOTTOM
-    * @param  {game.PuzzlePiece} otherPuzzlePiece Puzzle piece to be compared to
-    * @return {game.DirectionFlags}               Directional flags of how the
-    *                                             other piece will fit with this
-    *                                             one
+     * Figures out if this puzzle piece fits together with the one that is 
+     * passed in.
+     *
+     * Example:
+     *  A    B
+     * 010  000  
+     * 011  110
+     * 000  010
+     * 
+     * A.canFitTogether(B) would return FitFlags.LEFT | FitFlags.BOTTOM
+     * @param  {game.PuzzlePiece} otherPuzzlePiece Puzzle piece to be compared to
+     * @return {game.DirectionFlags}               Directional flags of how the
+     * other piece will fit with this one. This is a bitwise-or'd value from
+     * those flags.
     */
     window.game.PuzzlePiece.prototype.canFitTogether = function(otherPuzzlePiece) {
         if ( otherPuzzlePiece == null ||
              otherPuzzlePiece === undefined) return game.DirectionFlags.RIGHT | game.DirectionFlags.LEFT | game.DirectionFlags.UP | game.DirectionFlags.DOWN;
 
-        var DirectionFlags = 0;
+        var directionFlags = 0;
 
         var canFitRight = true;
         var canFitLeft = true;
@@ -204,12 +218,12 @@
             }
         }
 
-        if ( canFitRight ) DirectionFlags |= game.DirectionFlags.RIGHT;
-        if ( canFitLeft ) DirectionFlags |= game.DirectionFlags.LEFT;
-        if ( canFitBottom ) DirectionFlags |= game.DirectionFlags.DOWN;
-        if ( canFitTop ) DirectionFlags |= game.DirectionFlags.UP;
+        if ( canFitRight ) directionFlags |= game.DirectionFlags.RIGHT;
+        if ( canFitLeft ) directionFlags |= game.DirectionFlags.LEFT;
+        if ( canFitBottom ) directionFlags |= game.DirectionFlags.DOWN;
+        if ( canFitTop ) directionFlags |= game.DirectionFlags.UP;
 
-        return DirectionFlags;
+        return directionFlags;
     };
 
 }());
