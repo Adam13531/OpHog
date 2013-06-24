@@ -353,7 +353,7 @@
                 itemID = game.ItemType.SHIELD.id;
             }
             if (evt.keyCode == game.Key.DOM_VK_P) {
-                itemID = game.ItemType.CREATE_SPAWNER.id;
+                itemID = game.ItemType.MEGA_CREATE_SPAWNER.id;
             }
 
             if ( itemID != null ) {

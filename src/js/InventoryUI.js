@@ -178,7 +178,14 @@
             if ( useTarget == game.UseTarget.MAP ) {
                 return true;
             } else if ( useTarget == game.UseTarget.MAP_WALKABLE_ONLY ) {
-                return this.usingItem.itemID == game.ItemType.CREATE_SPAWNER.id && currentMap.isValidTileToCreateSpawner(tileX,tileY,6) ;
+                if ( this.usingItem.itemID == game.ItemType.CREATE_SPAWNER.id ) {
+                    return currentMap.isValidTileToCreateSpawner(tileX,tileY,6);
+                }
+                if ( this.usingItem.itemID == game.ItemType.MEGA_CREATE_SPAWNER.id ) {
+                    return currentMap.isValidTileToCreateSpawner(tileX,tileY,20);
+                }
+                console.log('Error in isTileAUseTarget: ' + this.usingItem.name);
+                return true;
             } else {
                 // It's not an item that you can even use on the map.
                 return false;

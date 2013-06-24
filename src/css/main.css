@@ -171,6 +171,10 @@ textarea {
 .greenrectangle-png {
     background-position: -352px -288px;
 }
+/*Two concentric red rectangles*/
+.redrectangle-png {
+    background-position: -352px -256px;
+}
 .pinkgem32-png {
     background-position: -128px -0px;
 }

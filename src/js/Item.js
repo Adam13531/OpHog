@@ -125,6 +125,17 @@
             startingQuantity:3,
             cssClass:'item-sprite greenrectangle-png'
         },
+        MEGA_CREATE_SPAWNER: {
+            id: 8,
+            itemLevel:1,
+            name:'Mega Spawn Creatorizer',
+            htmlDescription:'<font color="#a3a3cc"><b>Creates another spawn point on the map.<b/></font>',
+            usable:true,
+            useTarget: game.UseTarget.MAP_WALKABLE_ONLY,
+            stackable:true,
+            startingQuantity:3,
+            cssClass:'item-sprite redrectangle-png'
+        },
     };
 
     // This is debug code to put the item name in the item's description. It's
@@ -287,6 +298,9 @@
         // Only tiles close to spawners are valid.
         if ( this.itemID == game.ItemType.CREATE_SPAWNER.id ) {
             used = currentMap.attemptToCreateSpawner(tileX, tileY, 6);
+        }
+        if ( this.itemID == game.ItemType.MEGA_CREATE_SPAWNER.id ) {
+            used = currentMap.attemptToCreateSpawner(tileX, tileY, 20);
         }
 
         if ( used ) {
