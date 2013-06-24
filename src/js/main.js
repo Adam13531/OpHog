@@ -539,6 +539,7 @@
         ctx.save();
 
         game.Player.drawCoinTotal(ctx);
+        game.Player.drawCastleLife(ctx);
 
         ctx.restore();
     }

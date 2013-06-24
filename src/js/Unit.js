@@ -57,6 +57,10 @@
      */
     window.game.displayLifeBarsInBattle = false;
 
+    // When a castle gets hit, flash the screen over the course of this many
+    // milliseconds. It starts at 0 but will be set when a castle is hit.
+    window.game.castleFlashScreenTimer = 0;
+
     /**
      * Creates a unit (player OR enemy).
      * @param {Number}  unitType - an ID from game.UnitType, e.g.
@@ -421,6 +425,21 @@
                     game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
 
                     game.CollectibleManager.collectAtLocation(this, centerTileX, centerTileY);
+                }
+                // If it's an enemy, check to see if it's stepping on a castle 
+                else {
+                    if ( this.getCenterTile().isCastle ) {
+                        this.removeFromMap = true;
+                        // Castle was hit, so see if the game is over. If not,
+                        // make the screen flash over the course of so many
+                        // milliseconds.
+                        game.Player.castleLife--;
+                        if ( game.Player.castleLife < 1 ) {
+                            game.GameStateManager.enterLoseState();
+                        } else {
+                            game.castleFlashScreenTimer = 320;
+                        }
+                    }
                 }
             }
 

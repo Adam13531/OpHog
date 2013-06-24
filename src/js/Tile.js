@@ -20,6 +20,7 @@
     window.game.Tile = function Tile(graphicIndex, tileIndex, tileX, tileY) {
         this.graphicIndex = graphicIndex;
         this.isSpawnerPoint = (this.graphicIndex == game.SPAWN_TILE_GRAPHIC_INDEX);
+        this.isCastle = (this.graphicIndex == game.CASTLE_GRAPHIC_INDEX);
         this.isWalkable = (this.graphicIndex == game.WALKABLE_TILE_GRAPHIC_INDEX) || this.isSpawnerPoint;
         this.tileIndex = tileIndex;
         this.x = tileX;
@@ -120,6 +121,32 @@
         }
         this.graphicIndex = game.SPAWN_TILE_GRAPHIC_INDEX;
         this.isSpawnerPoint = true;
+    };
+
+    //TODO: if there are starting LEFT puzzle pieces that look like these ones,
+    // this code will fail:
+    //0 0 0
+    //1 1 1
+    //0 0 0
+    //0 0 0
+    //
+    //0 X 0
+    //Y 1 0
+    //0 1 1
+    //0 0 0 (in this case, the castle needs to be where the X is, but it
+    //      would be where the Y is)
+    /**
+     * Converts a tile into a castle
+     * @return {[type]} [description]
+     */
+    window.game.Tile.prototype.convertToCastle = function() {
+        if ( this.isWalkable ) {
+            console.log('Can\'t convert a walkable tile into a castle: ' + 
+                        this.tileIndex);
+            return;
+        }
+        this.graphicIndex = game.CASTLE_GRAPHIC_INDEX;
+        this.isCastle = true;
     };
 
 }());

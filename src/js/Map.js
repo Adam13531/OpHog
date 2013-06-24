@@ -103,7 +103,7 @@
 
                 // Put castles to the left of each spawn point and delete any
                 // doodads over it.
-                this.mapTiles[i-1].graphicIndex = game.CASTLE_GRAPHIC_INDEX;
+                this.mapTiles[i-1].convertToCastle();
                 delete this.doodadIndices[i-1];
             }
         };

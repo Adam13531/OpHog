@@ -32,6 +32,30 @@
         coinRegenAmount: 5,
 
         /**
+         * The amount of life that all castles share. There can be multiple
+         * castles on the screen, but they all share this life. Therefore, the
+         * player should try to protect all castles.
+         * @type {Number}
+         */
+        castleLife: 4,
+
+        /**
+         * This draws the castle life to the screen
+         * @param  {Object} ctx - the canvas context
+         * @return {undefined}
+         */
+        drawCastleLife: function(ctx) {
+            game.util.debugDisplayText('Castle life: ' + this.castleLife, 'castle life');
+
+            if ( game.castleFlashScreenTimer > 0 ) {
+                ctx.save();
+                ctx.fillStyle = 'rgba(255,255,255, 1)';
+                ctx.fillRect(0, 0, screenWidth, screenHeight);
+                ctx.restore();
+            }
+        },
+
+        /**
          * This draws the number of coins you have on the screen.
          * @param  {Object} ctx - the canvas context
          * @return {undefined}
@@ -89,7 +113,8 @@
         },
 
         /**
-         * Regenerates coins.
+         * Regenerates coins and updates the timer for flashing the screen when
+         * a castle gets hit by an enemy.
          * @param  {Number} delta - time in ms since this function was last
          * called
          * @return {undefined}
@@ -100,6 +125,10 @@
             if ( this.coinRegenCooldown <= 0 ) {
                 this.coinRegenCooldown += this.coinRegenRate;
                 this.coins += this.coinRegenAmount;
+            }
+
+            if ( game.castleFlashScreenTimer > 0 ) {
+                game.castleFlashScreenTimer -= delta;
             }
         }
     }
