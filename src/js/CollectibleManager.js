@@ -115,7 +115,12 @@
         update: function(delta) {
             // Random chance to generate a collectible is very low and gets
             // lower as we spawn more.
-            var chanceToSpawnCollectible = .004 / (this.collectibles.length + 1);
+            // 
+            // It's based on the size of the map, so a 25x25 map will have a
+            // .004 initial chance to spawn a collectible.
+            var initialChanceToSpawn = currentMap.areaInTiles * .0000064;
+
+            var chanceToSpawnCollectible = initialChanceToSpawn / (this.collectibles.length + 1);
             if ( Math.random() < chanceToSpawnCollectible ) this.addNewCollectible();
 
             // Remove dead collectibles first

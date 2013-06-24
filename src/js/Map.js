@@ -43,6 +43,8 @@
         this.widthInPixels = this.numCols * tileSize;
         this.heightInPixels = this.numRows * tileSize;
 
+        this.areaInTiles = this.numCols * this.numRows;
+
         this.initialize();
     };
 
