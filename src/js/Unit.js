@@ -511,6 +511,13 @@
         // Hard-coding that this unit gets closer to its cooldown at 100 units
         // per second.
         if ( newCoords.atDestination && this.isLiving() ) {
+
+            // When enemies are at their destinations, we clear fog around that
+            // enemy so that the player can see what's going on in a battle.
+            if ( !this.isPlayer ) {
+                currentMap.revealFogAroundUnit(this);
+            }
+
             var cooldownDifference = 100 * deltaAsSec;
             this.battleData.cooldown -= cooldownDifference;
             if ( this.battleData.cooldown <= 0 ) {
