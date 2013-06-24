@@ -10,6 +10,7 @@
         // files.
         LAVA_TILESET_ID: 0,
         MARSH_TILESET_ID: 1,
+        DESERT_TILESET_ID: 2,
 
         /**
          * The available tilesets.
@@ -31,6 +32,7 @@
             if ( this.initialized ) return;
 
             this.tilesets = [];
+            this.constructDesertTileset();
             this.constructLavaTileset();
             this.constructMarshTileset();
             this.initialized = true;
@@ -50,6 +52,22 @@
 
             console.log('Error: no tileset with ID==' + id);
             return null;
+        },
+
+        constructDesertTileset: function() {
+            // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
+            var tileset = new game.Tileset(this.DESERT_TILESET_ID, 65, 190, 172);
+
+            var stones = 117;
+            var grayStone = 105;
+            var bareBrownTree = 75;
+
+            // Single-tile doodads
+            tileset.addDoodad(new game.Doodad([bareBrownTree], 1, 10));
+            tileset.addDoodad(new game.Doodad([grayStone], 1, 2));
+            tileset.addDoodad(new game.Doodad([stones], 1, 1));
+
+            this.tilesets.push(tileset);
         },
 
         constructLavaTileset: function() {
