@@ -375,6 +375,107 @@
         },
 
         /**
+         * Adds a blank row of zeroes to this.mapArray.
+         * @param  {Number} rowIndex - the index of the row from 0 to
+         * heightInTiles
+         */
+        addBlankRow: function(rowIndex) {
+            var startIndex = rowIndex * this.widthInTiles;
+            // var blankRow = new Array(this.widthInTiles);
+            for (var i = 0; i < this.widthInTiles; i++) {
+                // blankRow[i] = 0;
+                this.mapArray.splice(startIndex, 0, 0);
+            };
+            this.heightInTiles++;
+        },
+
+        /**
+         * Removes a row from this.mapArray;
+         * @param  {Number} rowIndex - the index of the row from 0 to
+         * heightInTiles.
+         */
+        removeRow: function(rowIndex) {
+            var startIndex = rowIndex * this.widthInTiles;
+            this.mapArray.splice(startIndex, this.widthInTiles);
+            this.heightInTiles--;
+        },
+
+        /**
+         * @param  {Number} rowIndex - the index of the row from 0 to
+         * heightInTiles
+         * @return {Boolean} true if the row is blank
+         */
+        isRowBlank: function(rowIndex) {
+            var startIndex = rowIndex * this.widthInTiles;
+            for (var i = startIndex; i < startIndex + this.widthInTiles; i++) {
+                if ( this.mapArray[i] == 1 ) {
+                    return false;
+                }
+            };
+
+            return true;
+        },
+
+        /**
+         * Removes large chunks of blank rows. Also, ensures that there's only a
+         * single blank row at the top and bottom of the map.
+         */
+        handleBlankRows: function() {
+            // Remove any blank rows at the beginning
+            for (var i = 0; i < this.heightInTiles; i++) {
+                if ( this.isRowBlank(i) ) {
+                    this.removeRow(i);
+                    i--;
+                } else {
+                    break;
+                }
+            };
+
+            // Remove any at the end
+            for (var i = this.heightInTiles - 1; i >= 0; i--) {
+                if ( this.isRowBlank(i) ) {
+                    this.removeRow(i);
+                } else {
+                    break;
+                }
+            };
+
+            // Now remove large blocks of blank rows.
+
+            // This number cannot be 0 or it could generate invalid maps!
+            var maxNumOfConsecutiveBlankRows = 5;
+
+            // Keep track of how many consecutive blank rows we find.
+            var consecutiveCount = 0;
+            for (var i = 0; i < this.heightInTiles; i++) {
+                if ( this.isRowBlank(i) ) {
+                    consecutiveCount++;
+
+                    // If we've exceed our maximum, then remove all blank
+                    // rows from here until the next non-blank row.
+                    if ( consecutiveCount > maxNumOfConsecutiveBlankRows ) {
+                        while (true) {
+                            if ( !this.isRowBlank(i) ) {
+                                break;
+                            }
+                            this.removeRow(i);
+                        }
+                        trimmed = true;
+
+                        // We're at a non-blank row now, so reset the count.
+                        consecutiveCount = 0;
+                    }
+                } else {
+                    consecutiveCount = 0;
+                }
+            };
+
+            // Add a single blank row at the top and at the bottom
+            this.addBlankRow(0);
+            this.addBlankRow(this.heightInTiles);
+        },
+
+        /**
          * Generates a random map
          * @param  {Number} width      width of the map to be generated in tiles
          * @param  {Number} height     height of the map to be generated in tiles
@@ -436,26 +537,7 @@
                 }
             };
 
-            // Go through arrayOfOnesAndZeroes, and remove any blank rows at the
-            // start.
-            // 
-            // Need to save 'numRows' here because otherwise the value would change
-            // as we iterated
-            var numRows = this.mapArray.length / this.widthInTiles;
-            var found = false;
-            for (var i = 0; i < numRows; i++) {
-                for (var j = 0; j < this.widthInTiles; j++) {
-                    if ( this.mapArray[j] == 1 ) {
-                        found = true;
-                        break;
-                    }
-                };    
-                if ( found ) break;
-
-                // Remove that row
-                this.mapArray.splice(0, this.widthInTiles);
-                this.heightInTiles--;
-            };
+            this.handleBlankRows();
 
             this.computeDoodads();
 
@@ -464,7 +546,7 @@
                 this.mapArray[i] = (this.mapArray[i] == 0 ? this.tileset.nonwalkableTileGraphic : this.tileset.walkableTileGraphic);
             };
 
-            var map = new game.Map(this.mapArray, this.doodadIndices, this.tileset.id, width);
+            var map = new game.Map(this.mapArray, this.doodadIndices, this.tileset.id, this.widthInTiles);
 
             // We don't need these any longer, so free the memory.
             delete this.columns;
