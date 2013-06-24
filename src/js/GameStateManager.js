@@ -106,10 +106,19 @@
         setState: function(newState) {
             if ( this.currentState == newState ) {
                 console.log('GameStateManager error: you\'re trying to ' +
-                    'transition to the state you\'re alraedy in: ' + newState);
+                    'transition to the state you\'re already in: ' + newState);
                 return;
             }
 
+            // Lose state --> normal gameplay
+            // 
+            // Need to restore the boss since it was removed.
+            if ( this.inLoseState() && newState == game.GameStates.NORMAL_GAMEPLAY ) {
+                currentMap.addBossUnit();
+            }
+
+            // Lose state --> win state (INVALID)
+            // 
             // The following happens right now because entering the LOSE state
             // will remove the boss, and removing the boss will win you the map,
             // so we reject this state transition.
@@ -117,6 +126,8 @@
                 return;
             }
 
+            // Win state --> lose state (INVALID)
+            //
             // This shouldn't be possible. If you've already won, then nothing
             // should trigger a loss.
             if ( this.inWinState() && newState == game.GameStates.LOSE_SCREEN ) {
@@ -124,18 +135,18 @@
                 return;
             }
 
-            // You're transitioning from a win state to normal gameplay.
+            // Win state --> normal
             if ( this.inWinState() && newState == game.GameStates.NORMAL_GAMEPLAY ) {
                 this.switchToNewMap();
             }
 
-            // You're transitioning from to normal gameplay to a lose state.
+            // Normal state --> lose
             if ( this.isNormalGameplay() && newState == game.GameStates.LOSE_SCREEN ) {
                 this.commonWinLoseFunctions();
                 game.Player.modifyCoins(-1000);
             }
 
-            // You're transitioning from to normal gameplay to a win state.
+            // Normal state --> win
             if ( this.isNormalGameplay() && newState == game.GameStates.WIN_SCREEN ) {
                 this.commonWinLoseFunctions();
                 currentMap.clearAllFog();
