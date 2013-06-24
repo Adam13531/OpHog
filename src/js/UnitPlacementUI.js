@@ -241,8 +241,8 @@
 			$('#buyingScreenContainer').append('<div id="changingPagesDiv">' +
 											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
 											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitLeftImage) + '" />' +
-											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px; margin-right:2.00em">' + game.UnitManager.getNumOfPlayerUnits(nextUnitLeftImage)+'</span>' +
-											   '<span id="rightUnitAmount" style="font-weight: bold; font-size: 20px">' + game.UnitManager.getNumOfPlayerUnits(nextUnitRightImage)+'</span>' +
+											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px; margin-right:2.00em">0</span>' +
+											   '<span id="rightUnitAmount" style="font-weight: bold; font-size: 20px">0</span>' +
 											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitRightImage) + '" />' +
 											   '<img id="rightArrowImg" src="'+game.imagePath+'/right_arrow.png" width="32" height="32"/>' +
 											   '</div>');
@@ -275,14 +275,20 @@
             // Call this after we set the page so that the buy button will be
             // enabled/disabled appropriately.
             this.playerCoinsChanged();
+
+            this.updateAvailableUnitCounts();
         },
 
         /**
          * Updates this unit's statistics and the opacity of the entire row.
+         *
+         * This also updates the available unit counts.
          * @param  {Unit} unit - the unit to update
          * @return {null}
          */
         updateUnit: function(unit) {
+            this.updateAvailableUnitCounts();
+
             var id = unit.id;
 
         	var $costTag = $('#unitCost' + id);
@@ -311,6 +317,19 @@
 
             // Modify the opacity of the entire div
             $('#unit' + id).css({'opacity': opacity});
+        },
+
+        /**
+         * Updates the numbers that appear next to each unit at the bottom of
+         * the page.
+         */
+        updateAvailableUnitCounts: function() {
+            var leftUnitType = this.getLeftPage();
+            var rightUnitType = this.getRightPage();
+            var availableLeftUnits = game.UnitManager.getUnplacedUnits(leftUnitType);
+            var availableRightUnits = game.UnitManager.getUnplacedUnits(rightUnitType);
+            $('#leftUnitAmount').text(availableLeftUnits.length);
+            $('#rightUnitAmount').text(availableRightUnits.length);
         },
 
         /**
