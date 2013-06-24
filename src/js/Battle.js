@@ -58,7 +58,7 @@
         // immediately because it's "costly" for large battles (shouldn't be too
         // intense on CPU, but there's no need to keep recomputing it if too
         // many units join a battle in a single game loop).
-        this.needsToBeRepositioned = false;
+        this.unitLayoutInvalid = false;
 
         // When this isn't NONE, the battle is over.
         this.battleWinner = game.BattleWinner.NONE;
@@ -139,18 +139,11 @@
      * @param {Unit} unit The unit to potentially add to the battle.
      */
     window.game.Battle.prototype.addUnitIfCloseEnough = function(unit) {
-        // Check against the player circle
+        // Check against both the player and enemy circles
         var distToPlayerCircle = window.game.util.distance(this.playerCenterX, this.playerCenterY, unit.getCenterX(), unit.getCenterY());
-
-        if (distToPlayerCircle <= this.playerJoinRadius) {
-            this.addUnit(unit);
-            return true;
-        }
-
-        // Check against the enemy circle
         var distToEnemyCircle = window.game.util.distance(this.enemyCenterX, this.enemyCenterY, unit.getCenterX(), unit.getCenterY());
 
-        if (distToEnemyCircle <= this.enemyJoinRadius) {
+        if (distToPlayerCircle <= this.playerJoinRadius || distToEnemyCircle <= this.enemyJoinRadius) {
             this.addUnit(unit);
             return true;
         }
@@ -552,7 +545,7 @@
             unit.battleData.originalY = unit.preBattleY;
         }
 
-        this.needsToBeRepositioned = true;
+        this.unitLayoutInvalid = true;
     };
 
     /**
@@ -630,7 +623,7 @@
      *                           false to reposition the enemy's.
      * @return {null}
      */
-    window.game.Battle.prototype.repositionUnits = function(isPlayer) {
+    window.game.Battle.prototype.layoutUnits = function(isPlayer) {
         var unitsToPosition;
 
         // The difference in X when you can't fit in the column
@@ -834,10 +827,10 @@
         var change = speed * deltaAsSec;
 
 
-        if ( this.needsToBeRepositioned ) {
-            this.needsToBeRepositioned = false;
-            this.repositionUnits(true);
-            this.repositionUnits(false);
+        if ( this.unitLayoutInvalid ) {
+            this.unitLayoutInvalid = false;
+            this.layoutUnits(true);
+            this.layoutUnits(false);
         }
 
         // Update projectiles
