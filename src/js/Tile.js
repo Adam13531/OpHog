@@ -1,5 +1,11 @@
 ( function() {
 
+    window.game.TileFlags = {
+        WALKABLE: 1,
+        SPAWNER:  2,
+        CASTLE:   4
+    };
+
     window.game.CASTLE_GRAPHIC_INDEX = 93;
 
     /**

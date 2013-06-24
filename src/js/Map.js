@@ -73,7 +73,7 @@
      * @return {undefined}
      */
     window.game.Map.prototype.clearFogAroundSpawners = function() {
-        var spawners = this.getAllSpawnerTiles();
+        var spawners = this.getAllTiles(game.TileFlags.SPAWNER);
         for (var i = 0; i < spawners.length; i++) {
             this.setFog(spawners[i].x, spawners[i].y, 3, false);
         };
@@ -122,14 +122,14 @@
     window.game.Map.prototype.placeGenerators = function() {
         // Coordinates of generators
         var generatorCoords = [];
-        var spawnerTiles = this.getAllSpawnerTiles();
+        var spawnerTiles = this.getAllTiles(game.TileFlags.SPAWNER);
         var minimumDistanceFromSpawn = 7;
         var numberOfGeneratorsToPlace = 7;
         var possibleGeneratorTiles;
 
         // Start with all walkable tiles as candidates for possible generator
         // tiles.
-        possibleGeneratorTiles = this.getAllWalkableTiles();
+        possibleGeneratorTiles = this.getAllTiles(game.TileFlags.WALKABLE);
 
         // Remove any tile that is within a certain number of tiles from any
         // spawner so that enemies aren't generated too close to the spawn
@@ -207,33 +207,27 @@
       * @return {Tile} a random, walkable tile
      */
     window.game.Map.prototype.getRandomWalkableTile = function() {
-        return game.util.randomArrayElement(this.getAllWalkableTiles());
+        return game.util.randomArrayElement(this.getAllTiles(game.TileFlags.WALKABLE));
     };
 
     /**
-     * @return {Array:Tile} - an array of all of the walkable tiles on this map
+     * Gets all the tiles of a certain type
+     * @param  {game.TileFlags} tileFlags Type of tiles on this map that are wanted
+     * @return {Array:Tile}           List containing only tiles that were wanted
      */
-    window.game.Map.prototype.getAllWalkableTiles = function() {
-        var walkableTiles = [];
+    window.game.Map.prototype.getAllTiles = function(tileFlags) {
+        var tiles = [];
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
-            if ( tile.isWalkable ) walkableTiles.push(tile);
+            if ( 
+                ( (tileFlags & game.TileFlags.WALKABLE) && tile.isWalkable ) ||
+                ( (tileFlags & game.TileFlags.SPAWNER) && tile.isSpawner ) ||
+                ( (tileFlags & game.TileFlags.CASTLE) && tile.isCastle )
+                ) {
+                tiles.push(tile);
+            }
         };
-
-        return walkableTiles;
-    };
-
-    /**
-     * @return {Array:Tile} - an array of all of the spawner tiles on this map
-     */
-    window.game.Map.prototype.getAllSpawnerTiles = function() {
-        var spawnerTiles = [];
-        for (var i = 0; i < this.mapTiles.length; i++) {
-            var tile = this.mapTiles[i];
-            if ( tile.isSpawnerPoint ) spawnerTiles.push(tile);
-        };
-
-        return spawnerTiles;
+        return tiles;
     };
     
     /**
@@ -1135,7 +1129,7 @@
         // item when the target tile exists within X tiles ALONG A PATH from a
         // spawn point. That way you can't make "jumps" across unconnected
         // paths.
-        var allSpawners = this.getAllSpawnerTiles();
+        var allSpawners = this.getAllTiles(game.TileFlags.SPAWNER);
         var closeEnough = false;
         for (var i = 0; i < allSpawners.length; i++) {
             if ( game.util.distance(allSpawners[i].x, allSpawners[i].y, tileX, tileY) <= maxDistanceToAnotherSpawner ) {
