@@ -769,7 +769,7 @@
             } else {
                 fontColor = '#0f0';
             }
-            var textObj = new game.TextObj(this.getCenterX(), this.y, lifeChangeString, false, fontColor);
+            var textObj = new game.TextObj(this.getCenterX(), this.y, lifeChangeString, false, fontColor, true);
             game.TextManager.addTextObj(textObj);
         }
 
@@ -797,7 +797,7 @@
                     game.Player.modifyCoins(coinsGranted);
 
                     var coinString = '+' + coinsGranted + ' coin' + (coinsGranted != 1 ? 's' : '');
-                    var textObj = new game.TextObj(this.x, this.y, coinString, true, '#0f0');
+                    var textObj = new game.TextObj(this.x, this.y, coinString, true, '#0f0', true);
                     game.TextManager.addTextObj(textObj);
                 }
             }

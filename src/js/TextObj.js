@@ -18,11 +18,16 @@
      * @param {Number} centerY The center Y coordinate (in pixels)
      * @param {String} text    The text to display
      * @param {Boolean} bigFont If true, this'll make the font big and green
+     * @param {String} fontColor - the color of the font
+     * @param {Boolean} useWorldCoordinates - if true, this text object will be
+     * displayed in world coordinates, otherwise it will be displayed in screen
+     * coordinates.
      */
-    window.game.TextObj = function TextObj(centerX, centerY, text, bigFont, fontColor) {
+    window.game.TextObj = function TextObj(centerX, centerY, text, bigFont, fontColor, useWorldCoordinates) {
         this.text = text;
 
         this.bigFont = bigFont;
+        this.useWorldCoordinates = useWorldCoordinates;
 
         // Text objects require a canvas in order to figure out their metrics,
         // so we can't actually position anything here.
@@ -80,6 +85,10 @@
      */
     window.game.TextObj.prototype.draw = function(ctx) {
         ctx.save();
+
+        if ( this.useWorldCoordinates ) {
+            game.Camera.scaleAndTranslate(ctx);
+        }
 
         ctx.font = this.font;
         var text = this.text;
