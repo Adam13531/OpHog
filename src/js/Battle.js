@@ -58,7 +58,7 @@
         // immediately because it's "costly" for large battles (shouldn't be too
         // intense on CPU, but there's no need to keep recomputing it if too
         // many units join a battle in a single game loop).
-        this.needsToBeRepositioned = false;
+        this.unitLayoutInvalid = false;
 
         // When this isn't NONE, the battle is over.
         this.battleWinner = game.BattleWinner.NONE;
@@ -139,18 +139,11 @@
      * @param {Unit} unit The unit to potentially add to the battle.
      */
     window.game.Battle.prototype.addUnitIfCloseEnough = function(unit) {
-        // Check against the player circle
+        // Check against both the player and enemy circles
         var distToPlayerCircle = window.game.util.distance(this.playerCenterX, this.playerCenterY, unit.getCenterX(), unit.getCenterY());
-
-        if (distToPlayerCircle <= this.playerJoinRadius) {
-            this.addUnit(unit);
-            return true;
-        }
-
-        // Check against the enemy circle
         var distToEnemyCircle = window.game.util.distance(this.enemyCenterX, this.enemyCenterY, unit.getCenterX(), unit.getCenterY());
 
-        if (distToEnemyCircle <= this.enemyJoinRadius) {
+        if (distToPlayerCircle <= this.playerJoinRadius || distToEnemyCircle <= this.enemyJoinRadius) {
             this.addUnit(unit);
             return true;
         }
@@ -227,12 +220,8 @@
     /**
      * This function should be called when a unit dies in battle. It checks
      * to see if the battle is over.
-     *
-     * This function doesn't account for what would happen if units from both
-     * teams died in a single turn (picture a self-destruct kind of move).
      * 
      * @param  {Unit} deadUnit The unit that just died.
-     * @return {null}
      */
     window.game.Battle.prototype.unitDied = function(deadUnit) {
         var numLivingUnits = this.getNumLivingUnits(deadUnit.isPlayer);
@@ -242,6 +231,22 @@
             this.battleWinner = deadUnit.isPlayer ? game.BattleWinner.ENEMY : game.BattleWinner.PLAYER;
         }
 
+        // If the enemy units are dead, then we count it as a win for the player
+        // even if the player's units are dead. This way, you'll still get items
+        // from the battle.
+        if ( this.getNumLivingUnits(false) == 0 ) {
+            this.battleWinner = game.BattleWinner.PLAYER;
+        }
+
+        var losingTeam = this.getLosingTeam();
+
+        // Remove all status effects from the losing team so that they don't get
+        // revived somehow.
+        if ( losingTeam != null ) {
+            for (var i = 0; i < losingTeam.length; i++) {
+                losingTeam[i].removeStatusEffects();
+            };
+        }
     };
 
     /**
@@ -320,13 +325,36 @@
     };
 
     /**
+     * @return {Array:Unit} the losing team's units, or null if the battle isn't
+     * over.
+     */
+    window.game.Battle.prototype.getLosingTeam = function() {
+        if ( this.battleWinner == game.BattleWinner.PLAYER ) {
+            return this.enemyUnits;
+        } else if ( this.battleWinner == game.BattleWinner.ENEMY ) {
+            return this.playerUnits;
+        }
+
+        // The battle isn't over yet.
+        return null;
+    }
+    
+
+    /**
      * This is called by the BattleManager RIGHT before the battle is removed
      * from existence. It will remove units from battle and guide them to their
      * original positions.
+     *
+     * In the case that you won/lost the map, the battle winner may be NONE here
+     * because the battle didn't get a chance to finish. That's fine.
      */
     window.game.Battle.prototype.aboutToRemoveBattle = function() {
         var battleData;
         var unit;
+
+        // There isn't necessarily a losing team if the battle winner is NONE.
+        // See the function-level comments.
+        var losingTeam = this.getLosingTeam();
 
         // If the player won, then we should add experience.
         if ( this.battleWinner == game.BattleWinner.PLAYER ) {
@@ -363,9 +391,28 @@
             unit = this.units[i];
             battleData = unit.battleData;
 
-            // If the unit dies in battle, it dies in real life
+            // Remove any dead units from the map.
             if (!unit.isLiving()) {
                 unit.removeFromMap = true;
+            }
+
+            // Remove the entire losing team from the map. You may think we just
+            // did this above by removing all of the dead units, but there's a
+            // very rare bug that I've never actually hit (and will fix where I
+            // can, but maybe that's not everywhere). Imagine this situation:
+            // 
+            // 1. Player vs. ENEMY A and ENEMY B
+            // 2. Enemy A dies.
+            // 3. Player shoots a projectile (call it Projectile 0 since it comes first) at enemy B.
+            // 4. Enemy B casts revive on A. Revive is a projectile (call it Projectile 1), so it takes time to hit.
+            // 5. Projectile 0 kils B. This causes the battle to be assigned a winner since both enemies are dead.
+            // 6. Projectile 1 still gets to update and revives A.
+            // 
+            // Now, the battle is over, but the losing team still has someone living.
+            if ( losingTeam != null ) {
+                for (var j = 0; j < losingTeam.length; j++) {
+                    losingTeam[j].removeFromMap = true;
+                };
             }
 
             // Restore their original positions
@@ -423,7 +470,9 @@
     },
 
     /**
-     * Adds a unit to the battle.
+     * Adds a unit to the battle. The unit being added may already be in a
+     * battle (that would happen in the case where another battle was too close
+     * to this one and was combined).
      * @param {Unit} unit Player or enemy unit.
      */
     window.game.Battle.prototype.addUnit = function(unit) {
@@ -496,7 +545,7 @@
             unit.battleData.originalY = unit.preBattleY;
         }
 
-        this.needsToBeRepositioned = true;
+        this.unitLayoutInvalid = true;
     };
 
     /**
@@ -574,7 +623,7 @@
      *                           false to reposition the enemy's.
      * @return {null}
      */
-    window.game.Battle.prototype.repositionUnits = function(isPlayer) {
+    window.game.Battle.prototype.layoutUnits = function(isPlayer) {
         var unitsToPosition;
 
         // The difference in X when you can't fit in the column
@@ -778,10 +827,10 @@
         var change = speed * deltaAsSec;
 
 
-        if ( this.needsToBeRepositioned ) {
-            this.needsToBeRepositioned = false;
-            this.repositionUnits(true);
-            this.repositionUnits(false);
+        if ( this.unitLayoutInvalid ) {
+            this.unitLayoutInvalid = false;
+            this.layoutUnits(true);
+            this.layoutUnits(false);
         }
 
         // Update projectiles
@@ -793,6 +842,13 @@
             }
 
             this.projectiles[i].update(delta);
+
+            // If that projectile won the battle, then we can stop here. We
+            // especially wouldn't want a projectile in this 'for' loop to un-
+            // win the battle by reviving someone.
+            if ( this.isDead() ) {
+                break;
+            }
         };
     };
 

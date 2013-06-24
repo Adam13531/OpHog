@@ -24,6 +24,9 @@
          * @return {undefined}
          */
         removeAllBattles: function() {
+            for (var i = 0; i < this.battles.length; i++) {
+                this.battles[i].aboutToRemoveBattle();
+            };
             this.battles = [];
         },
 
@@ -42,7 +45,7 @@
             while (this.combineBattles()){};
 
             // Update individual battles
-            for (var i = this.battles.length - 1; i >= 0; i--) {
+            for (var i = 0; i < this.battles.length; i++) {
                 this.battles[i].update(delta);
             };
 

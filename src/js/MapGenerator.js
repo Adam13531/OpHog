@@ -21,15 +21,14 @@
         mapArray: [],
 
         /**
-         * The possible doodads to choose from.
-         * @type {Array:Doodad}
+         * The tileset to use when creating a map.
+         * @type {Tileset}
          */
-        doodads: [],
+        tileset: null,
 
         /**
          * The doodad graphic indices for this map. They are indexed like the
-         * mapArray is, and undefined indicates that there's no doodad at that
-         * tile.
+         * mapArray is, and null indicates that there's no doodad at that tile.
          * @type {Array}
          */
         doodadIndices: [],
@@ -70,7 +69,6 @@
             // Wipe out all of the arrays
             this.mapArray = [];
             this.doodadIndices = [];
-            this.doodads = [];
             this.puzzlePieces = [];
             this.columns = [];
 
@@ -135,55 +133,6 @@
                                  1,1,1,0,0,
                                  0,0,0,0,0,
                                  0,0,0,0,0,], game.PuzzlePieceType.RIGHT);
-
-            var water1 = 130;
-            var water2 = 114;
-            var greenTree = 73;
-            var bareBrownTree = 75;
-            var fullGreenTree = 77;
-            var greenBush1 = 78;
-            var greenBush2 = 79;
-            var smallGrayRock = 105;
-            var smallMushroom = 108;
-            var bigMushroom = 109;
-            var greenPlants = 126;
-
-            // A big pond
-            this.doodads.push(new game.Doodad(
-                [
-                water1,water1,water1,water1,water1,
-                water1,water1,water1,water1,water1,
-                water1,water1,water1,water1,water1,
-                water1,water1,water1,water1,water1,
-                water1,water1,water1,water1,water1,
-                ], 5, 1
-                ));
-
-            // Medium-sized ponds
-            this.doodads.push(new game.Doodad(
-                [
-                water1,water1,water1,
-                water1,water1,water1,
-                water1,water1,water1,
-                ], 3, 1
-                ));
-            this.doodads.push(new game.Doodad(
-                [
-                water2,water2,water2,
-                water2,water2,water2,
-                water2,water2,water2,
-                ], 3, 1
-                ));
-
-            // Single-tile doodads
-            this.doodads.push(new game.Doodad([greenTree], 1, 1));
-            this.doodads.push(new game.Doodad([bareBrownTree], 1, 1));
-            this.doodads.push(new game.Doodad([fullGreenTree], 1, 1));
-            this.doodads.push(new game.Doodad([greenBush1], 1, 1));
-            this.doodads.push(new game.Doodad([greenBush2], 1, 1));
-            this.doodads.push(new game.Doodad([smallGrayRock], 1, 1));
-            this.doodads.push(new game.Doodad([smallMushroom], 1, 5));
-            this.doodads.push(new game.Doodad([bigMushroom], 1, 5));
     	},
 
         /**
@@ -358,6 +307,8 @@
          * @return {undefined}
          */
         computeDoodads: function() {
+            var doodads = this.tileset.doodads;
+
             this.doodadIndices = new Array(this.mapArray.length);
 
             var doodadDensity = 5; // approximately 1 doodad every 5 tiles
@@ -368,10 +319,10 @@
             //
             // 1250 tiles in a 50x25 map, divided by the density == 125, divided
             // by number of doodads == ~20.
-            var attemptsPerSquare = this.widthInTiles * this.heightInTiles / doodadDensity / this.doodads.length;
+            var attemptsPerSquare = this.widthInTiles * this.heightInTiles / doodadDensity / doodads.length;
 
-            for (var i = 0; i < this.doodads.length; i++) {
-                var doodad = this.doodads[i];
+            for (var i = 0; i < doodads.length; i++) {
+                var doodad = doodads[i];
                 var numAttemptsToPlace = doodad.width * doodad.height * attemptsPerSquare;
                 numAttemptsToPlace = Math.min(numAttemptsToPlace, 250) / doodad.rarity;
                 numAttemptsToPlace = Math.ceil(numAttemptsToPlace);
@@ -412,7 +363,7 @@
                 // Apply our offsets to the passed-in coordinates
                 var index2 = (y + row) * this.widthInTiles + x + column;
                 if ( justCheck ) {
-                    if ( this.mapArray[index2] == 1 || this.doodadIndices[index2] !== undefined ) {
+                    if ( this.mapArray[index2] == 1 || this.doodadIndices[index2] != null ) {
                         return false;
                     }
                 } else {
@@ -421,6 +372,107 @@
             };
 
             return true;
+        },
+
+        /**
+         * Adds a blank row of zeroes to this.mapArray.
+         * @param  {Number} rowIndex - the index of the row from 0 to
+         * heightInTiles
+         */
+        addBlankRow: function(rowIndex) {
+            var startIndex = rowIndex * this.widthInTiles;
+            // var blankRow = new Array(this.widthInTiles);
+            for (var i = 0; i < this.widthInTiles; i++) {
+                // blankRow[i] = 0;
+                this.mapArray.splice(startIndex, 0, 0);
+            };
+            this.heightInTiles++;
+        },
+
+        /**
+         * Removes a row from this.mapArray;
+         * @param  {Number} rowIndex - the index of the row from 0 to
+         * heightInTiles.
+         */
+        removeRow: function(rowIndex) {
+            var startIndex = rowIndex * this.widthInTiles;
+            this.mapArray.splice(startIndex, this.widthInTiles);
+            this.heightInTiles--;
+        },
+
+        /**
+         * @param  {Number} rowIndex - the index of the row from 0 to
+         * heightInTiles
+         * @return {Boolean} true if the row is blank
+         */
+        isRowBlank: function(rowIndex) {
+            var startIndex = rowIndex * this.widthInTiles;
+            for (var i = startIndex; i < startIndex + this.widthInTiles; i++) {
+                if ( this.mapArray[i] == 1 ) {
+                    return false;
+                }
+            };
+
+            return true;
+        },
+
+        /**
+         * Removes large chunks of blank rows. Also, ensures that there's only a
+         * single blank row at the top and bottom of the map.
+         */
+        handleBlankRows: function() {
+            // Remove any blank rows at the beginning
+            for (var i = 0; i < this.heightInTiles; i++) {
+                if ( this.isRowBlank(i) ) {
+                    this.removeRow(i);
+                    i--;
+                } else {
+                    break;
+                }
+            };
+
+            // Remove any at the end
+            for (var i = this.heightInTiles - 1; i >= 0; i--) {
+                if ( this.isRowBlank(i) ) {
+                    this.removeRow(i);
+                } else {
+                    break;
+                }
+            };
+
+            // Now remove large blocks of blank rows.
+
+            // This number cannot be 0 or it could generate invalid maps!
+            var maxNumOfConsecutiveBlankRows = 5;
+
+            // Keep track of how many consecutive blank rows we find.
+            var consecutiveCount = 0;
+            for (var i = 0; i < this.heightInTiles; i++) {
+                if ( this.isRowBlank(i) ) {
+                    consecutiveCount++;
+
+                    // If we've exceed our maximum, then remove all blank
+                    // rows from here until the next non-blank row.
+                    if ( consecutiveCount > maxNumOfConsecutiveBlankRows ) {
+                        while (true) {
+                            if ( !this.isRowBlank(i) ) {
+                                break;
+                            }
+                            this.removeRow(i);
+                        }
+                        trimmed = true;
+
+                        // We're at a non-blank row now, so reset the count.
+                        consecutiveCount = 0;
+                    }
+                } else {
+                    consecutiveCount = 0;
+                }
+            };
+
+            // Add a single blank row at the top and at the bottom
+            this.addBlankRow(0);
+            this.addBlankRow(this.heightInTiles);
         },
 
         /**
@@ -460,6 +512,8 @@
 
             var sizeInTiles = this.widthInTiles * this.heightInTiles;
 
+            this.tileset = game.util.randomArrayElement(game.TilesetManager.tilesets);
+
             // Generate a map array with all zeroes
             for (var i = 0; i < sizeInTiles; i++) {
                 this.mapArray.push(0);
@@ -483,41 +537,21 @@
                 }
             };
 
-            // Go through arrayOfOnesAndZeroes, and remove any blank rows at the
-            // start.
-            // 
-            // Need to save 'numRows' here because otherwise the value would change
-            // as we iterated
-            var numRows = this.mapArray.length / this.widthInTiles;
-            var found = false;
-            for (var i = 0; i < numRows; i++) {
-                for (var j = 0; j < this.widthInTiles; j++) {
-                    if ( this.mapArray[j] == 1 ) {
-                        found = true;
-                        break;
-                    }
-                };    
-                if ( found ) break;
-
-                // Remove that row
-                this.mapArray.splice(0, this.widthInTiles);
-                this.heightInTiles--;
-            };
+            this.handleBlankRows();
 
             this.computeDoodads();
 
             // Convert the array of 0s and 1s to map tiles
             for (var i = 0; i < this.mapArray.length; i++) {
-                this.mapArray[i] = (this.mapArray[i] == 0 ? game.NONWALKABLE_TILE_GRAPHIC_INDEX : game.WALKABLE_TILE_GRAPHIC_INDEX);
+                this.mapArray[i] = (this.mapArray[i] == 0 ? this.tileset.nonwalkableTileGraphic : this.tileset.walkableTileGraphic);
             };
 
-            var map = new game.Map(this.mapArray, this.doodadIndices, width);
+            var map = new game.Map(this.mapArray, this.doodadIndices, this.tileset.id, this.widthInTiles);
 
             // We don't need these any longer, so free the memory.
             delete this.columns;
             delete this.mapArray;
             delete this.puzzlePieces;
-            delete this.doodads;
 
             return map;
     	}

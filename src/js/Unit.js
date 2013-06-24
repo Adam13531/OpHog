@@ -91,7 +91,7 @@
          * StatusEffects affecting this unit.
          * @type {Array:StatusEffect}
          */
-        this.statusEffects = [];
+        this.removeStatusEffects();
 
         this.level = level;
         this.experience = 0;
@@ -198,10 +198,15 @@
         this.destX = null;
         this.destY = null;
 
+        // Remove battle data just in case. There was a bug where you would join
+        // a battle, win the map, then place this unit again, and it would think
+        // it's still in the battle.
+        this.battleData = null;
+
         this.acquireNewDestination();
 
         // Purge status effects
-        this.statusEffects = [];
+        this.removeStatusEffects();
 
         if ( this.isPlayer ) {
             game.QuestManager.placedAUnit(this.unitType);
@@ -264,11 +269,18 @@
         // ever show stats in the unit placement UI or something, we wouldn't
         // want buffs to be taken into account if they won't exist once the unit
         // is placed).
-        this.statusEffects = [];
+        this.removeStatusEffects();
         this.hasBeenPlaced = false;
         this.removeFromMap = false;
 
         game.UnitPlacementUI.updateUnit(this);
+    };
+
+    /**
+     * Removes all status effects.
+     */
+    window.game.Unit.prototype.removeStatusEffects = function() {
+        this.statusEffects = [];
     };
 
     /**
@@ -777,7 +789,7 @@
         if ( !this.isLiving() ) {
             // Wipe out any status effects so that we don't do something stupid
             // like regen ourselves back to life
-            this.statusEffects = [];
+            this.removeStatusEffects();
             if ( this.battleData != null ) {
                 this.battleData.battle.unitDied(this);
             } else {

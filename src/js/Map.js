@@ -7,11 +7,14 @@
      * in the map
      * @param {Array:Number} doodadIndices - the graphic indices for doodads, or
      * undefined if there is no doodad at that location.
+     * @param {Number} tilesetID - the ID of the tileset to use
      * @param {Number} width                - width of this map
      */
-    window.game.Map = function Map(mapTilesIndices, doodadIndices, width) {
+    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width) {
         this.numCols = width;
         this.numRows = mapTilesIndices.length / this.numCols;
+
+        this.tileset = game.TilesetManager.getTilesetByID(tilesetID);
 
         /**
          * The tiles representing this map.
@@ -20,9 +23,12 @@
         this.mapTiles = [];
         for (var i = 0; i < mapTilesIndices.length; i++) {
             var index = mapTilesIndices[i];
-            this.mapTiles.push(new game.Tile(index, i, i % this.numCols, Math.floor(i/this.numCols)));
+            this.mapTiles.push(new game.Tile(this.tileset, index, i, i % this.numCols, Math.floor(i/this.numCols)));
         };
 
+        // Save this so that the GameDataManager can easily restore the map
+        // simply by calling the constructor.
+        this.mapTilesIndices = mapTilesIndices;
         this.doodadIndices = doodadIndices;
 
         /**
@@ -990,7 +996,7 @@
                             // castles.
                             ctx.fillRect(0, 0, tileSize, tileSize);
                             envSheet.drawSprite(ctx, graphic, 0,0);
-                            if ( doodadGraphic !== undefined ) {
+                            if ( doodadGraphic != null ) {
                                 envSheet.drawSprite(ctx, doodadGraphic, 0,0);
                             }
                             if ( game.InventoryUI.isTileAUseTarget(x,y) ) {
@@ -1004,7 +1010,7 @@
                         // layer, then we just draw the map normally.
                         if ( !this.fog[index] ) {
                             envSheet.drawSprite(ctx, graphic, 0,0);
-                            if ( doodadGraphic !== undefined ) {
+                            if ( doodadGraphic != null ) {
                                 envSheet.drawSprite(ctx, doodadGraphic, 0,0);
                             }
                             if ( game.InventoryUI.isTileAUseTarget(x,y) ) {
