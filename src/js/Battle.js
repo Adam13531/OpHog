@@ -315,7 +315,7 @@
         game.Player.modifyCoins(coinsGranted);
 
         var coinString = '+' + coinsGranted + ' coin' + (coinsGranted != 1 ? 's' : '');
-        var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY + 35, coinString, true, '#0f0');
+        var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY + 35, coinString, true, '#0f0', true);
         game.TextManager.addTextObj(textObj);
 
         // Add all of the items we just obtained.
@@ -363,7 +363,7 @@
             var expString = '+' + experienceGranted + ' exp';
 
             // Spawn a text object where the enemies used to be
-            var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true, '#0f0');
+            var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true, '#0f0', true);
             game.TextManager.addTextObj(textObj);
 
             // Give the experience to all living player units

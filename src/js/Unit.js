@@ -530,6 +530,13 @@
         // Hard-coding that this unit gets closer to its cooldown at 100 units
         // per second.
         if ( newCoords.atDestination && this.isLiving() ) {
+
+            // When enemies are at their destinations, we clear fog around that
+            // enemy so that the player can see what's going on in a battle.
+            if ( !this.isPlayer ) {
+                currentMap.revealFogAroundUnit(this);
+            }
+
             var cooldownDifference = 100 * deltaAsSec;
             this.battleData.cooldown -= cooldownDifference;
             if ( this.battleData.cooldown <= 0 ) {
@@ -781,7 +788,7 @@
             } else {
                 fontColor = '#0f0';
             }
-            var textObj = new game.TextObj(this.getCenterX(), this.y, lifeChangeString, false, fontColor);
+            var textObj = new game.TextObj(this.getCenterX(), this.y, lifeChangeString, false, fontColor, true);
             game.TextManager.addTextObj(textObj);
         }
 
@@ -809,7 +816,7 @@
                     game.Player.modifyCoins(coinsGranted);
 
                     var coinString = '+' + coinsGranted + ' coin' + (coinsGranted != 1 ? 's' : '');
-                    var textObj = new game.TextObj(this.x, this.y, coinString, true, '#0f0');
+                    var textObj = new game.TextObj(this.x, this.y, coinString, true, '#0f0', true);
                     game.TextManager.addTextObj(textObj);
                 }
             }

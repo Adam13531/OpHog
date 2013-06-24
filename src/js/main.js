@@ -313,14 +313,14 @@
             // 'Z' - save game
             if ( evt.keyCode == game.Key.DOM_VK_Z ) {
                 game.GameDataManager.saveGame();
-                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'SAVING', true, '#0f0');
+                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'SAVING', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
             }
 
             // 'X' - load game
             if ( evt.keyCode == game.Key.DOM_VK_X ) {
                 game.GameDataManager.loadGame();
-                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'LOADING', true, '#0f0');
+                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'LOADING', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
             }
 
@@ -353,7 +353,7 @@
                 itemID = game.ItemType.SHIELD.id;
             }
             if (evt.keyCode == game.Key.DOM_VK_P) {
-                itemID = game.ItemType.CREATE_SPAWNER.id;
+                itemID = game.ItemType.MEGA_CREATE_SPAWNER.id;
             }
 
             if ( itemID != null ) {
@@ -530,11 +530,11 @@
         // Fog will cover everything drawn before this line of code (e.g. units,
         // projectiles).
         currentMap.drawFog(ctx);
-        game.TextManager.draw(ctx);
 
         // Restore so that the camera will stop affecting the following draw
         // commands.
         ctx.restore();
+        game.TextManager.draw(ctx);
         game.GameStateManager.draw(ctx);
         ctx.save();
 

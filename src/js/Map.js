@@ -43,6 +43,8 @@
         this.widthInPixels = this.numCols * tileSize;
         this.heightInPixels = this.numRows * tileSize;
 
+        this.areaInTiles = this.numCols * this.numRows;
+
         this.initialize();
     };
 
@@ -113,6 +115,19 @@
                 delete this.doodadIndices[i-1];
             }
         };
+    };
+
+    /**
+     * Reveals fog around a unit. This is based on the unit's size.
+     * @param  {Unit} unit - the unit to reveal
+     */
+    window.game.Map.prototype.revealFogAroundUnit = function(unit) {
+        var tile = unit.getCenterTile();
+        if ( tile == null ) return;
+
+        // Take the larger of the two dimensions.
+        var radius = Math.max(unit.widthInTiles, unit.heightInTiles);
+        this.setFog(tile.x, tile.y, radius, false, true);
     };
 
     /**

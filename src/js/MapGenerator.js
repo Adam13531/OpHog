@@ -307,7 +307,15 @@
          * @return {undefined}
          */
         computeDoodads: function() {
-            var doodads = this.tileset.doodads;
+            // Copy the array so that we don't sort the tileset's doodads too.
+            var doodads = this.tileset.doodads.slice(0);
+
+            // Sort from biggest to smallest so that we try placing the biggest
+            // ones first. If we placed small doodads first, then we'd have a
+            // lot less room for the big doodads.
+            doodads.sort(function(doodad1, doodad2) {
+                return doodad2.graphicIndices.length - doodad1.graphicIndices.length;
+            });
 
             this.doodadIndices = new Array(this.mapArray.length);
 
