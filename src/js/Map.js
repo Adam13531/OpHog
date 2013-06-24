@@ -7,13 +7,14 @@
      * in the map
      * @param {Array:Number} doodadIndices - the graphic indices for doodads, or
      * undefined if there is no doodad at that location.
+     * @param {Number} tilesetID - the ID of the tileset to use
      * @param {Number} width                - width of this map
      */
-    window.game.Map = function Map(mapTilesIndices, doodadIndices, tileset, width) {
+    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width) {
         this.numCols = width;
         this.numRows = mapTilesIndices.length / this.numCols;
 
-        this.tileset = tileset;
+        this.tileset = game.TilesetManager.getTilesetByID(tilesetID);
 
         /**
          * The tiles representing this map.

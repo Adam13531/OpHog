@@ -2,6 +2,7 @@
   
     /**
      * A tileset lets you know how to "skin" maps.
+     * @param {Number} id - a unique ID for this tileset
      * @param {Number} spawnTileGraphic       - graphic index for the spawn
      * tiles on this map
      * @param {Number} nonwalkableTileGraphic - graphic index for the
@@ -9,9 +10,10 @@
      * @param {Number} walkableTileGraphic    - graphic index for the walkable
      * tiles on this map
      */
-    window.game.Tileset = function Tileset(spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic) {
+    window.game.Tileset = function Tileset(id, spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic) {
         this.doodads = [];
 
+        this.id = id;
         this.spawnTileGraphic = spawnTileGraphic;
         this.nonwalkableTileGraphic = nonwalkableTileGraphic;
         this.walkableTileGraphic = walkableTileGraphic;

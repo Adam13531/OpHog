@@ -517,6 +517,7 @@
         saveMap: function() {
             localStorage.mapTilesIndices = JSON.stringify(currentMap.mapTilesIndices);
             localStorage.doodadIndices = JSON.stringify(currentMap.doodadIndices);
+            localStorage.tilesetID = currentMap.tileset.id;
             localStorage.numCols = currentMap.numCols;
             localStorage.fog = JSON.stringify(currentMap.fog);
         },
@@ -528,11 +529,12 @@
         loadMap: function() {
             var mapTilesIndices = JSON.parse(localStorage.mapTilesIndices);
             var doodadIndices = JSON.parse(localStorage.doodadIndices);
+            var tilesetID = Number(localStorage.tilesetID);
             var numCols = Number(localStorage.numCols);
             var fog = JSON.parse(localStorage.fog);
 
             // This will reform all tiles' leftList and rightList.
-            currentMap = new game.Map(mapTilesIndices, doodadIndices, numCols);
+            currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols);
 
             // Restore fog
             currentMap.fog = fog;

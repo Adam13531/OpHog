@@ -464,7 +464,7 @@
                 this.mapArray[i] = (this.mapArray[i] == 0 ? this.tileset.nonwalkableTileGraphic : this.tileset.walkableTileGraphic);
             };
 
-            var map = new game.Map(this.mapArray, this.doodadIndices, this.tileset, width);
+            var map = new game.Map(this.mapArray, this.doodadIndices, this.tileset.id, width);
 
             // We don't need these any longer, so free the memory.
             delete this.columns;

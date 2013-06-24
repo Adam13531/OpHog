@@ -5,6 +5,12 @@
      */
     window.game.TilesetManager = {
 
+        // These IDs are hard-coded instead of autocomputed so that we can
+        // always change the order and not worry about screwing up people's save
+        // files.
+        LAVA_TILESET_ID: 0,
+        MARSH_TILESET_ID: 1,
+
         /**
          * The available tilesets.
          * @type {Array:Tileset}
@@ -30,9 +36,25 @@
             this.initialized = true;
         },
 
+        /**
+         * Retrieves a tileset based on its ID.
+         * @param  {Number} id - the ID of the tileset, e.g. LAVA_TILESET_ID.
+         * @return {Tileset}    the tileset corresponding to this ID.
+         */
+        getTilesetByID: function(id) {
+            for (var i = 0; i < this.tilesets.length; i++) {
+                if ( this.tilesets[i].id == id ) {
+                    return this.tilesets[i];
+                }
+            };
+
+            console.log('Error: no tileset with ID==' + id);
+            return null;
+        },
+
         constructLavaTileset: function() {
             // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
-            var tileset = new game.Tileset(65, 116, 100);
+            var tileset = new game.Tileset(this.LAVA_TILESET_ID, 65, 116, 100);
 
             var lava1 = 112;
             var lava2 = 128;
@@ -79,7 +101,7 @@
 
         constructMarshTileset: function() {
             // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
-            var tileset = new game.Tileset(65, 70, 72);
+            var tileset = new game.Tileset(this.MARSH_TILESET_ID, 65, 70, 72);
 
             var water1 = 130;
             var water2 = 114;
