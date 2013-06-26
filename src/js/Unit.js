@@ -57,10 +57,6 @@
      */
     window.game.displayLifeBarsInBattle = false;
 
-    // When a castle gets hit, flash the screen over the course of this many
-    // milliseconds. It starts at 0 but will be set when a castle is hit.
-    window.game.castleFlashScreenTimer = 0;
-
     /**
      * Creates a unit (player OR enemy).
      * @param {Number}  unitType - an ID from game.UnitType, e.g.
@@ -289,7 +285,19 @@
      */
     window.game.Unit.prototype.canJoinABattle = function() {
         return this.hasBeenPlaced && !this.isInBattle();
-    }
+    };
+
+    /**
+     * There were too many bugs around simply setting removeFromMap equal to
+     * true, because units wouldn't actually be removed until the UnitManager
+     * updated again. Thus, I made this function so that we could also set
+     * hasBeenPlaced to false when this is done.
+     */
+    window.game.Unit.prototype.removeUnitFromMap = function() {
+        this.removeFromMap = true;
+        this.hasBeenPlaced = false;
+    };
+
     /**
      * Acquires a new destination based on the movement AI that the unit has.
      * @return {undefined}
@@ -347,7 +355,7 @@
 
         // If we're at or past the end of a path, or if we're off the map, then
         // just keep moving off the map.
-        if ( tile == null || !tile.isWalkable || isTileARightEndpoint ) {
+        if ( tile == null || !tile.isWalkable() || isTileARightEndpoint ) {
             // These may not be set yet if we placed a unit right at the end of
             // the path.
             if ( this.destX == null || this.destY == null ) {
@@ -437,21 +445,9 @@
                     game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
 
                     game.CollectibleManager.collectAtLocation(this, centerTileX, centerTileY);
-                }
-                // If it's an enemy, check to see if it's stepping on a castle 
-                else {
-                    if ( this.getCenterTile().isCastle ) {
-                        this.removeFromMap = true;
-                        // Castle was hit, so see if the game is over. If not,
-                        // make the screen flash over the course of so many
-                        // milliseconds.
-                        game.Player.castleLife--;
-                        if ( game.Player.castleLife < 1 ) {
-                            game.GameStateManager.enterLoseState();
-                        } else {
-                            game.castleFlashScreenTimer = 320;
-                        }
-                    }
+                } else if ( !this.isBoss && this.getCenterTile().isCastle() ) { 
+                    this.removeUnitFromMap();
+                    game.Player.modifyCastleLife(-1);
                 }
             }
 
@@ -463,7 +459,7 @@
             // use or kill the unit.
             var outOfBounds = 4 * tileSize;
             if ( this.x < -outOfBounds || this.x > currentMap.numCols * tileSize + outOfBounds ) {
-                this.removeFromMap = true;
+                this.removeUnitFromMap();
             }
 
         } else {
@@ -800,7 +796,7 @@
             if ( this.battleData != null ) {
                 this.battleData.battle.unitDied(this);
             } else {
-                this.removeFromMap = true;
+                this.removeUnitFromMap();
 
                 // If an enemy unit is killed outside of battle, they should
                 // still give items/coins.
@@ -969,7 +965,6 @@
      */
     window.game.Unit.prototype.drawLifeBar = function(ctx) {
         ctx.save();
-        var alpha = .75;
 
         // Properties of the life bar rectangle
         var w = this.width;
@@ -980,15 +975,15 @@
         var percentLife = Math.min(1, Math.max(0, this.life / this.getMaxLife()));
 
         // Draw a rectangle as the background
-        ctx.fillStyle = 'rgba(0, 0, 0, ' + alpha + ')';
+        ctx.fillStyle = 'rgba(0, 0, 0, .75)';
         ctx.fillRect(x,y,w,h);
 
         // Draw a rectangle to show how much life you have
-        ctx.fillStyle = 'rgba(200, 0, 0, ' + alpha + ')';
+        ctx.fillStyle = 'rgba(200, 0, 0, .75)';
         ctx.fillRect(x,y,w * percentLife, h);
 
         // Draw a border
-        ctx.strokeStyle = 'rgba(255, 0, 0, ' + alpha + ')';
+        ctx.strokeStyle = 'rgba(255, 0, 0, .75)';
         ctx.strokeRect(x,y,w, h);
 
         // Draw the percentage

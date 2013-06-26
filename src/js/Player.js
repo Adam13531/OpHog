@@ -1,6 +1,13 @@
 ( function() {
 
     /**
+     * When a castle gets hit, flash the screen over the course of this many
+     * milliseconds.
+     * @type {Number}
+     */
+    window.game.castleFlashScreenTimer = 0;
+
+    /**
      * There is only one Player, and it keeps track of coins for now.
      */
     window.game.Player = {
@@ -33,8 +40,7 @@
 
         /**
          * The amount of life that all castles share. There can be multiple
-         * castles on the screen, but they all share this life. Therefore, the
-         * player should try to protect all castles.
+         * castles on the screen, but they all share this life. 
          * @type {Number}
          */
         castleLife: game.FULL_CASTLE_LIFE,
@@ -61,7 +67,6 @@
 
                 var castleTiles = currentMap.getAllTiles(game.TileFlags.CASTLE);
                 for (var i = 0; i < castleTiles.length; i++) {
-                    var alpha = .75;
                     var castleTile = castleTiles[i];
                     
                     // Properties of the life bar rectangle
@@ -73,15 +78,15 @@
                     var percentLife = Math.min(1, Math.max(0, game.Player.castleLife / game.FULL_CASTLE_LIFE));
 
                     // Draw a rectangle as the background
-                    ctx.fillStyle = 'rgba(0, 0, 0, ' + alpha + ')';
+                    ctx.fillStyle = 'rgba(0, 0, 0,.75)';
                     ctx.fillRect(x,y,w,h);
 
                     // Draw a rectangle to show how much life you have
-                    ctx.fillStyle = 'rgba(200, 0, 0, ' + alpha + ')';
+                    ctx.fillStyle = 'rgba(200, 0, 0,.75)';
                     ctx.fillRect(x,y,w * percentLife, h);
 
                     // Draw a border
-                    ctx.strokeStyle = 'rgba(255, 0, 0, ' + alpha + ')';
+                    ctx.strokeStyle = 'rgba(255, 0, 0,.75)';
                     ctx.strokeRect(x,y,w, h);
 
                     // Draw the percentage
@@ -153,6 +158,21 @@
             this.coins += amount;
 
             game.UnitPlacementUI.playerCoinsChanged();
+        },
+
+        /**
+         * Modifies your castle life and updates the UI.
+         * @param  {Number} amount - the amount of life to add (negative ==
+         * taking damage)
+         */
+        modifyCastleLife: function(amount) {
+            this.castleLife += amount;
+
+            if ( game.Player.castleLife <= 0 ) {
+                game.GameStateManager.enterLoseState();
+            } else {
+                game.castleFlashScreenTimer = 255;
+            }
         },
 
         /**
