@@ -112,9 +112,11 @@
 
             // Lose state --> normal gameplay
             // 
-            // Need to restore the boss since it was removed.
+            // Need to restore the boss since it was removed and reset the castle
+            // life.
             if ( this.inLoseState() && newState == game.GameStates.NORMAL_GAMEPLAY ) {
                 currentMap.addBossUnit();
+                game.Player.castleLife = game.FULL_CASTLE_LIFE;
             }
 
             // Lose state --> win state (INVALID)

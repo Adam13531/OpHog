@@ -14,7 +14,7 @@
          * After your cooldown hits 0, this is the number that it will be set
          * to. This represents the number of seconds it takes for you to
          * regenerate coins.
-         * @type {Number}
+         * @type {Number}   
          */
         coinRegenRate: 10,
 
@@ -30,6 +30,73 @@
          * @type {Number}
          */
         coinRegenAmount: 5,
+
+        /**
+         * The amount of life that all castles share. There can be multiple
+         * castles on the screen, but they all share this life. Therefore, the
+         * player should try to protect all castles.
+         * @type {Number}
+         */
+        castleLife: game.FULL_CASTLE_LIFE,
+
+        /**
+         * This draws the castle life to the screen and flashes the screen if
+         * a castle was recently hit
+         * @param  {Object} ctx - the canvas context
+         * @return {undefined}
+         */
+        drawCastleLife: function(ctx) {
+            ctx.save();
+
+            // Flash the screen if one of the castles was recently hit
+            if ( game.castleFlashScreenTimer > 0 ) {
+                var redValue = Math.max(255-game.castleFlashScreenTimer, 0);
+                ctx.fillStyle = 'rgba(' + redValue + ', 0, 0, .3)';
+                ctx.fillRect(0, 0, screenWidth, screenHeight);
+            }
+            // Switch from screen coordinates to camera coordinates
+            game.Camera.scaleAndTranslate(ctx);
+            // Draw castle's life over them for the user to see
+            if ( game.keyPressedToDisplayLifeBars ) {
+
+                var castleTiles = currentMap.getAllTiles(game.TileFlags.CASTLE);
+                for (var i = 0; i < castleTiles.length; i++) {
+                    var alpha = .75;
+                    var castleTile = castleTiles[i];
+                    
+                    // Properties of the life bar rectangle
+                    var w = tileSize;
+                    var h = 10;
+                    var x = castleTile.x * tileSize;
+                    var y = (castleTile.y * tileSize) + tileSize - h;
+
+                    var percentLife = Math.min(1, Math.max(0, game.Player.castleLife / game.FULL_CASTLE_LIFE));
+
+                    // Draw a rectangle as the background
+                    ctx.fillStyle = 'rgba(0, 0, 0, ' + alpha + ')';
+                    ctx.fillRect(x,y,w,h);
+
+                    // Draw a rectangle to show how much life you have
+                    ctx.fillStyle = 'rgba(200, 0, 0, ' + alpha + ')';
+                    ctx.fillRect(x,y,w * percentLife, h);
+
+                    // Draw a border
+                    ctx.strokeStyle = 'rgba(255, 0, 0, ' + alpha + ')';
+                    ctx.strokeRect(x,y,w, h);
+
+                    // Draw the percentage
+                    ctx.font = '12px Futura, Helvetica, sans-serif';
+                    var text = game.util.formatPercentString(percentLife, 0) + '%';
+                    var width = ctx.measureText(text).width;
+
+                    ctx.textBaseline = 'top';
+                    ctx.fillStyle = '#fff';
+                    ctx.fillText(text, x + w / 2 - width / 2, y - 2);
+
+                };
+            }
+            ctx.restore();
+        },
 
         /**
          * This draws the number of coins you have on the screen.
@@ -89,7 +156,8 @@
         },
 
         /**
-         * Regenerates coins.
+         * Regenerates coins and updates the timer for flashing the screen when
+         * a castle gets hit by an enemy.
          * @param  {Number} delta - time in ms since this function was last
          * called
          * @return {undefined}
@@ -100,6 +168,10 @@
             if ( this.coinRegenCooldown <= 0 ) {
                 this.coinRegenCooldown += this.coinRegenRate;
                 this.coins += this.coinRegenAmount;
+            }
+
+            if ( game.castleFlashScreenTimer > 0 ) {
+                game.castleFlashScreenTimer -= delta;
             }
         }
     }
