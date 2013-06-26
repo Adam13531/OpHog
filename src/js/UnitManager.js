@@ -108,7 +108,8 @@
         /**
          * Gets the number of units that belong to a player and are of the type
          * that was passed in.
-         * @param  {UnitType} unitType Type of unit
+         * @param  {Number} unitType - an ID from game.UnitType, e.g.
+         * game.UnitType.ORC.id.
          * @return {Number} The number of units that belong to the player that
          *                   are of the type unitType
          */
@@ -119,7 +120,8 @@
         /**
          * Gets the units that belong to a player and are of the type that was
          * passed in.
-         * @param  {UnitType} unitType Type of unit
+         * @param  {Number} unitType - an ID from game.UnitType, e.g.
+         * game.UnitType.ORC.id.
          * @return {Array:Unit}          List of units that belong to the player
          *                               that are of type unitType.
          */
@@ -131,6 +133,25 @@
                     units.push(this.gameUnits[i]);
                 };
             };
+            return units;
+        },
+
+        /**
+         * Gets all the unplaced units of the specified type.
+         * @param  {Number} unitType - an ID from game.UnitType, e.g.
+         * game.UnitType.ORC.id.
+         * @return {Array:Unit} - all of the unplaced units of the specified
+         * type
+         */
+        getUnplacedUnits: function(unitType) {
+            var units = this.getUnits(unitType);
+            for (var i = 0; i < units.length; i++) {
+                if ( units[i].hasBeenPlaced ) {
+                    units.splice(i, 1);
+                    i--;
+                }
+            };
+
             return units;
         },
     };
