@@ -59,7 +59,25 @@
         widthInTiles: 0,
         heightInTiles: 0,
 
-        mapDifficulty: 0,
+        /**
+         * This number controls how complex the path is. For now, it represents
+         * the minimum number of right openings a column must have before it's
+         * valid.
+         *
+         * Therefore, the minimum number is 1 (otherwise a column could have no
+         * openings).
+         * @type {Number}
+         */
+        pathComplexity: 1,
+
+        /**
+         * If you generate an invalid column, the complexity multiplier will go
+         * up until you generate a valid one. This controls the relative weights
+         * of each piece, so more complex pieces will be chosen with a higher
+         * probability.
+         * @type {Number}
+         */
+        complexityMultiplier: 1,
 
         /**
          * Initialization function. Creates the puzzle pieces
@@ -149,7 +167,16 @@
          * @param {Number} columnIndex The column index, from 0 to heightInPuzzlePieces.
          */
         printColumn: function(columnIndex) {
-            for (var i = columnIndex; i < columnIndex + this.heightInPuzzlePieces; i++) {
+            var startPiece = columnIndex * this.heightInPuzzlePieces;
+            if ( startPiece >= this.columns.length ) {
+                console.log(columnIndex + ' is out of bounds. Max value: ' + (Math.floor(this.columns.length / this.heightInPuzzlePieces) - 1));
+                return;
+            }
+            for (var i = startPiece; i < startPiece + this.heightInPuzzlePieces; i++) {
+                if ( i >= this.columns.length ) {
+                    console.log('That was the last piece. Index: ' + i);
+                    return;
+                }
                 this.columns[i].print();
             };
         },
@@ -248,6 +275,16 @@
                     continue;
                 }
 
+                // Always start relative weight at 1.
+                this.puzzlePieces[i].relativeWeight = 1;
+                var numRightOpenings = this.puzzlePieces[i].getNumOpenings(game.DirectionFlags.RIGHT);
+
+                // If there are no right openings, we still want a chance to
+                // pick the piece, so we don't enter this 'if' body.
+                if ( numRightOpenings > 0 ) {
+                    this.puzzlePieces[i].relativeWeight = numRightOpenings * this.complexityMultiplier;
+                }
+
                 possiblePuzzlePiecesList.push(this.puzzlePieces[i]);
             };
 
@@ -273,28 +310,39 @@
          * heightInPuzzlePieces)
          */
         generateColumn: function(columnIndex) {
+            // Start the complexityMultiplier at 1 every time. This is simply
+            // the number of attempts we've tried so far.
+            this.complexityMultiplier = 1;
             var validColumn = false;
             while (!validColumn) {
 
-                // Last column doesn't need right openings and just needs to
+                for ( var i = 0; i < this.heightInPuzzlePieces; i++ ) {
+                    var puzzlePiece;
+                    var possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(columnIndex * this.heightInPuzzlePieces + i);
+                    puzzlePiece = game.util.randomFromWeights(possiblePuzzlePiecesList);
+
+                    this.columns.push(puzzlePiece);
+                }
+
+                // Check to see if we got the number of right openings that we
+                // wanted in this column.
+                var numOpenings = 0;
+                for (var i = 0; i < this.heightInPuzzlePieces; i++) {
+                    var puzzlePiece = this.columns[this.columns.length - 1 - i];
+                    numOpenings += puzzlePiece.getNumOpenings(game.DirectionFlags.RIGHT);
+                };
+
+                validColumn = (numOpenings >= this.pathComplexity);
+
+                // The last column doesn't need right openings and just needs to
                 // connect to the previous column, so it's always valid.
                 if (columnIndex == this.widthInPuzzlePieces - 1) {
                     validColumn = true;
                 }
 
-                for ( var i = 0; i < this.heightInPuzzlePieces; i++ ) {
-                    var puzzlePiece;
-                    var possiblePuzzlePiecesList = this.getPossiblePuzzlePieces(columnIndex * this.heightInPuzzlePieces + i);
-                    puzzlePiece = possiblePuzzlePiecesList[Math.floor(Math.random()*possiblePuzzlePiecesList.length)];
-
-                    if (puzzlePiece.hasRightOpening) {
-                        validColumn = true;
-                    }
-                    this.columns.push(puzzlePiece);
-                }
-
                 if (!validColumn) {
                     this.columns.splice(columnIndex, this.heightInPuzzlePieces);
+                    this.complexityMultiplier++;
                 }
             }
         },
@@ -492,11 +540,6 @@
          * @return {game.Map}          New auto-generated map, or null if there was an error.
          */
     	generateRandomMap: function(width, height, difficulty) {
-            if (difficulty < 1 || difficulty > 4) {
-                game.util.debugDisplayText('Fatal map generation error: difficulty out of bounds.', 'difficulty');
-                return null;
-            }
-
             // Make sure we can use whole puzzle pieces
             if (width * height % game.PUZZLE_PIECE_SIZE != 0) {
                 game.util.debugDisplayText('Fatal map generation error: map size is not a multiple of puzzle piece size', 'map size');
@@ -512,11 +555,15 @@
                 return null;
             }
 
-            this.mapDifficulty = difficulty;
             this.widthInTiles = width;
             this.heightInTiles = height;
             this.heightInPuzzlePieces = this.heightInTiles / game.PUZZLE_PIECE_SIZE;
             this.widthInPuzzlePieces = this.widthInTiles / game.PUZZLE_PIECE_SIZE;
+
+            // For now, cap the complexity at the number of possible puzzle
+            // pieces in a column, otherwise we may not be able to generate a
+            // map.
+            this.pathComplexity = Math.min(this.heightInPuzzlePieces, Math.max(1, difficulty));
 
             var sizeInTiles = this.widthInTiles * this.heightInTiles;
 

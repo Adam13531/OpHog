@@ -55,7 +55,37 @@
         this.hasTopOpening = false;
         this.hasBottomOpening = false;
 
+        // This is the relative weight with which this piece will be chosen. It
+        // will always be set by the MapGenerator, so it's pointless to set it
+        // here other than to have a place to comment it (plus it's bad coding
+        // practice to inject properties into a class after its creation).
+        this.relativeWeight = null;
+
         this.generateEdges();
+    };
+
+    /**
+     * Gets the number of openings for a given side or sides.
+     *
+     * E.g.
+     * 010
+     * 001
+     * 001
+     *
+     * This has 1 UP opening, 2 RIGHT, and 1 DOWN, so if you requested
+     * RIGHT|DOWN, you'd get 3 (it counts the bottom-right corner twice).
+     * @param  {game.DirectionFlags} directionFlags - bitwise-or'd flags
+     * representing which side(s) you want the openings for
+     * @return {Number}                - a sum of the numbers of openings on the
+     * sides you requested.
+     */
+    window.game.PuzzlePiece.prototype.getNumOpenings = function(directionFlags) {
+        var numOpenings = 0;
+        if ( directionFlags & game.DirectionFlags.RIGHT ) numOpenings += game.util.sumArrayValues(this.rightEdgeOpenings);
+        if ( directionFlags & game.DirectionFlags.UP ) numOpenings += game.util.sumArrayValues(this.topEdgeOpenings);
+        if ( directionFlags & game.DirectionFlags.DOWN ) numOpenings += game.util.sumArrayValues(this.bottomEdgeOpenings);
+        if ( directionFlags & game.DirectionFlags.LEFT ) numOpenings += game.util.sumArrayValues(this.leftEdgeOpenings);
+        return numOpenings;
     };
 
     /**
