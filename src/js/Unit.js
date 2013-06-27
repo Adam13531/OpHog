@@ -187,7 +187,7 @@
      * @return {Boolean} True if the unit is a player unit. Otherwise returns false
      */
     window.game.Unit.prototype.isPlayer = function() {
-        return this.playerFlags & game.PlayerFlags.PLAYER;
+        return (this.playerFlags & game.PlayerFlags.PLAYER) != 0;
     };
 
     /**
@@ -195,7 +195,7 @@
      * @return {Boolean} True if the unit is an enemy unit. Otherwise returns false 
      */
     window.game.Unit.prototype.isEnemy = function() {
-        return this.playerFlags & game.PlayerFlags.ENEMY;
+        return (this.playerFlags & game.PlayerFlags.ENEMY) != 0;
     };
 
     /**
@@ -203,7 +203,7 @@
      * @return {Boolean} True if the unit is a neutral unit. Otherwise returns false
      */
     window.game.Unit.prototype.isNeutral = function() {
-        return this.playerFlags & game.PlayerFlags.NEUTRAL;
+        return (this.playerFlags & game.PlayerFlags.NEUTRAL) != 0;
     };
 
     /**
@@ -211,7 +211,7 @@
      * @return {Boolean} True if the unit is a boss unit. Otherwise return false
      */
     window.game.Unit.prototype.isBoss = function() {
-        return this.playerFlags & game.PlayerFlags.BOSS;
+        return (this.playerFlags & game.PlayerFlags.BOSS) != 0;
     };
 
     /**
@@ -219,7 +219,7 @@
      * @return {Boolean} True if the unit is a summoned unit. Otherwise returns false
      */
     window.game.Unit.prototype.isSummon = function() {
-        return this.playerFlags & game.PlayerFlags.SUMMON;
+        return (this.playerFlags & game.PlayerFlags.SUMMON) != 0;
     };
 
     /**
@@ -227,7 +227,7 @@
      * @return {Boolean} True if the unit is a mercenary unit. Otherwise returns false
      */
     window.game.Unit.prototype.isMercenary = function() {
-        return this.playerFlags & game.PlayerFlags.MERCENARY;
+        return (this.playerFlags & game.PlayerFlags.MERCENARY) != 0;
     };
 
     /**
@@ -528,7 +528,7 @@
                     game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
 
                     game.CollectibleManager.collectAtLocation(this, centerTileX, centerTileY);
-                } else if ( !this.isBoss && this.getCenterTile().isCastle() ) { 
+                } else if ( !this.isBoss() && this.getCenterTile().isCastle() ) { 
                     this.removeUnitFromMap();
                     game.Player.modifyCastleLife(-1);
                 }
