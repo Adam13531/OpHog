@@ -34,7 +34,7 @@
             // to base it on which way the arrow is traveling at any instant in
             // time (we could rotate sprites too if we want)
 
-            if ( this.owner.isPlayer ) {
+            if ( this.owner.isPlayer() ) {
                 // 92 == right
                 this.graphicIndex = 92;
             } else {

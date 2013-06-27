@@ -75,14 +75,14 @@
                 var unit = this.gameUnits[i];
                 // Remove units that died in battle
                 if (unit.removeFromMap) {
-                    if ( unit.isPlayer ) {
+                    if ( unit.isPlayer() ) {
                         unit.unplaceUnit();
                     } else {
                         this.gameUnits.splice(i, 1);
                         i--;
                     }
 
-                    if ( unit.isBoss ) {
+                    if ( unit.isBoss() ) {
                         game.GameStateManager.enterWinState();
                     }
                     
@@ -129,7 +129,7 @@
             var units = new Array();
             for (var i = 0; i < this.gameUnits.length; i++) {
                 if (this.gameUnits[i].unitType == unitType && 
-                    this.gameUnits[i].isPlayer) {
+                    this.gameUnits[i].isPlayer()) {
                     units.push(this.gameUnits[i]);
                 };
             };
