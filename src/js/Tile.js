@@ -1,5 +1,11 @@
 ( function() {
 
+    /**
+     * These represent the possible tile types. Not all combinations are
+     * possible, e.g. SPAWNER | CASTLE, and some combinations are necessary,
+     * e.g. WALKABLE | SPAWNER.
+     * @type {Object}
+     */
     window.game.TileFlags = {
         WALKABLE: 1,
         SPAWNER:  2,
@@ -18,9 +24,25 @@
     window.game.Tile = function Tile(tileset, graphicIndex, tileIndex, tileX, tileY) {
         this.tileset = tileset;
         this.graphicIndex = graphicIndex;
-        this.isSpawnerPoint = (this.graphicIndex == this.tileset.spawnTileGraphic);
-        this.isWalkable = (this.graphicIndex == this.tileset.walkableTileGraphic) || this.isSpawnerPoint;
-        this.isCastle = (this.graphicIndex == game.CASTLE_GRAPHIC_INDEX);        
+
+        /**
+         * See game.TileFlags.
+         * @type {game.TileFlags}
+         */
+        this.tileFlags = 0;
+
+        if (this.graphicIndex == this.tileset.spawnTileGraphic) {
+            this.tileFlags |= game.TileFlags.SPAWNER | game.TileFlags.WALKABLE;
+        }
+
+        if (this.graphicIndex == this.tileset.walkableTileGraphic) {
+            this.tileFlags |= game.TileFlags.WALKABLE;
+        }
+
+        if (this.graphicIndex == game.CASTLE_GRAPHIC_INDEX) {
+            this.tileFlags |= game.TileFlags.CASTLE;
+        }
+
         this.tileIndex = tileIndex;
         this.x = tileX;
         this.y = tileY;
@@ -70,6 +92,19 @@
     };
 
     /**
+     * Very straightforward functions below.
+     */
+    window.game.Tile.prototype.isWalkable = function() {
+        return (this.tileFlags & game.TileFlags.WALKABLE) != 0;
+    };
+    window.game.Tile.prototype.isSpawnerPoint = function() {
+        return (this.tileFlags & game.TileFlags.SPAWNER) != 0;
+    };
+    window.game.Tile.prototype.isCastle = function() {
+        return (this.tileFlags & game.TileFlags.CASTLE) != 0;
+    };
+
+    /**
      * Debug function to print a tile's lists.
      * @param  {Boolean} printLeftList - if true, this will print leftList.
      * @return {String} - an empty string simply so that Chrome doesn't print
@@ -110,16 +145,15 @@
 
     /**
      * Converts this tile into a spawner point.
-     * @return {[type]} [description]
      */
     window.game.Tile.prototype.convertToSpawner = function() {
-        if ( !this.isWalkable ) {
+        if ( !this.isWalkable() ) {
             console.log('Can\'t convert a non-walkable tile into a spawner, ' + 
                 'because it wouldn\'t be in any of the map\'s paths. Tile index: ' + this.tileIndex);
             return;
         }
         this.graphicIndex = this.tileset.spawnTileGraphic;
-        this.isSpawnerPoint = true;
+        this.tileFlags |= game.TileFlags.SPAWNER;
     };
 
     //TODO: if there are starting LEFT puzzle pieces that look like these ones,
@@ -139,13 +173,13 @@
      * @return {[type]} [description]
      */
     window.game.Tile.prototype.convertToCastle = function() {
-        if ( this.isWalkable ) {
+        if ( this.isWalkable() ) {
             console.log('Can\'t convert a walkable tile into a castle: ' + 
                         this.tileIndex);
             return;
         }
         this.graphicIndex = game.CASTLE_GRAPHIC_INDEX;
-        this.isCastle = true;
+        this.tileFlags |= game.TileFlags.CASTLE;
     };
 
 }());

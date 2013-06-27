@@ -33,7 +33,7 @@
     window.game.maxSlotQuantity = 99;
 
     /**
-     * The amount of life that all castles share.
+     * The amount of life that the castles start with.
      * @type {Number}
      */
     window.game.FULL_CASTLE_LIFE = 100;

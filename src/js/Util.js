@@ -86,6 +86,22 @@
     };
 
     /**
+     * Simply adds all of the elements in an array. This assumes nothing about
+     * their types, so you can use this to concatenate strings if you want.
+     *
+     * For example, calling this with [1,4,7] returns 12.
+     * @param  {Array} array - an array of anything
+     * @return {Object}       their "sum" (typically a number)
+     */
+    window.game.util.sumArrayValues = function(array) {
+        var sum = 0;
+        for (var i = 0; i < array.length; i++) {
+            sum += array[i];
+        };
+        return sum;
+    };
+    
+    /**
      * Given a list of weighted items, this will return one at random (according
      * to the weights).
      *

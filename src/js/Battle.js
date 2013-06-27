@@ -393,7 +393,7 @@
 
             // Remove any dead units from the map.
             if (!unit.isLiving()) {
-                unit.removeFromMap = true;
+                unit.removeUnitFromMap();
             }
 
             // Remove the entire losing team from the map. You may think we just
@@ -411,7 +411,7 @@
             // Now, the battle is over, but the losing team still has someone living.
             if ( losingTeam != null ) {
                 for (var j = 0; j < losingTeam.length; j++) {
-                    losingTeam[j].removeFromMap = true;
+                    losingTeam[j].removeUnitFromMap();
                 };
             }
 

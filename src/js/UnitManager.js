@@ -101,7 +101,7 @@
          */
         removeAllUnitsFromMap: function() {
             for (var i = 0; i < this.gameUnits.length; i++) {
-                this.gameUnits[i].removeFromMap = true;
+                this.gameUnits[i].removeUnitFromMap();
             };
         },
 

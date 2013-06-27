@@ -234,11 +234,7 @@
         var tiles = [];
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
-            if ( 
-                ( (tileFlags & game.TileFlags.WALKABLE) && tile.isWalkable ) ||
-                ( (tileFlags & game.TileFlags.SPAWNER) && tile.isSpawner ) ||
-                ( (tileFlags & game.TileFlags.CASTLE) && tile.isCastle )
-                ) {
+            if ( (tile.tileFlags & tileFlags) == tileFlags) {
                 tiles.push(tile);
             }
         };
@@ -316,7 +312,7 @@
             var tile = this.mapTiles[i];
 
             // We only consider walkable tiles
-            if ( !tile.isWalkable ) continue;
+            if ( !tile.isWalkable() ) continue;
 
             if ( this.isTileAnEndpoint(tile, false) ) {
                 tile.isRightEndpoint = true;
@@ -366,7 +362,7 @@
             var tile = this.mapTiles[i];
             var listToUse = buildingLeftList ? tile.leftList : tile.rightList;
 
-            if ( !tile.isWalkable ) {
+            if ( !tile.isWalkable() ) {
                 continue;
             }
 
@@ -462,12 +458,12 @@
                     // If we're building the left list, then check the tile to
                     // the right.
                     if ( buildingLeftList ) {
-                        if ( startNeighbor.x < this.numCols && this.mapTiles[startNeighbor.tileIndex + 1].isWalkable ) {
+                        if ( startNeighbor.x < this.numCols && this.mapTiles[startNeighbor.tileIndex + 1].isWalkable() ) {
                             this.removeTileFromArray(this.mapTiles[startNeighbor.tileIndex + 1], endNeighbors);
                         }
                     } else {
                         // Otherwise, check the tile to the left.
-                        if ( startNeighbor.x > 0 && this.mapTiles[startNeighbor.tileIndex - 1].isWalkable ) {
+                        if ( startNeighbor.x > 0 && this.mapTiles[startNeighbor.tileIndex - 1].isWalkable() ) {
                             this.removeTileFromArray(this.mapTiles[startNeighbor.tileIndex - 1], endNeighbors);
                         }
                     }
@@ -949,7 +945,7 @@
             var index = indices[i];
             if ( index >= 0 && index < this.mapTiles.length ) {
                 var neighbor = this.mapTiles[index];
-                if ( !neighbor.isWalkable ) continue;
+                if ( !neighbor.isWalkable() ) continue;
 
                 tiles.push(neighbor);
             }
@@ -1123,12 +1119,12 @@
         var tile = this.mapTiles[tileIndex];
 
         // Can't already be a spawner
-        if ( tile.isSpawnerPoint ) {
+        if ( tile.isSpawnerPoint() ) {
             return false;
         }
 
         // Must be walkable
-        if ( !tile.isWalkable ) {
+        if ( !tile.isWalkable() ) {
             return false;
         }
 
@@ -1184,7 +1180,7 @@
      */
     window.game.Map.prototype.isSpawnerPoint = function(tileX, tileY) {
         var index = tileY * this.numCols + tileX;
-        return this.mapTiles[index].isSpawnerPoint;
+        return this.mapTiles[index].isSpawnerPoint();
     };
 
 }());
