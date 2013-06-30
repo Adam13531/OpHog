@@ -1088,6 +1088,9 @@
         // Bosses always have their lifebars displayed
         if ( this.isBoss() ) return true;
 
+        // Neutral units shouldn't display life bars
+        if ( this.isNeutral() ) return false;
+
         // If you pressed a key
         if ( game.keyPressedToDisplayLifeBars ) return true;
 

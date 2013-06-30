@@ -316,6 +316,31 @@
             
             chanceToDropItem: 0,
             itemsDropped: noItems
+        },
+
+        NPC_OLD_MAN_WIZARD: {
+            id: 10,
+            name: 'Old Man Wizard',
+            graphicIndexes:[32],
+
+            atk: {
+                start: 30,
+                minGrowth: 3,
+                maxGrowth: 9
+            },
+            def: {
+                start: 0,
+                minGrowth: 0,
+                maxGrowth: 3
+            },
+            life: {
+                start: 100,
+                minGrowth: 5,
+                maxGrowth: 15
+            },
+            
+            chanceToDropItem: 0,
+            itemsDropped: noItems
         }
     };
 

@@ -101,6 +101,20 @@
     };
 
     /**
+     * Adds an NPC unit to the map. A map needs to be fully constructed first
+     * before this function can be called.
+     */
+    window.game.Map.prototype.addNPCUnit = function() {
+        var npcUnit = new game.Unit(game.UnitType.NPC_OLD_MAN_WIZARD.id,game.PlayerFlags.NEUTRAL,1);
+        npcUnit.movementAI = game.MovementAI.BOSS;
+
+        var x = 10;//game.util.randomInteger(3, this.numCols - 3);
+        var y = 3;//game.util.randomInteger(3, this.numRows - 3);
+        npcUnit.placeUnit(x, y);
+        game.UnitManager.addUnit(npcUnit);
+    };
+
+    /**
      * This simply goes through each left-endpoint and makes them all spawners.
      * @return {undefined}
      */
