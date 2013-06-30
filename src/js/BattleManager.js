@@ -95,7 +95,7 @@
                 unit = allUnits[i];
                 if ( unit.isPlayer() ) {
                     playerUnits.push(unit);
-                } else {
+                } else if (unit.isEnemy() ) {
                     enemyUnits.push(unit);
                 }
                 
