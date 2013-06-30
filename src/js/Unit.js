@@ -11,6 +11,19 @@
     };
 
     /**
+     * Flags for showing what kind of unit this is
+     * @type {Object}
+     */
+    window.game.PlayerFlags = {
+        PLAYER: 1,
+        ENEMY: 2,
+        NEUTRAL: 4,
+        BOSS: 8,
+        SUMMON: 16,
+        MERCENARY: 32
+    };
+
+    /**
      * These are the movement AIs. Each individual AI is commented.
      */
     window.game.MovementAI = {
@@ -58,13 +71,13 @@
     window.game.displayLifeBarsInBattle = false;
 
     /**
-     * Creates a unit (player OR enemy).
+     * Creates a unit.
      * @param {Number}  unitType - an ID from game.UnitType, e.g.
      * game.UnitType.ORC.id.
-     * @param {Boolean} isPlayer - true if this is a player unit.
+     * @param {game.PlayerFlags} playerFlags - Tell what kind of unit this is
      * @param {Number} level - the level at which to start this unit.
      */
-    window.game.Unit = function Unit(unitType, isPlayer, level) {
+    window.game.Unit = function Unit(unitType, playerFlags, level) {
         var unitData = game.GetUnitDataFromID(unitType, level);
 
         this.unitType = unitType;
@@ -76,9 +89,6 @@
         // were on, or, if there is no such last tile, it refers to the current
         // tile.
         this.previousTile = null;
-
-        // This can only be set to true by convertToBoss.
-        this.isBoss = false;
 
         // Give the unit a standard movement AI.
         this.movementAI = game.MovementAI.FOLLOW_PATH;
@@ -128,7 +138,12 @@
         this.height = tileSize * this.heightInTiles;
 
         this.areaInTiles = this.widthInTiles * this.heightInTiles;
-        this.isPlayer = isPlayer;
+
+        if (this.areValidPlayerFlags(playerFlags)) {
+            this.playerFlags = playerFlags;
+        } else {
+            console.log('Fatal error: Player flags for unit with ID ' + this.id + ' are invalid');
+        }
 
         // As soon as this is true, the unit will be removed from the map. For
         // enemy units, this means they're removed from the game. For player
@@ -168,11 +183,79 @@
     };
 
     /**
+     * Finds out if the unit is a player unit
+     * @return {Boolean} True if the unit is a player unit. Otherwise returns false
+     */
+    window.game.Unit.prototype.isPlayer = function() {
+        return (this.playerFlags & game.PlayerFlags.PLAYER) != 0;
+    };
+
+    /**
+     * Finds out if the unit is an enemy unit
+     * @return {Boolean} True if the unit is an enemy unit. Otherwise returns false 
+     */
+    window.game.Unit.prototype.isEnemy = function() {
+        return (this.playerFlags & game.PlayerFlags.ENEMY) != 0;
+    };
+
+    /**
+     * Finds out if the unit is a neutral unit
+     * @return {Boolean} True if the unit is a neutral unit. Otherwise returns false
+     */
+    window.game.Unit.prototype.isNeutral = function() {
+        return (this.playerFlags & game.PlayerFlags.NEUTRAL) != 0;
+    };
+
+    /**
+     * Finds out if the unit is a boss unit
+     * @return {Boolean} True if the unit is a boss unit. Otherwise return false
+     */
+    window.game.Unit.prototype.isBoss = function() {
+        return (this.playerFlags & game.PlayerFlags.BOSS) != 0;
+    };
+
+    /**
+     * Finds out if the unit is a summoned unit
+     * @return {Boolean} True if the unit is a summoned unit. Otherwise returns false
+     */
+    window.game.Unit.prototype.isSummon = function() {
+        return (this.playerFlags & game.PlayerFlags.SUMMON) != 0;
+    };
+
+    /**
+     * Finds out if the unit is a mercenary unit
+     * @return {Boolean} True if the unit is a mercenary unit. Otherwise returns false
+     */
+    window.game.Unit.prototype.isMercenary = function() {
+        return (this.playerFlags & game.PlayerFlags.MERCENARY) != 0;
+    };
+
+    /**
+     * Checks to see if the player flags are valid
+     * @param  {game.PlayerFlags} playerFlags - Player flags to Check
+     * @return {boolean}          True if the flags are valid. Otherwise, 
+     * returns false
+     */
+    window.game.Unit.prototype.areValidPlayerFlags = function(playerFlags) {
+        if (playerFlags & game.PlayerFlags.PLAYER &&
+            playerFlags & game.PlayerFlags.ENEMY) {
+            return false;
+        }
+
+        if (playerFlags & game.PlayerFlags.PLAYER &&
+            playerFlags & game.PlayerFlags.BOSS) {
+            return false;
+        }
+
+        return true;
+    };
+
+    /**
      * This will turn this enemy into a boss.
      * @return {undefined}
      */
     window.game.Unit.prototype.convertToBoss = function() {
-        this.isBoss = true;
+        this.playerFlags | game.PlayerFlags.BOSS;
         this.movementAI = game.MovementAI.BOSS;
     };
 
@@ -204,7 +287,7 @@
         // Purge status effects
         this.removeStatusEffects();
 
-        if ( this.isPlayer ) {
+        if ( this.isPlayer() ) {
             game.QuestManager.placedAUnit(this.unitType);
         }
     };
@@ -254,7 +337,7 @@
      * @return {null}
      */
     window.game.Unit.prototype.unplaceUnit = function() {
-        if ( !this.isPlayer ) {
+        if ( !this.isPlayer() ) {
             console.log('Error: unplaceUnit was called on an enemy unit. ' +
                 'Ignoring. ID: ' + this.id);
             return;
@@ -348,9 +431,9 @@
         var isTileARightEndpoint
 
         if ( tile != null ) {
-            listToUse = this.isPlayer ? tile.leftList : tile.rightList;
-            isTileALeftEndpoint = this.isPlayer ? tile.isLeftEndpoint : tile.isRightEndpoint;
-            isTileARightEndpoint = this.isPlayer ? tile.isRightEndpoint : tile.isLeftEndpoint;
+            listToUse = this.isPlayer() ? tile.leftList : tile.rightList;
+            isTileALeftEndpoint = this.isPlayer() ? tile.isLeftEndpoint : tile.isRightEndpoint;
+            isTileARightEndpoint = this.isPlayer() ? tile.isRightEndpoint : tile.isLeftEndpoint;
         }
 
         // If we're at or past the end of a path, or if we're off the map, then
@@ -363,7 +446,7 @@
                 this.destY = this.getCenterY();
             }
 
-            this.destX += this.isPlayer ? tileSize : -tileSize;
+            this.destX += this.isPlayer() ? tileSize : -tileSize;
             return;
         }
 
@@ -439,13 +522,13 @@
 
                 // Remove generators that the player steps on. Collect things
                 // too.
-                if ( this.isPlayer ) {
+                if ( this.isPlayer() ) {
                     var centerTileX = this.getCenterTileX();
                     var centerTileY = this.getCenterTileY();
                     game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
 
                     game.CollectibleManager.collectAtLocation(this, centerTileX, centerTileY);
-                } else if ( !this.isBoss && this.getCenterTile().isCastle() ) { 
+                } else if ( !this.isBoss() && this.getCenterTile().isCastle() ) { 
                     this.removeUnitFromMap();
                     game.Player.modifyCastleLife(-1);
                 }
@@ -467,7 +550,7 @@
         }
 
         // Clear some fog every loop, even if we're in battle.
-        if ( this.isPlayer ) {
+        if ( this.isPlayer() ) {
             currentMap.setFog(this.getCenterTileX(), this.getCenterTileY(), 3, false, true);
         }
 
@@ -529,7 +612,7 @@
 
             // When enemies are at their destinations, we clear fog around that
             // enemy so that the player can see what's going on in a battle.
-            if ( !this.isPlayer ) {
+            if ( !this.isPlayer() ) {
                 currentMap.revealFogAroundUnit(this);
             }
 
@@ -556,11 +639,11 @@
         var battle = this.battleData.battle;
 
         // Revive
-        if ( (this.id % 15) == 0 && !this.isBoss ) {
+        if ( (this.id % 15) == 0 && !this.isBoss() ) {
 
             // There needs to be a dead unit for this to work.
             var flags = game.RandomUnitFlags.DEAD;
-            if ( this.isPlayer ) {
+            if ( this.isPlayer() ) {
                 flags |= game.RandomUnitFlags.PLAYER_UNIT;
             } else {
                 flags |= game.RandomUnitFlags.ENEMY_UNIT;
@@ -575,8 +658,8 @@
         }
 
         // Summon
-        if ( !this.isPlayer && !this.isBoss && (this.id % 16) == 0 ) {
-            var newUnit = new game.Unit(game.UnitType.TREE.id,this.isPlayer,1);
+        if ( !this.isPlayer() && !this.isBoss() && (this.id % 16) == 0 ) {
+            var newUnit = new game.Unit(game.UnitType.TREE.id,this.isPlayer(),1);
             newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY());
             game.UnitManager.addUnit(newUnit);
 
@@ -602,7 +685,7 @@
         if ( !modifiedAttack ) {
             // First, acquire a living target of the opposite team
             var flags = game.RandomUnitFlags.ALIVE;
-            if ( this.isPlayer ) {
+            if ( this.isPlayer() ) {
                 flags |= game.RandomUnitFlags.ENEMY_UNIT;
             } else {
                 flags |= game.RandomUnitFlags.PLAYER_UNIT;
@@ -640,7 +723,7 @@
      * @return {Array:Item} - the items that are equipped to this class.
      */
     window.game.Unit.prototype.getClassEquippedItems = function() {
-        if ( !this.isPlayer ) {
+        if ( !this.isPlayer() ) {
             return [];
         }
 
@@ -800,7 +883,7 @@
 
                 // If an enemy unit is killed outside of battle, they should
                 // still give items/coins.
-                if ( !this.isPlayer ) {
+                if ( !this.isPlayer() ) {
                     // Grant loot
                     var itemsDroppedByThisUnit = this.produceLoot();
                     for (var i = 0; i < itemsDroppedByThisUnit.length; i++) {
@@ -1003,16 +1086,16 @@
      */
     window.game.Unit.prototype.shouldDisplayLifeBar = function() {
         // Bosses always have their lifebars displayed
-        if ( this.isBoss ) return true;
+        if ( this.isBoss() ) return true;
 
         // If you pressed a key
         if ( game.keyPressedToDisplayLifeBars ) return true;
 
         // If you're displaying life bars for players and this is a player unit
-        if ( (game.displayLifeBarForPlayer & game.DisplayLifeBarFor.PLAYER) && this.isPlayer ) return true;
+        if ( (game.displayLifeBarForPlayer & game.DisplayLifeBarFor.PLAYER) && this.isPlayer() ) return true;
 
         // If you're displaying life bars for enemies and this is an enemy unit
-        if ( (game.displayLifeBarForPlayer & game.DisplayLifeBarFor.ENEMY) && !this.isPlayer ) return true;
+        if ( (game.displayLifeBarForPlayer & game.DisplayLifeBarFor.ENEMY) && !this.isPlayer() ) return true;
 
         // If you're displaying life bars while in battle
         if ( game.displayLifeBarsInBattle && this.isInBattle() ) return true;
@@ -1035,7 +1118,7 @@
         if ( this.isInBattle() && !this.isLiving() ) {
             // Draw the tombstone at the center so that it doesn't look awkward
             // for big units.
-            objSheet.drawSprite(ctx, 19, this.getCenterX() - tileSize / 2, this.getCenterY() - tileSize / 2, !this.isPlayer);              
+            objSheet.drawSprite(ctx, 19, this.getCenterX() - tileSize / 2, this.getCenterY() - tileSize / 2, !this.isPlayer());              
         } else {
 
             // Draw all status effects
@@ -1052,7 +1135,7 @@
                     // only accounts for sizes up to 2x2. Anything bigger and
                     // I'll have to stop hard-coding it.
                     var indexToUse = index;
-                    if ( !this.isPlayer && this.widthInTiles == 2 ) {
+                    if ( !this.isPlayer() && this.widthInTiles == 2 ) {
                         // Swap 0 and 1
                         if ( index == 0 ) indexToUse = 1;
                         if ( index == 1 ) indexToUse = 0;
@@ -1062,7 +1145,7 @@
                         if ( index == 3 ) indexToUse = 2;
                     }
 
-                    charSheet.drawSprite(ctx, this.graphicIndexes[indexToUse], this.x + i * tileSize, this.y + j * tileSize, !this.isPlayer);
+                    charSheet.drawSprite(ctx, this.graphicIndexes[indexToUse], this.x + i * tileSize, this.y + j * tileSize, !this.isPlayer());
 
                     index++;
                 };

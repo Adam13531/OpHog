@@ -17,7 +17,7 @@
         var battle = attacker.battleData.battle;
 
         var flags = game.RandomUnitFlags.ALIVE;
-        if ( attacker.isPlayer ) {
+        if ( attacker.isPlayer() ) {
             flags |= game.RandomUnitFlags.ENEMY_UNIT;
         } else {
             flags |= game.RandomUnitFlags.PLAYER_UNIT;

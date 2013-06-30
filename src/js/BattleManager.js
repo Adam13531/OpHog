@@ -105,7 +105,7 @@
             var unit = null;
             for (var i = allUnits.length - 1; i >= 0; i--) {
                 unit = allUnits[i];
-                if ( unit.isPlayer ) {
+                if ( unit.isPlayer() ) {
                     playerUnits.push(unit);
                 } else {
                     enemyUnits.push(unit);

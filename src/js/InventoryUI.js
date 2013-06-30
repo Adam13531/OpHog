@@ -203,7 +203,7 @@
             if (!this.isInUseMode()) return false;
 
             var useTarget = this.usingItem.useTarget;
-            var isPlayer = unit.isPlayer;
+            var isPlayer = unit.isPlayer();
             var isLiving = unit.isLiving();
             
             if (

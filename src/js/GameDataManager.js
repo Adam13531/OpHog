@@ -296,7 +296,7 @@
             var finalUnits = [];
             for (var i = 0; i < parsedUnits.length; i++) {
                 var parsedUnit = parsedUnits[i];
-                var finalUnit = new game.Unit(parsedUnit.unitType, parsedUnit.isPlayer, parsedUnit.level);
+                var finalUnit = new game.Unit(parsedUnit.unitType, parsedUnit.isPlayer(), parsedUnit.level);
 
                 // battleData will be set when the unit is added to a battle.
                 // mods will be set after the inventory is loaded.

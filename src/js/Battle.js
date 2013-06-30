@@ -226,11 +226,11 @@
      * @param  {Unit} deadUnit The unit that just died.
      */
     window.game.Battle.prototype.unitDied = function(deadUnit) {
-        var numLivingUnits = this.getNumLivingUnits(deadUnit.isPlayer);
+        var numLivingUnits = this.getNumLivingUnits(deadUnit.isPlayer());
 
         if ( numLivingUnits == 0 ) {
             // The battle is over
-            this.battleWinner = deadUnit.isPlayer ? game.BattleWinner.ENEMY : game.BattleWinner.PLAYER;
+            this.battleWinner = deadUnit.isPlayer() ? game.BattleWinner.ENEMY : game.BattleWinner.PLAYER;
         }
 
         // If the enemy units are dead, then we count it as a win for the player
@@ -381,7 +381,7 @@
                 var unit = this.units[i];
 
                 // Ignore enemy and dead units
-                if ( !unit.isPlayer || !unit.isLiving() ) continue;
+                if ( !unit.isPlayer() || !unit.isLiving() ) continue;
 
                 // This will also level up the unit if appropriate
                 unit.gainExperience(experienceGranted);
@@ -488,7 +488,7 @@
     window.game.Battle.prototype.addUnit = function(unit) {
         this.units.push(unit);
 
-        if ( unit.isPlayer ) {
+        if ( unit.isPlayer() ) {
             this.playerUnits.push(unit);
         } else {
             this.enemyUnits.push(unit);
@@ -500,7 +500,7 @@
         // Figure out the order in which this player entered the battle
         var absoluteOrder = this.units.length - 1;
         var teamOrder = numEnemies - 1;
-        if (unit.isPlayer) {
+        if (unit.isPlayer()) {
             teamOrder = numPlayers - 1;
         }
 
