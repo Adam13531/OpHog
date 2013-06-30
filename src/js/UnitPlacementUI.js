@@ -98,6 +98,8 @@
          */
         debugAddUnits: function() {
             var currentType = this.unitType;
+            var currentCoins = game.Player.coins;
+            game.Player.coins = 999999;
             this.navigateToPage(game.PlaceableUnitType.ARCHER);
             this.addUnit();
             this.addUnit();
@@ -111,6 +113,7 @@
             this.addUnit();
             this.addUnit();
             this.navigateToPage(currentType);
+            game.Player.coins = currentCoins;
         },
 
 		/**

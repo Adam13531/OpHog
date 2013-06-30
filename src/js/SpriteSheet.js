@@ -16,11 +16,6 @@
         // loaded after the first image is done loading.
         this.hFlipImage = new Image();
 
-        // I'm leaving this here in case we ever want this code again, but it's
-        // unused right now. To use it, set loadDoubleSizeImage to true.
-        this.doubleSizeImage = new Image();
-        this.loadDoubleSizeImage = false;
-
         // The number of images we've loaded so far.
         this.imagesLoaded = 0;
 
@@ -83,23 +78,17 @@
                 spritesheet.loadedVariation();
             }
 
-            spritesheet.doubleSizeImage.onload = function()
-            {
-                spritesheet.loadedVariation();
-            }
-
             spritesheet.hFlipImage.src = getBase64Image(spritesheet.image, true, false);
-            spritesheet.doubleSizeImage.src = getBase64Image(spritesheet.image, false, true);
         };
     };
 
     /**
      * Call this when you've loaded a variation of the spritesheet (e.g.
-     * hFlipImage or doubleSizeImage).
+     * hFlipImage).
      */
     window.game.SpriteSheet.prototype.loadedVariation = function() {
         this.imagesLoaded++;
-        var numImagesNeeded = (this.loadDoubleSizeImage ? 2 : 1);
+        var numImagesNeeded = 1;
         if ( this.imagesLoaded == numImagesNeeded ) {
             this.finalOnload();
         }

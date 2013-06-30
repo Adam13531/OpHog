@@ -60,43 +60,6 @@
                 $('#' + thisMinigameID).click(function() {
                     game.GameStateManager.enterMinigameGameplay();
                 });
-
-                // I'm leaving this commented code for one check-in. There's a
-                // problem with it anyway, but some of it might be useful in the
-                // future.
-
-
-                // e.g. "rgba(0, 0, 0, 0) url(http://127.0.0.1:1200/OpHogAptanaProject/res/img/char_32.png) no-repeat scroll -224px 0px / 1024px 1984px padding-box border-box"
-                var backgroundString = $('#' + thisMinigameID + ' > img').css('background');
-                // $('#' + thisMinigameID + ' > img').css({
-                //     'background': "rgba(0, 0, 0, 0) url(" + charSheet.doubleSize.src + ") no-repeat scroll -224px 0px / 1024px 1984px padding-box border-box"
-                // });
-
-
-                // $('#' + thisMinigameID + ' > img').css({
-                //     'background': "rgba(0, 0, 0, 0) url(" + charSheet.doubleSize.src + ") no-repeat scroll -224px 0px / 1024px 1984px padding-box border-box"
-                // });
-
-                // Change the URL
-                // debugger;
-                // $('#' + thisMinigameID + ' > img').attr('src', charSheet.doubleSize.src);
-
-                // var backgroundPositionX = $('#' + thisMinigameID + ' > img').css('background-position-x');
-                // var backgroundPositionY = $('#' + thisMinigameID + ' > img').css('background-position-y');
-                // var justX = backgroundPositionX.replace(/[^-\d\.]/g, '');
-                // var justY = backgroundPositionY.replace(/[^-\d\.]/g, '');
-                // console.log(backgroundPositionX);
-                // console.log(backgroundPositionY);
-                // console.log(justX);
-                // console.log(justY);
-                // $('#' + thisMinigameID + ' > img').css({
-                //     'background-position-x': (justX * 2) + 'px',
-                //     'background-position-y': (justY * 2) + 'px',
-                //     'background-size': '1024px 1984px',
-                //     'width': '64px',
-                //     'height': '64px'
-                // });
-
             };
         },
 

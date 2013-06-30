@@ -104,7 +104,7 @@
         placeAllPlayerUnits: function(tileX, tileY) {
             for (var i = 0; i < this.gameUnits.length; i++) {
                 var unit = this.gameUnits[i];
-                if ( unit.isPlayer && !unit.hasBeenPlaced ) {
+                if ( unit.isPlayer() && !unit.hasBeenPlaced ) {
                     unit.placeUnit(tileX, tileY);
                 }
             };

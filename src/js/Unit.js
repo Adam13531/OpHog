@@ -255,7 +255,7 @@
      * @return {undefined}
      */
     window.game.Unit.prototype.convertToBoss = function() {
-        this.playerFlags | game.PlayerFlags.BOSS;
+        this.playerFlags |= game.PlayerFlags.BOSS;
         this.movementAI = game.MovementAI.BOSS;
     };
 
