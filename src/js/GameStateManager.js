@@ -10,8 +10,18 @@
         NORMAL_LOSE_SCREEN: 'lose screen',
         MINIGAME_GAMEPLAY: 'minigame gameplay',
         MINIGAME_WIN_SCREEN: 'minigame win screen',
-        MINIGAME_LOSE_SCREEN: 'minigame lose screen'
+        MINIGAME_LOSE_SCREEN: 'minigame lose screen',
+        OVERWORLD: 'overworld'
     };
+
+    /**
+     * This is the overworld map. When you're in the OVERWORLD state, currentMap
+     * will be set to this. We keep a reference to this around so that we don't
+     * need to recompute the world map every time we switch back to it, but also
+     * because we need to save/load it correctly.
+     * @type {game.Map}
+     */
+    window.game.overworldMap = null;
 
     /**
      * This is responsible for the game's state, e.g. when you win or lose,
@@ -22,7 +32,7 @@
          * The current state.
          * @type {game.GameStates}
          */
-        currentState: game.GameStates.NORMAL_GAMEPLAY,
+        currentState: game.GameStates.OVERWORLD,
 
         /**
          * The last state we were in.
@@ -52,6 +62,9 @@
         inLoseState: function() {
             return this.currentState == game.GameStates.NORMAL_LOSE_SCREEN;
         },
+        inOverworldMap: function() {
+            return this.currentState == game.GameStates.OVERWORLD;
+        },
 
         /**
          * These functions simply attempt to set the state (I say "attempt"
@@ -76,6 +89,9 @@
         enterMinigameWinState: function() {
             this.setState(game.GameStates.MINIGAME_WIN_SCREEN);
         },
+        enterOverworldState: function() {
+            this.setState(game.GameStates.OVERWORLD);
+        },
 
         /**
          * These are functions that should be called when you either win or
@@ -87,6 +103,40 @@
             game.UnitManager.removeAllUnitsFromMap();
             game.InventoryUI.exitUseMode(true);
             $('#buyingScreenContainer').dialog('close');
+        },
+
+        /**
+         * Initializes the overworld map. This should only be called once.
+         */
+        initializeOverworldMap: function() {
+            var width = 50;
+            var mapTileIndices = game.overworldMapTileIndices;
+
+            var doodadIndices = new Array(mapTileIndices.length);
+            var tilesetID = game.TilesetManager.MARSH_TILESET_ID;
+            game.overworldMap = new game.Map(mapTileIndices, doodadIndices, tilesetID, width, true);
+
+            game.overworldMap.setFog(1, 3, 3, false);
+        },
+
+        /**
+         * Switches to the overworld map.
+         */
+        switchToOverworldMap: function() {
+            game.BattleManager.removeAllBattles();
+            game.UnitManager.removeAllUnitsFromMap();
+            game.GeneratorManager.removeAllGenerators();
+            game.CollectibleManager.removeAllCollectibles();
+
+            game.TilesetManager.init();
+
+            if ( game.overworldMap == null ) {
+                this.initializeOverworldMap();
+            }
+
+            currentMap = game.overworldMap;
+
+            game.Camera.initialize();
         },
 
         /**
@@ -106,6 +156,18 @@
             // Initialize the camera so that the zoom and pan values aren't out
             // of bounds.
             game.Camera.initialize();
+        },
+
+        /**
+         * This is called right now when the user presses 'G', which indicates
+         * that they're done reading the win/lose screens.
+         */
+        confirmedWinOrLose: function() {
+            if ( this.inLoseState() ) {
+                this.returnToNormalGameplay();
+            } else if ( this.inWinState() || this.inMinigameWinState() || this.inMinigameLoseState() ) {
+                this.enterOverworldState();
+            }
         },
 
         /**
@@ -148,8 +210,8 @@
             // Lose state --> normal gameplay
             if ( this.inLoseState() && newState == game.GameStates.NORMAL_GAMEPLAY ) return true;
 
-            // Win state --> normal
-            if ( this.inWinState() && newState == game.GameStates.NORMAL_GAMEPLAY ) return true;
+            // Win state --> overworld
+            if ( this.inWinState() && newState == game.GameStates.OVERWORLD ) return true;
 
             // Normal state --> lose
             if ( this.isNormalGameplay() && newState == game.GameStates.NORMAL_LOSE_SCREEN ) return true;
@@ -166,11 +228,14 @@
             // Minigame gameplay --> minigame win
             if ( this.isMinigameGameplay() && newState == game.GameStates.MINIGAME_WIN_SCREEN ) return true;
 
-            // Minigame lose --> normal gameplay
-            if ( this.inMinigameLoseState() && newState == game.GameStates.NORMAL_GAMEPLAY ) return true;
+            // Minigame lose --> overworld map
+            if ( this.inMinigameLoseState() && newState == game.GameStates.OVERWORLD ) return true;
 
-            // Minigame win --> normal gameplay
-            if ( this.inMinigameWinState() && newState == game.GameStates.NORMAL_GAMEPLAY ) return true;
+            // Minigame win --> overworld map
+            if ( this.inMinigameWinState() && newState == game.GameStates.OVERWORLD ) return true;
+
+            // Overworld --> normal gameplay
+            if ( this.inOverworldMap() && newState == game.GameStates.NORMAL_GAMEPLAY ) return true;
 
             console.log('State transition unknown: ' + this.currentState + ' --> ' + newState);
             return false;
@@ -202,10 +267,10 @@
                 game.Player.castleLife = game.FULL_CASTLE_LIFE;
             }
 
-            // Win state --> normal
-            if ( this.previousState == game.GameStates.NORMAL_WIN_SCREEN && this.isNormalGameplay() ) {
+            // Win state --> overworld
+            if ( this.previousState == game.GameStates.NORMAL_WIN_SCREEN && this.inOverworldMap() ) {
                 game.MinigameUI.hide();
-                this.switchToNewMap();
+                this.switchToOverworldMap();
             }
 
             // Normal state --> lose
@@ -259,13 +324,18 @@
                 game.TextManager.addTextObj(textObj);
             }
 
-            // Minigame lose --> normal gameplay
-            if ( this.previousState == game.GameStates.MINIGAME_LOSE_SCREEN && this.isNormalGameplay() ) {
-                this.switchToNewMap();
+            // Minigame lose --> overworld map
+            if ( this.previousState == game.GameStates.MINIGAME_LOSE_SCREEN && this.inOverworldMap() ) {
+                this.switchToOverworldMap();
             }
 
-            // Minigame win --> normal gameplay
-            if ( this.previousState == game.GameStates.MINIGAME_WIN_SCREEN && this.isNormalGameplay() ) {
+            // Minigame win --> overworld map
+            if ( this.previousState == game.GameStates.MINIGAME_WIN_SCREEN && this.inOverworldMap() ) {
+                this.switchToOverworldMap();
+            }
+
+            // Overworld --> normal gameplay
+            if ( this.previousState == game.GameStates.OVERWORLD && newState == game.GameStates.NORMAL_GAMEPLAY ) {
                 this.switchToNewMap();
             }
         },

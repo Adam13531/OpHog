@@ -106,13 +106,13 @@
                 var unit = this.gameUnits[i];
                 if ( unit.isPlayer() && !unit.hasBeenPlaced ) {
                     unit.placeUnit(tileX, tileY);
+                    game.UnitPlacementUI.updateUnit(unit);
                 }
             };
         },
 
         /**
          * Marks all units so that they will be removed from the map.
-         * @return {undefined}
          */
         removeAllUnitsFromMap: function() {
             for (var i = 0; i < this.gameUnits.length; i++) {

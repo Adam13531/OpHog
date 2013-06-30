@@ -9,10 +9,12 @@
      * undefined if there is no doodad at that location.
      * @param {Number} tilesetID - the ID of the tileset to use
      * @param {Number} width                - width of this map
+     * @param {Boolean} isOverworldMap - true if this is the overworld map.
      */
-    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width) {
+    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width, isOverworldMap) {
         this.numCols = width;
         this.numRows = mapTilesIndices.length / this.numCols;
+        this.isOverworldMap = isOverworldMap;
 
         this.tileset = game.TilesetManager.getTilesetByID(tilesetID);
 
@@ -37,7 +39,7 @@
          */
         this.fog = [];
         for (var i = 0; i < this.mapTiles.length; i++) {
-            this.fog.push(false);
+            this.fog.push(true);
         };
 
         this.widthInPixels = this.numCols * tileSize;
@@ -49,11 +51,16 @@
     };
 
     /**
+     * This initializes a normal map so that pathing, generators, the boss, etc.
+     * are set up.
+     *
      * After setting up this.mapTiles, call this function. Without calling this,
      * various parts of the map will be broken.
-     * @return {undefined}
      */
     window.game.Map.prototype.initialize = function() {
+        // The overworld map doesn't need any of this stuff.
+        if ( this.isOverworldMap ) return;
+
         // The endpoints need to be calculated so that we can figure out the
         // tile lists.
         this.figureOutEndpoints();
@@ -75,7 +82,6 @@
     
     /**
      * Clears an area of fog around each spawner.
-     * @return {undefined}
      */
     window.game.Map.prototype.clearFogAroundSpawners = function() {
         var spawners = this.getAllTiles(game.TileFlags.SPAWNER);
@@ -87,7 +93,6 @@
     /**
      * This adds a boss unit to the map. This cannot be done in the constructor
      * because placing the boss depends on a fully constructed map.
-     * @return {undefined}
      */
     window.game.Map.prototype.addBossUnit = function() {
         // Make a lv. 20 tree
@@ -105,7 +110,6 @@
 
     /**
      * This simply goes through each left-endpoint and makes them all spawners.
-     * @return {undefined}
      */
     window.game.Map.prototype.convertAllLeftEndpointsToSpawners = function() {
         for (var i = 0; i < this.mapTiles.length; i++) {
@@ -135,7 +139,6 @@
 
     /**
      * Places generators randomly on the map.
-     * @return {undefined}
      */
     window.game.Map.prototype.placeGenerators = function() {
         // Coordinates of generators
@@ -306,7 +309,6 @@
 
     /**
      * This function will set isRightEndpoint and isLeftEndpoint in each tile.
-     * @return {undefined}
      */
     window.game.Map.prototype.figureOutEndpoints = function() {
         var foundRightEndpoint = false;
@@ -356,7 +358,6 @@
      * See Tile.js for comments on what leftList and rightList represent.
      * @param  {Boolean} buildingLeftList - if true, build leftList, otherwise
      * rightList
-     * @return {undefined}
      */
     window.game.Map.prototype.buildTileList = function(buildingLeftList) {
         // Form the very basic left/rightList. This will be pruned repeatedly in
@@ -1070,7 +1071,6 @@
 
     /**
      * This clears all of the fog on the map.
-     * @return {undefined}
      */
     window.game.Map.prototype.clearAllFog = function() {
         for (var i = 0; i < this.fog.length; i++) {
@@ -1184,6 +1184,16 @@
     window.game.Map.prototype.isSpawnerPoint = function(tileX, tileY) {
         var index = tileY * this.numCols + tileX;
         return this.mapTiles[index].isSpawnerPoint();
+    };
+
+    /**
+     * @param  {Number}  tileX - tile X coordinate
+     * @param  {Number}  tileY - tile Y coordinate
+     * @return {Boolean}  true if the tile is foggy.
+     */
+    window.game.Map.prototype.isFoggy = function(tileX, tileY) {
+        var index = tileY * this.numCols + tileX;
+        return this.fog[index];
     };
 
 }());
