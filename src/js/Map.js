@@ -68,6 +68,9 @@
 
         // Now that we have spawn points, we can place the generators.
         this.placeGenerators();
+
+        this.addBossUnit();
+
     };
     
     /**

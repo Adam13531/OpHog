@@ -5,8 +5,6 @@
 
     var gameloopId;
 
-    var slotImage = new Image();
-    
     var pinchZoomStart;
     var ctxOrigZoom;
 
@@ -36,8 +34,6 @@
     function init() {
         initSettings();
 
-        loadImages();
-
         envSheet = new game.SpriteSheet(game.imagePath + '/env_32.png', tileSize, function() {
             objSheet = new game.SpriteSheet(game.imagePath + '/obj_32.png', tileSize, function() {
                 charSheet = new game.SpriteSheet(game.imagePath + '/char_32.png', tileSize, doneLoadingEverything);
@@ -45,16 +41,11 @@
         });
     }
 
-    function doneLoadingImages() {
-        makeUI();
-    }
-
-    function loadImages() {
-        slotImage.src = game.imagePath + '/archer.png';
-        slotImage.onload = doneLoadingImages;
-    }
 
     function makeUI() {
+        // This requires that the spritesheets were loaded.
+        game.MinigameUI.setupUI();
+
         var $canvas = $('#canvas');
         var canvasPos = $canvas.position();
         var $toggleParticlesButton = $('#toggleParticlesButton');
@@ -142,7 +133,7 @@
             }
 
             // Check to see if the user tapped a spawner
-            if (game.GameStateManager.isNormalGameplay() && currentMap.isSpawnerPoint(tileX, tileY)) {
+            if (game.UnitPlacementUI.canSpawnUnits() && currentMap.isSpawnerPoint(tileX, tileY)) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
                 $('#buyingScreenContainer').dialog('open');
             } else {
@@ -373,6 +364,11 @@
                 game.GameStateManager.returnToNormalGameplay();
             }
 
+            // 'N' - add 3 of each unit type to the unit placement UI
+            if (evt.keyCode == game.Key.DOM_VK_N) {
+                game.UnitPlacementUI.debugAddUnits();
+            }
+
             // 'H' - win the game. This is the only way you can enter this state
             // 'for now.
             if (evt.keyCode == game.Key.DOM_VK_H) {
@@ -545,6 +541,8 @@
     }
 
     function doneLoadingEverything() {
+        makeUI();
+
         lastUpdate = Date.now();
 
         // This will wipe out the timer (if it's non-null)

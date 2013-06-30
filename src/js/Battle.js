@@ -15,6 +15,8 @@
 
     /**
      * This is used to indicate who won the battle. It's pretty straightforward.
+     *
+     * If both teams die, it counts as a win for the player.
      * @type {Number}
      */
     window.game.BattleWinner = {
@@ -250,13 +252,21 @@
     };
 
     /**
-     * Returns true if the battle is dead. A battle is dead when one team is
-     * entirely dead.
+     * Returns true if the battle is dead. A battle is dead when at least one
+     * team is entirely dead.
      */
     window.game.Battle.prototype.isDead = function() {
         return this.battleWinner != game.BattleWinner.NONE;
     };
 
+    /**
+     * @return {Boolean} true if the player won this battle. False if it isn't
+     * over or if the enemy won.
+     */
+    window.game.Battle.prototype.playerWon = function() {
+        return this.battleWinner == game.BattleWinner.PLAYER;
+    };
+    
     /**
      * Each enemy unit has a chance of dropping loot according to its loot
      * table.

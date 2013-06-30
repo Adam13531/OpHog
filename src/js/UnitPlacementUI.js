@@ -84,6 +84,35 @@
                 (game.UnitManager.getNumOfPlayerUnits(this.unitType) + 1);
         },
 
+        /**
+         * @return {Boolean} - true if you're allowed to even open the unit
+         * placement UI (it's based on the game state that you're in).
+         */
+        canSpawnUnits: function() {
+            return game.GameStateManager.isNormalGameplay();
+        },
+
+        /**
+         * This is a debug function that will add 3 units of each type as though
+         * you'd purchased them (but it doesn't cost money).
+         */
+        debugAddUnits: function() {
+            var currentType = this.unitType;
+            this.navigateToPage(game.PlaceableUnitType.ARCHER);
+            this.addUnit();
+            this.addUnit();
+            this.addUnit();
+            this.navigateToPage(game.PlaceableUnitType.WIZARD);
+            this.addUnit();
+            this.addUnit();
+            this.addUnit();
+            this.navigateToPage(game.PlaceableUnitType.WARRIOR);
+            this.addUnit();
+            this.addUnit();
+            this.addUnit();
+            this.navigateToPage(currentType);
+        },
+
 		/**
          * Sets up the entire unit placement UI.
          */
@@ -226,11 +255,11 @@
 												'</button>' +
 												'<span id=buySlotButtonDescription>- Buy slot</span>');
 			$('#buySlotButton').click(function() {
-				game.UnitPlacementUI.addUnit(this.unitType);
+				game.UnitPlacementUI.addUnit();
 			});
 
 			$('#buySlotButtonDescription').click(function() {
-				game.UnitPlacementUI.addUnit(this.unitType);
+				game.UnitPlacementUI.addUnit();
 			});
 
 			// Setting up the arrows and images that will allow the user to

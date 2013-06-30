@@ -96,6 +96,21 @@
         },
 
         /**
+         * Calls placeUnit on every unplaced player unit. This is used by the
+         * minigame.
+         * @param  {Number} tileX - tile X to place at
+         * @param  {Number} tileY - tile Y to place at
+         */
+        placeAllPlayerUnits: function(tileX, tileY) {
+            for (var i = 0; i < this.gameUnits.length; i++) {
+                var unit = this.gameUnits[i];
+                if ( unit.isPlayer && !unit.hasBeenPlaced ) {
+                    unit.placeUnit(tileX, tileY);
+                }
+            };
+        },
+
+        /**
          * Marks all units so that they will be removed from the map.
          * @return {undefined}
          */
@@ -103,6 +118,10 @@
             for (var i = 0; i < this.gameUnits.length; i++) {
                 this.gameUnits[i].removeUnitFromMap();
             };
+
+            // Call update immediately so that the non-placeable units won't
+            // even have references to them anymore.
+            this.update(0);
         },
 
         /**

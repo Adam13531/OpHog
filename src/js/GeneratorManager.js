@@ -22,12 +22,20 @@
         },
 
         /**
+         * @return {Boolean} true if the GeneratorManager should update. This is
+         * based on the game state.
+         */
+        shouldUpdate: function() {
+            return game.GameStateManager.isNormalGameplay();
+        },
+
+        /**
          * Updates each generator
          * @param  {Number} delta - time elapsed in ms since last call
          * @return {null}
          */
         update: function(delta) {
-            if ( !game.GameStateManager.isNormalGameplay() ) return;
+            if ( !this.shouldUpdate() ) return;
             for (var i = 0; i < this.generators.length; i++) {
                 this.generators[i].update(delta);
             }

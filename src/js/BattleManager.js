@@ -34,6 +34,18 @@
             // Remove dead battles first
             for (var i = 0; i < this.battles.length; i++) {
                 if ( this.battles[i].isDead() ) {
+
+                    // If we're playing the minigame, then there should only be
+                    // one battle, so winning or losing that will end the
+                    // minigame.
+                    if ( game.GameStateManager.isMinigameGameplay() ) {
+                        if ( this.battles[i].playerWon() ) {
+                            game.GameStateManager.enterMinigameWinState();
+                        } else {
+                            game.GameStateManager.enterMinigameLoseState();
+                        }
+                    }
+
                     this.battles[i].aboutToRemoveBattle();
                     this.battles.splice(i, 1);
                     i--;
