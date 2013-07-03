@@ -597,8 +597,11 @@
             if ( selectedSlotUI == null ) return;
             var slot = selectedSlotUI.slot;
 
+            // Only enable the use button if we're in the correct game state.
+            var correctGameState = (game.GameStateManager.isNormalGameplay() || game.GameStateManager.isMinigameGameplay());
+
             // If we selected a usable item, enable the 'Use' button.
-            if ( game.GameStateManager.isNormalGameplay() && !slot.isEmpty() && slot.isUsableSlot() ) {
+            if ( correctGameState && !slot.isEmpty() && slot.isUsableSlot() ) {
                 this.$useItemButton.button('enable');
             } else {
                 this.$useItemButton.button('disable');

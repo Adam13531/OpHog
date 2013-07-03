@@ -41,7 +41,6 @@
 
         /**
          * Saves everything in the game.
-         * @return {undefined}
          */
         saveGame: function() {
             var curTime = new Date();
@@ -92,7 +91,6 @@
 
         /**
          * Loads everything in the game.
-         * @return {undefined}
          */
         loadGame: function() {
             var savedVersion = localStorage.saveVersion;
@@ -188,7 +186,6 @@
          * @param  {Object} destObject    - the object to copy properties to
          * @param  {Array:String} propsToIgnore - an array of properties NOT to
          * copy.
-         * @return {undefined}
          */
         copyProps: function(sourceObject, destObject, propsToIgnore) {
             if ( propsToIgnore === undefined ) propsToIgnore = [];
@@ -201,7 +198,6 @@
 
         /**
          * Saves the inventory.
-         * @return {undefined}
          */
         saveInventory: function() {
             // The Inventory itself just has an array of Slots. Each Slot has an
@@ -212,7 +208,6 @@
 
         /**
          * Loads the inventory.
-         * @return {undefined}
          */
         loadInventory: function() {
             game.slotID = Number(localStorage.lastSlotID);
@@ -253,7 +248,6 @@
 
         /**
          * Saves all the units.
-         * @return {undefined}
          */
         saveUnits: function() {
             // Save the last unit ID so that we don't end up with an ID of 0
@@ -286,7 +280,6 @@
 
         /**
          * Loads units.
-         * @return {undefined}
          */
         loadUnits: function() {
             var parsedUnits = JSON.parse(localStorage.units);
@@ -357,7 +350,6 @@
 
         /**
          * Saves all collectibles.
-         * @return {undefined}
          */
         saveCollectibles: function() {
             var collectibles = game.CollectibleManager.collectibles;
@@ -366,7 +358,6 @@
 
         /**
          * Load collectibles.
-         * @return {undefined}
          */
         loadCollectibles: function() {
             var finalCollectibles = []
@@ -382,7 +373,6 @@
 
         /**
          * Saves all generators.
-         * @return {undefined}
          */
         saveGenerators: function() {
             var generators = game.GeneratorManager.generators;
@@ -391,7 +381,6 @@
 
         /**
          * Load generators.
-         * @return {undefined}
          */
         loadGenerators: function() {
             var finalGenerators = []
@@ -415,7 +404,6 @@
 
         /**
          * Saves all quests.
-         * @return {undefined}
          */
         saveQuests: function() {
             var quests = game.QuestManager.quests;
@@ -425,7 +413,6 @@
 
         /**
          * Loads quests.
-         * @return {undefined}
          */
         loadQuests: function() {
             // Wipe out all of the quests so that we can simply add them again.
@@ -454,7 +441,6 @@
 
         /**
          * Saves all battles.
-         * @return {undefined}
          */
         saveBattles: function() {
             var battles = game.BattleManager.battles;
@@ -464,7 +450,6 @@
 
         /**
          * Loads battles.
-         * @return {undefined}
          */
         loadBattles: function() {
             var parsedBattles = JSON.parse(localStorage.battles);
@@ -489,7 +474,6 @@
          * This function doesn't actually pull from localStorage, it only
          * corrects each battle's projectiles. This needs to be done after
          * loading both units and battles.
-         * @return {undefined}
          */
         loadProjectiles: function() {
             // Go through each battle and change each projectile from an Object
@@ -512,7 +496,6 @@
         /**
          * Saves the map. This will save the map's raw data, so tile "paths"
          * will be recomputed when we load.
-         * @return {undefined}
          */
         saveMap: function() {
             localStorage.mapTilesIndices = JSON.stringify(currentMap.mapTilesIndices);
@@ -524,7 +507,6 @@
 
         /**
          * Loads the map.
-         * @return {undefined}
          */
         loadMap: function() {
             var mapTilesIndices = JSON.parse(localStorage.mapTilesIndices);
@@ -534,7 +516,8 @@
             var fog = JSON.parse(localStorage.fog);
 
             // This will reform all tiles' leftList and rightList.
-            currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols);
+            console.log('Warning: the game doesn\'t know how to load the overworldMap yet.');
+            currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, false);
 
             // Restore fog
             currentMap.fog = fog;
@@ -542,7 +525,6 @@
 
         /**
          * Saves the camera.
-         * @return {undefined}
          */
         saveCamera: function() {
             // The camera is a simple object with no reference loops, so we can
@@ -552,7 +534,6 @@
 
         /**
          * Loads the camera.
-         * @return {undefined}
          */
         loadCamera: function() {
             // Set each property of the camera.
@@ -566,7 +547,6 @@
 
         /**
          * Saves the player.
-         * @return {undefined}
          */
         savePlayer: function() {
             // The Player is a simple object with no reference loops, so we can
@@ -576,7 +556,6 @@
 
         /**
          * Loads the player.
-         * @return {undefined}
          */
         loadPlayer: function() {
             // Set each property of the camera.

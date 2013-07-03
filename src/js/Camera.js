@@ -120,6 +120,19 @@
         },
 
         /**
+         * Centers the camera instantaneously at the specified world position
+         * without changing the zoom level.
+         * @param  {Number} worldX - x in world coordinates
+         * @param  {Number} worldY - y in world coordinates
+         */
+        panInstantlyTo: function(worldX, worldY) {
+            this.curPanX = worldX - this.viewWidth / 2;
+            this.curPanY = worldY - this.viewHeight / 2;
+
+            this.clampPanValues();
+        },
+
+        /**
          * Handles some keys to pan/zoom the camera.
          *
          * See 'update' for a description of the arguments.

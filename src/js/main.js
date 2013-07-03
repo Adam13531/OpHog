@@ -5,8 +5,6 @@
 
     var gameloopId;
 
-    var slotImage = new Image();
-    
     var pinchZoomStart;
     var ctxOrigZoom;
 
@@ -36,8 +34,6 @@
     function init() {
         initSettings();
 
-        loadImages();
-
         envSheet = new game.SpriteSheet(game.imagePath + '/env_32.png', tileSize, function() {
             objSheet = new game.SpriteSheet(game.imagePath + '/obj_32.png', tileSize, function() {
                 charSheet = new game.SpriteSheet(game.imagePath + '/char_32.png', tileSize, doneLoadingEverything);
@@ -45,16 +41,11 @@
         });
     }
 
-    function doneLoadingImages() {
-        makeUI();
-    }
-
-    function loadImages() {
-        slotImage.src = game.imagePath + '/archer.png';
-        slotImage.onload = doneLoadingImages;
-    }
 
     function makeUI() {
+        // This requires that the spritesheets were loaded.
+        game.MinigameUI.setupUI();
+
         var $canvas = $('#canvas');
         var canvasPos = $canvas.position();
         var $toggleParticlesButton = $('#toggleParticlesButton');
@@ -141,8 +132,17 @@
                 return;
             }
 
+            var tileIsSpawnPoint = currentMap.isSpawnerPoint(tileX, tileY);
+
+            // Clicking a "spawner" in the overworld will take you to a map to
+            // play normally on.
+            if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !currentMap.isFoggy(tileX, tileY)) {
+                game.GameStateManager.returnToNormalGameplay();
+                return;
+            }
+
             // Check to see if the user tapped a spawner
-            if (game.GameStateManager.isNormalGameplay() && currentMap.isSpawnerPoint(tileX, tileY)) {
+            if (game.UnitPlacementUI.canSpawnUnits() && tileIsSpawnPoint) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
                 $('#buyingScreenContainer').dialog('open');
             } else {
@@ -257,7 +257,7 @@
         screenWidth = parseInt($('#canvas').attr('width'));
         screenHeight = parseInt($('#canvas').attr('height'));
 
-        game.GameStateManager.switchToNewMap();
+        game.GameStateManager.switchToOverworldMap();
 
         addKeyboardListeners();
     }
@@ -300,14 +300,6 @@
                 } else {
                     game.displayLifeBarForPlayer++;
                 }
-            }
-
-            // Debug function to randomly morph the map in order to test
-            // saving/loading.
-            if ( evt.keyCode == game.Key.DOM_VK_R ) {
-                for (var i = 0; i < currentMap.mapTiles.length; i++) {
-                    currentMap.mapTiles[i].graphicIndex = Math.floor(Math.random() * 200);
-                };
             }
 
             // 'Z' - save game
@@ -370,7 +362,19 @@
             // 'G' - return to normal gameplay from a win/lose state. This is
             // 'the only way you can revert for now.
             if (evt.keyCode == game.Key.DOM_VK_G) {
-                game.GameStateManager.returnToNormalGameplay();
+                game.GameStateManager.confirmedWinOrLose();
+            }
+
+            // 'N' - add 3 of each unit type to the unit placement UI
+            if (evt.keyCode == game.Key.DOM_VK_N) {
+                game.UnitPlacementUI.debugAddUnits();
+            }
+
+            // 'R' - place all unplaced units for free
+            if (evt.keyCode == game.Key.DOM_VK_R) {
+                var tileX = game.UnitPlacementUI.spawnPointX;
+                var tileY = game.UnitPlacementUI.spawnPointY;
+                game.UnitManager.placeAllPlayerUnits(tileX, tileY);
             }
 
             // 'H' - win the game. This is the only way you can enter this state
@@ -477,16 +481,6 @@
         // engage in battles.
         delta = Math.min(delta, game.msPerFrame * 2);
 
-        // Allow for some variability in the framerate, but not too much,
-        // otherwise everything that uses this delta could hit problems. This is
-        // because the user has control over this simply by pausing Javascript
-        // execution in their browser, which means they can get this value
-        // infinitely high.
-        // 
-        // An example of a bug that could result from an infinite delta is unit
-        // movement; they would jump so far ahead on the path that they wouldn't
-        // engage in battles.
-        delta = Math.min(delta, game.msPerFrame * 2);
         var deltaAsSec = delta / 1000;
 
         game.alphaBlink += deltaAsSec;
@@ -545,6 +539,8 @@
     }
 
     function doneLoadingEverything() {
+        makeUI();
+
         lastUpdate = Date.now();
 
         // This will wipe out the timer (if it's non-null)

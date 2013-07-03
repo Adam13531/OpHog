@@ -11,7 +11,6 @@
         /**
          * Adds a collectible to the manager.
          * @param  {Collectible} collectible - the collectible to add
-         * @return {null}
          */
         addCollectible: function(collectible) {
             this.collectibles.push(collectible);
@@ -20,7 +19,6 @@
         /**
          * Constructs and adds a Collectible to the manager.
          * @param  {game.CollectibleType} type - the type of the Collectible
-         * @return {null}
          */
         addNewCollectible: function(type) {
             // If you don't pass in a type, randomly generate ANY collectible.
@@ -41,7 +39,6 @@
         /**
          * Draws all collectibles.
          * @param  {Object} ctx - the canvas context
-         * @return {null}
          */
         draw: function(ctx) {
             for (var i = 0; i < this.collectibles.length; i++) {
@@ -52,7 +49,6 @@
         /**
          * Removes the specified collectible from this manager.
          * @param  {Collectible} collectible - the collectible to remove
-         * @return {null}
          */
         removeCollectible: function(collectible) {
             for (var i = 0; i < this.collectibles.length; i++) {
@@ -95,7 +91,6 @@
          * @param  {Unit} unit  - the unit who is attempting to collect them
          * @param  {Number} tileX - tile coord of the unit
          * @param  {Number} tileY - tile coord of the unit
-         * @return {null}
          */
         collectAtLocation: function(unit, tileX, tileY) {
             var collectibleList = this.getCollectiblesAtLocation(tileX, tileY);
@@ -108,11 +103,22 @@
         },
 
         /**
-         * Updates all collectibles and possibly spawns more.
-         * @param  {Number} delta - time in ms since this was last called
-         * @return {null}
+         * @return {Boolean} true if the CollectibleManager can spawn a
+         * collectible. This is based on the game state.
          */
-        update: function(delta) {
+        canSpawnCollectible: function() {
+            if ( game.GameStateManager.isNormalGameplay() ) {
+                return true;
+            }
+        },
+
+        /**
+         * This function will determine whether a collectible should spawn (it's
+         * random).
+         */
+        potentiallyProduceCollectible: function() {
+            if ( !this.canSpawnCollectible() ) return;
+
             // Random chance to generate a collectible is very low and gets
             // lower as we spawn more.
             // 
@@ -122,6 +128,14 @@
 
             var chanceToSpawnCollectible = initialChanceToSpawn / (this.collectibles.length + 1);
             if ( Math.random() < chanceToSpawnCollectible ) this.addNewCollectible();
+        },
+
+        /**
+         * Updates all collectibles and possibly spawns more.
+         * @param  {Number} delta - time in ms since this was last called
+         */
+        update: function(delta) {
+            this.potentiallyProduceCollectible();
 
             // Remove dead collectibles first
             for (var i = 0; i < this.collectibles.length; i++) {
