@@ -204,6 +204,7 @@
 
             var useTarget = this.usingItem.useTarget;
             var isPlayer = unit.isPlayer();
+            var isEnemy = unit.isEnemy();
             var isLiving = unit.isLiving();
             
             if (
