@@ -96,7 +96,7 @@
      */
     window.game.Map.prototype.addBossUnit = function() {
         // Make a lv. 20 tree
-        var bossUnit = new game.Unit(game.UnitType.TREE.id,false,20);
+        var bossUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.BOSS,20);
         bossUnit.movementAI = game.MovementAI.BOSS;
         bossUnit.convertToBoss();
 

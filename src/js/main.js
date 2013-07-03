@@ -93,12 +93,12 @@
         $createUnits.click(function() {
             $settingsDialog.dialog('close');
             for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.UnitType.ORC.id,true,1);
+                var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.PLAYER,1);
                 newUnit.placeUnit(1,9);
                 game.UnitManager.addUnit(newUnit);
             };
             for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.UnitType.ORC.id,false,1);
+                var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.ENEMY,1);
                 newUnit.placeUnit(23,9);
                 game.UnitManager.addUnit(newUnit);
             };
@@ -403,7 +403,7 @@
                 unitType = game.UnitType.TREE;
             }
             if ( unitType != null ) {
-                var newUnit = new game.Unit(unitType.id,true,1);
+                var newUnit = new game.Unit(unitType.id,game.PlayerFlags.PLAYER,1);
                 newUnit.placeUnit(1, 9);
                 game.UnitManager.addUnit(newUnit);
             }
@@ -422,21 +422,21 @@
                 enemyUnitType = game.UnitType.TREE;
             }
             if ( enemyUnitType != null ) {
-                var newUnit = new game.Unit(enemyUnitType.id,false,1);
+                var newUnit = new game.Unit(enemyUnitType.id,game.PlayerFlags.ENEMY,1);
                 newUnit.placeUnit(23,9);
                 game.UnitManager.addUnit(newUnit);
             }
 
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.ORC.id,true,1);
+                    var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.PLAYER,1);
                     newUnit.placeUnit(1,9);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.ORC.id,false,1);
+                    var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.ENEMY,1);
                     newUnit.placeUnit(23,9);
                     game.UnitManager.addUnit(newUnit);
                 };

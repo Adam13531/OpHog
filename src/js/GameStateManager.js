@@ -185,7 +185,6 @@
 
             // Normal gameplay --> minigame gameplay (INVALID)
             // 
-                currentMap.addNPCUnit();
             // This has to go through the win state.
             if ( this.isNormalGameplay() && newState == game.GameStates.MINIGAME_GAMEPLAY ) {
                 return false;
@@ -266,6 +265,7 @@
             // life.
             if ( this.previousState == game.GameStates.NORMAL_LOSE_SCREEN && this.isNormalGameplay() ) {
                 currentMap.addBossUnit();
+                currentMap.addNPCUnit();
                 game.Player.castleLife = game.FULL_CASTLE_LIFE;
             }
 
@@ -304,7 +304,7 @@
                 var numEnemies = 5;
                 var enemyLevel = 5;
                 for (var i = 0; i < numEnemies; i++) {
-                    var newUnit = new game.Unit(game.UnitType.ORC.id, false, enemyLevel);
+                    var newUnit = new game.Unit(game.UnitType.ORC.id, game.PlayerFlags.ENEMY, enemyLevel);
                     newUnit.placeUnit(tileX, tileY);
                     game.UnitManager.addUnit(newUnit);
                 };

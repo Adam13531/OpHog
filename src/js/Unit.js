@@ -364,9 +364,13 @@
 
     /**
      * @return {Boolean} true if this unit can join a battle, which requires
-     * that the unit has been placed and isn't already in a battle
+     * that the unit has been placed, isn't already in a battle, and isn't
+     * neutral
      */
     window.game.Unit.prototype.canJoinABattle = function() {
+        if ((this.playerFlags & game.PlayerFlags.NEUTRAL) != 0) {
+            return false;
+        }
         return this.hasBeenPlaced && !this.isInBattle();
     };
 
@@ -659,7 +663,7 @@
 
         // Summon
         if ( !this.isPlayer() && !this.isBoss() && (this.id % 16) == 0 ) {
-            var newUnit = new game.Unit(game.UnitType.TREE.id,this.isPlayer(),1);
+            var newUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.SUMMON,1);
             newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY());
             game.UnitManager.addUnit(newUnit);
 

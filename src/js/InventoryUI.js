@@ -210,7 +210,7 @@
             if (
                 ( useTarget == game.UseTarget.LIVING_PLAYER_UNIT && isPlayer && isLiving ) ||
                 ( useTarget == game.UseTarget.LIVING_PLAYER_AND_ENEMY_UNIT && isLiving ) ||
-                ( useTarget == game.UseTarget.LIVING_ENEMY_UNIT && !isPlayer && isLiving )
+                ( useTarget == game.UseTarget.LIVING_ENEMY_UNIT && isEnemy && isLiving )
                 ) {
                 return true;
             }
@@ -218,7 +218,7 @@
             if (
                 ( useTarget == game.UseTarget.DEAD_PLAYER_UNIT && isPlayer && !isLiving ) ||
                 ( useTarget == game.UseTarget.DEAD_PLAYER_AND_ENEMY_UNIT && !isLiving ) ||
-                ( useTarget == game.UseTarget.DEAD_ENEMY_UNIT && !isPlayer && !isLiving )
+                ( useTarget == game.UseTarget.DEAD_ENEMY_UNIT && isEnemy && !isLiving )
                 ) {
                 return true;
             }

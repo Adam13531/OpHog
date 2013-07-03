@@ -458,7 +458,7 @@
             var oldBuyYPosition = $('#buySlotButton').position().top;
             var containerY = $('#buyingScreenContainer').parent().position().top;
 
-			newUnit = new game.Unit(this.unitType, true, 1);
+			newUnit = new game.Unit(this.unitType, game.PlayerFlags.PLAYER, 1);
 			game.UnitManager.addUnit(newUnit);
 			game.UnitPlacementUI.addSlotToPage(newUnit);
 
