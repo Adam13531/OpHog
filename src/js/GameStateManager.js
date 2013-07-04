@@ -389,7 +389,7 @@
                 var y = 150;
                 var fontSize = 60;
 
-                game.TextManager.drawTextImmediate(ctx, text, x, y, true, fontSize, game.FuturaFont, color);
+                game.TextManager.drawTextImmediate(ctx, text, x, y, {screenCoords:true, fontSize:60, color:color});
             }
         }
     }

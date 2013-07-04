@@ -38,4 +38,10 @@
      */
     window.game.FULL_CASTLE_LIFE = 100;
 
+    /**
+     * The default font size, in pixels.
+     * @type {Number}
+     */
+    window.game.DEFAULT_FONT_SIZE = 12;
+
 }());

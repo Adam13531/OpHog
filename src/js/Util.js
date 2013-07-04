@@ -42,6 +42,24 @@
     };
 
     /**
+     * This function sets 'property' in the specified dictionary with
+     * defaultValue if it doesn't already exist.
+     *
+     * For example, calling it like (game.UnitType.ORC, 'width', 1) will set the
+     * orc's width to 1 if it didn't already have a width.
+     * @param  {Object} dict - any dictionary
+     * @param  {String} property - any property. After this function, this
+     * property will definitely be set.
+     * @param  {Object} defaultValue - the value to use if the property wasn't
+     * set.
+     */
+    window.game.util.useDefaultIfUndefined = function(dict, property, defaultValue) {
+        if ( dict[property] === undefined ) {
+            dict[property] = defaultValue;
+        }
+    };
+
+    /**
      * This function is really simple: it generates a number in the range [0,1)
      * and returns true if that number is less than the one you passed in.
      *

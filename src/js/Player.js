@@ -90,10 +90,9 @@
                     ctx.strokeRect(x,y,w, h);
 
                     // Draw the percentage
-                    var fontSize = 12;
                     var text = game.util.formatPercentString(percentLife, 0) + '%';
 
-                    game.TextManager.drawTextImmediate(ctx, text, x + w/2, y + 4, false, fontSize, game.FuturaFont, '#fff');
+                    game.TextManager.drawTextImmediate(ctx, text, x + w/2, y - 2);
                 };
             }
             ctx.restore();
