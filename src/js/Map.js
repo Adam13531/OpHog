@@ -1084,8 +1084,11 @@
 
             var x = node.x * tileSize + tileSize / 2;
             var y = node.y * tileSize;
-            game.TextManager.drawTextImmediate(ctx, node.description, x, y, game.Futura12Font, '#fff')
-            game.TextManager.drawTextImmediate(ctx, 'Difficulty: ' + node.difficulty, x, y + 12, game.Futura12Font, '#fff')
+            var difficultyText = 'Difficulty: ' + node.difficulty;
+            var fontSize = 12;
+
+            game.TextManager.drawTextImmediate(ctx, node.description, x, y, false, fontSize, game.FuturaFont, '#fff');
+            game.TextManager.drawTextImmediate(ctx, difficultyText, x, y + fontSize, false, fontSize, game.FuturaFont, '#fff');
         };
     };
 

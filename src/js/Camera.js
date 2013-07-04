@@ -301,6 +301,14 @@
         },
 
         /**
+         * Reverts the scale to 1x1 and the translation to the origin.
+         * @param  {Object} ctx - the canvas context
+         */
+        resetScaleAndTranslate: function(ctx) {
+            ctx.setTransform(1,0,0,1,0,0);
+        },
+
+        /**
          * Returns a function that will zoom in/out.
          */
         getMouseWheelEventHandler: function() {

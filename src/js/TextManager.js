@@ -1,7 +1,7 @@
 ( function() {
 
     // Falls back to Helvetica if Futura doesn't exist
-    window.game.Futura12Font = '12px Futura, Helvetica, sans-serif';
+    window.game.FuturaFont = 'Futura, Helvetica, sans-serif';
 
     // There's only one text manager, so we'll define everything in a single
     // object.
@@ -36,16 +36,24 @@
          * Draws text a single time. 
          * @param  {Object} ctx     - the canvas context
          * @param  {String} text    - the text to draw
-         * @param  {Number} centerX - the center X coordinate in world coords
-         * @param  {Number} centerY - the center Y coordinate in world coords
-         * @param  {String} font    - the font to use
+         * @param  {Number} centerX - the center X coordinate (see below for which coordinate system they're in)
+         * @param  {Number} centerY - the center Y coordinate (see below for which coordinate system they're in)
+         * @param  {Boolean} useScreenCoordinates - if true, x and y are in screen coordinates, otherwise they're in world coordinates.
+         * @param  {Number} fontSize- the font size to use in px
+         * @param  {String} font    - the font to use (don't put font size in this string), e.g. 'Verdana, sans-serif'
          * @param  {String} color   - the color (e.g. '#fff')
          */
-        drawTextImmediate: function(ctx, text, centerX, centerY, font, color) {
+        drawTextImmediate: function(ctx, text, centerX, centerY, useScreenCoordinates, fontSize, font, color) {
             ctx.save();
-            ctx.font = font;
+            game.Camera.resetScaleAndTranslate(ctx);
+
+            if ( !useScreenCoordinates ) {
+                game.Camera.scaleAndTranslate(ctx);
+            }
+
+            ctx.font = fontSize + 'px ' + font;
             var width = ctx.measureText(text).width;
-            var height = 6;
+            var height = Math.ceil(fontSize / 2);
 
             ctx.textBaseline = 'top';
             ctx.fillStyle = color;
@@ -54,8 +62,10 @@
             var y = centerY - height;
 
             // Clamp to world coordinates
-            x = Math.max(0, Math.min(x, currentMap.widthInPixels - width));
-            y = Math.max(0, Math.min(y, currentMap.heightInPixels - height));
+            if ( !useScreenCoordinates ) {
+                x = Math.max(0, Math.min(x, currentMap.widthInPixels - width));
+                y = Math.max(0, Math.min(y, currentMap.heightInPixels - height));
+            }
             
             ctx.fillText(text, x, y);
             ctx.restore();
