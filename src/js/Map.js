@@ -1070,6 +1070,27 @@
     };
 
     /**
+     * Draws text for each node in the overworld map.
+     * @param  {Object} ctx - the canvas context
+     */
+    window.game.Map.prototype.drawOverworldDescriptions = function(ctx) {
+        if ( !this.isOverworldMap || !game.keyPressedToDisplayLifeBars ) return;
+
+        for (var i = 0; i < game.overworldMapNodes.length; i++) {
+            var node = game.overworldMapNodes[i];
+
+            // Don't draw if it's foggy
+            if ( this.isFoggy(node.x, node.y) ) continue;
+
+            var x = node.x * tileSize + tileSize / 2;
+            var y = node.y * tileSize;
+            game.TextManager.drawTextImmediate(ctx, node.description, x, y, game.Futura12Font, '#fff')
+            game.TextManager.drawTextImmediate(ctx, 'Difficulty: ' + node.difficulty, x, y + 12, game.Futura12Font, '#fff')
+        };
+    };
+
+
+    /**
      * This clears all of the fog on the map.
      */
     window.game.Map.prototype.clearAllFog = function() {

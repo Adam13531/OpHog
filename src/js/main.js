@@ -259,6 +259,10 @@
 
         game.GameStateManager.switchToOverworldMap();
 
+        // Uncomment this if you want to jump directly to normal gameplay when
+        // you first start the game.
+        // game.GameStateManager.returnToNormalGameplay();
+
         addKeyboardListeners();
     }
 
@@ -524,6 +528,8 @@
         // Fog will cover everything drawn before this line of code (e.g. units,
         // projectiles).
         currentMap.drawFog(ctx);
+
+        currentMap.drawOverworldDescriptions(ctx);
 
         // Restore so that the camera will stop affecting the following draw
         // commands.

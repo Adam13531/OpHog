@@ -112,6 +112,15 @@
             var width = 50;
             var mapTileIndices = game.overworldMapTileIndices;
 
+            // Put each node into the map
+            for (var i = 0; i < game.overworldMapNodes.length; i++) {
+                var node = game.overworldMapNodes[i];
+                var index = node.y * width + node.x;
+
+                // Make them look like blue spawners
+                mapTileIndices[index] = 65;
+            };
+
             var doodadIndices = new Array(mapTileIndices.length);
             var tilesetID = game.TilesetManager.MARSH_TILESET_ID;
             game.overworldMap = new game.Map(mapTileIndices, doodadIndices, tilesetID, width, true);
