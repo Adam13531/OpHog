@@ -146,8 +146,8 @@
         }
 
         // As soon as this is true, the unit will be removed from the map. For
-        // enemy units, this means they're removed from the game. For player
-        // units, this means they will be "unplaced" (see unplaceUnit).
+        // enemy units, this means they're removed from the game. For placeable
+        // player units, this means they will be "unplaced" (see unplaceUnit).
         this.removeFromMap = false;
 
         // This is an object with a lot of different things in it.
@@ -719,6 +719,15 @@
                 this.mods.push(equippedItem.mods[j]);
             };
         }; 
+    };
+
+    /**
+     * @return {Boolean} true if this unit's type is any of the types in
+     * game.PlaceableUnitType.
+     */
+    window.game.Unit.prototype.isPlaceableUnit = function() {
+        var type = this.unitType;
+        return (type == game.PlaceableUnitType.ARCHER || type == game.PlaceableUnitType.WARRIOR || type == game.PlaceableUnitType.WIZARD);
     };
 
     /**

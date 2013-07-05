@@ -391,24 +391,6 @@
     };
 
     /**
-     * This function sets 'property' in unitType with defaultValue if it doesn't
-     * already exist. It's used so that you can define units without common
-     * things like width and height.
-     *
-     * For example, calling it like (game.UnitType.ORC, 'width', 1) will set the
-     * orc's width to 1 if it didn't already have a width.
-     * @param  {game.UnitType} unitType
-     * @param  {String} property
-     * @param  {Object} defaultValue
-     * @return {undefined}
-     */
-    function useDefaultIfUndefined(unitType, property, defaultValue) {
-        if ( unitType[property] === undefined ) {
-            unitType[property] = defaultValue;
-        }
-    };
-
-    /**
      * This function ensures you didn't define an unit ID twice, and it will
      * insert default values where necessary. It is called immediately after it
      * is defined (it's an IIFE).
@@ -433,8 +415,8 @@
                 }
             }
 
-            useDefaultIfUndefined(unitType, 'width', DEFAULT_UNIT_WIDTH);
-            useDefaultIfUndefined(unitType, 'height', DEFAULT_UNIT_HEIGHT);
+            game.util.useDefaultIfUndefined(unitType, 'width', DEFAULT_UNIT_WIDTH);
+            game.util.useDefaultIfUndefined(unitType, 'height', DEFAULT_UNIT_HEIGHT);
 
             var id = unitType.id;
             if ( unitIDs.indexOf(id) != -1 ) {

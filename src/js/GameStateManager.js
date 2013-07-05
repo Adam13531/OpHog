@@ -112,6 +112,15 @@
             var width = 50;
             var mapTileIndices = game.overworldMapTileIndices;
 
+            // Put each node into the map
+            for (var i = 0; i < game.overworldMapNodes.length; i++) {
+                var node = game.overworldMapNodes[i];
+                var index = node.y * width + node.x;
+
+                // Make them look like blue spawners
+                mapTileIndices[index] = 65;
+            };
+
             var doodadIndices = new Array(mapTileIndices.length);
             var tilesetID = game.TilesetManager.MARSH_TILESET_ID;
             game.overworldMap = new game.Map(mapTileIndices, doodadIndices, tilesetID, width, true);
@@ -353,10 +362,8 @@
                 return;
             }
 
-            ctx.font = '60px Futura, Helvetica, sans-serif';
             var inWinState = (this.inWinState() || this.inMinigameWinState());
             var inLoseState = (this.inLoseState() || this.inMinigameLoseState());
-            var text = null;
 
             if ( inWinState || inLoseState ) {
                 // "Frost" the screen so that you know you can't interact with
@@ -367,26 +374,24 @@
                 ctx.restore();
             }
 
-            ctx.save();
-
+            var color;
+            var text = null;
             if ( inWinState ) {
                 text = 'You won! (press "G" for now)';
-                ctx.fillStyle = '#0b0';
+                color = '#0b0';
             }
 
             if ( inLoseState ) {
                 text = 'You lost! (press "G" for now)';
-                ctx.fillStyle = '#b00';
+                color = '#b00';
             }
 
             if ( text != null ) {
-                var width = ctx.measureText(text).width;
-                var x = screenWidth / 2 - width / 2;
-                var y = 100;
+                var x = screenWidth / 2;
+                var y = 150;
+                var fontSize = 60;
 
-                ctx.textBaseline = 'top';
-                ctx.fillText(text, x, y);
-                ctx.restore();
+                game.TextManager.drawTextImmediate(ctx, text, x, y, {screenCoords:true, fontSize:60, color:color});
             }
         }
     }

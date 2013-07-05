@@ -75,7 +75,10 @@
                 var unit = this.gameUnits[i];
                 // Remove units that died in battle
                 if (unit.removeFromMap) {
-                    if ( unit.isPlayer() ) {
+
+                    // Only "unplace" the player's placeable units. Remove
+                    // any other types from the game.
+                    if ( unit.isPlayer() && unit.isPlaceableUnit() ) {
                         unit.unplaceUnit();
                     } else {
                         this.gameUnits.splice(i, 1);

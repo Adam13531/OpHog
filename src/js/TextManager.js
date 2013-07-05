@@ -1,5 +1,8 @@
 ( function() {
 
+    // Falls back to Helvetica if Futura doesn't exist
+    window.game.FuturaFont = 'Futura, Helvetica, sans-serif';
+
     // There's only one text manager, so we'll define everything in a single
     // object.
     window.game.TextManager = {
@@ -27,6 +30,83 @@
 
                 this.textObjs[i].update(delta);
             };
+        },
+
+        /**
+         * Draws text a single time. 
+         * @param  {Object} ctx     - the canvas context
+         * @param  {String} text    - the text to draw
+         * @param  {Number} centerX - the center X coordinate (see below for which coordinate system they're in)
+         * @param  {Number} y - the Y coordinate. Depending on the options you pass, this will either represent the top, middle, or bottom coordinate
+         * @param  {Object} options - all other font-drawing options. You don't have to specify any of these, in which case defaults will be used.
+         *         {Boolean} screenCoords - if true, x and y are in screen coordinates, otherwise they're in world coordinates. Default is false.
+         *         {Number} fontSize- the font size to use in px. Default is game.DEFAULT_FONT_SIZE.
+         *         {String} font    - the font to use (don't put font size in this string), e.g. 'Verdana, sans-serif'. Default is game.FuturaFont.
+         *         {String} color   - the color. Default is '#fff' (white).
+         *         {String} baseline- either 'top', 'middle', or 'bottom'. This
+         *         dictates what 'y' represents. Default: 'top'. There are other
+         *         values, but I can't reliably compute height, so they may appear
+         *         out of bounds if you use them: http://www.w3schools.com/tags/canvas_textbaseline.asp
+         */
+        drawTextImmediate: function(ctx, text, centerX, y, options) {
+            // Set default values
+            if ( options === undefined ) options = {};
+            var useScreenCoordinates = (options.screenCoords === undefined ? false : options.screenCoords);
+            var fontSize = (options.fontSize === undefined ? game.DEFAULT_FONT_SIZE : options.fontSize);
+            var font = (options.font === undefined ? game.FuturaFont : options.font);
+            var color = (options.color === undefined ? '#fff' : options.color);
+            var baseline = (options.baseline === undefined ? 'top' : options.baseline);
+
+            // Translate to correct coordinate space
+            ctx.save();
+            game.Camera.resetScaleAndTranslate(ctx);
+
+            if ( !useScreenCoordinates ) {
+                game.Camera.scaleAndTranslate(ctx);
+            }
+
+            ctx.font = fontSize + 'px ' + font;
+            var width = ctx.measureText(text).width;
+            var height = fontSize;
+
+            ctx.textBaseline = baseline;
+            ctx.fillStyle = color;
+
+            var x = centerX - width / 2;
+
+            // Clamp to world coordinates
+            if ( !useScreenCoordinates ) {
+                x = Math.max(0, Math.min(x, currentMap.widthInPixels - width));
+
+                // To figure out where the 'y' should be clamped, we need to
+                // take our baseline into account.
+                //
+                // Set topY to be the coordinate where we'd draw if we were
+                // using 'top' as our baseline.
+                var topY;
+                if ( baseline == 'top' ) {
+                    topY = y;
+                } else if ( baseline == 'middle' ) {
+                    topY = y - height / 2;
+                } else {
+                    topY = y - height;
+                }
+
+                var bottomY = topY + height;
+                var lowestPossibleCoord = currentMap.heightInPixels - height;
+
+                // There should never be a case where our font is bigger than
+                // the screen, so the below can be an 'else if' and not just an
+                // 'if'.
+                if ( topY < 0 ) {
+                    y -= topY;
+                } else if ( bottomY >= lowestPossibleCoord ) {
+                    y -= (bottomY - lowestPossibleCoord);
+                }
+            }
+            
+            ctx.fillText(text, x, y);
+            ctx.restore();
         },
 
         /**
