@@ -50,7 +50,7 @@
 
         var newUnit = new game.Unit(possibleEnemy.enemyID, false, level);
 
-        newUnit.placeUnit(this.tileX, this.tileY);
+        newUnit.placeUnit(this.tileX, this.tileY, game.MovementAI.FOLLOW_PATH);
         game.UnitManager.addUnit(newUnit);
     };
 

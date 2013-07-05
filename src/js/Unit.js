@@ -32,7 +32,21 @@
 
         // Units with this AI will be leashed to a certain point. They are given
         // leashTileX and leashTileY.
-        BOSS: 'boss'
+        BOSS: 'boss',
+
+        // Wander around the walkable tiles that aren't covered in fog. Units
+        // can move in any direction as long as tiles
+        // are walkable. Backtracking is allowed.
+        // 
+        // This is intended for the overworld for now.
+        WANDER_UNFOGGY_WALKABLE: 'wander unfoggy walkable',
+
+        // Moves to a specific tile, only following walkable tiles that aren't
+        // foggy. Units can move in any direction as long as tiles are walkable.
+        // Backtracking is allowed.
+        // 
+        // This is intended for the overworld for now.
+        MOVE_TO_SPECIFIC_TILE: 'move to specific point'
     };
 
     // This represents a 2x1 unit. 496 was chosen because it's the first index
@@ -263,9 +277,14 @@
      * Places a unit at the given tile locations
      * @param  {number} tileX tile as an X coordinate
      * @param  {number} tileY tile as a Y coordinate
-     * @return {null}       
+     * @param  {game.MovementAI} movementAI - a movement AI to apply, or null if
+     * you don't want to change whatever the current one is.
      */
-    window.game.Unit.prototype.placeUnit = function(tileX, tileY) {
+    window.game.Unit.prototype.placeUnit = function(tileX, tileY, movementAI) {
+        if ( movementAI != null ) {
+            this.movementAI = movementAI;
+        }
+
         var centerXPx = tileX * tileSize + tileSize / 2;
         var centerYPx = tileY * tileSize + tileSize / 2;
         this.setCenterX(centerXPx);
@@ -334,7 +353,6 @@
      * This function will light the unit up again in the unit placement UI.
      *
      * Don't call this function when a unit is in battle.
-     * @return {null}
      */
     window.game.Unit.prototype.unplaceUnit = function() {
         if ( !this.isPlayer() ) {
@@ -390,15 +408,86 @@
             this.acquireNewDestinationFollowPath();
         } else if ( this.movementAI == game.MovementAI.BOSS ) {
             this.acquireNewDestinationBoss();
+        } else if ( this.movementAI == game.MovementAI.WANDER_UNFOGGY_WALKABLE ) {
+            this.acquireNewDestinationWanderWalkable();
+        } else if ( this.movementAI == game.MovementAI.MOVE_TO_SPECIFIC_TILE ) {
+            this.acquireNewDestinationMoveSpecificTile();
         } else {
             console.log('Unreconized movement AI: ' + this.movementAI);
         }
     }
 
     /**
+     * Sets the movement AI MOVE_TO_SPECIFIC_TILE and immediately start moving
+     * toward the tile you specify.
+     * @param  {Tile} tile - a tile to move to
+     */
+    window.game.Unit.prototype.moveToSpecificTile = function(tile) {
+        this.movementAI = game.MovementAI.MOVE_TO_SPECIFIC_TILE;
+        this.specificTile = tile;
+
+        // Make them immediately stop with their current destination
+        this.acquireNewDestination();
+    };
+    
+    /**
+     * This is for the MOVE_TO_SPECIFIC_TILE movement AI. It will move toward
+     * this.specificTile.
+     */
+    window.game.Unit.prototype.acquireNewDestinationMoveSpecificTile = function() {
+        var startTile = this.getCenterTile();
+
+        // This code should be made better or moved elsewhere eventually. It
+        // says that when you're transitioning from the overworld to a normal
+        // map, the first unit that reaches the point that you clicked will
+        // trigger entry into the new map.
+        if ( startTile.tileIndex == this.specificTile.tileIndex && game.GameStateManager.isMovingToNormalMap() ) {
+            game.GameStateManager.returnToNormalGameplay();
+        }
+
+        var path = currentMap.findPathWithoutFog(startTile, this.specificTile);
+
+        // This is possible if you somehow uncovered fog far away and it's not
+        // connected.
+        // 
+        // At this point though, you'll already be in the wrong game
+        // state, so we need to revert it.
+        if ( path == null ) {
+            this.movementAI = game.MovementAI.WANDER_UNFOGGY_WALKABLE;
+            game.GameStateManager.enterOverworldState();
+            return;
+        }
+
+        var destTile;
+        if ( path.length == 1 ) {
+            destTile = path[0];
+        } else {
+            destTile = path[1];
+        }
+
+        this.destX = destTile.x * tileSize + tileSize / 2;
+        this.destY = destTile.y * tileSize + tileSize / 2;
+    };
+
+    /**
+     * This is for the WANDER_UNFOGGY_WALKABLE movement AI. See the comment for
+     * WANDER_UNFOGGY_WALKABLE.
+     */
+    window.game.Unit.prototype.acquireNewDestinationWanderWalkable = function() {
+        var currentTile = this.getCenterTile();
+
+        var possibleTiles = currentMap.getWalkableUnfoggyNeighbors(currentTile);
+
+        // Randomly pick one as our destination
+        var destTile = game.util.randomArrayElement(possibleTiles);
+
+        this.destX = destTile.x * tileSize + tileSize / 2;
+        this.destY = destTile.y * tileSize + tileSize / 2;
+    };
+
+    /**
      * acquireNewDestination for the BOSS AI. It moves around the general
      * vicinity while staying leashed to the starting tile.
-     * @return {undefined}
      */
     window.game.Unit.prototype.acquireNewDestinationBoss = function() {
         if ( this.leashTileX === undefined ) {
@@ -418,7 +507,6 @@
     /**
      * Navigates to a random valid neighbor, which is based on the tile's
      * leftList or rightList.
-     * @return {null}
      */
     window.game.Unit.prototype.acquireNewDestinationFollowPath = function() {
         // All pathfinding is based on centers to account for non-1x1 units
@@ -479,7 +567,6 @@
     /**
      * Updates this unit, moving it, making it execute its battle turn, etc.
      * @param  {Number} delta - time in ms since this function was last called
-     * @return {null}
      */
     window.game.Unit.prototype.update = function(delta) {
         // We only update if the unit was placed
@@ -488,6 +575,9 @@
         var deltaAsSec = delta / 1000;
         // var speed = Math.random()*120 + 500;
         var speed = 60;
+        if ( game.GameStateManager.isMovingToNormalMap() ) {
+            speed = 300;
+        }
         var change = speed * deltaAsSec;
 
         // All movement should be based on center coordinates so that two
@@ -550,7 +640,7 @@
         }
 
         // Clear some fog every loop, even if we're in battle.
-        if ( this.isPlayer() ) {
+        if ( this.isPlayer() && game.GameStateManager.isNormalGameplay() ) {
             currentMap.setFog(this.getCenterTileX(), this.getCenterTileY(), 3, false, true);
         }
 
@@ -560,7 +650,6 @@
     /**
      * Updates any status effects, removing the ones that are finished.
      * @param  {Number} delta - time in ms since this function was last called
-     * @return {null}
      */
     window.game.Unit.prototype.updateStatusEffects = function(delta) {
         for (var i = 0; i < this.statusEffects.length; i++) {
@@ -632,7 +721,6 @@
 
     /**
      * Attack, cast a spell, etc.
-     * @return {null}
      */
     window.game.Unit.prototype.takeBattleTurn = function() {
         // Short hand
@@ -660,7 +748,7 @@
         // Summon
         if ( !this.isPlayer() && !this.isBoss() && (this.id % 16) == 0 ) {
             var newUnit = new game.Unit(game.UnitType.TREE.id,this.isPlayer(),1);
-            newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY());
+            newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
             game.UnitManager.addUnit(newUnit);
 
             // Force the unit to join this battle. We pass coordinates so that
@@ -1026,7 +1114,6 @@
     /**
      * Grants this unit experience, leveling it up if necessary.
      * @param  {Number} experience - the amount of experience to gain
-     * @return {null}
      */
     window.game.Unit.prototype.gainExperience = function(experience) {
         this.experience += experience;
@@ -1040,7 +1127,6 @@
 
     /**
      * Levels this unit up, increasing stats.
-     * @return {null}
      */
     window.game.Unit.prototype.levelUp = function() {
         this.level++;
@@ -1053,7 +1139,6 @@
     /**
      * Draws this unit's life bar.
      * @param  {Object} ctx - the canvas context
-     * @return {null}
      */
     window.game.Unit.prototype.drawLifeBar = function(ctx) {
         ctx.save();

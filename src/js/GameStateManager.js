@@ -11,7 +11,8 @@
         MINIGAME_GAMEPLAY: 'minigame gameplay',
         MINIGAME_WIN_SCREEN: 'minigame win screen',
         MINIGAME_LOSE_SCREEN: 'minigame lose screen',
-        OVERWORLD: 'overworld'
+        OVERWORLD: 'overworld',
+        MOVING_TO_NORMAL_MAP: 'moving to normal map'
     };
 
     /**
@@ -65,6 +66,9 @@
         inOverworldMap: function() {
             return this.currentState == game.GameStates.OVERWORLD;
         },
+        isMovingToNormalMap: function() {
+            return this.currentState == game.GameStates.MOVING_TO_NORMAL_MAP;
+        },
 
         /**
          * These functions simply attempt to set the state (I say "attempt"
@@ -91,6 +95,9 @@
         },
         enterOverworldState: function() {
             this.setState(game.GameStates.OVERWORLD);
+        },
+        transitionToNormalMap: function() {
+            this.setState(game.GameStates.MOVING_TO_NORMAL_MAP);
         },
 
         /**
@@ -146,6 +153,12 @@
             currentMap = game.overworldMap;
 
             game.Camera.initialize();
+
+            // Place all of your units at the last map node you clicked.
+            var tileOfLastMap = game.overworldMap.getTileOfLastMap();
+
+            // Give them the movement AI that will make them wander
+            game.UnitManager.placeAllPlayerUnits(tileOfLastMap.x, tileOfLastMap.y, game.MovementAI.WANDER_UNFOGGY_WALKABLE);
         },
 
         /**
@@ -243,8 +256,18 @@
             // Minigame win --> overworld map
             if ( this.inMinigameWinState() && newState == game.GameStates.OVERWORLD ) return true;
 
-            // Overworld --> normal gameplay
-            if ( this.inOverworldMap() && newState == game.GameStates.NORMAL_GAMEPLAY ) return true;
+            // Overworld --> moving to normal map
+            if ( this.inOverworldMap() && newState == game.GameStates.MOVING_TO_NORMAL_MAP ) return true;
+
+            // Moving to normal map --> normal gameplay
+            if ( this.isMovingToNormalMap() && newState == game.GameStates.NORMAL_GAMEPLAY ) return true;
+
+            // Moving to normal map --> overworld
+            // 
+            // This is only to account for a problem where you could reveal part
+            // of a map, but you can't path to it and then you need to revert
+            // the game state.
+            if ( this.isMovingToNormalMap() && newState == game.GameStates.OVERWORLD ) return true;
 
             console.log('State transition unknown: ' + this.currentState + ' --> ' + newState);
             return false;
@@ -305,14 +328,14 @@
                 game.Camera.panInstantlyTo(tileX * tileSize, tileY * tileSize);
 
                 // Spawn all of your units
-                game.UnitManager.placeAllPlayerUnits(tileX, tileY);
+                game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
 
                 // Spawn some enemies too
                 var numEnemies = 5;
                 var enemyLevel = 5;
                 for (var i = 0; i < numEnemies; i++) {
                     var newUnit = new game.Unit(game.UnitType.ORC.id, false, enemyLevel);
-                    newUnit.placeUnit(tileX, tileY);
+                    newUnit.placeUnit(tileX, tileY, game.MovementAI.FOLLOW_PATH);
                     game.UnitManager.addUnit(newUnit);
                 };
 
@@ -343,9 +366,15 @@
                 this.switchToOverworldMap();
             }
 
-            // Overworld --> normal gameplay
-            if ( this.previousState == game.GameStates.OVERWORLD && newState == game.GameStates.NORMAL_GAMEPLAY ) {
+            // Moving to normal map --> normal gameplay
+            if ( this.previousState == game.GameStates.MOVING_TO_NORMAL_MAP && this.isNormalGameplay()) {
                 this.switchToNewMap();
+            }
+
+            // Overworld --> moving to normal map
+            if ( this.previousState == game.GameStates.OVERWORLD && this.isMovingToNormalMap() ) {
+                // Make all units move to the tile you tapped
+                game.UnitManager.makeAllPlayerUnitsMoveToTile(game.overworldMap.tileOfLastMap);
             }
         },
 

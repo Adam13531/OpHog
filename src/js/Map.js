@@ -51,16 +51,24 @@
     };
 
     /**
+     * This calls the correct initialize function to initialize the map.
+     */
+    window.game.Map.prototype.initialize = function() {
+        if ( this.isOverworldMap ) {
+            this.initializeOverworldMap();
+        } else {
+            this.initializeNormalMap();
+        }
+    };
+
+    /**
      * This initializes a normal map so that pathing, generators, the boss, etc.
      * are set up.
      *
      * After setting up this.mapTiles, call this function. Without calling this,
      * various parts of the map will be broken.
      */
-    window.game.Map.prototype.initialize = function() {
-        // The overworld map doesn't need any of this stuff.
-        if ( this.isOverworldMap ) return;
-
+    window.game.Map.prototype.initializeNormalMap = function() {
         // The endpoints need to be calculated so that we can figure out the
         // tile lists.
         this.figureOutEndpoints();
@@ -77,9 +85,34 @@
         this.placeGenerators();
 
         this.addBossUnit();
-
     };
-    
+
+    /**
+     * Initializes the overworld map.
+     */
+    window.game.Map.prototype.initializeOverworldMap = function() {
+        // This represents the tile on the overworld that led to the last normal
+        // map you played. It should be fetched with getTileOfLastMap so that it
+        // can be populated when it's null. We can't just populate it here
+        // because at this point, everything on the map is still foggy.
+        this.tileOfLastMap = null;
+    };
+
+    /**
+     * This is only valid for the overworld. It will tell you the tile at which
+     * you played your last normal map.
+     * @return {Tile} - the last tile where you played a normal map
+     */
+    window.game.Map.prototype.getTileOfLastMap = function() {
+        // If it wasn't set, then find a random spawner and set it now.
+        if ( this.tileOfLastMap == null ) {
+            var visibleSpawners = this.getAllTiles(game.TileFlags.SPAWNER | game.TileFlags.UNFOGGY);
+            this.tileOfLastMap = game.util.randomArrayElement(visibleSpawners);
+        }
+
+        return this.tileOfLastMap;
+    };
+
     /**
      * Clears an area of fog around each spawner.
      */
@@ -104,7 +137,7 @@
         var x = this.numCols - 3;
         var y = Math.floor(this.numRows / 2);
 
-        bossUnit.placeUnit(x, y);
+        bossUnit.placeUnit(x, y, game.MovementAI.BOSS);
         game.UnitManager.addUnit(bossUnit);
     };
 
@@ -237,10 +270,26 @@
      * @return {Array:Tile}           List containing only tiles that were wanted
      */
     window.game.Map.prototype.getAllTiles = function(tileFlags) {
+        var mustBeFoggy = (tileFlags & game.TileFlags.FOGGY) != 0;
+        var mustBeUnfoggy = (tileFlags & game.TileFlags.UNFOGGY) != 0;
+        if ( mustBeFoggy && mustBeUnfoggy ) {
+            console.log('Invalid tile flags: ' + tileFlags + ' (you specified FOGGY and UNFOGGY)');
+        }
+
+        // Get rid of the FOGGY and UNFOGGY flags so that we can do a direct
+        // comparison below.
+        tileFlags &= ~(game.TileFlags.FOGGY | game.TileFlags.UNFOGGY);
+
         var tiles = [];
         for (var i = 0; i < this.mapTiles.length; i++) {
             var tile = this.mapTiles[i];
             if ( (tile.tileFlags & tileFlags) == tileFlags) {
+                // The flags match, but is it the right fog level?
+                if ( (mustBeFoggy && !this.fog[tile.tileIndex]) ||
+                    (mustBeUnfoggy && this.fog[tile.tileIndex]) ) {
+                    continue;
+                }
+
                 tiles.push(tile);
             }
         };
@@ -265,8 +314,8 @@
      * @return {Boolean}
      */
     window.game.Map.prototype.isTileAnEndpoint = function(tile, testForLeftEndpoint) {
-        var leftNeighbors = this.getAdjacentTiles(tile, false);
-        var rightNeighbors = this.getAdjacentTiles(tile, true);
+        var leftNeighbors = this.getAdjacentTiles(tile, game.DirectionFlags.LEFT);
+        var rightNeighbors = this.getAdjacentTiles(tile, game.DirectionFlags.RIGHT);
 
         // Right-endpoints cannot have right-neighbors. See the function
         // comments.
@@ -370,8 +419,11 @@
                 continue;
             }
 
-            var startNeighbors = this.getAdjacentTiles(tile, !buildingLeftList);
-            var endNeighbors = this.getAdjacentTiles(tile, buildingLeftList);
+            var startDirection = buildingLeftList ? game.DirectionFlags.LEFT : game.DirectionFlags.RIGHT;
+            var endDirection = buildingLeftList ? game.DirectionFlags.RIGHT : game.DirectionFlags.LEFT;
+
+            var startNeighbors = this.getAdjacentTiles(tile, startDirection);
+            var endNeighbors = this.getAdjacentTiles(tile, endDirection);
 
             // startKeys and endKeys will simply refer to the neighbors UNLESS
             // this is a left or right endpoint, in which case it also refers to
@@ -632,6 +684,209 @@
     };
 
     /**
+     * @param  {Array:Tile} array - any array of tiles
+     * @param  {Tile} tile  - a tile to search for
+     * @return {Boolean}       - true if 'array' contains 'tile'
+     */
+    window.game.Map.prototype.arrayContainsTile = function(array, tile) {
+        for (var i = 0; i < array.length; i++) {
+            if ( tile.tileIndex == array[i].tileIndex ) return true;
+        };
+        return false;
+    };
+
+    /**
+     * Given tile '4' shown below (which is 'centerTile' to this function), this
+     * will return all of the other numbers if they are both walkable and
+     * unfoggy. It will prune diagonals if a cardinal neighbor exists (see the
+     * comment for pruneDiagonalIfCardinalExist).
+     *
+     * 0 1 2
+     * 3 4 5
+     * 6 7 8
+     * 
+     * @param  {Tile} centerTile - tile number '4' above
+     * @return {Array:Tile}            - walkable, unfoggy neighbors
+     */
+    window.game.Map.prototype.getWalkableUnfoggyNeighbors = function(centerTile) {
+        // Get walkable neighbors
+        var possibleTiles = this.getAdjacentTiles(centerTile, game.DirectionFlags.LEFT | game.DirectionFlags.RIGHT);
+
+        // Prune diagonals if we can take adjacent tiles
+        possibleTiles = this.pruneDiagonalIfCardinalExist(centerTile, possibleTiles);
+
+        // Remove foggy tiles
+        for (var i = 0; i < possibleTiles.length; i++) {
+            var tile = possibleTiles[i];
+            if ( this.isFoggy(tile.x, tile.y) ) {
+                possibleTiles.splice(i,1);
+                i--;
+            }
+        };
+
+        return possibleTiles;
+    };
+
+    /**
+     * A simple implementation of the A* algorithm. I looked at pseudocode on
+     * Wikipedia for it.
+     *
+     * It finds a path that does NOT involve any foggy tiles.
+     * @param  {Tile} startTile - the starting tile
+     * @param  {Tile} endTile   - the end tile
+     * @return {Array:Tile} - the path from start to end. This path will include
+     * both startTile and endTile (unless they're the same, in which case that
+     * tile will only appear once).
+     */
+    window.game.Map.prototype.findPathWithoutFog = function(startTile, endTile) {
+        /**
+         * Tiles you've visited. This is the "closedset" on Wikipedia.
+         * @type {Array:Tile}
+         */
+        var visited = [];
+
+        /**
+         * Tiles you have yet to visit. This is the "openset" on Wikipedia.
+         * @type {Array}
+         */
+        var toVisit = [];
+
+        /**
+         * A dictionary whose keys and values are both numbers representing tile
+         * indices. Each key/value pair represents a destination/source tile
+         * pair.
+         * @type {Object}
+         */
+        var cameFrom = {};
+
+        /**
+         * The keys are numbers representing tile indices. The values are the
+         * costs ("scores") from startTile ALONG the best-known path.
+         * @type {Object}
+         */
+        var gScore = {};
+
+        /**
+         * Same as gScore, but the values represent the estimated cost from
+         * start-->current_tile-->goal.
+         * @type {Object}
+         */
+        var fScore = {};
+
+        // The heuristic function should never overestimate. Thus, we take
+        // straight-line distance since that's the best-possible case.
+        var heuristic = function(tile1, tile2) {
+            return game.util.distance(tile1.x, tile1.y, tile2.x, tile2.y);
+        }
+
+        /**
+         * This function will get the tile with the lowest possible 'f' score,
+         * which is the tile that we estimate will have the shortest path
+         * (that's why this is a best-first search).
+         * @param  {Array:Tile} array [description]
+         * @return {[type]}       [description]
+         */
+        var getLowestF = function(array) {
+            var lowestTile = array[0];
+            for (var i = 1; i < array.length; i++) {
+                var tile = array[i];
+                if ( fScore[tile.tileIndex] < fScore[lowestTile.tileIndex] ) {
+                    lowestTile = tile;
+                }
+            };
+
+            return lowestTile;
+        }
+
+        // Start with only the start tile visited
+        toVisit.push(startTile);
+
+        // The cost to get to the start tile is 0 obviously
+        gScore[startTile.tileIndex] = 0;
+
+        // The estimated cost from the start is simply the heuristic.
+        fScore[startTile.tileIndex] = gScore[startTile.tileIndex] + heuristic(startTile, endTile);
+
+        while ( toVisit.length != 0 ) {
+            // Get the tile we think is closest to the goal.
+            var current = getLowestF(toVisit);
+
+            // If we're at the goal, reconstruct the path
+            if ( current.tileIndex == endTile.tileIndex ) {
+                var path = this.reconstructPath(cameFrom, endTile.tileIndex);
+
+                // Make sure it contains the end tile
+                if ( path[path.length - 1] != endTile.tileIndex ) {
+                    path.push(endTile.tileIndex);
+                }
+
+                // Convert the path from tile indices to tiles
+                for (var i = 0; i < path.length; i++) {
+                    path[i] = this.mapTiles[path[i]];
+                };
+                return path;
+            }
+
+            this.removeTileFromArray(current, toVisit);
+            visited.push(current);
+
+            // Only consider walkable, unfoggy neighbors
+            var neighbors = this.getWalkableUnfoggyNeighbors(current);
+            for (var i = 0; i < neighbors.length; i++) {
+                var neighbor = neighbors[i];
+
+                // 1 is always the distance between 'current' and 'neighbor'
+                var tentativeGScore = gScore[current.tileIndex] + 1;
+
+                var gScoreNeighbor = gScore[neighbor.tileIndex];
+
+                // If we don't already have a gScore for our neighbor, set it to
+                // "infinite".
+                if ( gScoreNeighbor === undefined ) gScoreNeighbor = 999999;
+
+                if ( this.arrayContainsTile(visited, neighbor) && tentativeGScore >= gScoreNeighbor) {
+                    continue;
+                }
+
+                if ( !this.arrayContainsTile(toVisit, neighbor) && tentativeGScore < gScoreNeighbor ) {
+                    cameFrom[neighbor.tileIndex] = current.tileIndex;
+                    gScore[neighbor.tileIndex] = tentativeGScore;
+                    fScore[neighbor.tileIndex] = tentativeGScore + heuristic(neighbor, endTile);
+                    if ( !this.arrayContainsTile(toVisit, neighbor) ) {
+                        toVisit.push(neighbor);
+                    }
+                }
+            };
+        }
+
+        // There is no path if we got here
+        return null;
+    };
+
+    /**
+     * This will reconstruct an A* path. This code was modeled on the Wikipedia
+     * pseudo-code for A*.
+     * @param  {Object} cameFrom    - the map from the pathfinding function (see
+     * the comment there)
+     * @param  {Number} currentNode - the current node. This function is
+     * recursive, so it starts as endTile but changes as we continue to call it.
+     * @return {Array:Number}             - an array of tile indices
+     * representing start --> end. It does not always contain the end tile.
+     */
+    window.game.Map.prototype.reconstructPath = function(cameFrom, currentNode) {
+        if ( cameFrom[currentNode] === undefined ) {
+            // Make sure to return the current node as an array, that way this
+            // function ONLY returns arrays and we don't have to check the types
+            // of the return values
+            return [currentNode];
+        }
+
+        var path = this.reconstructPath(cameFrom, cameFrom[currentNode]);
+        path.push(currentNode);
+        return path;
+    };
+
+    /**
      * Figures out if there's any path leading from fromTile->startTile->any
      * endpoint.
      * @param  {Tile} startTile              - the tile to start at
@@ -723,7 +978,8 @@
                         break;
                     }
                 } else {
-                    neighbors = this.getAdjacentTiles(next, formingLeftToRightPath);
+                    var directionFlags = formingLeftToRightPath ? game.DirectionFlags.RIGHT : game.DirectionFlags.LEFT;
+                    neighbors = this.getAdjacentTiles(next, directionFlags);
                 }
 
                 for (var i = 0; i < neighbors.length; i++) {
@@ -880,15 +1136,17 @@
     /**
      * Gets either the right or left walkable neighbors of the tile passed in.
      * @param  {Tile} tile        - the tile whose neighbors you want to find
-     * @param  {Boolean} facingRight - if true, this will return the right
-     * neighbors
+     * @param  {game.DirectionFlags} directionFlags - some non-zero combination
+     * of LEFT and RIGHT indicating which neighbors should be returned
      * @return {Array:Tile}             - an array of neighbors. If there are no
      * neighbors, the return value is an array of length 0, not null
      */
-    window.game.Map.prototype.getAdjacentTiles = function(tile, facingRight) {
+    window.game.Map.prototype.getAdjacentTiles = function(tile, directionFlags) {
         var tileX = tile.x;
         var tileY = tile.y;
         var tileIndex = tile.tileIndex;
+        var getRightNeighbors = (directionFlags & game.DirectionFlags.RIGHT) != 0;
+        var getLeftNeighbors = (directionFlags & game.DirectionFlags.LEFT) != 0;
 
         /**
          * The indices of each neighbor. They may be invalid, in which case
@@ -915,7 +1173,7 @@
         // 0 1 2
         // 3 4 5
         // 6 7 8
-        if ( !facingRight && tileX > 0) {
+        if ( getLeftNeighbors && tileX > 0) {
             // 0
             indices.push(tileIndex - this.numCols - 1);
             // 3
@@ -934,7 +1192,7 @@
             indices.push(tileIndex + this.numCols);
         }
 
-        if ( facingRight && tileX < this.numCols - 1) {
+        if ( getRightNeighbors && tileX < this.numCols - 1) {
             // 2
             indices.push(tileIndex - this.numCols + 1);
             // 5

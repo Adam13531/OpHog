@@ -1,7 +1,7 @@
 ( function() {
 
     /**
-     * These represent the possible tile types. Not all combinations are
+     * These represent certain tile properties. Not all combinations are
      * possible, e.g. SPAWNER | CASTLE, and some combinations are necessary,
      * e.g. WALKABLE | SPAWNER.
      * @type {Object}
@@ -9,7 +9,11 @@
     window.game.TileFlags = {
         WALKABLE: 1,
         SPAWNER:  2,
-        CASTLE:   4
+        CASTLE:   4,
+        FOGGY:    8,
+
+        // Sometimes you want to fetch a tile that does not have fog
+        UNFOGGY: 16,
     };
 
     window.game.CASTLE_GRAPHIC_INDEX = 93;
