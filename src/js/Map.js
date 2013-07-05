@@ -76,6 +76,8 @@
         // Now that we have spawn points, we can place the generators.
         this.placeGenerators();
 
+        this.placeNPCs();
+
         this.addBossUnit();
 
     };
@@ -97,7 +99,7 @@
     window.game.Map.prototype.addBossUnit = function() {
         // Make a lv. 20 tree
         var bossUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.BOSS,20);
-        bossUnit.movementAI = game.MovementAI.BOSS;
+        bossUnit.movementAI = game.MovementAI.LEASH_TO_TILE;
         bossUnit.convertToBoss();
 
         // Pick an x and y coordinate that will work on any map.
@@ -106,20 +108,6 @@
 
         bossUnit.placeUnit(x, y);
         game.UnitManager.addUnit(bossUnit);
-    };
-
-    /**
-     * Adds an NPC unit to the map. A map needs to be fully constructed first
-     * before this function can be called.
-     */
-    window.game.Map.prototype.addNPCUnit = function() {
-        var npcUnit = new game.Unit(game.UnitType.NPC_OLD_MAN_WIZARD.id,game.PlayerFlags.NEUTRAL,1);
-        npcUnit.movementAI = game.MovementAI.BOSS;
-
-        var x = 10;//game.util.randomInteger(3, this.numCols - 3);
-        var y = 3;//game.util.randomInteger(3, this.numRows - 3);
-        npcUnit.placeUnit(x, y);
-        game.UnitManager.addUnit(npcUnit);
     };
 
     /**
@@ -155,50 +143,8 @@
      * Places generators randomly on the map.
      */
     window.game.Map.prototype.placeGenerators = function() {
-        // Coordinates of generators
-        var generatorCoords = [];
-        var spawnerTiles = this.getAllTiles(game.TileFlags.SPAWNER);
-        var minimumDistanceFromSpawn = 7;
-        var numberOfGeneratorsToPlace = 7;
-        var possibleGeneratorTiles;
 
-        // Start with all walkable tiles as candidates for possible generator
-        // tiles.
-        possibleGeneratorTiles = this.getAllTiles(game.TileFlags.WALKABLE);
-
-        // Remove any tile that is within a certain number of tiles from any
-        // spawner so that enemies aren't generated too close to the spawn
-        for (var i = 0; i < possibleGeneratorTiles.length; i++) {
-            var tile = possibleGeneratorTiles[i];
-            for (var j = 0; j < spawnerTiles.length; j++) {
-                var spawnTile = spawnerTiles[j];
-                if ( game.util.distance(tile.x, tile.y, spawnTile.x, spawnTile.y) < minimumDistanceFromSpawn ) {
-                    possibleGeneratorTiles.splice(i, 1);
-                    i--;
-                    break;
-                }
-            };
-        };
-
-        // Figure out the coordinates for each generator now.
-        for (var i = 0; i < numberOfGeneratorsToPlace; i++) {
-            // If there are no more possible tiles, then we're forced to stop
-            // here.
-            if ( possibleGeneratorTiles.length == 0 ) {
-                console.log('Warning: this map tried to place ' + numberOfGeneratorsToPlace + 
-                    ' generator(s), but there was only enough room for ' + generatorCoords.length);
-                break;
-            }
-
-            var indexOfGeneratorTile = Math.floor(Math.random() * possibleGeneratorTiles.length);
-            var generatorTile = possibleGeneratorTiles[indexOfGeneratorTile];
-            generatorCoords.push([generatorTile.x, generatorTile.y]);
-
-            // Now that we placed a generator at this tile, we remove it from
-            // the possible coordinates for future generators so that we don't
-            // stack generators.
-            possibleGeneratorTiles.splice(indexOfGeneratorTile, 1);
-        };
+        var generatorCoords = game.util.getRandomPlaceableTiles(7, 7, this);
 
         // This is a debug value and will eventually be based on the map number
         // or something. Actually, a lot of this code will change.
@@ -233,6 +179,25 @@
 
             var generator = new game.Generator(x, y, possibleEnemies);
             game.GeneratorManager.addGenerator(generator);
+        };
+    };
+
+    /**
+     * Places NPCs randomly on the map.
+     */
+    window.game.Map.prototype.placeNPCs = function() {
+        var npcCoords = game.util.getRandomPlaceableTiles(2, 7, this);
+
+        for (var i = 0; i < npcCoords.length; i++) {
+            var npcUnit = new game.Unit(game.UnitType.NPC_OLD_MAN_WIZARD.id,game.PlayerFlags.NEUTRAL,1);
+            npcUnit.movementAI = game.MovementAI.LEASH_TO_TILE;
+            npcUnit.leashRadius = 1;
+            
+            var x = npcCoords[i][0];
+            var y = npcCoords[i][1];
+
+            npcUnit.placeUnit(x, y);
+            game.UnitManager.addUnit(npcUnit);
         };
     };
 

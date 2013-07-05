@@ -161,7 +161,6 @@
             game.TilesetManager.init();
             game.MapGenerator.init();
             currentMap = game.MapGenerator.generateRandomMap(50,25, 1);
-            currentMap.addNPCUnit();
 
             // Initialize the camera so that the zoom and pan values aren't out
             // of bounds.
@@ -274,7 +273,7 @@
             // life.
             if ( this.previousState == game.GameStates.NORMAL_LOSE_SCREEN && this.isNormalGameplay() ) {
                 currentMap.addBossUnit();
-                currentMap.addNPCUnit();
+                currentMap.placeNPCs();
                 game.Player.castleLife = game.FULL_CASTLE_LIFE;
             }
 

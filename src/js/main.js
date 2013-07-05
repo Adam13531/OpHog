@@ -326,6 +326,11 @@
                 game.displayLifeBarsInBattle = !game.displayLifeBarsInBattle;
             }
 
+            // 'F' - Clears all fog from current map
+            if ( evt.keyCode == game.Key.DOM_VK_F) {
+                currentMap.clearAllFog();
+            }
+
             // 'U' - shake the camera
             if (evt.keyCode == game.Key.DOM_VK_U) {
                 // Shake the camera for approximately 20 game loops

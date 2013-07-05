@@ -31,8 +31,8 @@
         FOLLOW_PATH: 'follow path',
 
         // Units with this AI will be leashed to a certain point. They are given
-        // leashTileX and leashTileY.
-        BOSS: 'boss'
+        // leashTileX and leashTileY. These units can walk on unwalkable tiles.
+        LEASH_TO_TILE: 'boss'
     };
 
     // This represents a 2x1 unit. 496 was chosen because it's the first index
@@ -256,7 +256,7 @@
      */
     window.game.Unit.prototype.convertToBoss = function() {
         this.playerFlags |= game.PlayerFlags.BOSS;
-        this.movementAI = game.MovementAI.BOSS;
+        this.movementAI = game.MovementAI.LEASH_TO_TILE;
     };
 
     /**
@@ -392,7 +392,7 @@
     window.game.Unit.prototype.acquireNewDestination = function() {
         if ( this.movementAI == game.MovementAI.FOLLOW_PATH ) {
             this.acquireNewDestinationFollowPath();
-        } else if ( this.movementAI == game.MovementAI.BOSS ) {
+        } else if ( this.movementAI == game.MovementAI.LEASH_TO_TILE ) {
             this.acquireNewDestinationBoss();
         } else {
             console.log('Unreconized movement AI: ' + this.movementAI);
@@ -410,10 +410,13 @@
             this.leashTileY = this.getCenterTileY();
         }
 
+        if ( this.leashRadius == undefined) {
+            this.leashRadius = 2;
+        }
+
         // Get a random tile within RADIUS of the leash tile.
-        var radius = 2;
-        var tileX = this.leashTileX - radius + game.util.randomInteger(0, radius * 2 + 1);
-        var tileY = this.leashTileY - radius + game.util.randomInteger(0, radius * 2 + 1);
+        var tileX = this.leashTileX - this.leashRadius + game.util.randomInteger(0, this.leashRadius * 2 + 1);
+        var tileY = this.leashTileY - this.leashRadius + game.util.randomInteger(0, this.leashRadius * 2 + 1);
 
         this.destX = tileX * tileSize + tileSize / 2;
         this.destY = tileY * tileSize + tileSize / 2;
@@ -532,7 +535,7 @@
                     game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
 
                     game.CollectibleManager.collectAtLocation(this, centerTileX, centerTileY);
-                } else if ( !this.isBoss() && this.getCenterTile().isCastle() ) { 
+                } else if ( this.isEnemy()  && !this.isBoss() && this.getCenterTile().isCastle() ) { 
                     this.removeUnitFromMap();
                     game.Player.modifyCastleLife(-1);
                 }
