@@ -314,6 +314,7 @@
             // Normal state --> win
             if ( this.previousState == game.GameStates.NORMAL_GAMEPLAY && this.inWinState() ) {
                 this.commonWinLoseFunctions();
+                game.Player.castleLife = game.FULL_CASTLE_LIFE;
                 currentMap.clearAllFog();
                 game.MinigameUI.show();
             }

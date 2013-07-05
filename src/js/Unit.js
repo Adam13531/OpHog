@@ -1182,6 +1182,9 @@
         // Bosses always have their lifebars displayed
         if ( this.isBoss() ) return true;
 
+        // If we're looking at the overworld then there's no need to show them.
+        if ( game.GameStateManager.inOverworldMap() || game.GameStateManager.isMovingToNormalMap() ) return false;
+
         // If you pressed a key
         if ( game.keyPressedToDisplayLifeBars ) return true;
 

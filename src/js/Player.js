@@ -165,7 +165,7 @@
 
             if ( game.Player.castleLife <= 0 ) {
                 game.GameStateManager.enterLoseState();
-            } else {
+            } else if ( amount < 0 ) {
                 game.castleFlashScreenTimer = 255;
             }
         },
