@@ -178,6 +178,9 @@
          */
         this.mods = [];
 
+        // Used by NPCs.
+        this.gaveOutQuest = false;
+
         // Populate this.mods
         this.equipmentChanged();
     };
@@ -1190,6 +1193,15 @@
             ctx.fillStyle = 'rgba(0, 255, 0, ' + alpha + ')';
             ctx.fillRect(this.x, this.y, this.width, this.height);
             ctx.restore();
+        }
+
+        // Draws a symbol above an NPC if it didn't give out a quest yet
+        if ( this.playerFlags & game.PlayerFlags.NEUTRAL &&
+             !this.gaveOutQuest) {
+            debugger;
+            var x = this.getCenterX();
+            var y = this.y;
+            game.TextManager.drawTextImmediate(ctx, '!', x, y, {fontSize:20, color:'#ff0', baseline:'bottom'});
         }
 
     };
