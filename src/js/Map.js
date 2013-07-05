@@ -538,14 +538,8 @@
                     var theseWereRemoved = [];
                     for (var j = 0; j < endNeighbors.length; j++) {
                         var rnToCheck = endNeighbors[j];
-                        var found = false;
-                        for (var k = 0; k < pruned.length; k++) {
-                            if ( pruned[k].tileIndex == rnToCheck.tileIndex ) {
-                                found = true;
-                                break;
-                            }
-                        };
-                        if ( !found ) {
+
+                        if ( !this.arrayContainsTile(pruned, rnToCheck) ) {
                             theseWereRemoved.push(rnToCheck);
                         }
                     };
@@ -637,7 +631,7 @@
 
                 // Don't remove references to onesself or you'll totally screw
                 // up when units spawn on the tile.
-                if ( startNeighbor.tileIndex == tile.tileIndex ) continue;
+                if ( startNeighbor.equals(tile) ) continue;
 
                 var found = false;
 
@@ -647,12 +641,10 @@
                 
                 for ( var neighborTileIndex in neighborListToUse ) {
                     var endNeighbors = neighborListToUse[neighborTileIndex];
-                    for (var j = 0; j < endNeighbors.length; j++) {
-                        if ( endNeighbors[j].tileIndex == tile.tileIndex ) {
-                            found = true;
-                            break;
-                        }
-                    };
+                    found = this.arrayContainsTile(endNeighbors, tile);
+
+                    // It only needs to appear in a single neighbor's list for
+                    // us to keep it.
                     if ( found ) break;
                 }
                 if ( !found ) {
@@ -675,7 +667,7 @@
      */
     window.game.Map.prototype.removeTileFromArray = function(tile, array) {
         for (var i = 0; i < array.length; i++) {
-            if ( array[i].tileIndex == tile.tileIndex ) {
+            if ( array[i].equals(tile) ) {
                 array.splice(i,1); // no need for i-- since we're returning
                 return true;
             }
@@ -690,7 +682,7 @@
      */
     window.game.Map.prototype.arrayContainsTile = function(array, tile) {
         for (var i = 0; i < array.length; i++) {
-            if ( tile.tileIndex == array[i].tileIndex ) return true;
+            if ( tile.equals(array[i]) ) return true;
         };
         return false;
     };
@@ -812,7 +804,7 @@
             var current = getLowestF(toVisit);
 
             // If we're at the goal, reconstruct the path
-            if ( current.tileIndex == endTile.tileIndex ) {
+            if ( current.equals(endTile) ) {
                 var path = this.reconstructPath(cameFrom, endTile.tileIndex);
 
                 // Make sure it contains the end tile
@@ -1475,6 +1467,13 @@
     window.game.Map.prototype.isFoggy = function(tileX, tileY) {
         var index = tileY * this.numCols + tileX;
         return this.fog[index];
+    };
+
+    /**
+     * Gets the tile at the specified tile coordinates.
+     */
+    window.game.Map.prototype.getTile = function(tileX, tileY) {
+        return this.mapTiles[tileY * this.numCols + tileX];
     };
 
 }());

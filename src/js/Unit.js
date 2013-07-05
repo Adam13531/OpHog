@@ -441,7 +441,7 @@
         // says that when you're transitioning from the overworld to a normal
         // map, the first unit that reaches the point that you clicked will
         // trigger entry into the new map.
-        if ( startTile.tileIndex == this.specificTile.tileIndex && game.GameStateManager.isMovingToNormalMap() ) {
+        if ( startTile.equals(this.specificTile) && game.GameStateManager.isMovingToNormalMap() ) {
             game.GameStateManager.returnToNormalGameplay();
         }
 
@@ -1030,7 +1030,7 @@
         var tY = this.getCenterTileY();
         var tX = this.getCenterTileX();
         if ( tX >= 0 && tX <= currentMap.numCols - 1 && tY >= 0 && tY <= currentMap.numRows - 1 ) {
-            return currentMap.mapTiles[tY * currentMap.numCols + tX];
+            return currentMap.getTile(tX, tY);
         } else {
             return null;
         }

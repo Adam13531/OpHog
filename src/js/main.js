@@ -134,7 +134,7 @@
                 return;
             }
 
-            var tile = currentMap.mapTiles[tileY * currentMap.numCols + tileX];
+            var tile = currentMap.getTile(tileX, tileY);
             
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target

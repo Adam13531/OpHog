@@ -160,6 +160,14 @@
         this.tileFlags |= game.TileFlags.SPAWNER;
     };
 
+    /**
+     * @param  {Tile} otherTile - some other tile (or null or undefined)
+     * @return {Boolean}           - true if they're equal
+     */
+    window.game.Tile.prototype.equals = function(otherTile) {
+        return otherTile !== undefined && otherTile !== null && this.tileIndex === otherTile.tileIndex;
+    };
+
     //TODO: if there are starting LEFT puzzle pieces that look like these ones,
     // this code will fail:
     //0 0 0
