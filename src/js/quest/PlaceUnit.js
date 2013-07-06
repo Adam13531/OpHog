@@ -45,6 +45,11 @@
     };
 
     window.game.PlaceUnitQuest.prototype.placedAUnit = function(unitType) {
+        // You can't get progress toward this quest unless you're in normal
+        // gameplay. The overworld and the minigame both place units, and we
+        // don't want that to give you progress.
+        if ( !game.GameStateManager.isNormalGameplay() ) return;
+
         if ( unitType == this.unitType ) {
             this.unitsPlaced++;
             game.QuestManager.questGainedProgress(this);

@@ -20,7 +20,12 @@
         NEUTRAL: 4,
         BOSS: 8,
         SUMMON: 16,
-        MERCENARY: 32
+
+        // If we ever use this, make sure that mercenaries can't be placed in
+        // the overworld. Right now (Sat 07/06/2013 - 12:58 AM), there's no
+        // restriction on completing quests in the overworld, so just check game
+        // state before placing a mercenary.
+        // MERCENARY: 32
     };
 
     /**
@@ -242,14 +247,6 @@
      */
     window.game.Unit.prototype.isSummon = function() {
         return (this.playerFlags & game.PlayerFlags.SUMMON) != 0;
-    };
-
-    /**
-     * Finds out if the unit is a mercenary unit
-     * @return {Boolean} True if the unit is a mercenary unit. Otherwise returns false
-     */
-    window.game.Unit.prototype.isMercenary = function() {
-        return (this.playerFlags & game.PlayerFlags.MERCENARY) != 0;
     };
 
     /**
