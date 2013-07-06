@@ -1,7 +1,7 @@
 ( function() {
 
     /**
-     * These represent the possible tile types. Not all combinations are
+     * These represent certain tile properties. Not all combinations are
      * possible, e.g. SPAWNER | CASTLE, and some combinations are necessary,
      * e.g. WALKABLE | SPAWNER.
      * @type {Object}
@@ -9,7 +9,11 @@
     window.game.TileFlags = {
         WALKABLE: 1,
         SPAWNER:  2,
-        CASTLE:   4
+        CASTLE:   4,
+        FOGGY:    8,
+
+        // Sometimes you want to fetch a tile that does not have fog
+        UNFOGGY: 16,
     };
 
     window.game.CASTLE_GRAPHIC_INDEX = 93;
@@ -154,6 +158,14 @@
         }
         this.graphicIndex = this.tileset.spawnTileGraphic;
         this.tileFlags |= game.TileFlags.SPAWNER;
+    };
+
+    /**
+     * @param  {Tile} otherTile - some other tile (or null or undefined)
+     * @return {Boolean}           - true if they're equal
+     */
+    window.game.Tile.prototype.equals = function(otherTile) {
+        return otherTile !== undefined && otherTile !== null && this.tileIndex === otherTile.tileIndex;
     };
 
     //TODO: if there are starting LEFT puzzle pieces that look like these ones,

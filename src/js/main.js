@@ -41,6 +41,18 @@
         });
     }
 
+    /**
+     * This is called after makeUI is called and everything is loaded.
+     */
+    function setStartingGameState() {
+        game.UnitPlacementUI.debugAddUnits();
+        game.GameStateManager.switchToOverworldMap();
+
+        // Uncomment this if you want to jump directly to normal gameplay when
+        // you first start the game.
+        // game.GameStateManager.returnToNormalGameplay();
+    }
+
 
     function makeUI() {
         // This requires that the spritesheets were loaded.
@@ -94,12 +106,12 @@
             $settingsDialog.dialog('close');
             for (var i = 0; i < 30; i++) {
                 var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.PLAYER,1);
-                newUnit.placeUnit(1,9);
+                newUnit.placeUnit(1,9,game.MovementAI.FOLLOW_PATH);
                 game.UnitManager.addUnit(newUnit);
             };
             for (var i = 0; i < 30; i++) {
                 var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.ENEMY,1);
-                newUnit.placeUnit(23,9);
+                newUnit.placeUnit(23,9,game.MovementAI.FOLLOW_PATH);
                 game.UnitManager.addUnit(newUnit);
             };
         });
@@ -121,6 +133,8 @@
             if ( tileX < 0 || tileX >= currentMap.numCols || tileY < 0 || tileY >= currentMap.numRows ) {
                 return;
             }
+
+            var tile = currentMap.getTile(tileX, tileY);
             
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target
@@ -137,7 +151,8 @@
             // Clicking a "spawner" in the overworld will take you to a map to
             // play normally on.
             if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !currentMap.isFoggy(tileX, tileY)) {
-                game.GameStateManager.returnToNormalGameplay();
+                game.overworldMap.tileOfLastMap = tile;
+                game.GameStateManager.transitionToNormalMap();
                 return;
             }
 
@@ -256,12 +271,6 @@
         //Calculate screen height and width
         screenWidth = parseInt($('#canvas').attr('width'));
         screenHeight = parseInt($('#canvas').attr('height'));
-
-        game.GameStateManager.switchToOverworldMap();
-
-        // Uncomment this if you want to jump directly to normal gameplay when
-        // you first start the game.
-        // game.GameStateManager.returnToNormalGameplay();
 
         addKeyboardListeners();
     }
@@ -383,7 +392,7 @@
             if (evt.keyCode == game.Key.DOM_VK_R) {
                 var tileX = game.UnitPlacementUI.spawnPointX;
                 var tileY = game.UnitPlacementUI.spawnPointY;
-                game.UnitManager.placeAllPlayerUnits(tileX, tileY);
+                game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
             }
 
             // 'H' - win the game. This is the only way you can enter this state
@@ -413,7 +422,7 @@
             }
             if ( unitType != null ) {
                 var newUnit = new game.Unit(unitType.id,game.PlayerFlags.PLAYER,1);
-                newUnit.placeUnit(1, 9);
+                newUnit.placeUnit(1, 9,game.MovementAI.FOLLOW_PATH);
                 game.UnitManager.addUnit(newUnit);
             }
 
@@ -432,21 +441,21 @@
             }
             if ( enemyUnitType != null ) {
                 var newUnit = new game.Unit(enemyUnitType.id,game.PlayerFlags.ENEMY,1);
-                newUnit.placeUnit(23,9);
+                newUnit.placeUnit(23,9,game.MovementAI.FOLLOW_PATH);
                 game.UnitManager.addUnit(newUnit);
             }
 
             if (evt.keyCode == game.Key.DOM_VK_9) {
                 for (var i = 0; i < 20; i++) {
                     var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.PLAYER,1);
-                    newUnit.placeUnit(1,9);
+                    newUnit.placeUnit(1,9,game.MovementAI.FOLLOW_PATH);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
             if (evt.keyCode == game.Key.DOM_VK_0) {
                 for (var i = 0; i < 20; i++) {
                     var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.ENEMY,1);
-                    newUnit.placeUnit(23,9);
+                    newUnit.placeUnit(23,9,game.MovementAI.FOLLOW_PATH);
                     game.UnitManager.addUnit(newUnit);
                 };
             }
@@ -551,6 +560,7 @@
 
     function doneLoadingEverything() {
         makeUI();
+        setStartingGameState();
 
         lastUpdate = Date.now();
 

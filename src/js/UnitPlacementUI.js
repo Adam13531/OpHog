@@ -421,7 +421,7 @@
                     return;
                 }
 
-				unit.placeUnit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY);
+				unit.placeUnit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY, game.MovementAI.FOLLOW_PATH);
                 game.Player.modifyCoins(-cost);
 				game.UnitPlacementUI.updateUnit(unit);
 			}

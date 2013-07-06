@@ -146,17 +146,32 @@
         },
 
         /**
-         * Calls placeUnit on every unplaced player unit. This is used by the
-         * minigame.
+         * Calls placeUnit on every unplaced player unit.
          * @param  {Number} tileX - tile X to place at
          * @param  {Number} tileY - tile Y to place at
+         * @param  {game.MovementAI} movementAI - a movement AI to apply, or null if
+         * you don't want to change whatever the current one is.
          */
-        placeAllPlayerUnits: function(tileX, tileY) {
+        placeAllPlayerUnits: function(tileX, tileY, movementAI) {
             for (var i = 0; i < this.gameUnits.length; i++) {
                 var unit = this.gameUnits[i];
                 if ( unit.isPlayer() && !unit.hasBeenPlaced ) {
-                    unit.placeUnit(tileX, tileY);
+                    unit.placeUnit(tileX, tileY, movementAI);
                     game.UnitPlacementUI.updateUnit(unit);
+                }
+            };
+        },
+
+        /**
+         * Makes all of your units move to a specific tile. This is used when
+         * transitioning from the overworld to a normal map.
+         * @param  {Tile} tile - the tile to move to
+         */
+        makeAllPlayerUnitsMoveToTile: function(tile) {
+            for (var i = 0; i < game.UnitManager.gameUnits.length; i++) {
+                var unit = game.UnitManager.gameUnits[i];
+                if ( unit.isPlayer() ) {
+                    unit.moveToSpecificTile(tile);
                 }
             };
         },
