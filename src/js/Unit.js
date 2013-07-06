@@ -1198,7 +1198,6 @@
         // Draws a symbol above an NPC if it didn't give out a quest yet
         if ( this.playerFlags & game.PlayerFlags.NEUTRAL &&
              !this.gaveOutQuest) {
-            debugger;
             var x = this.getCenterX();
             var y = this.y;
             game.TextManager.drawTextImmediate(ctx, '!', x, y, {fontSize:20, color:'#ff0', baseline:'bottom'});

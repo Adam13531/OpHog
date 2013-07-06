@@ -66,13 +66,27 @@
         /**
          * Updates the units, removing when necessary.
          *
-         * This also checks for battles.
+         * This also checks for battles and if the NPC needs to give a quest
          * @param  {Number} delta The amount of ms elapsed since this was last
          *                        called.
          */
         update: function(delta) {
+            var npcUnits = [];
+            var playerUnits = [];
+
             for (var i = 0; i < this.gameUnits.length; i++) {
                 var unit = this.gameUnits[i];
+
+                // Only grab NPCs that didn't give out a quest yet
+                if (unit.isNeutral() &&
+                    !unit.gaveOutQuest) {
+                    npcUnits.push(unit);
+                }
+
+                if (unit.isPlayer()) {
+                    playerUnits.push(unit);
+                }
+
                 // Remove units that died in battle
                 if (unit.removeFromMap) {
 
@@ -96,6 +110,39 @@
             };
 
             game.BattleManager.checkForBattles(this.gameUnits);
+
+            this.checkForGettingQuests(npcUnits, playerUnits);
+        },
+
+        /**
+         * Checks to see if the NPCs need to give out quests to the player. This 
+         * happens when the NPC hasn't given out a quest yet and if a player's
+         * unit is close enough to the NPC.
+         * @param  {Array:Unit} npcUnits    List of the NPCs
+         * @param  {Array:Unit} playerUnits List of the player's units
+         */
+        checkForGettingQuests: function(npcUnits, playerUnits) {
+            for (var i = 0; i < npcUnits.length; i++) {
+                var npcUnit = npcUnits[i];
+
+                for (var j = 0; j < playerUnits.length; j++) {
+                    var playerUnit = playerUnits[j];
+
+                    var distance = window.game.util.distance(playerUnit.getCenterX(), 
+                                                             playerUnit.getCenterY(),
+                                                             npcUnit.getCenterX(),
+                                                             npcUnit.getCenterY());
+
+                    // Check to see if they're close enough to each other
+                    // for the NPC to give out a quest. If they are, give
+                    // out a new quest.
+                    if (distance < (tileSize * 1.5) &&
+                        game.QuestManager.canAcceptQuests()) {
+                        game.QuestManager.addNewQuest();
+                        npcUnit.gaveOutQuest = true;
+                    }
+                };
+            };
         },
 
         /**
