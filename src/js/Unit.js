@@ -32,7 +32,7 @@
 
         // Units with this AI will be leashed to a certain point. They are given
         // leashTileX and leashTileY. These units can walk on unwalkable tiles.
-        LEASH_TO_TILE: 'boss',
+        LEASH_TO_TILE: 'leash to tile',
 
         // Wander around the walkable tiles that aren't covered in fog. Units
         // can move in any direction as long as tiles
@@ -153,10 +153,11 @@
 
         this.areaInTiles = this.widthInTiles * this.heightInTiles;
 
-        if (this.areValidPlayerFlags(playerFlags)) {
-            this.playerFlags = playerFlags;
-        } else {
-            console.log('Fatal error: Player flags for unit with ID ' + this.id + ' are invalid');
+        this.playerFlags = playerFlags;
+
+        if (!this.areValidPlayerFlags(this.playerFlags)) {
+            console.log('Fatal error: Player flags for unit with ID ' + 
+                this.id + ' are invalid. Flags: ' + this.playerFlags);
         }
 
         // As soon as this is true, the unit will be removed from the map. For
@@ -192,7 +193,11 @@
          */
         this.mods = [];
 
-        // Used by NPCs.
+        /**
+         * This is only used by NPCs to indicate whether they've already given
+         * out their quest.
+         * @type {Boolean}
+         */
         this.gaveOutQuest = false;
 
         // Populate this.mods
@@ -254,13 +259,25 @@
      * returns false
      */
     window.game.Unit.prototype.areValidPlayerFlags = function(playerFlags) {
-        if (playerFlags & game.PlayerFlags.PLAYER &&
-            playerFlags & game.PlayerFlags.ENEMY) {
+        var isPlayer = (playerFlags & game.PlayerFlags.PLAYER) != 0;
+        var isNeutral = (playerFlags & game.PlayerFlags.NEUTRAL) != 0;
+        var isEnemy = (playerFlags & game.PlayerFlags.ENEMY) != 0;
+        var isBoss = (playerFlags & game.PlayerFlags.BOSS) != 0;
+
+        // Player flags MUST contain at least player or enemy or neutral
+        if ( !isPlayer && !isEnemy && !isNeutral ) {
+            console.log('playerFlags were specified that are neither player, neutral, or enemy: ' + playerFlags);
             return false;
         }
 
-        if (playerFlags & game.PlayerFlags.PLAYER &&
-            playerFlags & game.PlayerFlags.BOSS) {
+        // Can't be any combination of player/enemy/neutral
+        if ( (isPlayer && isEnemy) || (isPlayer && isNeutral) || (isNeutral && isEnemy) ) {
+            console.log('playerFlags were specified that are a combination of ' +
+                'player, enemy, and neutral (not necessarily all of them though): ' + playerFlags);
+            return false;
+        }
+
+        if (isBoss && (isPlayer || isNeutral)) {
             return false;
         }
 
@@ -384,14 +401,15 @@
     };
 
     /**
-     * @return {Boolean} true if this unit can join a battle, which requires
-     * that the unit has been placed, isn't already in a battle, and isn't
-     * neutral
+     * @return {Boolean} true if this unit can join a battle
      */
     window.game.Unit.prototype.canJoinABattle = function() {
+        // Neutral units can't join battles
         if ((this.playerFlags & game.PlayerFlags.NEUTRAL) != 0) {
             return false;
         }
+
+        // The unit can't have been placed and can't already be in a battle.
         return this.hasBeenPlaced && !this.isInBattle();
     };
 
@@ -502,7 +520,7 @@
             this.leashTileY = this.getCenterTileY();
         }
 
-        if ( this.leashRadius == undefined) {
+        if ( this.leashRadius === undefined) {
             this.leashRadius = 2;
         }
 
@@ -628,7 +646,7 @@
                     game.GeneratorManager.removeGeneratorsAtLocation(centerTileX, centerTileY);
 
                     game.CollectibleManager.collectAtLocation(this, centerTileX, centerTileY);
-                } else if ( this.isEnemy()  && !this.isBoss() && this.getCenterTile().isCastle() ) { 
+                } else if ( this.isEnemy() && !this.isBoss() && this.getCenterTile().isCastle() ) { 
                     this.removeUnitFromMap();
                     game.Player.modifyCastleLife(-1);
                 }
@@ -757,7 +775,7 @@
 
         // Summon
         if ( !this.isPlayer() && !this.isBoss() && (this.id % 16) == 0 ) {
-            var newUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.SUMMON,1);
+            var newUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.SUMMON | game.PlayerFlags.ENEMY,1);
             newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
             game.UnitManager.addUnit(newUnit);
 
@@ -1288,7 +1306,11 @@
              !this.gaveOutQuest) {
             var x = this.getCenterX();
             var y = this.y;
-            game.TextManager.drawTextImmediate(ctx, '!', x, y, {fontSize:20, color:'#ff0', baseline:'bottom'});
+
+            // Size will be in the range [-3,3]. This will make the '!' grow and
+            // shrink.
+            var size = Math.ceil(Math.sin(game.alphaBlink * 4) * 3);
+            game.TextManager.drawTextImmediate(ctx, '!', x, y, {fontSize:23 + size, color:'#ff0', baseline:'bottom'});
         }
 
     };

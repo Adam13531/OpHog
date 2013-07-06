@@ -66,28 +66,16 @@
         /**
          * Updates the units, removing when necessary.
          *
-         * This also checks for battles and if the NPC needs to give a quest
+         * This also checks for battles and if the NPC needs to give a quest.
          * @param  {Number} delta The amount of ms elapsed since this was last
          *                        called.
          */
         update: function(delta) {
             var npcUnits = [];
-            var playerUnits = [];
+            var placedPlayerUnits = [];
 
             for (var i = 0; i < this.gameUnits.length; i++) {
                 var unit = this.gameUnits[i];
-
-                // Only grab NPCs that didn't give out a quest yet
-                if (unit.isNeutral() &&
-                    !unit.gaveOutQuest) {
-                    npcUnits.push(unit);
-                }
-
-                // Only grab player units that have been placed
-                if (unit.isPlayer() &&
-                    unit.hasBeenPlaced) {
-                    playerUnits.push(unit);
-                }
 
                 // Remove units that died in battle
                 if (unit.removeFromMap) {
@@ -108,27 +96,43 @@
                     continue;
                 }
 
+                if (unit.isNeutral()) {
+                    npcUnits.push(unit);
+                }
+
+                // Only grab player units that have been placed
+                if (unit.isPlayer() &&
+                    unit.hasBeenPlaced) {
+                    placedPlayerUnits.push(unit);
+                }
+
                 unit.update(delta);
             };
 
             game.BattleManager.checkForBattles(this.gameUnits);
 
-            this.checkForGettingQuests(npcUnits, playerUnits);
+            this.checkForGettingQuests(npcUnits, placedPlayerUnits);
         },
 
         /**
-         * Checks to see if the NPCs need to give out quests to the player. This 
+         * Checks to see if the NPCs need to give out quests to the player. This
          * happens when the NPC hasn't given out a quest yet and if a player's
          * unit is close enough to the NPC.
-         * @param  {Array:Unit} npcUnits    List of the NPCs
-         * @param  {Array:Unit} playerUnits List of the player's units
+         * @param  {Array:Unit} npcUnits - list of the NPCs
+         * @param  {Array:Unit} placedPlayerUnits - list of the player's units
+         * that have already been placed
          */
-        checkForGettingQuests: function(npcUnits, playerUnits) {
+        checkForGettingQuests: function(npcUnits, placedPlayerUnits) {
             for (var i = 0; i < npcUnits.length; i++) {
                 var npcUnit = npcUnits[i];
 
-                for (var j = 0; j < playerUnits.length; j++) {
-                    var playerUnit = playerUnits[j];
+                if ( npcUnit.gaveOutQuest ) continue;
+
+                for (var j = 0; j < placedPlayerUnits.length; j++) {
+                    var playerUnit = placedPlayerUnits[j];
+
+                    // Player units cannot be in battles
+                    if ( playerUnit.isInBattle() ) continue;
 
                     var distance = window.game.util.distance(playerUnit.getCenterX(), 
                                                              playerUnit.getCenterY(),
@@ -142,6 +146,7 @@
                         game.QuestManager.canAcceptQuests()) {
                         game.QuestManager.addNewQuest();
                         npcUnit.gaveOutQuest = true;
+                        break;
                     }
                 };
             };

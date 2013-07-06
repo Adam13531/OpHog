@@ -353,60 +353,6 @@
     };
 
     /**
-     * Gets a random list of all tiles where a unit can be placed.
-     * @param  {Number} minimumDistanceFromSpawn Minimum distance from spawner
-     * @param  {Number} numberItemsToPlace       Number of items to place on map
-     * @param  {game.Map} map                    Map object to place items on
-     * @return {Array:[number, number]}          X and Y coordinates of the tile
-     */
-    window.game.util.getRandomPlaceableTiles = function(minimumDistanceFromSpawn, numberItemsToPlace, map) {
-        // Coordinates of the item
-        var itemCoords = [];
-        var spawnerTiles = map.getAllTiles(game.TileFlags.SPAWNER);
-        var possibleTiles;
-
-        // Start with all walkable tiles as candidates for possible item
-        // tiles.
-        possibleTiles = map.getAllTiles(game.TileFlags.WALKABLE);
-
-        // Remove any tile that is within a certain number of tiles from any
-        // spawner.
-        for (var i = 0; i < possibleTiles.length; i++) {
-            var tile = possibleTiles[i];
-            for (var j = 0; j < spawnerTiles.length; j++) {
-                var spawnTile = spawnerTiles[j];
-                if ( this.distance(tile.x, tile.y, spawnTile.x, spawnTile.y) < minimumDistanceFromSpawn ) {
-                    possibleTiles.splice(i, 1);
-                    i--;
-                    break;
-                }
-            };
-        };
-
-        // Figure out the coordinates for each generator now.
-        for (var i = 0; i < numberItemsToPlace; i++) {
-            // If there are no more possible tiles, then we're forced to stop
-            // here.
-            if ( possibleTiles.length == 0 ) {
-                console.log('Warning: this map tried to place ' + numberItemsToPlace + 
-                    ' items, but there was only enough room for ' + itemCoords.length);
-                break;
-            }
-
-            var indexOfItemTile = Math.floor(Math.random() * possibleTiles.length);
-            var itemTile = possibleTiles[indexOfItemTile];
-            itemCoords.push([itemTile.x, itemTile.y]);
-
-            // Now that we placed a generator at this tile, we remove it from
-            // the possible coordinates for future generators so that we don't
-            // stack generators.
-            possibleTiles.splice(indexOfItemTile, 1);
-        };
-
-        return itemCoords;
-    };
-
-    /**
      * Sometimes, you want to output some text to the page without using
      * console.log. In that case, you should use this function, which will add a
      * div to the page (if it doesn't already exist), then set the text of that

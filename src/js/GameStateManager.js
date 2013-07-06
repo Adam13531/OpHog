@@ -294,6 +294,9 @@
             // Need to restore the boss since it was removed and reset the castle
             // life.
             if ( this.previousState == game.GameStates.NORMAL_LOSE_SCREEN && this.isNormalGameplay() ) {
+                // Note that placing the boss and NPCs is also done in the map's
+                // initialize function, so if we add more code here, we should
+                // refactor that.
                 currentMap.addBossUnit();
                 currentMap.placeNPCs();
                 game.Player.castleLife = game.FULL_CASTLE_LIFE;

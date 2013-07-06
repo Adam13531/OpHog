@@ -131,7 +131,7 @@
      */
     window.game.Map.prototype.addBossUnit = function() {
         // Make a lv. 20 tree
-        var bossUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.BOSS,20);
+        var bossUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.BOSS | game.PlayerFlags.ENEMY,20);
         bossUnit.movementAI = game.MovementAI.LEASH_TO_TILE;
         bossUnit.convertToBoss();
 
@@ -141,6 +141,56 @@
 
         bossUnit.placeUnit(x, y, game.MovementAI.BOSS);
         game.UnitManager.addUnit(bossUnit);
+    };
+
+    /**
+     * Gets a random list of tiles that are at least a certain distance away
+     * from the spawn.
+     * @param  {Number} minimumDistanceFromSpawn - minimum distance from spawner
+     * (1 represents that it's minimally one tile away from all spawners)
+     * @param  {Number} numberOfTiles - number of random tiles that you want
+     * @return {Array:Tile} - the random 
+     */
+    window.game.Map.prototype.getRandomPlaceableTiles = function(minimumDistanceFromSpawn, numberOfTiles) {
+        var randomTiles = [];
+        var spawnerTiles = this.getAllTiles(game.TileFlags.SPAWNER);
+        var possibleTiles;
+
+        // Start with all walkable tiles as candidates for possible tiles.
+        possibleTiles = this.getAllTiles(game.TileFlags.WALKABLE);
+
+        // Remove any tile that is within the specified number of tiles from a
+        // spawner.
+        for (var i = 0; i < possibleTiles.length; i++) {
+            var tile = possibleTiles[i];
+            for (var j = 0; j < spawnerTiles.length; j++) {
+                var spawnTile = spawnerTiles[j];
+                if ( game.util.distance(tile.x, tile.y, spawnTile.x, spawnTile.y) < minimumDistanceFromSpawn ) {
+                    possibleTiles.splice(i, 1);
+                    i--;
+                    break;
+                }
+            };
+        };
+
+        // Pull random tiles from possibleTiles now.
+        for (var i = 0; i < numberOfTiles; i++) {
+            // If there are no more possible tiles, then we're forced to stop
+            // here.
+            if ( possibleTiles.length == 0 ) {
+                break;
+            }
+
+            var indexOfRandomTile = Math.floor(Math.random() * possibleTiles.length);
+            var randomTile = possibleTiles[indexOfRandomTile];
+            randomTiles.push(randomTile);
+
+            // Now that we've picked this tile, we can no longer pick it again,
+            // so remove it from possibleTiles.
+            possibleTiles.splice(indexOfRandomTile, 1);
+        };
+
+        return randomTiles;
     };
 
     /**
@@ -176,17 +226,16 @@
      * Places generators randomly on the map.
      */
     window.game.Map.prototype.placeGenerators = function() {
-
-        var generatorCoords = game.util.getRandomPlaceableTiles(7, 7, this);
+        // Get 7 generators that are minimally 7 tiles from every spawner.
+        var generatorTiles = this.getRandomPlaceableTiles(7, 7);
 
         // This is a debug value and will eventually be based on the map number
         // or something. Actually, a lot of this code will change.
         var highestEnemyID = 4;
 
         // Make generators at each spot that we determined above
-        for (var i = 0; i < generatorCoords.length; i++) {
-            var x = generatorCoords[i][0];
-            var y = generatorCoords[i][1];
+        for (var i = 0; i < generatorTiles.length; i++) {
+            var generatorTile = generatorTiles[i];
 
             // Figure out which enemies can be spawned from this generator.
             var possibleEnemies = [];
@@ -210,7 +259,7 @@
                 }
             };
 
-            var generator = new game.Generator(x, y, possibleEnemies);
+            var generator = new game.Generator(generatorTile.x, generatorTile.y, possibleEnemies);
             game.GeneratorManager.addGenerator(generator);
         };
     };
@@ -219,17 +268,16 @@
      * Places NPCs randomly on the map.
      */
     window.game.Map.prototype.placeNPCs = function() {
-        var npcCoords = game.util.getRandomPlaceableTiles(3, 7, this);
+        // Get 7 tiles that are minimally 3 away from every spawner        
+        var npcTiles = this.getRandomPlaceableTiles(3, 7);
 
-        for (var i = 0; i < npcCoords.length; i++) {
+        for (var i = 0; i < npcTiles.length; i++) {
+            var npcTile = npcTiles[i];
             var npcUnit = new game.Unit(game.UnitType.NPC_OLD_MAN_WIZARD.id,game.PlayerFlags.NEUTRAL,1);
             npcUnit.movementAI = game.MovementAI.LEASH_TO_TILE;
             npcUnit.leashRadius = 1;
-            
-            var x = npcCoords[i][0];
-            var y = npcCoords[i][1];
 
-            npcUnit.placeUnit(x, y);
+            npcUnit.placeUnit(npcTile.x, npcTile.y);
             game.UnitManager.addUnit(npcUnit);
         };
     };
