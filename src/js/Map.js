@@ -219,7 +219,7 @@
      * Places NPCs randomly on the map.
      */
     window.game.Map.prototype.placeNPCs = function() {
-        var npcCoords = game.util.getRandomPlaceableTiles(2, 7, this);
+        var npcCoords = game.util.getRandomPlaceableTiles(3, 7, this);
 
         for (var i = 0; i < npcCoords.length; i++) {
             var npcUnit = new game.Unit(game.UnitType.NPC_OLD_MAN_WIZARD.id,game.PlayerFlags.NEUTRAL,1);

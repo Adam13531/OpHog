@@ -83,7 +83,9 @@
                     npcUnits.push(unit);
                 }
 
-                if (unit.isPlayer()) {
+                // Only grab player units that have been placed
+                if (unit.isPlayer() &&
+                    unit.hasBeenPlaced) {
                     playerUnits.push(unit);
                 }
 
