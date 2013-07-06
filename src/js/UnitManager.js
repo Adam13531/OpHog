@@ -64,6 +64,19 @@
         },
 
         /**
+         * This is used by the GameStateManager.
+         * @return {Boolean} true if all units are at their destinations.
+         */
+        areAllUnitsAtTheirDestinations: function() {
+            for (var i = 0; i < this.gameUnits.length; i++) {
+                if ( !this.gameUnits[i].isAtDestination() ) {
+                    return false;
+                }
+            };
+            return true;
+        },
+
+        /**
          * Updates the units, removing when necessary.
          *
          * This also checks for battles and if the NPC needs to give a quest.

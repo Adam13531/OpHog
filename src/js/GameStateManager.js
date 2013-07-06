@@ -255,6 +255,7 @@
 
             // Minigame win --> overworld map
             if ( this.inMinigameWinState() && newState == game.GameStates.OVERWORLD ) return true;
+            
             // Overworld --> moving to normal map
             if ( this.inOverworldMap() && newState == game.GameStates.MOVING_TO_NORMAL_MAP ) return true;
 
@@ -379,6 +380,21 @@
             if ( this.previousState == game.GameStates.OVERWORLD && this.isMovingToNormalMap() ) {
                 // Make all units move to the tile you tapped
                 game.UnitManager.makeAllPlayerUnitsMoveToTile(game.overworldMap.tileOfLastMap);
+            }
+        },
+
+        /**
+         * Updates the GameStateManager.
+         * @param  {Number} delta - time in ms since this function was last called
+         */
+        update: function(delta) {
+            // If you're transitioning from the overworld to the normal map,
+            // then check to see if all of your units made it to their
+            // destinations.
+            if ( this.isMovingToNormalMap() ) {
+                if ( game.UnitManager.areAllUnitsAtTheirDestinations() ) {
+                    this.returnToNormalGameplay();
+                }
             }
         },
 

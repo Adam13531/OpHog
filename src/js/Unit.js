@@ -462,14 +462,6 @@
     window.game.Unit.prototype.acquireNewDestinationMoveSpecificTile = function() {
         var startTile = this.getCenterTile();
 
-        // This code should be made better or moved elsewhere eventually. It
-        // says that when you're transitioning from the overworld to a normal
-        // map, the first unit that reaches the point that you clicked will
-        // trigger entry into the new map.
-        if ( startTile.equals(this.specificTile) && game.GameStateManager.isMovingToNormalMap() ) {
-            game.GameStateManager.returnToNormalGameplay();
-        }
-
         var path = currentMap.findPathWithoutFog(startTile, this.specificTile);
 
         // This is possible if you somehow uncovered fog far away and it's not
@@ -1086,6 +1078,13 @@
 
     window.game.Unit.prototype.isOffScreen = function() {
         return this.x < -tileSize || this.x > 25 * tileSize;
+    };
+
+    /**
+     * @return {Boolean} true if this unit is at its destination
+     */
+    window.game.Unit.prototype.isAtDestination = function() {
+        return this.getCenterX() == this.destX && this.getCenterY() == this.destY;
     };
 
     /**

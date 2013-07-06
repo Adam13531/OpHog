@@ -514,6 +514,8 @@
 
         ctx.restore();
 
+        game.GameStateManager.update(delta);
+
         // Update battles before units so that when the battle is over, the dead
         // units can be removed immediately by the UnitManager
         game.Player.update(delta);
