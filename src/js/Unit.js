@@ -32,7 +32,7 @@
 
         // Units with this AI will be leashed to a certain point. They are given
         // leashTileX and leashTileY. These units can walk on unwalkable tiles.
-        LEASH_TO_TILE: 'boss'
+        LEASH_TO_TILE: 'boss',
 
         // Wander around the walkable tiles that aren't covered in fog. Units
         // can move in any direction as long as tiles
@@ -1197,7 +1197,7 @@
 
         // If we're looking at the overworld then there's no need to show them.
         if ( game.GameStateManager.inOverworldMap() || game.GameStateManager.isMovingToNormalMap() ) return false;
-        
+
         // If you pressed a key
         if ( game.keyPressedToDisplayLifeBars ) return true;
 
