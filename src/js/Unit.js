@@ -556,18 +556,10 @@
         }
 
         // In order to find the next tile, we need to know our previous tile. If
-        // we just placed this unit, then there is no previousTile, so we need
-        // to set a reasonable previousTile.
+        // we just placed this unit, then there is no previousTile, but we can
+        // just set it to tile because its left/right-list contains itself.
         if ( this.previousTile == null ) {
-
-            // If we're an endpoint, then our only choice is the current tile.
-            if ( isTileALeftEndpoint ) {
                 this.previousTile = tile;
-            } else {
-                // Otherwise, we can randomly pick a leftNeighbor.
-                var leftNeighborIndex = game.util.randomKeyFromDict(listToUse);
-                this.previousTile = currentMap.mapTiles[leftNeighborIndex];
-            }
         }
 
         // Randomly choose a valid neighbor
