@@ -66,6 +66,7 @@
         var $showInventory = $('#showInventory');
         var $showQuests = $('#showQuests');
         var $showUnitPlacement = $('#showUnitPlacement');
+        var $showShop = $('#showShop');
         var $createUnits = $('#createUnits');
         $settingsButton.button({
               icons: {
@@ -91,6 +92,12 @@
         $showUnitPlacement.click(function() {
             $settingsDialog.dialog('close');
             $('#buyingScreenContainer').dialog('open');
+        });
+
+        $showShop.button();
+        $showShop.click(function() {
+            $settingsDialog.dialog('close');
+            $('#shop-screen').dialog('open');
         });
 
         // This button is here for a couple of reasons:
@@ -261,6 +268,7 @@
         game.UnitPlacementUI.setupUI();
         game.LootUI.setupUI();
         game.QuestUI.setupUI();
+        game.ShopUI.setupUI();
     }
 
     function initSettings() {
