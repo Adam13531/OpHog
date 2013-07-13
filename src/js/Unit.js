@@ -861,7 +861,7 @@
         }
 
         if ( slotType != null ) {
-            classSlots = game.Inventory.getAllSlotsOfType(slotType);
+            classSlots = game.Player.inventory.getAllSlotsOfType(slotType);
 
             for (var i = 0; i < classSlots.length; i++) {
                 if ( !classSlots[i].isEmpty() ) {
@@ -1001,7 +1001,7 @@
                     // Grant loot
                     var itemsDroppedByThisUnit = this.produceLoot();
                     for (var i = 0; i < itemsDroppedByThisUnit.length; i++) {
-                        game.Inventory.addItem(itemsDroppedByThisUnit[i]);
+                        game.Player.inventory.addItem(itemsDroppedByThisUnit[i]);
                     };
 
                     // Grant coins

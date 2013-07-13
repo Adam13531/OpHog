@@ -259,8 +259,7 @@
         // before the equipment slots.
         game.InventoryUI.setupUI();
 
-        // Initialize the slots of our inventory.
-        game.Inventory.initialize();
+        game.Player.inventory = new game.PlayerInventory();
 
         // Initialize the quest slots
         game.QuestManager.initialize();
@@ -375,7 +374,7 @@
             }
 
             if ( itemID != null ) {
-                game.Inventory.addItem(new game.Item(itemID));
+                game.Player.inventory.addItem(new game.Item(itemID));
             }
 
             // 'M' - if not positive, bring to 1000. Otherwise, double it.

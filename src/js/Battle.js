@@ -330,7 +330,7 @@
 
         // Add all of the items we just obtained.
         for (var i = 0; i < allDroppedItems.length; i++) {
-            game.Inventory.addItem(allDroppedItems[i]);
+            game.Player.inventory.addItem(allDroppedItems[i]);
         };
     };
 

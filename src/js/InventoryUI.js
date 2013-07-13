@@ -270,7 +270,7 @@
                     this.removeDepletedItems();
 
                     // If we have another stack of that item, start using that.
-                    var slotWithSameItem = game.Inventory.getSlotWithItem(this.usingItem);
+                    var slotWithSameItem = game.Player.inventory.getSlotWithItem(this.usingItem);
                     if ( slotWithSameItem == null ) {
                         this.exitUseMode();
                     } else {
@@ -333,7 +333,7 @@
             var item = this.usingItem;
             if ( item == null ) return;
 
-            var totalQuantity = game.Inventory.getQuantityAcrossAllSlots(item);
+            var totalQuantity = game.Player.inventory.getQuantityAcrossAllSlots(item);
             var quantityString = item.stackable ? ' (' + totalQuantity + ')' : '';
             var targetString;
 

@@ -243,7 +243,7 @@
                 // items.
                 finalSlot.setItem(finalItem);
             };
-            game.Inventory.slots = finalSlots;
+            game.Player.inventory.slots = finalSlots;
         },
 
         /**

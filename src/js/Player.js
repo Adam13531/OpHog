@@ -8,7 +8,7 @@
     window.game.castleFlashScreenTimer = 0;
 
     /**
-     * There is only one Player, and it keeps track of coins for now.
+     * There is only one Player
      */
     window.game.Player = {
         /**
@@ -44,6 +44,12 @@
          * @type {Number}
          */
         castleLife: game.FULL_CASTLE_LIFE,
+
+        /**
+         * The player's inventory
+         * @type {game.PlayerInventory}
+         */
+        inventory: null,
 
         /**
          * This draws the castle life to the screen and flashes the screen if

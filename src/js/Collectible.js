@@ -88,7 +88,7 @@
             case game.CollectibleType.GOOD_LOOT:
             case game.CollectibleType.GREAT_LOOT:
                 // Randomly grant an item
-                game.Inventory.addItem(game.GenerateRandomItem());
+                game.Player.inventory.addItem(game.GenerateRandomItem());
                 break;
             case game.CollectibleType.BAD_POWERUP:
             case game.CollectibleType.GOOD_POWERUP:
