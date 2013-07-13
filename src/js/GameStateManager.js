@@ -323,30 +323,6 @@
                 game.MinigameUI.show();
             }
 
-            // Normal win state --> minigame gameplay
-            if ( this.previousState == game.GameStates.NORMAL_WIN_SCREEN && this.isMinigameGameplay() ) {
-                // For now, the battle takes place in the middle of the map
-                var tileX = Math.floor(currentMap.numCols / 2);
-                var tileY = Math.floor(currentMap.numRows / 2);
-
-                // Move camera to middle of the map
-                game.Camera.panInstantlyTo(tileX * tileSize, tileY * tileSize);
-
-                // Spawn all of your units
-                game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
-
-                // Spawn some enemies too
-                var numEnemies = 5;
-                var enemyLevel = 5;
-                for (var i = 0; i < numEnemies; i++) {
-                    var newUnit = new game.Unit(game.UnitType.ORC.id, game.PlayerFlags.ENEMY, enemyLevel);
-                    newUnit.placeUnit(tileX, tileY, game.MovementAI.FOLLOW_PATH);
-                    game.UnitManager.addUnit(newUnit);
-                };
-
-                game.MinigameUI.hide();
-            }
-
             // Minigame gameplay --> minigame lose
             if ( this.previousState == game.GameStates.MINIGAME_GAMEPLAY && this.inMinigameLoseState() ) {
                 this.commonWinLoseFunctions();
