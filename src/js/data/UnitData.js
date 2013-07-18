@@ -350,7 +350,8 @@
      *
      * Final stats get stored in finalAtk, finalDef, and finalLife.
      * @param {Number} unitID - the ID of the unit
-     * @param {Number} level   - the level to produce the unit at
+     * @param {Number} level  - the level to produce the unit at
+     * @return {game.UnitType} the associated unit data
      */
     window.game.GetUnitDataFromID = function(unitID, level) {
         var unitData = null;

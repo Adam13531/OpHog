@@ -96,10 +96,13 @@
 
     /**
      * Returns base64-encoded image data for an individual, double-sized sprite.
-     * @param  {Number} graphicIndex - the index of the sprite in the sheet
+     *
+     * The sprite returned will be justified to the left and bottom of a 2x2
+     * square.
+     * @param  {game.UnitType} enemyData - the enemy to spawn
      * @param  {Boolean} hFlip        - if true, horizontally flip the sprite
      */
-    window.game.SpriteSheet.prototype.getLargeSpriteData = function(graphicIndex, hFlip) {
+    window.game.SpriteSheet.prototype.getLargeSpriteData = function(enemyData, hFlip) {
         // Create an empty canvas element. This is a virtual element and does
         // not exist in the DOM yet.
         var canvas = document.createElement("canvas");
@@ -108,9 +111,29 @@
 
         // Copy the image contents to the canvas
         var ctx = canvas.getContext("2d");
-        ctx.scale(2,2);
 
-        this.drawSprite(ctx, graphicIndex, 0, 0, hFlip);
+        // Justify to the left side
+        if ( enemyData.width == 1 && hFlip ) {
+            ctx.translate(-canvas.width / 2, 0);
+        }
+
+        // Justify to the bottom
+        if ( enemyData.height == 1 ) {
+            ctx.translate(0,canvas.height /2);
+        }
+
+        if ( hFlip ) {
+            ctx.translate(canvas.width,0);
+            ctx.scale(-1,1);
+        }
+
+        var index = 0;
+        for (var j = 0; j < enemyData.height; j++) {
+            for (var i = 0; i < enemyData.width; i++) {
+                this.drawSprite(ctx, enemyData.graphicIndexes[index], i * tileSize, j * tileSize, false);
+                index++;
+            };
+        };
 
         var dataURL = canvas.toDataURL("image/png");
         return dataURL;

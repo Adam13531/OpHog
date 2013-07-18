@@ -88,9 +88,9 @@
                 var thisMinigameData = this.minigameData[i];
 
                 for (var j = 0; j < thisMinigameData.length; j++) {
-                    var enemyType = thisMinigameData[j][0];
+                    var enemyData = thisMinigameData[j][0];
                     var quantity = thisMinigameData[j][1];
-                    this.addEnemyIcon(i, enemyType.graphicIndexes[0], quantity);
+                    this.addEnemyIcon(i, enemyData, quantity);
                 };
 
                 $('#' + divID).css(cssToSet);
@@ -133,10 +133,10 @@
             // Spawn the enemies
             var enemyLevel = 5;
             for (var i = 0; i < thisMinigameData.length; i++) {
-                var enemyType = thisMinigameData[i][0];
+                var enemyData = thisMinigameData[i][0];
                 var quantity = thisMinigameData[i][1];
                 for (var j = 0; j < quantity; j++) {
-                    var newUnit = new game.Unit(enemyType.id, game.PlayerFlags.ENEMY, enemyLevel);
+                    var newUnit = new game.Unit(enemyData.id, game.PlayerFlags.ENEMY, enemyLevel);
                     newUnit.placeUnit(tileX, tileY, game.MovementAI.FOLLOW_PATH);
                     game.UnitManager.addUnit(newUnit);
                 }
@@ -149,21 +149,21 @@
          * Adds a single enemy icon to a minigame row.
          * @param  {Number} minigameID - the row of the minigame. This is in the
          * range [0, numDifficulties).
-         * @param  {game.UnitType} enemyID - the enemy to spawn
+         * @param  {game.UnitType} enemyData - the enemy to spawn
          * @param  {Number} quantity   - the number of enemies to spawn
          */
-        addEnemyIcon: function(minigameID, enemyID, quantity) {
+        addEnemyIcon: function(minigameID, enemyData, quantity) {
             var width = 64;
             var height = 64;
             var divID = game.MINIGAME_DIV_ID_PREFIX + minigameID;
-            var firstSpanID = 'minigame_img' + minigameID + 'e' + enemyID;
-            var secondSpanID = 'minigame_text' + minigameID + 'e' + enemyID;
+            var firstSpanID = 'minigame_img' + minigameID + 'e' + enemyData.id;
+            var secondSpanID = 'minigame_text' + minigameID + 'e' + enemyData.id;
             $('#' + divID).append('<span id="' + firstSpanID + '"><span id="' + secondSpanID + '"></span></span>');
             var $firstSpan = $('#' + firstSpanID);
             var $secondSpan = $('#' + secondSpanID);
 
             $firstSpan.css({
-                'background':'url(' + charSheet.getLargeSpriteData(enemyID, false) + ')',
+                'background':'url(' + charSheet.getLargeSpriteData(enemyData, true) + ')',
                 'display':'inline-block',
                 'width': width + 'px',
                 'height': height + 'px',
