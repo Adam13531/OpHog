@@ -1,6 +1,17 @@
 ( function() {
 
+    /**
+     * Each minigame div's ID will be prefixed with this string.
+     * @type {String}
+     */
     window.game.MINIGAME_DIV_ID_PREFIX = 'minigame';
+
+    /**
+     * This is simply an incrementing ID so that we always have a way to
+     * uniquely identify the DOM elements in a minigame.
+     * @type {Number}
+     */
+    window.game.domID = 0;
 
     window.game.MinigameUI = {
 
@@ -90,8 +101,13 @@
                 for (var j = 0; j < thisMinigameData.length; j++) {
                     var enemyData = thisMinigameData[j][0];
                     var quantity = thisMinigameData[j][1];
-                    this.addEnemyIcon(i, enemyData, quantity);
+                    this.addIcon(i, charSheet.getSpriteDataFromUnitData(enemyData, true), quantity);
                 };
+
+                // Note: the money given isn't actually granted to the player
+                // yet.
+                var moneyGiven = (10 - i) * (5 - i) * 500;
+                this.addIcon(i, objSheet.getSpriteDataFromSingleIndex(0, true), moneyGiven);
 
                 $('#' + divID).css(cssToSet);
                 $('#' + divID).click(this.getStartMinigameFunction(i));
@@ -146,24 +162,28 @@
         },
         
         /**
-         * Adds a single enemy icon to a minigame row.
+         * Adds the specified image data as an icon in this minigame.
          * @param  {Number} minigameID - the row of the minigame. This is in the
          * range [0, numDifficulties).
-         * @param  {game.UnitType} enemyData - the enemy to spawn
-         * @param  {Number} quantity   - the number of enemies to spawn
+         * @param  {String} imageData - base64-encoded image data
+         * @param  {Number} quantity  - the number to display on this icon
          */
-        addEnemyIcon: function(minigameID, enemyData, quantity) {
+        addIcon: function(minigameID, imageData, quantity) {
             var width = 64;
             var height = 64;
+
+            // We need a way to uniquely identify these spans, so we use
+            // game.domID, which always increments.
+            var thisDomID = game.domID++;
             var divID = game.MINIGAME_DIV_ID_PREFIX + minigameID;
-            var firstSpanID = 'minigame_img' + minigameID + 'e' + enemyData.id;
-            var secondSpanID = 'minigame_text' + minigameID + 'e' + enemyData.id;
+            var firstSpanID = 'minigame_img' + minigameID + 'e' + thisDomID;
+            var secondSpanID = 'minigame_text' + minigameID + 'e' + thisDomID;
             $('#' + divID).append('<span id="' + firstSpanID + '"><span id="' + secondSpanID + '"></span></span>');
             var $firstSpan = $('#' + firstSpanID);
             var $secondSpan = $('#' + secondSpanID);
 
             $firstSpan.css({
-                'background':'url(' + charSheet.getLargeSpriteData(enemyData, true) + ')',
+                'background':'url(' + imageData + ')',
                 'display':'inline-block',
                 'width': width + 'px',
                 'height': height + 'px',
