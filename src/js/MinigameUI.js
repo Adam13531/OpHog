@@ -18,16 +18,13 @@
         numDifficulties: 5,
 
         /**
-         * This contains all of the data for the minigames so that we know which
-         * enemies to spawn when you click a row. It's not stored in a smart way
-         * right now. The number of entries in this array is equal to
-         * numDifficulties, and each entry is an array whose elements are
-         * [game.UnitType, Number] (the enemy to be spawned and the number to
-         * spawn).
+         * This contains all of the data for the minigames so that we know what
+         * to do when you click a row. The number of entries in this array is
+         * equal to numDifficulties.
          *
          * The first entry in this array is the hardest difficulty (i.e. the top
          * row).
-         * @type {Array:Array}
+         * @type {Array:MinigameData}
          */
         minigameData: [],
 
@@ -70,13 +67,13 @@
             var scorpion = game.UnitType.SCORPION;
             var spider = game.UnitType.SPIDER;
             var orc = game.UnitType.ORC;
-            var firstMinigame  = [[snake,10], [scorpion,10], [spider,10], [orc,10]];
-            var secondMinigame = [[snake,10], [scorpion,10], [spider,10]];
-            var thirdMinigame  = [[snake,10], [scorpion,10]];
-            var fourthMinigame = [[snake,5], [scorpion,5]];
-            var fifthMinigame  = [[snake,5]];
 
-            this.minigameData = [firstMinigame, secondMinigame, thirdMinigame, fourthMinigame, fifthMinigame];
+            this.minigameData = [];
+            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10], [spider,10], [orc,10]], 10000));
+            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10], [spider,10]], 8000));
+            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10]], 6000));
+            this.minigameData.push(new game.MinigameData([[snake,5], [scorpion,5]], 4000));
+            this.minigameData.push(new game.MinigameData([[snake,5]], 2000));
 
             for (var i = 0; i < this.numDifficulties; i++) {
                 var divID = game.MINIGAME_DIV_ID_PREFIX + i;
@@ -96,18 +93,18 @@
                 }
 
                 // Populate the UI based on the minigame
-                var thisMinigameData = this.minigameData[i];
+                var minigameData = this.minigameData[i];
+                var enemies = minigameData.enemies;
 
-                for (var j = 0; j < thisMinigameData.length; j++) {
-                    var enemyData = thisMinigameData[j][0];
-                    var quantity = thisMinigameData[j][1];
+                for (var j = 0; j < enemies.length; j++) {
+                    var enemyData = enemies[j][0];
+                    var quantity = enemies[j][1];
                     this.addIcon(i, charSheet.getSpriteDataFromUnitData(enemyData, true), quantity);
                 };
 
                 // Note: the money given isn't actually granted to the player
                 // yet.
-                var moneyGiven = (10 - i) * (5 - i) * 500;
-                this.addIcon(i, objSheet.getSpriteDataFromSingleIndex(0, true), moneyGiven);
+                this.addIcon(i, objSheet.getSpriteDataFromSingleIndex(0, true), minigameData.moneyGiven);
 
                 $('#' + divID).css(cssToSet);
                 $('#' + divID).click(this.getStartMinigameFunction(i));
@@ -134,7 +131,8 @@
          * range [0, numDifficulties).
          */
         startMinigame: function(minigameID) {
-            var thisMinigameData = this.minigameData[minigameID];
+            var minigameData = this.minigameData[minigameID];
+            var enemies = minigameData.enemies;
 
             // For now, the battle takes place in the middle of the map
             var tileX = Math.floor(currentMap.numCols / 2);
@@ -148,9 +146,9 @@
 
             // Spawn the enemies
             var enemyLevel = 5;
-            for (var i = 0; i < thisMinigameData.length; i++) {
-                var enemyData = thisMinigameData[i][0];
-                var quantity = thisMinigameData[i][1];
+            for (var i = 0; i < enemies.length; i++) {
+                var enemyData = enemies[i][0];
+                var quantity = enemies[i][1];
                 for (var j = 0; j < quantity; j++) {
                     var newUnit = new game.Unit(enemyData.id, game.PlayerFlags.ENEMY, enemyLevel);
                     newUnit.placeUnit(tileX, tileY, game.MovementAI.FOLLOW_PATH);
