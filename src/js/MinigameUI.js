@@ -154,15 +154,17 @@
          */
         startMinigame: function(minigameID) {
             var minigameData = this.minigameData[minigameID];
-            this.selectedMinigame = minigameData;
             var enemies = minigameData.enemies;
+            this.selectedMinigame = minigameData;
 
             // For now, the battle takes place in the middle of the map
             var tileX = Math.floor(currentMap.numCols / 2);
             var tileY = Math.floor(currentMap.numRows / 2);
+            var centerX = tileX * tileSize + tileSize / 2;
+            var centerY = tileY * tileSize + tileSize / 2;
 
             // Move camera to middle of the map
-            game.Camera.panInstantlyTo(tileX * tileSize, tileY * tileSize);
+            game.Camera.panInstantlyTo(centerX, centerY);
 
             // Spawn all of your units
             game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
@@ -178,6 +180,9 @@
                     game.UnitManager.addUnit(newUnit);
                 }
             };
+
+            // Create a battle for those units.
+            game.BattleManager.makeBattleForPlacedUnits(centerX, centerY);
 
             game.MinigameUI.hide();
         },

@@ -98,6 +98,22 @@
             return false;
         },
 
+        /**
+         * This will add all placed units to a new battle at the specified
+         * point. This is used by the minigame so that units don't need to walk
+         * to any specific point before they'll get in a battle.
+         * @param  {Number} centerX - X position in world coordinates
+         * @param  {Number} centerY - Y position in world coordinates
+         */
+        makeBattleForPlacedUnits: function(centerX, centerY) {
+            var gameUnits = game.UnitManager.gameUnits;
+            var newBattle = new game.Battle(centerX, centerY);
+            for (var i = 0; i < gameUnits.length; i++) {
+                newBattle.addUnit(gameUnits[i]);
+            };
+            this.battles.push(newBattle);
+        },
+
         checkForBattles: function(allUnits) {
             // Split units up into player and enemy units
             var playerUnits = new Array();
