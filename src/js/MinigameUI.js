@@ -29,6 +29,13 @@
         minigameData: [],
 
         /**
+         * The minigame that you've selected to play. This corresponds to one of
+         * the entries in minigameData.
+         * @type {game.MinigameData}
+         */
+        selectedMinigame: null,
+
+        /**
          * Sets up the entire quest UI.
          */
         setupUI: function() {
@@ -74,6 +81,7 @@
             this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10]], 6000));
             this.minigameData.push(new game.MinigameData([[snake,5], [scorpion,5]], 4000));
             this.minigameData.push(new game.MinigameData([[snake,5]], 2000));
+            this.selectedMinigame = null;
 
             for (var i = 0; i < this.numDifficulties; i++) {
                 var divID = game.MINIGAME_DIV_ID_PREFIX + i;
@@ -126,12 +134,27 @@
         },
 
         /**
+         * Call this when you've won the minigame that you're playing.
+         */
+        wonMinigame: function() {
+            moneyGiven = this.selectedMinigame.moneyGiven;
+
+            game.Player.modifyCoins(moneyGiven);
+
+            var coinString = '+' + moneyGiven + ' coin' + (moneyGiven != 1 ? 's' : '');
+            var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2 + 40, coinString, true, '#0f0', false);
+
+            game.TextManager.addTextObj(textObj);
+        },
+
+        /**
          * This actually starts the minigame by placing the players/enemies.
          * @param  {Number} minigameID - the row of the minigame. This is in the
          * range [0, numDifficulties).
          */
         startMinigame: function(minigameID) {
             var minigameData = this.minigameData[minigameID];
+            this.selectedMinigame = minigameData;
             var enemies = minigameData.enemies;
 
             // For now, the battle takes place in the middle of the map

@@ -266,7 +266,34 @@
     window.game.Battle.prototype.playerWon = function() {
         return this.battleWinner == game.BattleWinner.PLAYER;
     };
-    
+
+    /**
+     * Generates experience for this battle for the player.
+     */
+    window.game.Battle.prototype.generateExperience = function() {
+        // Hard-code this for now
+        var experienceGranted = 50;
+        var expString = '+' + experienceGranted + ' exp';
+
+        // Spawn a text object where the enemies used to be
+        var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true, '#0f0', true);
+        game.TextManager.addTextObj(textObj);
+
+        // Give the experience to all living player units
+        for (var i = 0; i < this.units.length; i++) {
+            var unit = this.units[i];
+
+            // Ignore enemy and dead units
+            if ( !unit.isPlayer() || !unit.isLiving() ) continue;
+
+            // This will also level up the unit if appropriate
+            unit.gainExperience(experienceGranted);
+
+            // Update the unit placement UI
+            game.UnitPlacementUI.updateUnit(unit);
+        };
+    };
+
     /**
      * Each enemy unit has a chance of dropping loot according to its loot
      * table.
@@ -349,7 +376,6 @@
         return null;
     }
     
-
     /**
      * This is called by the BattleManager RIGHT before the battle is removed
      * from existence. It will remove units from battle and guide them to their
@@ -366,31 +392,13 @@
         // See the function-level comments.
         var losingTeam = this.getLosingTeam();
 
-        // If the player won, then we should add experience.
-        if ( this.battleWinner == game.BattleWinner.PLAYER ) {
-            // Hard-code this for now
-            var experienceGranted = 50;
-            var expString = '+' + experienceGranted + ' exp';
-
-            // Spawn a text object where the enemies used to be
-            var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true, '#0f0', true);
-            game.TextManager.addTextObj(textObj);
-
-            // Give the experience to all living player units
-            for (var i = 0; i < this.units.length; i++) {
-                var unit = this.units[i];
-
-                // Ignore enemy and dead units
-                if ( !unit.isPlayer() || !unit.isLiving() ) continue;
-
-                // This will also level up the unit if appropriate
-                unit.gainExperience(experienceGranted);
-
-                // Update the unit placement UI
-                game.UnitPlacementUI.updateUnit(unit);
-            };
-
-            // Generate items and give them to the player
+        if ( this.battleWinner == game.BattleWinner.PLAYER && game.GameStateManager.isMinigameGameplay() ) {
+            // You don't get normal experience or loot if you were playing the
+            // minigame.
+            game.MinigameUI.wonMinigame();
+        } else if ( this.battleWinner == game.BattleWinner.PLAYER ) {
+            // Generate experience and items
+            this.generateExperience();
             this.generateLoot();
 
             // Let the quest manager know too so that it can update quests
