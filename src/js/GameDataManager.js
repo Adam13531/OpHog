@@ -117,7 +117,7 @@
 
             // It's very important that we exit USE mode since I don't save
             // 'usingItem' from InventoryUI.
-            game.InventoryUI.exitUseMode(true);
+            game.playerInventoryUI.exitUseMode(true);
 
             var curTime = new Date();
             console.log('Loading a save (version ' + savedVersion + ') from ' + localStorage.saveTime);
@@ -225,8 +225,8 @@
 
                 // The following line of code assumes that we never change the
                 // number of slots you can have, otherwise we'd need to modify
-                // InventoryUI's slots and the HTML backing them.
-                game.InventoryUI.slots[finalSlot.slotIndex].slot = finalSlot;
+                // playerInventoryUI's slots and the HTML backing them.
+                game.playerInventoryUI.slots[finalSlot.slotIndex].slot = finalSlot;
 
                 var parsedItem = finalSlot.item;
                 var finalItem = null;

@@ -51,7 +51,7 @@
         this.item = item;
 
         // Tell the UI that we updated this slot.
-        game.InventoryUI.updatedSlot(this.slotIndex);
+        game.playerInventoryUI.updatedSlot(this.slotIndex);
 
         // If this is an equip slot, update the units
         if ( this.isClassSlot() ) {

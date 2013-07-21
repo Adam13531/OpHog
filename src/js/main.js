@@ -79,7 +79,7 @@
         $showInventory.button();
         $showInventory.click(function() {
             $settingsDialog.dialog('close');
-            game.InventoryUI.show();
+            game.playerInventoryUI.show();
         });
 
         $showQuests.button();
@@ -145,7 +145,7 @@
             
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target
-            if ( game.InventoryUI.attemptToUseItem(worldX, worldY) ) {
+            if ( game.playerInventoryUI.attemptToUseItem(worldX, worldY) ) {
                 // If that worked, then we don't attempt to open the spawners
                 // (perhaps you were targeting a unit on your spawner, or you
                 // were targeting the spawner itself - you wouldn't want to open
@@ -257,7 +257,8 @@
         // Initialize the UI showing the inventory.
         // We initialize the UI first so that the character pictures show up
         // before the equipment slots.
-        game.InventoryUI.setupUI();
+        // game.InventoryUI.setupUI();
+        window.game.playerInventoryUI = new game.PlayerInventoryUI();
 
         game.Player.inventory = new game.PlayerInventory();
 
@@ -471,9 +472,9 @@
             if (evt.keyCode == game.Key.DOM_VK_I) {
                 var $invScreen = $('#inventory-screen');
                 if ( $invScreen.is(":visible") ) {
-                    game.InventoryUI.hide();
+                    game.playerInventoryUI.hide();
                 } else {
-                    game.InventoryUI.show();
+                    game.playerInventoryUI.show();
                 }
             }
 

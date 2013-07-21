@@ -93,7 +93,7 @@
      * @return {Boolean} true if the item was completely added, false if
      * partially added (in the case of stackable items) or not at all added
      */
-    window.game.Inventory.addItem = function(item) {
+    window.game.Inventory.prototype.addItem = function(item) {
 
         if ( item == null ) return true;
 
@@ -165,7 +165,7 @@
      * @param  {Item} item - the item to check for
      * @return {Number}      the amount of that item you have
      */
-    window.game.Inventory.getQuantityAcrossAllSlots = function(item) {
+    window.game.Inventory.prototype.getQuantityAcrossAllSlots = function(item) {
 
         if ( item == null ) return 0;
 
@@ -189,7 +189,7 @@
      * check, just an item-type check.
      * @return {Slot}      the first slot that contains that item
      */
-    window.game.Inventory.getSlotWithItem = function(item) {
+    window.game.Inventory.prototype.getSlotWithItem = function(item) {
 
         if ( item == null ) return null;
 

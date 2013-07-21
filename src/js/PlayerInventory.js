@@ -43,12 +43,12 @@
 		game.Inventory.prototype.addSlot.call(this, slot);
 
         // Tell the UI that we've added a slot.
-        game.InventoryUI.addedSlot(slot);
+        game.playerInventoryUI.addedSlot(slot);
 	};
 
 	window.game.PlayerInventory.prototype.addItem = function(item) {
-
-		game.Inventory.prototype.addItem.call(this, item);
+		var originalQuantity = item.quantity;
+		var addedItem = game.Inventory.prototype.addItem.call(this, item);
 
         // Notify appropriate listeners
         game.LootUI.addItemNotification(item, addedItem, originalQuantity);

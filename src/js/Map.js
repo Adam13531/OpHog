@@ -1285,7 +1285,7 @@
                             if ( doodadGraphic != null ) {
                                 envSheet.drawSprite(ctx, doodadGraphic, 0,0);
                             }
-                            if ( game.InventoryUI.isTileAUseTarget(x,y) ) {
+                            if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
                                 ctx.fillStyle = greenFillStyle;
                                 ctx.fillRect(0,0,tileSize,tileSize);
                                 ctx.fillStyle = regularFillStyle;
@@ -1299,7 +1299,7 @@
                             if ( doodadGraphic != null ) {
                                 envSheet.drawSprite(ctx, doodadGraphic, 0,0);
                             }
-                            if ( game.InventoryUI.isTileAUseTarget(x,y) ) {
+                            if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
                                 ctx.fillStyle = greenFillStyle;
                                 ctx.fillRect(0,0,tileSize,tileSize);
                                 ctx.fillStyle = regularFillStyle;

@@ -108,7 +108,7 @@
         commonWinLoseFunctions: function () {
             game.BattleManager.removeAllBattles();
             game.UnitManager.removeAllUnitsFromMap();
-            game.InventoryUI.exitUseMode(true);
+            game.playerInventoryUI.exitUseMode(true);
             $('#buyingScreenContainer').dialog('close');
         },
 
@@ -288,7 +288,7 @@
 
             // Regardless of how we transitioned, setting the state of this
             // button shouldn't hurt.
-            game.InventoryUI.setUseItemButtonState();
+            game.playerInventoryUI.setUseItemButtonState();
 
             // Lose state --> normal gameplay
             // 

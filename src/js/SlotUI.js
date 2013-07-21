@@ -72,7 +72,7 @@
 
             start: function(event, ui) {
                 dropped = false;
-                game.InventoryUI.draggingSlotUI = thisSlotUI;
+                game.playerInventoryUI.draggingSlotUI = thisSlotUI;
                 $(this).addClass('hideit');
             },
             stop: function(event, ui) {
@@ -89,9 +89,9 @@
                 }
 
                 // Revert all highlighting
-                game.InventoryUI.revertHighlightOnAllSlots();
+                game.playerInventoryUI.revertHighlightOnAllSlots();
 
-                game.InventoryUI.draggingSlotUI = null;
+                game.playerInventoryUI.draggingSlotUI = null;
             },
 
             // If true, container auto-scrolls while dragging
@@ -117,7 +117,7 @@
                 var targetID = $(this).attr('id');
                 var targetSlotIndex = parseInt(targetID.replace('slot', ''));
 
-                if (thisSlotUI.swapItems(game.InventoryUI.draggingSlotUI, true)) {
+                if (thisSlotUI.swapItems(game.playerInventoryUI.draggingSlotUI, true)) {
                     thisSlotUI.highlight(true, false);
                 }
 
@@ -137,9 +137,9 @@
             // is this: when you're done dragging the item entirely, revert all
             // graphical state back to what it was before you dragged.
             accept: function(elm) {
-                if (game.InventoryUI.draggingSlotUI == null ) return null;
+                if (game.playerInventoryUI.draggingSlotUI == null ) return null;
 
-                var canBeDraggedTo = thisSlotUI.swapItems(game.InventoryUI.draggingSlotUI, true);
+                var canBeDraggedTo = thisSlotUI.swapItems(game.playerInventoryUI.draggingSlotUI, true);
                 if ( !canBeDraggedTo ) {
                     // Highlight it red. If we wanted to add a class here, we'd
                     // need to make sure to remove them in the 'stop' of the
@@ -156,16 +156,16 @@
             // This only applies to things that accept() the draggable
             // activeClass: 'testactive',
             drop: function(event, ui) {
-                if (thisSlotUI.slotIndex == game.InventoryUI.draggingSlotUI.slotIndex) {
+                if (thisSlotUI.slotIndex == game.playerInventoryUI.draggingSlotUI.slotIndex) {
                     return;
                 }
 
-                var success = thisSlotUI.swapItems(game.InventoryUI.draggingSlotUI, false);
+                var success = thisSlotUI.swapItems(game.playerInventoryUI.draggingSlotUI, false);
                 if ( success ) {
                     dropped = true;
 
                     // Select the slot we moved to
-                    game.InventoryUI.clickedSlot(thisSlotUI);
+                    game.playerInventoryUI.clickedSlot(thisSlotUI);
                     $.ui.ddmanager.current.cancelHelperRemoval = true;
                     ui.helper.remove();
                     return true;
@@ -229,7 +229,7 @@
      */
     window.game.SlotUI.prototype.clickedSlot = function(slotUI) {
         return function() {
-            game.InventoryUI.clickedSlot(slotUI);
+            game.playerInventoryUI.clickedSlot(slotUI);
         };
     };
 
@@ -245,7 +245,7 @@
     window.game.SlotUI.prototype.useItem = function(slotUI) {
         return function() {
             if (!slotUI.isEmpty()) {
-                game.InventoryUI.enterUseMode();
+                game.playerInventoryUI.enterUseMode();
             }
         };
     };
