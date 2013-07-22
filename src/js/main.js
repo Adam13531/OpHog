@@ -269,6 +269,7 @@
         game.LootUI.setupUI();
         game.QuestUI.setupUI();
         window.game.ShopUI = new game.ShopUI();
+        window.game.ShopInventory = new game.ShopInventory();
     }
 
     function initSettings() {
@@ -389,6 +390,16 @@
             // 'the only way you can revert for now.
             if (evt.keyCode == game.Key.DOM_VK_G) {
                 game.GameStateManager.confirmedWinOrLose();
+            }
+
+            // 'Y' - Opens shopUI
+            if (evt.keyCode == game.Key.DOM_VK_Y) {
+                var $shopUIScreen = $('#shop-screen');
+                if ( $shopUIScreen.is(":visible") ) {
+                    game.ShopUI.hide();
+                } else {
+                    game.ShopUI.show();
+                }
             }
 
             // 'N' - add 3 of each unit type to the unit placement UI

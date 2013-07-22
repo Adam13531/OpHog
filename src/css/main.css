@@ -97,6 +97,8 @@ textarea {
 #scroll-pane,.scroll-pane { background-color:white;float:left;overflow: auto; width: 91px; height:136px;position:relative;border:0px solid gray;margin-bottom:25px;display:inline}
 #scroll-pane,.scroll-pane{position:relative}
 
+#static-pane,.static-pane {background-color:white;float:left;overflow: hidden; width: 68px; height:170px;position:relative;border:0px solid gray;margin-bottom:25px;display:inline}
+
 .scroll-content-item {background-color:#fcfcfc;color:#003366;width:100px;height:100px;float:left;margin:10px;font-size:3em;line-height:96px;text-align:center;border:1px solid gray;display:inline;}
 
 .scroll-content {position:absolute;top:0;left:0}

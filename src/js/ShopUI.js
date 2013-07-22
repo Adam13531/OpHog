@@ -32,4 +32,67 @@
 
     window.game.ShopUI.prototype = new game.InventoryUI;
 
+    /**
+     * Shows the ShopUI
+     */
+    window.game.ShopUI.prototype.show = function() {
+        $('#shop-screen').dialog('open');
+    };
+
+    /**
+     * Hides the ShopUI
+     */
+    window.game.ShopUI.prototype.hide = function() {
+        $('#shop-screen').dialog('close');
+    };
+
+    window.game.ShopUI.prototype.addedSlot = function(slot) {
+        // This points to the element that we will add the SlotUI to.
+        var domSelector;
+
+        // This needs some explanation. When we call setSlider on a div, all
+        // of the existing children are wrapped in a .scroll-content class.
+        // From then on, you need to add to the .scroll-content, not the
+        // original div, otherwise your new items will not be in the scroll
+        // area.
+        var scrollContentClassSelector = ' > .scroll-content';
+        var setScrollable = false;
+
+        // This points to the scrollpane, assuming the div in question was
+        // already made into a scrollpane (i.e. on all calls to this
+        // function after the first).
+        var scrollSelector = null;
+
+        switch(slot.slotType) {
+            case game.SlotTypes.EQUIP:
+                domSelector = '#shopui-equippable-item-pane';
+                scrollSelector = domSelector;
+
+                // If the .scroll-content already exists...
+                if ( $(domSelector + scrollContentClassSelector).length > 0 ) {
+                    // Then we add the SlotUI to that.
+                    domSelector += scrollContentClassSelector;
+                }
+                break;
+            case game.SlotTypes.USABLE:
+                domSelector = '#shopui-usable-item-pane';
+                scrollSelector = domSelector;
+                if ( $(domSelector + scrollContentClassSelector).length > 0 ) {
+                    domSelector += scrollContentClassSelector;
+                }
+                break;
+            default:
+                console.log("Unrecognized slot type: " + slot.slotType);
+                domSelector = 'body';
+                break;
+        }
+
+        var newSlotUI = new game.SlotUI(domSelector, slot);
+        this.slots.push(newSlotUI);
+
+        if ( scrollSelector != null ) {
+            window.ui.setSlider($(scrollSelector));
+        }
+    }
+
 }()); 

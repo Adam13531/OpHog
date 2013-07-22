@@ -8,7 +8,8 @@
      * in (i.e., when a base class first inherits from this class
      * using "new"), then this constructor won't be run. Therefore,
      * when a base class inherits from this, then in that class'
-     * constructor, you need to have code like this:
+     * constructor, you need to have code like this if you want to use
+     * this constructor:
      *
      * this.base = game.Inventory;
      * this.base(true); // Pass in true (or anything really) to make sure the 
