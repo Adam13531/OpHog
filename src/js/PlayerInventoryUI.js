@@ -115,8 +115,7 @@
 	};
 
 	window.game.PlayerInventoryUI.prototype = new game.InventoryUI;
-
-
+    
     /**
      * Exit USE mode. This will hide the instructions that show up.
      * @return {null}

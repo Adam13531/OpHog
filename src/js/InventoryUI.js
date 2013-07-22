@@ -6,7 +6,6 @@
      * but it also tracks the equipped items, so it's sort of like the inventory
      * for each character class too.
      */
-
     window.game.InventoryUI = function InventoryUI() {
         
         /**

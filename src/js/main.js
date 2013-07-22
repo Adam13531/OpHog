@@ -268,7 +268,7 @@
         game.UnitPlacementUI.setupUI();
         game.LootUI.setupUI();
         game.QuestUI.setupUI();
-        game.ShopUI.setupUI();
+        window.game.ShopUI = new game.ShopUI();
     }
 
     function initSettings() {
