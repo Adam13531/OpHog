@@ -357,8 +357,8 @@
             var camera = this;
 
             return function(event) {
-                camera.curPanX = camera.dragStartPos.origPanX - event.distanceX / camera.curZoom;
-                camera.curPanY = camera.dragStartPos.origPanY - event.distanceY / camera.curZoom;
+                camera.curPanX = camera.dragStartPos.origPanX - event.gesture.deltaX / camera.curZoom;
+                camera.curPanY = camera.dragStartPos.origPanY - event.gesture.deltaY / camera.curZoom;
             };
         },
 
@@ -371,7 +371,7 @@
             var camera = this;
 
             return function(event) {
-               camera.pinchZoomStartingScale = event.scale; 
+               camera.pinchZoomStartingScale = event.gesture.scale; 
                ctxOrigZoom = camera.curZoom;
             };
         },
@@ -384,7 +384,7 @@
             var camera = this;
 
             return function(event) {
-                camera.curZoom = ctxOrigZoom + (event.scale - camera.pinchZoomStartingScale) / 2.0;
+                camera.curZoom = ctxOrigZoom + (event.gesture.scale - camera.pinchZoomStartingScale) / 2.0;
                 camera.zoomChanged();
             };
         },

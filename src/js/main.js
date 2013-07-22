@@ -54,7 +54,6 @@
         // game.GameStateManager.returnToNormalGameplay();
     }
 
-
     function makeUI() {
         // This requires that the spritesheets were loaded.
         game.MinigameUI.setupUI();
@@ -115,55 +114,6 @@
                 newUnit.placeUnit(23,9,game.MovementAI.FOLLOW_PATH);
                 game.UnitManager.addUnit(newUnit);
             };
-        });
-
-        // Handle all the events from a user clicking/tapping the canvas
-        $canvas.click(function(event) {
-            // Apparently offsetX and offsetY aren't in every browser...
-            // http://stackoverflow.com/questions/11334452/event-offsetx-in-firefox
-            var offsetX = event.offsetX==undefined?event.originalEvent.layerX:event.offsetX;
-            var offsetY = event.offsetY==undefined?event.originalEvent.layerY:event.offsetY;
-
-            // Convert to world coordinates and also tile coordinates
-            var worldX = game.Camera.canvasXToWorldX(offsetX);
-            var worldY = game.Camera.canvasYToWorldY(offsetY);
-            var tileX = Math.floor(worldX / tileSize);
-            var tileY = Math.floor(worldY / tileSize);
-
-            // Make sure the tile is in-bounds
-            if ( tileX < 0 || tileX >= currentMap.numCols || tileY < 0 || tileY >= currentMap.numRows ) {
-                return;
-            }
-
-            var tile = currentMap.getTile(tileX, tileY);
-            
-            // If you're currently trying to use an item, then check to see if
-            // the user clicked a valid target
-            if ( game.InventoryUI.attemptToUseItem(worldX, worldY) ) {
-                // If that worked, then we don't attempt to open the spawners
-                // (perhaps you were targeting a unit on your spawner, or you
-                // were targeting the spawner itself - you wouldn't want to open
-                // the placement UI).
-                return;
-            }
-
-            var tileIsSpawnPoint = currentMap.isSpawnerPoint(tileX, tileY);
-
-            // Clicking a "spawner" in the overworld will take you to a map to
-            // play normally on.
-            if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !currentMap.isFoggy(tileX, tileY)) {
-                game.overworldMap.tileOfLastMap = tile;
-                game.GameStateManager.transitionToNormalMap();
-                return;
-            }
-
-            // Check to see if the user tapped a spawner
-            if (game.UnitPlacementUI.canSpawnUnits() && tileIsSpawnPoint) {
-                game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
-                $('#buyingScreenContainer').dialog('open');
-            } else {
-                $('#buyingScreenContainer').dialog('close');
-            }
         });
 
         var settingsWidth = $settingsButton.width();
@@ -233,18 +183,65 @@
             $($toggleParticlesButton.selector + ' ~ label > span').text(text);
         });
 
-        // Look at https://github.com/EightMedia/hammer.js/blob/master/hammer.js to figure out what's in the event.
-        // You get scale, rotation, distance, etc.
+        // To see what's in Hammer events, look at their wiki (currently located
+        // here: https://github.com/EightMedia/hammer.js/wiki/Getting-Started).
         // 
-        // Pretty sure you should only call this once. Calling it multiple times will result in multiple events being fired.
-        $canvas.hammer({prevent_default:true});
-        
+        // game.util.dumpObject comes in handy here too.
+        var hammertime = $canvas.hammer({prevent_default:true});
+
         // Get all of the camera's event handlers.
-        $canvas.bind('transformstart', game.Camera.getTransformStartEventHandler());
-        $canvas.bind('transform', game.Camera.getTransformEventHandler());
-        $canvas.bind('transformend', function(event) {/*This does nothing*/});
-        $canvas.bind('dragstart', game.Camera.getDragStartEventHandler());
-        $canvas.bind('drag', game.Camera.getDragEventHandler());
+        hammertime.on('transformstart', game.Camera.getTransformStartEventHandler());
+        hammertime.on('transform', game.Camera.getTransformEventHandler());
+        hammertime.on('dragstart', game.Camera.getDragStartEventHandler());
+        hammertime.on('drag', game.Camera.getDragEventHandler());
+
+        // Handle all the events from a user clicking/tapping the canvas
+        hammertime.on('touch', function(event) {
+            // This works on Chrome, Firefox, and IE on a desktop, and Safari and Chrome on an iPad, so it probably works for everything.
+            var offsetX = event.gesture.center.pageX - event.gesture.target.offsetLeft;
+            var offsetY = event.gesture.center.pageY - event.gesture.target.offsetTop;
+
+            // Convert to world coordinates and also tile coordinates
+            var worldX = game.Camera.canvasXToWorldX(offsetX);
+            var worldY = game.Camera.canvasYToWorldY(offsetY);
+            var tileX = Math.floor(worldX / tileSize);
+            var tileY = Math.floor(worldY / tileSize);
+
+            // Make sure the tile is in-bounds
+            if ( tileX < 0 || tileX >= currentMap.numCols || tileY < 0 || tileY >= currentMap.numRows ) {
+                return;
+            }
+
+            var tile = currentMap.getTile(tileX, tileY);
+            
+            // If you're currently trying to use an item, then check to see if
+            // the user clicked a valid target
+            if ( game.InventoryUI.attemptToUseItem(worldX, worldY) ) {
+                // If that worked, then we don't attempt to open the spawners
+                // (perhaps you were targeting a unit on your spawner, or you
+                // were targeting the spawner itself - you wouldn't want to open
+                // the placement UI).
+                return;
+            }
+
+            var tileIsSpawnPoint = currentMap.isSpawnerPoint(tileX, tileY);
+
+            // Clicking a "spawner" in the overworld will take you to a map to
+            // play normally on.
+            if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !currentMap.isFoggy(tileX, tileY)) {
+                game.overworldMap.tileOfLastMap = tile;
+                game.GameStateManager.transitionToNormalMap();
+                return;
+            }
+
+            // Check to see if the user tapped a spawner
+            if (game.UnitPlacementUI.canSpawnUnits() && tileIsSpawnPoint) {
+                game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
+                $('#buyingScreenContainer').dialog('open');
+            } else {
+                $('#buyingScreenContainer').dialog('close');
+            }
+        });
 
         $canvas.mousewheel(game.Camera.getMouseWheelEventHandler());
 
