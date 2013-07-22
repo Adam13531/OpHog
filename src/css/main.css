@@ -113,8 +113,8 @@ textarea {
 .ui-slider-range{position:absolute;width:100%;background-color:lightgrey}
 
 
-.test1{background-color:#3f48cc;color:white;text-align:center;}
-.test2{background-color:#880015;color:white;text-align:center;}
+.test1{background-color:#3f48cc;color:white;text-align:center;font-size:80%;}
+.test2{background-color:#880015;color:white;text-align:center;font-size:80%;}
 .test3{background-color:white;color:black;}
 
 

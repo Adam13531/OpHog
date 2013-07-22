@@ -34,15 +34,6 @@
 	 */
 	window.game.NUM_PLACEABLE_UNIT_CLASSES = Object.keys(game.PlaceableUnitType).length;
 
-	/**
-	 * Calculates the cost to place the unit
-	 * @param  {Unit} unit Unit that can be placed
-	 * @return {Number}    Cost to place the unit 
-	 */
-	function costToPlaceUnit(unit) {
-		return (unit.level * 50);
-	};
-
     // There's only one unit placement UI, so we'll define everything in a single
     // object.
     window.game.UnitPlacementUI = {
@@ -114,6 +105,20 @@
             this.addUnit();
             this.navigateToPage(currentType);
             game.Player.coins = currentCoins;
+        },
+
+        /**
+         * Calculates the cost to place the specified unit
+         * @param  {Unit} unit - Unit that can be placed
+         * @return {Number}    Cost to place the unit 
+         */
+        costToPlaceUnit: function(unit) {
+            var itemsEquippedToClass = game.Inventory.getClassEquippedItems(unit.unitType);
+            var costAdded = 0;
+            for (var i = 0; i < itemsEquippedToClass.length; i++) {
+                costAdded += itemsEquippedToClass[i].placementCost;
+            };
+            return (unit.level * 50) + costAdded;
         },
 
 		/**
@@ -334,7 +339,7 @@
             // UI, so there's nothing to update here.
         	if ( $costTag.length == 0 || $levelTag.length == 0 || $expTag.length == 0 ) return;
 
-            var cost = costToPlaceUnit(unit);
+            var cost = this.costToPlaceUnit(unit);
         	$costTag.text(cost);
         	$levelTag.text(unit.level);
         	$expTag.text(unit.experience);
@@ -416,7 +421,7 @@
 			$('#unit'+id).click({unitClicked: unit}, unitClicked);
 			function unitClicked(event) {
                 var unit = event.data.unitClicked;
-                var cost = costToPlaceUnit(unit);
+                var cost = game.UnitPlacementUI.costToPlaceUnit(unit);
                 if (!game.GameStateManager.isNormalGameplay() || unit.hasBeenPlaced || !game.Player.hasThisMuchMoney(cost)) {
                     return;
                 }

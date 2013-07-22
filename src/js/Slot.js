@@ -53,7 +53,7 @@
         // Tell the UI that we updated this slot.
         game.InventoryUI.updatedSlot(this.slotIndex);
 
-        // If this is an equip slot, update the units
+        // If this is an equip slot, update the unit placement cost
         if ( this.isClassSlot() ) {
             var unitTypeToUpdate = null;
             if (this.slotType == game.SlotTypes.WAR) unitTypeToUpdate = game.PlaceableUnitType.WARRIOR;
@@ -62,7 +62,7 @@
 
             var unitsOfThisType = game.UnitManager.getUnits(unitTypeToUpdate);
             for (var i = 0; i < unitsOfThisType.length; i++) {
-                unitsOfThisType[i].equipmentChanged();
+                game.UnitPlacementUI.updateUnit(unitsOfThisType[i]);
             };
         }
     };
