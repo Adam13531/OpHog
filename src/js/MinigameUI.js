@@ -164,7 +164,7 @@
             var centerY = tileY * tileSize + tileSize / 2;
 
             // Move camera to middle of the map
-            game.Camera.panInstantlyTo(centerX, centerY);
+            game.Camera.panInstantlyTo(centerX, centerY, true);
 
             // Spawn all of your units
             game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);

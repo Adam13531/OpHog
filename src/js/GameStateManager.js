@@ -160,7 +160,7 @@
             // Restore the camera's zoom and pan properties to be what they were
             // when you were last looking at the overworld.
             game.Camera.instantlySetZoom(currentMap.lastCameraZoom);
-            game.Camera.panInstantlyTo(currentMap.lastCameraX, currentMap.lastCameraY);
+            game.Camera.panInstantlyTo(currentMap.lastCameraX, currentMap.lastCameraY, true);
             
             // Give them the movement AI that will make them wander
             game.UnitManager.placeAllPlayerUnits(tileOfLastMap.x, tileOfLastMap.y, game.MovementAI.WANDER_UNFOGGY_WALKABLE);
@@ -198,7 +198,7 @@
 
             // Pan to the upper left so that they can at least see one of the
             // spawn points.
-            game.Camera.panInstantlyTo(game.Camera.viewWidth / 2, game.Camera.viewHeight / 2);
+            game.Camera.panInstantlyTo(0, 0, false);
         },
 
         /**

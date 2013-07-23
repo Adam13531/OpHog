@@ -120,14 +120,22 @@
         },
 
         /**
-         * Centers the camera instantaneously at the specified world position
+         * Moves the camera instantaneously at the specified world position
          * without changing the zoom level.
          * @param  {Number} worldX - x in world coordinates
          * @param  {Number} worldY - y in world coordinates
+         * @param  {Boolean} centerCamera - if true, this will center the camera
+         * at the specified coordinates, otherwise it will treat those as the
+         * upper-left coordinates of the camera.
          */
-        panInstantlyTo: function(worldX, worldY) {
-            this.curPanX = worldX - this.viewWidth / 2;
-            this.curPanY = worldY - this.viewHeight / 2;
+        panInstantlyTo: function(worldX, worldY, centerCamera) {
+            if ( centerCamera ) {
+                this.curPanX = worldX - this.viewWidth / 2;
+                this.curPanY = worldY - this.viewHeight / 2;
+            } else {
+                this.curPanX = worldX;
+                this.curPanY = worldY;
+            }
 
             this.clampPanValues();
         },
