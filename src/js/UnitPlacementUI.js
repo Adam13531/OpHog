@@ -257,11 +257,13 @@
 			}
 			$('#buyingScreenContainer').append('</div>');
 
+            var imageHTML = '<img src="'+game.imagePath+'/img_trans.png" class="'+this.getCSSUnitClass(unitType)+'" />';
+
 			// Add a button to allow the player to buy a new slot
 			$('#buyingScreenContainer').append('<button id="buySlotButton">'+ 
 												this.costToPurchaseSlot(this.unitType) +
 												'</button>' +
-												'<span id=buySlotButtonDescription>- Buy slot</span>');
+												'<span id=buySlotButtonDescription>- Buy ' + imageHTML + ' slot</span>');
 			$('#buySlotButton').click(function() {
 				game.UnitPlacementUI.addUnit();
 			});
