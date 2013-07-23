@@ -98,6 +98,27 @@
         // can be populated when it's null. We can't just populate it here
         // because at this point, everything on the map is still foggy.
         this.tileOfLastMap = null;
+
+        // These coordinates are the position where the camera was looking when
+        // you switched away from the overworld map.
+        this.lastCameraX = null;
+        this.lastCameraY = null;
+
+        // Similarly, this is the last zoom level.
+        this.lastCameraZoom = null;
+    };
+
+    /**
+     * Sets the last camera coordinates, which is only used for the overworld
+     * map. This is the last position where the camera was looking.
+     * @param  {Number} centerX - the center camera X in world coordinates
+     * @param  {Number} centerY - the center camera Y in world coordinates
+     * @param  {Number} zoomLevel - the camera's zoom level (1 == no special zoom).
+     */
+    window.game.Map.prototype.setLastCameraProperties = function(centerX, centerY, zoomLevel) {
+        this.lastCameraX = centerX;
+        this.lastCameraY = centerY;
+        this.lastCameraZoom = zoomLevel;
     };
 
     /**
@@ -110,6 +131,7 @@
         if ( this.tileOfLastMap == null ) {
             var visibleSpawners = this.getAllTiles(game.TileFlags.SPAWNER | game.TileFlags.UNFOGGY);
             this.tileOfLastMap = game.util.randomArrayElement(visibleSpawners);
+            this.setLastCameraProperties(this.tileOfLastMap.x * tileSize, this.tileOfLastMap.y * tileSize, game.Camera.getCurrentZoom());
         }
 
         return this.tileOfLastMap;

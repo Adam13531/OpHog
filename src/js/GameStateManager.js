@@ -155,8 +155,13 @@
             game.Camera.initialize();
 
             // Place all of your units at the last map node you clicked.
-            var tileOfLastMap = game.overworldMap.getTileOfLastMap();
+            var tileOfLastMap = currentMap.getTileOfLastMap();
 
+            // Restore the camera's zoom and pan properties to be what they were
+            // when you were last looking at the overworld.
+            game.Camera.instantlySetZoom(currentMap.lastCameraZoom);
+            game.Camera.panInstantlyTo(currentMap.lastCameraX, currentMap.lastCameraY);
+            
             // Give them the movement AI that will make them wander
             game.UnitManager.placeAllPlayerUnits(tileOfLastMap.x, tileOfLastMap.y, game.MovementAI.WANDER_UNFOGGY_WALKABLE);
         },
@@ -173,11 +178,27 @@
 
             game.TilesetManager.init();
             game.MapGenerator.init();
+
+            // Save the camera coordinates if we were looking at the overworld
+            // map (which we should have been unless this is some debug code)
+            if ( currentMap == game.overworldMap ) {
+                game.overworldMap.setLastCameraProperties(game.Camera.getCenterX(), game.Camera.getCenterY(), game.Camera.getCurrentZoom());
+            }
+            
             currentMap = game.MapGenerator.generateRandomMap(50,25, 1);
 
             // Initialize the camera so that the zoom and pan values aren't out
             // of bounds.
             game.Camera.initialize();
+
+            // Make sure you're not beneath level 1 zoom
+            if ( game.Camera.getCurrentZoom() < 1 ) {
+                game.Camera.instantlySetZoom(1);
+            }
+
+            // Pan to the upper left so that they can at least see one of the
+            // spawn points.
+            game.Camera.panInstantlyTo(game.Camera.viewWidth / 2, game.Camera.viewHeight / 2);
         },
 
         /**

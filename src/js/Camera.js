@@ -133,6 +133,24 @@
         },
 
         /**
+         * @return {Number} - the current zoom level. See the comment for
+         * curZoom for information on ranges.
+         */
+        getCurrentZoom: function() {
+            return this.curZoom;
+        },
+
+        /**
+         * Sets the current zoom level. See the comment for curZoom for
+         * information on ranges.
+         * @param  {Number} newZoomLevel - the new zoom level
+         */
+        instantlySetZoom: function(newZoomLevel) {
+            this.curZoom = newZoomLevel;
+            this.zoomChanged();
+        },
+
+        /**
          * Handles some keys to pan/zoom the camera.
          *
          * See 'update' for a description of the arguments.
@@ -189,6 +207,17 @@
             this.curZoom = Math.max(this.minZoom, this.curZoom);
 
             this.computeScrollBoundaries();
+        },
+
+        /**
+         * @return {Number} - the center X coordinate (in world space) that this
+         * camera is currently looking at
+         */
+        getCenterX: function() {
+            return this.curPanX + this.viewWidth / 2;
+        },
+        getCenterY: function() {
+            return this.curPanY + this.viewHeight / 2;
         },
 
         /**
