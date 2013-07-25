@@ -392,6 +392,10 @@
                 if ( game.UnitManager.areAllUnitsAtTheirDestinations() ) {
                     this.returnToNormalGameplay();
                 }
+            } else if ( this.inWinState() ) {
+                // This is hacky, but for now, prevent the minigame dialog from
+                // being permanently closed.
+                game.MinigameUI.showIfHidden();
             }
         },
 

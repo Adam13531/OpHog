@@ -232,6 +232,11 @@
         show: function() {
             $('#minigame-ui').dialog('open');
         },
+        showIfHidden: function() {
+            if ( !$("#minigame-ui").dialog( 'isOpen' ) ) {
+                this.show();
+            }
+        },
         hide: function() {
             $('#minigame-ui').dialog('close');
         }
