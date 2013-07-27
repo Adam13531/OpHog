@@ -21,6 +21,18 @@
          */
         this.selectedSlotUI = null;
 
+        /**
+         * Holds the id of the HTML tag for the item description. This
+         * is a jQuery selector.
+         *
+         * Ex) Let's say you have this div:
+         * <div id="item-description"></div>
+         *
+         * This variable should be equal to $('#item-description')
+         * @type {String}
+         */
+        this.$itemDescriptionID = "";
+
     };
 
     /**
@@ -105,12 +117,15 @@
         }
 
         if (slot.isEquipSlot()) {
-            $('#item-description').attr('class', 'test1');
+            // $('#item-description').attr('class', 'equip-slot');
+            this.$itemDescriptionID.attr('class', 'equip-slot');
         } else if (slot.isUsableSlot()) {
-            $('#item-description').attr('class', 'test2');
+            // $('#item-description').attr('class', 'use-slot');
+            this.$itemDescriptionID.attr('class', 'use-slot');
         }
 
-        $('#item-description').html(desc);
+        // $('#item-description').html(desc);
+        this.$itemDescriptionID.html(desc);
 
         this.setUseItemButtonState();
     };

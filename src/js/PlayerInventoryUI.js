@@ -7,6 +7,8 @@
 		this.base = game.InventoryUI;
 		this.base();
 
+        this.$itemDescriptionID = $('#item-description');
+
 		/**
          * This is the slot that you dragged from and must be global
          * 
@@ -30,7 +32,7 @@
         $('#arch-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '"/>');
 
         // Put some starter text for the description
-        $('#item-description').html('<h2>Click a slot to select it.</h2>');
+        this.$itemDescriptionID.html('<h2>Click a slot to select it.</h2>');
 
         this.$useItemButton = $('#useItemButton');
         this.$useItemButton.button();
