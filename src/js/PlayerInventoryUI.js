@@ -483,7 +483,7 @@
                 break;
         }
 
-        var newSlotUI = new game.SlotUI(domSelector, slot);
+        var newSlotUI = new game.PlayerSlotUI(domSelector, slot);
         this.slots.push(newSlotUI);
 
         if ( scrollSelector != null ) {

@@ -69,8 +69,8 @@
                 break;
         }
 
-        var newSlotUI = new game.SlotUI(domSelector, slot);
-        this.slots.push(newSlotUI);
+        // var newSlotUI = new game.SlotUI(domSelector, slot);
+        // this.slots.push(newSlotUI);
     }
 
 }()); 
