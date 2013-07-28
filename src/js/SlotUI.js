@@ -84,11 +84,7 @@
      * @param  {SlotUI} slotUI - the slot you clicked
      * @return {Object} the onclick function
      */
-    window.game.SlotUI.prototype.clickedSlot = function(slotUI) {
-        return function() {
-            game.playerInventoryUI.clickedSlot(slotUI);
-        };
-    };
+    window.game.SlotUI.prototype.clickedSlot = function(slotUI) {};
 
     window.game.SlotUI.prototype.isEmpty = function() {
         return this.slot == null || this.slot.isEmpty();

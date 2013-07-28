@@ -64,16 +64,6 @@
 
         // Update the slot UI
         this.slots[slotIndex].updateItem();
-
-        // Update the description
-        this.updateDescription();
-
-        this.updateSellButton();
-
-        // It's possible that we now need to update the use instructions
-        // too, for example, if we just acquired more of the item that we're
-        // currently using.
-        this.updateUseInstructions();
     };
 
     /**
@@ -86,8 +76,6 @@
         }
         this.selectedSlotUI = slotUI;
         slotUI.selectSlot();
-        this.updateSellButton();
-        this.updateDescription();
     };
 
     /**
@@ -126,8 +114,6 @@
 
         // $('#item-description').html(desc);
         this.$itemDescriptionID.html(desc);
-
-        this.setUseItemButtonState();
     };
 
 }()); 

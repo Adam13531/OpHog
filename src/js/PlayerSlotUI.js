@@ -174,4 +174,15 @@
         };
     };
 
+    /**
+     * Gets an onclick function to select a slot
+     * @param  {SlotUI} slotUI - the slot you clicked
+     * @return {Object} the onclick function
+     */
+    window.game.PlayerSlotUI.prototype.clickedSlot = function(slotUI) {
+        return function() {
+            game.playerInventoryUI.clickedSlot(slotUI);
+        };
+    };
+
 }());

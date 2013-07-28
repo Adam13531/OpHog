@@ -564,4 +564,30 @@
             this.$useItemButton.button('disable');
         }
     };
+
+    window.game.PlayerInventoryUI.prototype.clickedSlot = function(slotUI) {
+        game.InventoryUI.prototype.clickedSlot.call(this, slotUI);
+
+        this.updateDescription();
+        this.updateSellButton();
+    };
+
+    window.game.PlayerInventoryUI.prototype.updatedSlot = function(slotIndex) {
+        game.InventoryUI.prototype.updatedSlot.call(this, slotIndex);
+
+        // Update the description
+        this.updateDescription();
+        this.updateSellButton();
+        
+        // It's possible that we now need to update the use instructions
+        // too, for example, if we just acquired more of the item that we're
+        // currently using.
+        this.updateUseInstructions();
+    };
+
+    window.game.PlayerInventoryUI.prototype.updateDescription = function() {
+        game.InventoryUI.prototype.updateDescription.call(this);
+        this.setUseItemButtonState();
+    };
+
 }());
