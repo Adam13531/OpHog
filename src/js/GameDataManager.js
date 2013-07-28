@@ -219,7 +219,7 @@
             var finalSlots = [];
             for (var i = 0; i < parsedInventory.slots.length; i++) {
                 var parsedSlot = parsedInventory.slots[i];
-                var finalSlot = new game.Slot(parsedSlot.slotType);
+                var finalSlot = new game.PlayerSlot(parsedSlot.slotType);
                 this.copyProps(parsedSlot, finalSlot, []);
                 finalSlots.push(finalSlot);
 

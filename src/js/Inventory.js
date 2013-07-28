@@ -30,18 +30,6 @@
          * @type {Array:Slot}
          */
         this.slots = [];
-
-        // Add equippable slots
-        for (var i = 0; i < 32; i++) {
-            var newSlot = new game.Slot(game.SlotTypes.EQUIP);
-            this.addSlot(newSlot);
-        };
-
-        // Add usable slots
-        for (var i = 0; i < 32; i++) {
-            var newSlot = new game.Slot(game.SlotTypes.USABLE);
-            this.addSlot(newSlot);
-        };
     };
 
     /**

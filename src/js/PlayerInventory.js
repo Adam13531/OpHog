@@ -8,17 +8,29 @@
 		this.base(true); // Pass in true (or anything really) to make sure the 
 						 // base constructor will be called
 
+		// Add equippable slots
+        for (var i = 0; i < 32; i++) {
+            var newSlot = new game.PlayerSlot(game.SlotTypes.EQUIP);
+            this.addSlot(newSlot);
+        };
+
+        // Add usable slots
+        for (var i = 0; i < 32; i++) {
+            var newSlot = new game.PlayerSlot(game.SlotTypes.USABLE);
+            this.addSlot(newSlot);
+        };
+
 		// Add slots for each character class
 		for (var i = 0; i < 2; i++) {
-			var newSlot = new game.Slot(game.SlotTypes.WAR);
+			var newSlot = new game.PlayerSlot(game.SlotTypes.WAR);
 			this.addSlot(newSlot);
 		};
 		for (var i = 0; i < 2; i++) {
-			var newSlot = new game.Slot(game.SlotTypes.WIZ);
+			var newSlot = new game.PlayerSlot(game.SlotTypes.WIZ);
 			this.addSlot(newSlot);
 		};
 		for (var i = 0; i < 2; i++) {
-			var newSlot = new game.Slot(game.SlotTypes.ARCH);
+			var newSlot = new game.PlayerSlot(game.SlotTypes.ARCH);
 			this.addSlot(newSlot);
 		};
 

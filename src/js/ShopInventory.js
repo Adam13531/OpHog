@@ -7,6 +7,18 @@
 		this.base = game.Inventory;
 		this.base(true);
 
+		// Add equippable slots
+        // for (var i = 0; i < 32; i++) {
+        //     var newSlot = new game.ShopSlot(game.SlotTypes.EQUIP);
+        //     this.addSlot(newSlot);
+        // };
+
+        // // Add usable slots
+        // for (var i = 0; i < 32; i++) {
+        //     var newSlot = new game.ShopSlot(game.SlotTypes.USABLE);
+        //     this.addSlot(newSlot);
+        // };
+
 		// TODO: Debugging code
 		// this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.CREATE_SPAWNER.id));
   //       this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.MEGA_CREATE_SPAWNER.id));
