@@ -103,8 +103,11 @@
             this.addUnit();
             this.addUnit();
             this.addUnit();
-            this.navigateToPage(currentType);
+
+            // Set coins before navigating back to the page so that the button's
+            // enabled/disabled state is set correctly.
             game.Player.coins = currentCoins;
+            this.navigateToPage(currentType);
         },
 
         /**
@@ -260,10 +263,13 @@
             var imageHTML = '<img src="'+game.imagePath+'/img_trans.png" class="'+this.getCSSUnitClass(unitType)+'" />';
 
 			// Add a button to allow the player to buy a new slot
-			$('#buyingScreenContainer').append('<button id="buySlotButton">'+ 
-												this.costToPurchaseSlot(this.unitType) +
-												'</button>' +
+			$('#buyingScreenContainer').append('<button id="buySlotButton"></button>' +
 												'<span id=buySlotButtonDescription>- Buy ' + imageHTML + ' slot</span>');
+            $('#buySlotButton').button();
+            $('#buySlotButton').text(this.costToPurchaseSlot(this.unitType));
+            $('#buySlotButton').css({
+                'padding': '2px 2px 2px 2px'
+            });
 			$('#buySlotButton').click(function() {
 				game.UnitPlacementUI.addUnit();
 			});
@@ -383,9 +389,9 @@
             // Update the "buy" button
             var cost = this.costToPurchaseSlot();
             if ( !game.Player.hasThisMuchMoney(cost) ) {
-                $('#buySlotButton').attr('disabled', 'disabled');
+                $('#buySlotButton').button('disable');
             } else {
-                $('#buySlotButton').removeAttr('disabled');
+                $('#buySlotButton').button('enable');
             }
         },
 
