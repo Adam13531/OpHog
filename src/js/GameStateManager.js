@@ -113,29 +113,6 @@
         },
 
         /**
-         * Initializes the overworld map. This should only be called once.
-         */
-        initializeOverworldMap: function() {
-            var width = 50;
-            var mapTileIndices = game.overworldMapTileIndices;
-
-            // Put each node into the map
-            for (var i = 0; i < game.overworldMapNodes.length; i++) {
-                var node = game.overworldMapNodes[i];
-                var index = node.y * width + node.x;
-
-                // Make them look like blue spawners
-                mapTileIndices[index] = 65;
-            };
-
-            var doodadIndices = new Array(mapTileIndices.length);
-            var tilesetID = game.TilesetManager.MARSH_TILESET_ID;
-            game.overworldMap = new game.Map(mapTileIndices, doodadIndices, tilesetID, width, true);
-
-            game.overworldMap.setFog(1, 3, 3, false);
-        },
-
-        /**
          * Switches to the overworld map.
          */
         switchToOverworldMap: function() {
@@ -147,7 +124,7 @@
             game.TilesetManager.init();
 
             if ( game.overworldMap == null ) {
-                this.initializeOverworldMap();
+                game.OverworldMapData.initializeOverworldMap();
             }
 
             currentMap = game.overworldMap;
@@ -179,13 +156,28 @@
             game.TilesetManager.init();
             game.MapGenerator.init();
 
-            // Save the camera coordinates if we were looking at the overworld
-            // map (which we should have been unless this is some debug code)
-            if ( currentMap == game.overworldMap ) {
-                game.overworldMap.setLastCameraProperties(game.Camera.getCenterX(), game.Camera.getCenterY(), game.Camera.getCurrentZoom());
+            // We're looking at the overworld map right now, so save the camera
+            // coordinates
+            game.overworldMap.setLastCameraProperties(game.Camera.getCenterX(), game.Camera.getCenterY(), game.Camera.getCurrentZoom());
+
+            // Set the right difficulty
+            var difficultyToUse = 1;
+            var tileOfLastMap = game.overworldMap.tileOfLastMap;
+
+            // This shouldn't be null unless we got to the normal map via some
+            // debug command. I should just modify the debug command so that it
+            // does everything necessary.
+            if ( tileOfLastMap != null ) {
+                var nodeOfMap = game.OverworldMapData.getOverworldNode(tileOfLastMap.x, tileOfLastMap.y);
+                if ( nodeOfMap == null ) {
+                    game.util.debugDisplayText('You moved to a normal map, but the tile doesn\' correspond to an overworldMapNode: ' + 
+                        nodeOfMap.x + ', ' + nodeOfMap.y, 'no overworldMapNode');
+                } else {
+                    difficultyToUse = nodeOfMap.difficulty;
+                }
             }
-            
-            currentMap = game.MapGenerator.generateRandomMap(50,25, 1);
+        
+            currentMap = game.MapGenerator.generateRandomMap(50, 25, difficultyToUse);
 
             // Initialize the camera so that the zoom and pan values aren't out
             // of bounds.

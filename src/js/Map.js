@@ -1375,8 +1375,8 @@
     window.game.Map.prototype.drawOverworldDescriptions = function(ctx) {
         if ( !this.isOverworldMap || !game.keyPressedToDisplayLifeBars ) return;
 
-        for (var i = 0; i < game.overworldMapNodes.length; i++) {
-            var node = game.overworldMapNodes[i];
+        for (var i = 0; i < game.OverworldMapData.overworldMapNodes.length; i++) {
+            var node = game.OverworldMapData.overworldMapNodes[i];
 
             // Don't draw if it's foggy
             if ( this.isFoggy(node.x, node.y) ) continue;
