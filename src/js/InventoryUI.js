@@ -129,7 +129,6 @@
 
         /**
          * Exit USE mode. This will hide the instructions that show up.
-         * @return {null}
          */
         exitUseMode: function(doNotCallShowUI) {
             $('#useItemInstructions').hide();
@@ -150,7 +149,6 @@
          * Sells the selected item.
          *
          * For now, this actually just destroys the item.
-         * @return {null}
          */
         sellSelectedItem: function() {
             if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
@@ -313,7 +311,6 @@
          * I made this function because 'usingItem' is stored as an item, not a
          * slot, so there's no easy way to know which slot the item is in once
          * you've depleted it, so we just remove all depleted items.
-         * @return {null}
          */
         removeDepletedItems: function() {
             for (var i = 0; i < this.slots.length; i++) {
@@ -327,7 +324,6 @@
 
         /**
          * Update the instructions that appear when you're in USE mode.
-         * @return {null}
          */
         updateUseInstructions: function() {
             var item = this.usingItem;
@@ -383,10 +379,9 @@
 
         /**
          * Enters USE mode. This will hide the inventory screen.
-         * @return {null}
          */
         enterUseMode: function() {
-            if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
+            if ( !this.canUseItem() ) {
                 return;
             }
 
@@ -420,7 +415,6 @@
         /**
          * Updates the sell button with the appropriate text. Also
          * enables/disables the button.
-         * @return {null}
          */
         updateSellButton: function() {
             if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
@@ -516,7 +510,6 @@
         /**
          * This is its own function because setScrollbars also needs to be
          * called every time you show the inventory screen.
-         * @return {null}
          */
         show: function() {
             $('#inventory-screen').dialog('open');
@@ -527,7 +520,6 @@
 
         /**
          * Convenience function since I call this a decent amount.
-         * @return {undefined}
          */
         hide: function() {
             $('#inventory-screen').dialog('close');
@@ -536,7 +528,6 @@
         /**
          * This is called when a slot's item is changed.
          * @param  {Number} slotIndex The index of the Slot/SlotUI that changed.
-         * @return {null}
          */
         updatedSlot: function(slotIndex) {
             // This is necessary because Slot sets an item before a corresponding
@@ -590,27 +581,32 @@
 
         /**
          * Enables or disables the useItemButton appropriately.
-         * @return {undefined}
          */
         setUseItemButtonState: function() {
-            var selectedSlotUI = this.selectedSlotUI;
-            if ( selectedSlotUI == null ) return;
-            var slot = selectedSlotUI.slot;
-
-            // Only enable the use button if we're in the correct game state.
-            var correctGameState = (game.GameStateManager.isNormalGameplay() || game.GameStateManager.isMinigameGameplay());
-
-            // If we selected a usable item, enable the 'Use' button.
-            if ( correctGameState && !slot.isEmpty() && slot.isUsableSlot() ) {
+            if ( this.canUseItem() ) {
                 this.$useItemButton.button('enable');
             } else {
                 this.$useItemButton.button('disable');
             }
         },
+
+        /**
+         * @return {Boolean} true if you can use the selected item. If there's
+         * no item selected or if we're in the wrong game state, then this
+         * returns false.
+         */
+        canUseItem: function() {
+            var selectedSlotUI = this.selectedSlotUI;
+            if ( selectedSlotUI == null ) return false;
+            var slot = selectedSlotUI.slot;
+
+            var correctGameState = (game.GameStateManager.isNormalGameplay() || game.GameStateManager.isMinigameGameplay());
+
+            return correctGameState && !slot.isEmpty() && slot.isUsableSlot();
+        },
         
         /**
          * Updates the description based on which item is selected.
-         * @return {null}
          */
         updateDescription: function() {
             // Make a var here so I don't have to type 'this' all the time
