@@ -343,6 +343,7 @@
                 this.commonWinLoseFunctions();
                 game.Player.castleLife = game.FULL_CASTLE_LIFE;
                 currentMap.clearAllFog();
+                game.MinigameUI.populateUI();
                 game.MinigameUI.show();
             }
 

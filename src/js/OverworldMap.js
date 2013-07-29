@@ -55,31 +55,31 @@
             x:7,
             y:1,
             description: 'Pumpkin Hill',
-            difficulty: 99
+            difficulty: 2
         },
         {
             x:9,
             y:5,
             description: 'Bot Land',
-            difficulty: 6
+            difficulty: 3
         },
         {
             x:11,
             y:1,
             description: 'The Casino',
-            difficulty: 14
+            difficulty: 4
         },
         {
             x:14,
             y:5,
             description: 'The Future',
-            difficulty: 50
+            difficulty: 5
         },
         {
             x:19,
             y:3,
             description: 'Lazy Town',
-            difficulty: 2
+            difficulty: 6
         }
         ],
 
@@ -118,7 +118,7 @@
 
             var doodadIndices = new Array(mapTileIndices.length);
             var tilesetID = game.TilesetManager.MARSH_TILESET_ID;
-            game.overworldMap = new game.Map(mapTileIndices, doodadIndices, tilesetID, this.overworldMapWidth, true);
+            game.overworldMap = new game.Map(mapTileIndices, doodadIndices, tilesetID, this.overworldMapWidth, 1, true);
 
             // Clear fog around the "first" node.
             game.overworldMap.setFog(1, 3, 3, false);

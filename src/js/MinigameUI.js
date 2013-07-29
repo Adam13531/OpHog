@@ -65,6 +65,14 @@
                 },
                 
             });
+        },
+
+        /**
+         * This sets up the minigame divs according to the current map.
+         */
+        populateUI: function() {
+            // Remove all existing divs
+            $('#minigame-ui').empty();
 
             var heightPercent = Math.floor(100 / this.numDifficulties) - 2;
 
@@ -75,12 +83,15 @@
             var spider = game.UnitType.SPIDER;
             var orc = game.UnitType.ORC;
 
+            var baseCoinAmount = currentMap.difficulty * 300;
+            var coinBonusPerDifficulty = currentMap.difficulty * 400;
+
             this.minigameData = [];
-            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10], [spider,10], [orc,10]], 10000));
-            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10], [spider,10]], 8000));
-            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10]], 6000));
-            this.minigameData.push(new game.MinigameData([[snake,5], [scorpion,5]], 4000));
-            this.minigameData.push(new game.MinigameData([[snake,5]], 2000));
+            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10], [spider,10], [orc,10]], baseCoinAmount + coinBonusPerDifficulty * 4));
+            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10], [spider,10]], baseCoinAmount + coinBonusPerDifficulty * 3));
+            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10]], baseCoinAmount + coinBonusPerDifficulty * 2));
+            this.minigameData.push(new game.MinigameData([[snake,5], [scorpion,5]], baseCoinAmount + coinBonusPerDifficulty * 1));
+            this.minigameData.push(new game.MinigameData([[snake,5]], baseCoinAmount + coinBonusPerDifficulty * 0));
             this.selectedMinigame = null;
 
             for (var i = 0; i < this.numDifficulties; i++) {
@@ -170,7 +181,7 @@
             game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
 
             // Spawn the enemies
-            var enemyLevel = 5;
+            var enemyLevel = currentMap.difficulty * 2 + 3;
             for (var i = 0; i < enemies.length; i++) {
                 var enemyData = enemies[i][0];
                 var quantity = enemies[i][1];

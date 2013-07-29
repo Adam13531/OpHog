@@ -11,10 +11,11 @@
      * @param {Number} width                - width of this map
      * @param {Boolean} isOverworldMap - true if this is the overworld map.
      */
-    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width, isOverworldMap) {
+    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width, difficulty, isOverworldMap) {
         this.numCols = width;
         this.numRows = mapTilesIndices.length / this.numCols;
         this.isOverworldMap = isOverworldMap;
+        this.difficulty = difficulty;
 
         this.tileset = game.TilesetManager.getTilesetByID(tilesetID);
 
@@ -152,8 +153,9 @@
      * because placing the boss depends on a fully constructed map.
      */
     window.game.Map.prototype.addBossUnit = function() {
-        // Make a lv. 20 tree
-        var bossUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.BOSS | game.PlayerFlags.ENEMY,20);
+        // Make a boss whose level is based on the difficulty.
+        var level = Math.ceil(3.5 * this.difficulty + 16.6667);
+        var bossUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.BOSS | game.PlayerFlags.ENEMY,level);
         bossUnit.movementAI = game.MovementAI.LEASH_TO_TILE;
         bossUnit.convertToBoss();
 
@@ -273,9 +275,9 @@
                     // is just debug logic).
                     var relativeWeight = enemyID + 1;
 
-                    // These level ranges are arbitrary
-                    var minLevel = 1;
-                    var maxLevel = 5;
+                    // Base the level range on the difficulty.
+                    var minLevel = Math.ceil(this.difficulty * .9);
+                    var maxLevel = Math.ceil(this.difficulty * 1.1);
                     var possibleEnemy = new game.PossibleEnemy(enemyID, relativeWeight, minLevel, maxLevel);
                     possibleEnemies.push(possibleEnemy);
                 }

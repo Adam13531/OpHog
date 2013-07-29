@@ -501,6 +501,7 @@
             localStorage.mapTilesIndices = JSON.stringify(currentMap.mapTilesIndices);
             localStorage.doodadIndices = JSON.stringify(currentMap.doodadIndices);
             localStorage.tilesetID = currentMap.tileset.id;
+            localStorage.mapDifficulty = currentMap.difficulty;
             localStorage.numCols = currentMap.numCols;
             localStorage.fog = JSON.stringify(currentMap.fog);
         },
@@ -512,12 +513,13 @@
             var mapTilesIndices = JSON.parse(localStorage.mapTilesIndices);
             var doodadIndices = JSON.parse(localStorage.doodadIndices);
             var tilesetID = Number(localStorage.tilesetID);
+            var difficulty = Number(localStorage.mapDifficulty);
             var numCols = Number(localStorage.numCols);
             var fog = JSON.parse(localStorage.fog);
 
             // This will reform all tiles' leftList and rightList.
             console.log('Warning: the game doesn\'t know how to load the overworldMap yet.');
-            currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, false);
+            currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, difficulty, false);
 
             // Restore fog
             currentMap.fog = fog;
