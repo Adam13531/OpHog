@@ -101,6 +101,15 @@
         },
 
         /**
+         * This is a debug-only function that will transition directly from the
+         * overworld to a normal map without needing to click anything.
+         */
+        debugTransitionFromOverworldToNormalMap: function() {
+            this.transitionToNormalMap();
+            this.returnToNormalGameplay();
+        },
+
+        /**
          * These are functions that should be called when you either win or
          * lose.
          * @return {undefined}
@@ -162,19 +171,20 @@
 
             // Set the right difficulty
             var difficultyToUse = 1;
-            var tileOfLastMap = game.overworldMap.tileOfLastMap;
 
-            // This shouldn't be null unless we got to the normal map via some
-            // debug command. I should just modify the debug command so that it
-            // does everything necessary.
-            if ( tileOfLastMap != null ) {
-                var nodeOfMap = game.OverworldMapData.getOverworldNode(tileOfLastMap.x, tileOfLastMap.y);
-                if ( nodeOfMap == null ) {
-                    game.util.debugDisplayText('You moved to a normal map, but the tile doesn\' correspond to an overworldMapNode: ' + 
-                        nodeOfMap.x + ', ' + nodeOfMap.y, 'no overworldMapNode');
-                } else {
-                    difficultyToUse = nodeOfMap.difficulty;
-                }
+            // If this was null before calling this, it will be randomly set
+            // now. The only way that would happen is if we got to this code via
+            // a debug path, e.g. debugTransitionFromOverworldToNormalMap.
+            var tileOfLastMap = game.overworldMap.getTileOfLastMap();
+
+            // Get the node in the overworld map that the spawner we clicked
+            // corresponds to.
+            var nodeOfMap = game.OverworldMapData.getOverworldNode(tileOfLastMap.x, tileOfLastMap.y);
+            if ( nodeOfMap == null ) {
+                game.util.debugDisplayText('You moved to a normal map, but the tile doesn\' correspond to an overworldMapNode: ' + 
+                    nodeOfMap.x + ', ' + nodeOfMap.y, 'no overworldMapNode');
+            } else {
+                difficultyToUse = nodeOfMap.difficulty;
             }
         
             currentMap = game.MapGenerator.generateRandomMap(50, 25, difficultyToUse);

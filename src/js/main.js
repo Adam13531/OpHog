@@ -50,8 +50,7 @@
 
         // Uncomment this if you want to jump directly to normal gameplay when
         // you first start the game.
-        // game.GameStateManager.transitionToNormalMap();
-        // game.GameStateManager.returnToNormalGameplay();
+        // game.GameStateManager.debugTransitionFromOverworldToNormalMap();
     }
 
     function makeUI() {
