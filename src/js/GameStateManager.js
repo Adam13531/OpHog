@@ -388,8 +388,8 @@
                     this.returnToNormalGameplay();
                 }
             } else if ( this.inWinState() ) {
-                // This is hacky, but for now, prevent the minigame dialog from
-                // being permanently closed.
+                // The minigame UI shouldn't be closeable, but if they somehow
+                // found a way to close it, then pop it up again.
                 game.MinigameUI.showIfHidden();
             }
         },

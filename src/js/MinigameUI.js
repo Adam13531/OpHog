@@ -36,11 +36,24 @@
         selectedMinigame: null,
 
         /**
-         * Sets up the entire quest UI.
+         * Sets up the entire minigame UI.
          */
         setupUI: function() {
             $('#minigame-ui').dialog({
                 autoOpen: false, 
+
+                // Prevent the user from closing this by pressing escape.
+                closeOnEscape: false,
+
+                /**
+                 * We only override this function so that we can prevent the
+                 * close button from showing up. The user shouldn't be closing
+                 * this UI.
+                 */
+                open: function(event, ui) {
+                    // Hide the 'close' button on only this dialog.
+                    $('#minigameUIThemeSpan').find('.ui-dialog-titlebar-close').hide();
+                },
 
                 // Set a reasonable width
                 width:400,
