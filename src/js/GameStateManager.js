@@ -172,20 +172,8 @@
             // Set the right difficulty
             var difficultyToUse = 1;
 
-            // If this was null before calling this, it will be randomly set
-            // now. The only way that would happen is if we got to this code via
-            // a debug path, e.g. debugTransitionFromOverworldToNormalMap.
-            var tileOfLastMap = game.overworldMap.getTileOfLastMap();
-
-            // Get the node in the overworld map that the spawner we clicked
-            // corresponds to.
-            var nodeOfMap = game.OverworldMapData.getOverworldNode(tileOfLastMap.x, tileOfLastMap.y);
-            if ( nodeOfMap == null ) {
-                game.util.debugDisplayText('You moved to a normal map, but the tile doesn\' correspond to an overworldMapNode: ' + 
-                    nodeOfMap.x + ', ' + nodeOfMap.y, 'no overworldMapNode');
-            } else {
-                difficultyToUse = nodeOfMap.difficulty;
-            }
+            var nodeOfMap = game.OverworldMapData.getOverworldNodeOfLastMap();
+            difficultyToUse = nodeOfMap.difficulty;
         
             currentMap = game.MapGenerator.generateRandomMap(50, 25, difficultyToUse);
 
@@ -343,6 +331,10 @@
                 this.commonWinLoseFunctions();
                 game.Player.castleLife = game.FULL_CASTLE_LIFE;
                 currentMap.clearAllFog();
+
+                // Clear fog on the overworld map too
+                game.OverworldMapData.clearFog();
+
                 game.MinigameUI.populateUI();
                 game.MinigameUI.show();
             }
