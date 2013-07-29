@@ -58,7 +58,6 @@
                 // Set a reasonable width
                 width:400,
 
-                height:425,
                 resizable:false,
 
                 // Wrap the dialog in a span so that it gets themed correctly.
@@ -115,14 +114,10 @@
                 var cssToSet = {
                     'border':'2px solid',
                     'border-color':'#004400',
-                    'height':heightPercent + '%'
+                    'height':'64px'
                 };
 
-                // Don't add a margin-bottom to the last minigame since it's
-                // already at the bottom of the UI
-                if ( i < this.numDifficulties - 1 ) {
-                    cssToSet['margin-bottom'] = '2px';
-                }
+                cssToSet['margin-bottom'] = '2px';
 
                 // Populate the UI based on the minigame
                 var minigameData = this.minigameData[i];
@@ -141,6 +136,36 @@
                 $('#' + divID).css(cssToSet);
                 $('#' + divID).click(this.getStartMinigameFunction(i));
             };
+
+            this.addSkipButton();
+        },
+
+        /**
+         * Adds the "skip minigame" button to the UI.
+         */
+        addSkipButton: function() {
+            $('#minigame-ui').append('<div id="minigame-cancel-div"></div>');
+            $('#minigame-cancel-div').css({
+                // Despite the 2px margin that's on the last minigame div, we
+                // still want more padding.
+                'margin-top': '4px',
+
+                // The next two properties will make sure the button is centered
+                // at the bottom.
+                'width': '100%',
+                'text-align': 'center'
+            });
+
+            $('#minigame-cancel-div').append('<button id="minigame-cancel-button">'+ 
+                                                'Skip minigame' +
+                                                '</button>');
+            $('#minigame-cancel-button').button();
+
+            $('#minigame-cancel-button').click(function(minigameUI) {
+                return function() {
+                    game.GameStateManager.confirmedWinOrLose();
+                }
+            }(this));
         },
 
         /**
