@@ -73,6 +73,7 @@
               text: false
           });
 
+        game.GameStateManager.setupTransitionButton();
 
         $showInventory.button();
         $showInventory.click(function() {
@@ -372,12 +373,6 @@
                 var coins = game.Player.coins;
                 coins = coins <= 0 ? (-coins + 1000) : coins;
                 game.Player.modifyCoins(coins);
-            }
-
-            // 'G' - return to normal gameplay from a win/lose state. This is
-            // 'the only way you can revert for now.
-            if (evt.keyCode == game.Key.DOM_VK_G) {
-                game.GameStateManager.confirmedWinOrLose();
             }
 
             // 'N' - add 3 of each unit type to the unit placement UI

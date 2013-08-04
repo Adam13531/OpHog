@@ -122,6 +122,56 @@
         },
 
         /**
+         * Sets up the transition button, which is the button you click to
+         * transition between states.
+         */
+        setupTransitionButton: function() {
+            var $transitionStateButton = $('#transitionStateButton');
+            $transitionStateButton.button();
+            $transitionStateButton.css({
+                'padding': '6px'
+            });
+
+            $transitionStateButton.click(function(gameStateManager) {
+                return function() {
+                    // For now, the button will only transition between the
+                    // win/lose states.
+                    gameStateManager.confirmedWinOrLose();
+                }
+            }(this));
+                
+            this.hideTransitionButton();
+        },
+
+        /**
+         * Hides the transition button.
+         */
+        hideTransitionButton: function() {
+            $('#transitionStateButton').hide();
+        },
+
+        /**
+         * Positions and sets the text of the transition button.
+         * @param  {Number} centerX - x, in screen coordinates
+         * @param  {Number} centerY - y, in screen coordinates
+         * @param  {String} text    - the text to show on the button
+         */
+        setTransitionButton: function(centerX, centerY, text) {
+            var $transitionStateButton = $('#transitionStateButton');
+            $transitionStateButton.text(text);
+
+            var left = centerX - $transitionStateButton.width() / 2;
+            var top = centerY - $transitionStateButton.height() / 2;
+            $transitionStateButton.css({
+                'position': 'absolute',
+                'left': left + 'px',
+                'top': top + 'px'
+            });
+
+            $transitionStateButton.show();
+        },
+
+        /**
          * Switches to the overworld map.
          */
         switchToOverworldMap: function() {
@@ -196,6 +246,8 @@
          * that they're done reading the win/lose screens.
          */
         confirmedWinOrLose: function() {
+            this.hideTransitionButton();
+
             if ( this.inLoseState() ) {
                 this.returnToNormalGameplay();
             } else if ( this.inWinState() || this.inMinigameWinState() || this.inMinigameLoseState() ) {
@@ -324,6 +376,7 @@
             if ( this.previousState == game.GameStates.NORMAL_GAMEPLAY && this.inLoseState() ) {
                 this.commonWinLoseFunctions();
                 game.Player.modifyCoins(-1000);
+                this.setTransitionButton(screenWidth / 2, screenHeight / 2, 'Retry');
             }
 
             // Normal state --> win
@@ -344,6 +397,7 @@
                 this.commonWinLoseFunctions();
                 var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'You lost the minigame', true, '#f00', false);
                 game.TextManager.addTextObj(textObj);
+                this.setTransitionButton(screenWidth / 2, screenHeight / 2, 'Back to overworld');
             }
 
             // Minigame gameplay --> minigame win
@@ -351,6 +405,7 @@
                 this.commonWinLoseFunctions();
                 var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'You won the minigame', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
+                this.setTransitionButton(screenWidth / 2, screenHeight / 2, 'Back to overworld');
             }
 
             // Minigame lose --> overworld map
@@ -420,12 +475,12 @@
             var color;
             var text = null;
             if ( inWinState ) {
-                text = 'You won! (press "G" for now)';
+                text = 'You won!';
                 color = '#0b0';
             }
 
             if ( inLoseState ) {
-                text = 'You lost! (press "G" for now)';
+                text = 'You lost!';
                 color = '#b00';
             }
 
