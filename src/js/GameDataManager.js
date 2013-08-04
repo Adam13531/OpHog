@@ -80,6 +80,8 @@
             this.saveInventory();
             console.log('Saving the player');
             this.savePlayer();
+            console.log('Saving game state');
+            this.saveGameState();
 
             // Restore leftList and rightList so that our current game still
             // works.
@@ -124,6 +126,8 @@
 
             // Some of this ordering is important. For example, the map should
             // be loaded before basically anything else.
+            console.log('Loading the game state');
+            this.loadGameState();
             console.log('Loading the map');
             this.loadMap();
             console.log('Loading generators');
@@ -150,6 +154,11 @@
 
             console.log('Loading the player');
             this.loadPlayer();
+
+            // If you had enough coins in your current game to buy a new slot,
+            // then you loaded a game where you didn't have enough coins, this
+            // would cover the state-change that would disable the "buy" button.
+            game.UnitPlacementUI.playerCoinsChanged();
         },
 
         /**
@@ -239,8 +248,7 @@
                 }
 
                 // This will update the UI; it is called even if the item is
-                // null. It will also update each unit's mods for equipped
-                // items.
+                // null.
                 finalSlot.setItem(finalItem);
             };
             game.Inventory.slots = finalSlots;
@@ -289,10 +297,10 @@
             var finalUnits = [];
             for (var i = 0; i < parsedUnits.length; i++) {
                 var parsedUnit = parsedUnits[i];
-                var finalUnit = new game.Unit(parsedUnit.unitType, parsedUnit.isPlayer(), parsedUnit.level);
+                var finalUnit = new game.Unit(parsedUnit.unitType, parsedUnit.playerFlags, parsedUnit.level);
 
                 // battleData will be set when the unit is added to a battle.
-                // mods will be set after the inventory is loaded.
+                // mods will be set in this function.
                 this.copyProps(parsedUnit, finalUnit, ['battleData', 'mods']);
 
                 // Change tiles so that they point to the correct objects with
@@ -322,6 +330,11 @@
                         finalUnit.itemsDropped[j] = finalEntry;
                     };
                 }
+
+                // Change mods from Objects into the specific ItemMod child
+                // class.
+                var finalMods = game.ItemMod.rehydrateMods(parsedUnit.mods);
+                finalUnit.mods = finalMods;
 
                 // Correct the battle data. Battles were created at this point,
                 // but they have no units yet.
@@ -498,31 +511,47 @@
          * will be recomputed when we load.
          */
         saveMap: function() {
-            localStorage.mapTilesIndices = JSON.stringify(currentMap.mapTilesIndices);
-            localStorage.doodadIndices = JSON.stringify(currentMap.doodadIndices);
-            localStorage.tilesetID = currentMap.tileset.id;
-            localStorage.mapDifficulty = currentMap.difficulty;
-            localStorage.numCols = currentMap.numCols;
-            localStorage.fog = JSON.stringify(currentMap.fog);
+            var lookingAtOverworld = currentMap.isOverworldMap;
+            if ( !lookingAtOverworld ) {
+                localStorage.mapTilesIndices = JSON.stringify(currentMap.mapTilesIndices);
+                localStorage.doodadIndices = JSON.stringify(currentMap.doodadIndices);
+                localStorage.tilesetID = currentMap.tileset.id;
+                localStorage.mapDifficulty = currentMap.difficulty;
+                localStorage.numCols = currentMap.numCols;
+                localStorage.fog = JSON.stringify(currentMap.fog);
+            }
+            localStorage.lookingAtOverworld = lookingAtOverworld;
+            localStorage.overworldFog = JSON.stringify(game.overworldMap.fog);
         },
 
         /**
          * Loads the map.
          */
         loadMap: function() {
-            var mapTilesIndices = JSON.parse(localStorage.mapTilesIndices);
-            var doodadIndices = JSON.parse(localStorage.doodadIndices);
-            var tilesetID = Number(localStorage.tilesetID);
-            var difficulty = Number(localStorage.mapDifficulty);
-            var numCols = Number(localStorage.numCols);
-            var fog = JSON.parse(localStorage.fog);
+            // Good ol' JavaScript... Boolean('false') == true.
+            var lookingAtOverworld = localStorage.lookingAtOverworld === 'true' ? true : false;
+            var overworldFog = JSON.parse(localStorage.overworldFog);
 
-            // This will reform all tiles' leftList and rightList.
-            console.log('Warning: the game doesn\'t know how to load the overworldMap yet.');
-            currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, difficulty, false);
+            // Regardless of whether we're looking at it, restore the overworld
+            // fog.
+            game.overworldMap.fog = overworldFog;
 
-            // Restore fog
-            currentMap.fog = fog;
+            if ( !lookingAtOverworld ) {
+                var mapTilesIndices = JSON.parse(localStorage.mapTilesIndices);
+                var doodadIndices = JSON.parse(localStorage.doodadIndices);
+                var tilesetID = Number(localStorage.tilesetID);
+                var difficulty = Number(localStorage.mapDifficulty);
+                var numCols = Number(localStorage.numCols);
+                var fog = JSON.parse(localStorage.fog);
+
+                // This will reform all tiles' leftList and rightList.
+                currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, difficulty, false);
+
+                // Restore fog
+                currentMap.fog = fog;
+            } else {
+                currentMap = game.overworldMap;
+            }
         },
 
         /**
@@ -567,6 +596,39 @@
 
                 game.Player[k] = v;
             });
+        },
+
+        /**
+         * Saves the game state.
+         */
+        saveGameState: function() {
+            localStorage.currentGameState = JSON.stringify(game.GameStateManager.currentState);
+            localStorage.previousGameState = JSON.stringify(game.GameStateManager.previousState);
+        },
+
+        /**
+         * Loads the game state.
+         */
+        loadGameState: function() {
+            game.GameStateManager.hideTransitionButton();
+
+            var currentState = JSON.parse(localStorage.currentGameState);
+            var previousState = JSON.parse(localStorage.previousGameState);
+
+            game.GameStateManager.currentState = currentState;
+            game.GameStateManager.previousState = previousState;
+
+
+            // Fake a transition from the previous state to the current state to
+            // set things like button visibility. We only DON'T do this if we're
+            // in normal gameplay, because then the "fake" state transition
+            // might generate a new map, which is costly since we're loading a
+            // map anyway.
+            if ( !game.GameStateManager.isNormalGameplay() ) {
+                game.GameStateManager.currentState = previousState;
+                game.GameStateManager.setState(currentState);
+            }
         }
+        
     };
 }()); 
