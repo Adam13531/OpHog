@@ -446,7 +446,14 @@
             var camera = this;
 
             return function(event) {
-                camera.curZoom = ctxOrigZoom + (event.gesture.scale - camera.pinchZoomStartingScale) / 2.0;
+                var delta = event.gesture.scale - camera.pinchZoomStartingScale;
+
+                if ( delta >= 1 ) {
+                    camera.curZoom = ctxOrigZoom + delta / 2.0;
+                } else {
+                    camera.curZoom = ctxOrigZoom + delta * 2.0;
+                }
+
                 camera.zoomChanged();
             };
         },
