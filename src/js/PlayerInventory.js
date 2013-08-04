@@ -38,8 +38,11 @@
 			var newSlot = new game.PlayerSlot(game.SlotTypes.ARCH);
 			this.addSlot(newSlot);
 		};
+		this.generateItems();
+	};
 
-        // Fill some of the slots (this is debug code)
+	window.game.PlayerInventory.prototype.generateItems = function() {
+		// Fill some of the slots (this is debug code)
         this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.CREATE_SPAWNER.id));
         this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.MEGA_CREATE_SPAWNER.id));
         this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.STAT_GEM.id));

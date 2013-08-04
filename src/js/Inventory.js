@@ -38,7 +38,15 @@
         this.slotID = 0;
     };
 
-    window.game.Inventory.prototype.init = function() {};
+    window.game.Inventory.prototype.init = function() {
+        console.log('init - unimplemented in game.Inventory base class');
+        return null;
+    };
+
+    window.game.Inventory.prototype.generateItems = function() {
+        console.log('generateItems - unimplemented in game.Inventory base class');
+        return null;
+    };
 
     /**
      * Adds a slot to your inventory
