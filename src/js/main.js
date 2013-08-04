@@ -491,6 +491,17 @@
         // engage in battles.
         delta = Math.min(delta, game.msPerFrame * 2);
 
+        // 'G' - speed up the game. This is only a debug function, so it may
+        // 'cause glitches.
+        if ( keysDown[game.Key.DOM_VK_G] ) {
+            delta *= 2;
+        }
+
+        // 'V' - speed up the game (see 'G'). Can be combined with 'G'.
+        if ( keysDown[game.Key.DOM_VK_V] ) {
+            delta *= 4;
+        }
+
         var deltaAsSec = delta / 1000;
 
         game.alphaBlink += deltaAsSec;
