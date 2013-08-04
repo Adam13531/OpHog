@@ -2,7 +2,7 @@
 
 	window.game.PlayerSlot = function PlayerSlot(slotType) {
 		this.base = game.Slot;
-		this.base(true, slotType);
+		this.base(true, slotType, game.Player.inventory.slotID++);
 	};
 
 	window.game.PlayerSlot.prototype = new game.Slot;

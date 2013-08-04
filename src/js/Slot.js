@@ -12,19 +12,13 @@
     };
 
     /**
-     * The ID that will be assigned to the next Slot created.
-     * @type {Number}
-     */
-    window.game.slotID = 0;
-
-    /**
      * Slot class. This class is completely unaware of SlotUI; any UI updates
      * that must be done must go through InventoryUI. For this reason, the
      * slotIndex must always match the corresponding SlotUI's index.
      * 
      * @param {SlotTypes} slotType - the type of the slot
      */
-    window.game.Slot = function Slot(useThisConstructor, slotType) {
+    window.game.Slot = function Slot(useThisConstructor, slotType, slotID) {
         if ( useThisConstructor === undefined ) return;
 
         // String representing the type of the slot - pull this from
@@ -33,7 +27,8 @@
 
         // Number representing the index of the slot itself. This must match
         // the index of the corresponding SlotUI.
-        this.slotIndex = game.slotID++;
+        // this.slotIndex = game.slotID++;
+        this.slotIndex = slotID;
 
         // New slots start with no item in them
         this.setItem(null);

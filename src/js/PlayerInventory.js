@@ -7,6 +7,11 @@
 		this.base = game.Inventory;
 		this.base(true); // Pass in true (or anything really) to make sure the 
 						 // base constructor will be called
+	};
+
+	window.game.PlayerInventory.prototype = new game.Inventory;
+
+	window.game.PlayerInventory.prototype.init = function() {
 
 		// Add equippable slots
         for (var i = 0; i < 32; i++) {
@@ -48,8 +53,6 @@
         this.getFirstEmptySlot(game.SlotTypes.WAR).setItem(new game.Item(game.ItemType.SWORD.id));
         this.getFirstEmptySlot(game.SlotTypes.ARCH).setItem(new game.Item(game.ItemType.SWORD.id));
 	};
-
-	window.game.PlayerInventory.prototype = new game.Inventory;
 
 	window.game.PlayerInventory.prototype.addSlot = function(slot) {
 		game.Inventory.prototype.addSlot.call(this, slot);

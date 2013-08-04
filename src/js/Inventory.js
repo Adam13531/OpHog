@@ -30,7 +30,15 @@
          * @type {Array:Slot}
          */
         this.slots = [];
+
+        /**
+         * The ID that will be assigned to the next Slot created.
+         * @type {Number}
+         */
+        this.slotID = 0;
     };
+
+    window.game.Inventory.prototype.init = function() {};
 
     /**
      * Adds a slot to your inventory

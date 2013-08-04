@@ -148,7 +148,7 @@
         if ( this.slot.isUsableSlot() ) {
             $(this.$spanSelector).dblclick(this.useItem(this));
         }
-	};
+	}; 
 
 	window.game.PlayerSlotUI.prototype = new game.SlotUI;
 
