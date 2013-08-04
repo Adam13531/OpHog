@@ -39,6 +39,10 @@
         this.centerX = centerX;
         this.centerY = centerY;
 
+        // This is set to true when the boss joins, and it stays true even if
+        // the boss dies.
+        this.containsBoss = false;
+
         // There are two "join circles" - one centered on the player's units,
         // and one around the enemies. A unit touching *either* of these circles
         // will join the battle.
@@ -500,6 +504,10 @@
             this.playerUnits.push(unit);
         } else {
             this.enemyUnits.push(unit);
+
+            if ( unit.isBoss() ) {
+                this.containsBoss = true;
+            }
         }
 
         var numPlayers = this.playerUnits.length;
@@ -735,6 +743,14 @@
             this.enemyJoinRadius = radius;
         }
 
+        // The battle with the boss should be expanded to make it easier for
+        // units to join.
+        if ( this.containsBoss ) {
+            this.playerJoinRadius *= 1.25;
+            this.enemyJoinRadius *= 1.5;
+            this.enemyJoinRadius = Math.max(tileSize * 5, this.enemyJoinRadius);
+        }
+
         // Go through in order of largest units and place that unit as far to
         // the right as possible while attempting to center it vertically
         for (var i = 0; i < unitsToPosition.length; i++) {
@@ -813,6 +829,7 @@
 
     window.game.Battle.prototype.debugDrawBattleBackground = function(ctx) {
         ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
         ctx.strokeRect(this.debugPlayerX, this.debugPlayerY, this.debugPlayerW, this.debugPlayerH);
         var width = this.debugPlayerW / tileSize;
         var height = this.debugPlayerH / tileSize;

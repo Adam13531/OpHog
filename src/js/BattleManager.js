@@ -163,15 +163,20 @@
                         continue;
                     }
 
+                    // Battles between two 1x1 foes will be about three tiles
+                    // wide, so we start battles when they're approximately
+                    // where they are after the battle was started.
+                    var battleStartDistance = tileSize * 4;
+                    if ( enemy.isBoss() ) {
+                        battleStartDistance *= 2;
+                    }
+
                     enemyCenterX = enemy.getCenterX();
                     enemyCenterY = enemy.getCenterY();
 
                     var dist = window.game.util.distance(playerCenterX, playerCenterY, enemyCenterX, enemyCenterY);
 
-                    // Battles between two 1x1 foes will be about three tiles
-                    // wide, so we start battles when they're approximately
-                    // where they are after the battle was started.
-                    if (dist <= tileSize * 4) {
+                    if (dist <= battleStartDistance) {
                         // Start a battle
                         var centerX = Math.floor((playerCenterX + enemyCenterX) / 2.0);
                         var centerY = Math.floor((playerCenterY + enemyCenterY) / 2.0);
