@@ -213,8 +213,8 @@
          * don't get graphical glitches (see clampPanValues).
          */
         zoomChanged: function() {
-            if ( camera.curZoom > 1 ) {
-                camera.curZoom = Math.round(camera.curZoom);
+            if ( this.curZoom > 1 ) {
+                this.curZoom = Math.round(this.curZoom);
             }
 
             this.curZoom = Math.min(this.maxZoom, this.curZoom);
