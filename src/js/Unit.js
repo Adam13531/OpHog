@@ -1254,7 +1254,7 @@
             // Size will be in the range [-3,3]. This will make the '!' grow and
             // shrink.
             var size = Math.ceil(Math.sin(game.alphaBlink * 4) * 3);
-            game.TextManager.drawTextImmediate(ctx, '!', x, y, {fontSize:23 + size, color:'#ff0', baseline:'bottom'});
+            game.TextManager.drawTextImmediate(ctx, '!', x, y, {fontSize:23 + size, color:'#ff0', baseline:'bottom', clamp:false});
         }
 
     };

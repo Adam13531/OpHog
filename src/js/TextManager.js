@@ -47,6 +47,7 @@
          *         dictates what 'y' represents. Default: 'top'. There are other
          *         values, but I can't reliably compute height, so they may appear
          *         out of bounds if you use them: http://www.w3schools.com/tags/canvas_textbaseline.asp
+         *         {Boolean} clamp  - if true, this will clamp world coordinates to the world size. Defaults to true.
          */
         drawTextImmediate: function(ctx, text, centerX, y, options) {
             // Set default values
@@ -56,6 +57,7 @@
             var font = (options.font === undefined ? game.FuturaFont : options.font);
             var color = (options.color === undefined ? '#fff' : options.color);
             var baseline = (options.baseline === undefined ? 'top' : options.baseline);
+            var clamp = (options.clamp === undefined ? true : options.clamp);
 
             // Translate to correct coordinate space
             ctx.save();
@@ -75,7 +77,7 @@
             var x = centerX - width / 2;
 
             // Clamp to world coordinates
-            if ( !useScreenCoordinates ) {
+            if ( !useScreenCoordinates && clamp ) {
                 x = Math.max(0, Math.min(x, currentMap.widthInPixels - width));
 
                 // To figure out where the 'y' should be clamped, we need to
