@@ -117,16 +117,16 @@
 
         // Draw the item with transparency when it's about to die
         if ( this.ttl < 15 ) {
-            var amplitude = 4;
+            var frequency = 4;
 
             // Amplify the blink speed when it's closer to death
             if ( this.ttl < 10 ) {
-                amplitude = 6;
+                frequency = 6;
             }
             if ( this.ttl < 5 ) {
-                amplitude = 10;
+                frequency = 10;
             }
-            var blink = Math.sin(game.alphaBlink * amplitude);
+            var blink = Math.sin(game.alphaBlink * frequency);
             ctx.globalAlpha = blink * .4 + .6;
         }
 

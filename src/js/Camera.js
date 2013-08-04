@@ -193,10 +193,10 @@
                 return;
             }
 
-            var amplitude = 50;
+            var frequency = 50;
             var offset = 10;
-            this.shakeX = Math.sin(game.alphaBlink * amplitude) * offset;
-            this.shakeY = -Math.cos(game.alphaBlink * amplitude) * offset;
+            this.shakeX = Math.sin(game.alphaBlink * frequency) * offset;
+            this.shakeY = -Math.cos(game.alphaBlink * frequency) * offset;
 
             this.shakeTimer -= delta;
             if ( this.shakeTimer <= 0 ) {
