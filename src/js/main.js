@@ -387,69 +387,14 @@
                 game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
             }
 
-            // 'H' - win the game. This is the only way you can enter this state
-            // 'for now.
+            // 'H' - win the game.
             if (evt.keyCode == game.Key.DOM_VK_H) {
                 game.GameStateManager.enterWinState();
             }
 
-            // 'J' - lose the game. This is the only way you can enter this
-            // 'state for now.
+            // 'J' - lose the game.
             if (evt.keyCode == game.Key.DOM_VK_J) {
                 game.GameStateManager.enterLoseState();
-            }
-
-            var unitType = null;
-            if (evt.keyCode == game.Key.DOM_VK_1) {
-                unitType = game.UnitType.ORC;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_2) {
-                unitType = game.UnitType.DRAGON;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_3) {
-                unitType = game.UnitType.CENTAUR;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_4) {
-                unitType = game.UnitType.TREE;
-            }
-            if ( unitType != null ) {
-                var newUnit = new game.Unit(unitType.id,game.PlayerFlags.PLAYER,1);
-                newUnit.placeUnit(1, 9,game.MovementAI.FOLLOW_PATH);
-                game.UnitManager.addUnit(newUnit);
-            }
-
-            var enemyUnitType = null;
-            if (evt.keyCode == game.Key.DOM_VK_5) {
-                enemyUnitType = game.UnitType.ORC;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_6) {
-                enemyUnitType = game.UnitType.DRAGON;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_7) {
-                enemyUnitType = game.UnitType.CENTAUR;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_8) {
-                enemyUnitType = game.UnitType.TREE;
-            }
-            if ( enemyUnitType != null ) {
-                var newUnit = new game.Unit(enemyUnitType.id,game.PlayerFlags.ENEMY,1);
-                newUnit.placeUnit(23,9,game.MovementAI.FOLLOW_PATH);
-                game.UnitManager.addUnit(newUnit);
-            }
-
-            if (evt.keyCode == game.Key.DOM_VK_9) {
-                for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.PLAYER,1);
-                    newUnit.placeUnit(1,9,game.MovementAI.FOLLOW_PATH);
-                    game.UnitManager.addUnit(newUnit);
-                };
-            }
-            if (evt.keyCode == game.Key.DOM_VK_0) {
-                for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.ENEMY,1);
-                    newUnit.placeUnit(23,9,game.MovementAI.FOLLOW_PATH);
-                    game.UnitManager.addUnit(newUnit);
-                };
             }
 
             // Pressing 'i' will toggle the inventory screen
