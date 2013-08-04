@@ -12,7 +12,9 @@
 
         /**
          * Minimum zoom value. The code doesn't handle this going below 1 very
-         * well.
+         * well. If we ever want zooming out below 1 to be a feature, then we'll
+         * need to make sure that the pan values are always integers, and even
+         * then it will probably still have graphical glitches.
          * @type {Number}
          */
         minZoom: .3,
@@ -99,7 +101,6 @@
 
         /**
          * Sets the view so that zoom and pan values are within valid ranges.
-         * @return {null}
          */
         initialize: function() {
             this.zoomChanged();
@@ -112,7 +113,6 @@
          * held.
          * @param  {Number} delta    The number of ms since the last time this
          * was called.
-         * @return {null}
          */
         update: function(keysDown, delta) {
             this.handleInput(keysDown, delta);
@@ -179,14 +179,14 @@
                 this.curPanY -= panSpeed;
             }
 
-            // Clamp the pan values so that we don't scroll out of bounds.
+            // Clamp the pan values so that we don't scroll out of bounds. This
+            // is actually called every game loop.
             this.clampPanValues();
         },
 
         /**
          * If the camera is shaking, then we update the coordinates here.
          * @param  {Number} delta - number of ms since this was last called
-         * @return {null}
          */
         updateShake: function(delta) {
             if ( this.shakeTimer <= 0 ) {
@@ -208,9 +208,15 @@
         /**
          * This function clamps the zoom values between min and max, then
          * updates the scroll boundaries.
-         * @return {null}
+         *
+         * It also ensures that zoom levels >= 1 are always integers so that you
+         * don't get graphical glitches (see clampPanValues).
          */
         zoomChanged: function() {
+            if ( camera.curZoom > 1 ) {
+                camera.curZoom = Math.round(camera.curZoom);
+            }
+
             this.curZoom = Math.min(this.maxZoom, this.curZoom);
             this.curZoom = Math.max(this.minZoom, this.curZoom);
 
@@ -304,7 +310,6 @@
          * function.
          *
          * It figures out the new maximum scroll values.
-         * @return {null}
          */
         computeScrollBoundaries: function() {
             this.maxPanX = currentMap.widthInPixels - (screenWidth / this.curZoom);
@@ -317,11 +322,19 @@
         },
 
         /**
-         * This function prevents scrolling out of bounds.
-         * @return {null}
+         * This function prevents scrolling out of bounds. It also makes sure
+         * that the pan values are always integers so that you don't get weird
+         * graphical glitches (they usually manifest in the form of
+         * vertical/horizontal lines on the sides of tiles).
          */
         clampPanValues: function() {
-            return;
+            // This may be helpful in the future.
+            // this.curPanX = Math.round(this.curPanX / this.curZoom) * this.curZoom;
+            // this.curPanY = Math.round(this.curPanY / this.curZoom) * this.curZoom;
+            
+            this.curPanX = Math.round(this.curPanX);
+            this.curPanY = Math.round(this.curPanY);
+
             this.curPanX = Math.min(Math.max(0, this.curPanX), this.maxPanX);
             this.curPanY = Math.min(Math.max(0, this.curPanY), this.maxPanY);
         },
@@ -330,7 +343,6 @@
          * Before drawing something that is influenced by the camera, you need
          * to call this.
          * @param  {Object} ctx Canvas context.
-         * @return {null}
          */
         scaleAndTranslate: function(ctx) {
             ctx.scale(this.curZoom, this.curZoom);
@@ -353,12 +365,25 @@
             var camera = this;
 
             return function(event, delta) {
-                var zoomSpeed = .5;
+                var zoomSpeed = 1;
                 if ( delta < 0 ) {
                     zoomSpeed *= -1;
                 }
 
-                camera.curZoom += zoomSpeed;
+                var zoomingBelow1 = (camera.curZoom + zoomSpeed < 1);
+
+                // If zooming would push you below 1...
+                if ( zoomingBelow1 ) {
+                    // Jump right from whatever you're at to .75.
+                    if ( camera.curZoom >= 1 ) {
+                        camera.curZoom = .75;
+                    } else {
+                        camera.curZoom -= .25;
+                    }
+                } else {
+                    camera.curZoom += zoomSpeed;
+                }
+
                 camera.zoomChanged();
 
                 // This is CLOSE to the final formula for zooming at where your
