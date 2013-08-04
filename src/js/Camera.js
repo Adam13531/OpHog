@@ -404,6 +404,7 @@
             var camera = this;
 
             return function(event) {
+                game.HammerHelper.hammerDragging = true;
                 camera.dragStartPos = {
                     origPanX: camera.curPanX,
                     origPanY: camera.curPanY
@@ -433,8 +434,9 @@
             var camera = this;
 
             return function(event) {
-               camera.pinchZoomStartingScale = event.gesture.scale; 
-               ctxOrigZoom = camera.curZoom;
+                game.HammerHelper.hammerTransforming = true;
+                camera.pinchZoomStartingScale = event.gesture.scale; 
+                ctxOrigZoom = camera.curZoom;
             };
         },
 

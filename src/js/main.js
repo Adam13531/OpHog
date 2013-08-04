@@ -194,9 +194,12 @@
         hammertime.on('transform', game.Camera.getTransformEventHandler());
         hammertime.on('dragstart', game.Camera.getDragStartEventHandler());
         hammertime.on('drag', game.Camera.getDragEventHandler());
+        hammertime.on('dragend', function(event) { game.HammerHelper.hammerResetDragging = true; } );
+        hammertime.on('transformend', function(event) { game.HammerHelper.hammerResetTransforming = true; } );
 
         // Handle all the events from a user clicking/tapping the canvas
-        hammertime.on('touch', function(event) {
+        hammertime.on('release', function(event) {
+            if ( game.HammerHelper.hammerDragging == true || game.HammerHelper.hammerTransforming == true ) return;
             // This works on Chrome, Firefox, and IE on a desktop, and Safari and Chrome on an iPad, so it probably works for everything.
             var offsetX = event.gesture.center.pageX - event.gesture.target.offsetLeft;
             var offsetY = event.gesture.center.pageY - event.gesture.target.offsetTop;
@@ -463,6 +466,8 @@
         ctx.restore();
 
         game.GameStateManager.update(delta);
+
+        game.HammerHelper.update();
 
         // Update battles before units so that when the battle is over, the dead
         // units can be removed immediately by the UnitManager
