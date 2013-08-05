@@ -179,8 +179,8 @@
 		getCSSUnitClass: function(unitType, index) {
             // All classes start with this. We append to this string below.
 			var unitClass = 'char-sprite ';
-            if ( index > 4 ) index = 0;
-            
+            if ( index >= game.MAX_UNITS_PER_CLASS ) index = 0;
+
 			switch (unitType) {
 			    case game.PlaceableUnitType.ARCHER:
                     unitClass += 'arch-alt-' + index + '-png';
@@ -251,9 +251,19 @@
 
         /**
          * Sets the buy icon to the correct unit color.
+         *
+         * This will outright remove the buying elements if you already have the
+         * max number of units.
          */
         setBuyIconClass: function() {
             var numUnits = game.UnitManager.getNumOfPlayerUnits(this.unitType);
+
+            // Remove the buy buttons if you have all of the units of this type.
+            if ( numUnits == game.MAX_UNITS_PER_CLASS ) {
+                $('#buySlotButtonDescription').remove();
+                $('#buySlotButton').remove();
+                return;
+            }
             var $unitPlacementBuyIcon = $('#unitPlacementBuyIcon');
             $unitPlacementBuyIcon.removeAttr('class');
             $unitPlacementBuyIcon.addClass(this.getCSSUnitClass(this.unitType, numUnits));
@@ -493,6 +503,15 @@
             if (!game.Player.hasThisMuchMoney(cost)) {
                 return;
             }
+
+            var numUnits = game.UnitManager.getNumOfPlayerUnits(this.unitType);
+            if ( numUnits == game.MAX_UNITS_PER_CLASS ) {
+                // The only way the code should be able to get here is via a
+                // debug function like debugAddUnits, but it doesn't hurt to
+                // have this check.
+                return;
+            }
+
             game.Player.modifyCoins(-cost);
 
             // Keep track of where the 'buy' button is so that we can restore
@@ -500,14 +519,13 @@
             var oldBuyYPosition = $('#buySlotButton').position().top;
             var containerY = $('#buyingScreenContainer').parent().position().top;
 
-            var numUnits = game.UnitManager.getNumOfPlayerUnits(this.unitType);
             var isArcher = (this.unitType == game.PlaceableUnitType.ARCHER);
             var isWarrior = (this.unitType == game.PlaceableUnitType.WARRIOR);
             var isWizard = (this.unitType == game.PlaceableUnitType.WIZARD);
 
 			newUnit = new game.Unit(this.unitType, game.PlayerFlags.PLAYER, 1);
 
-            if ( numUnits >= 1 && numUnits <= 4 ) {
+            if ( numUnits >= 1 && numUnits <= game.MAX_UNITS_PER_CLASS - 1 ) {
                 var extraCostumesArray = null;
                 if ( isArcher ) extraCostumesArray = game.EXTRA_ARCHER_COSTUMES;
                 if ( isWarrior ) extraCostumesArray = game.EXTRA_WARRIOR_COSTUMES;
@@ -520,10 +538,14 @@
 			game.UnitManager.addUnit(newUnit);
 			game.UnitPlacementUI.addSlotToPage(newUnit, numUnits);
 
-            var newBuyYPosition = $('#buySlotButton').position().top;
-            $('#buyingScreenContainer').parent().css( {
-                top: Math.max(0, containerY + oldBuyYPosition - newBuyYPosition)
-            });
+            // Don't adjust the window position if we're removing the buy
+            // buttons.
+            if ( numUnits < game.MAX_UNITS_PER_CLASS - 1 ) {
+                var newBuyYPosition = $('#buySlotButton').position().top;
+                $('#buyingScreenContainer').parent().css( {
+                    top: Math.max(0, containerY + oldBuyYPosition - newBuyYPosition)
+                });
+            }
 
             this.setBuyIconClass();
         },

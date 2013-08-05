@@ -45,6 +45,13 @@
     window.game.DEFAULT_FONT_SIZE = 12;
 
     /**
+     * The number of each unit you can have. E.g. for 5 archers, 5 wizards, and
+     * 5 warriors, you'd specify 5 here.
+     * @type {Number}
+     */
+    window.game.MAX_UNITS_PER_CLASS = 5;
+
+    /**
      * Each class has 5 costumes (the default is specified in UnitData.js). The
      * classes are only 1x1, so we only need to specify an array of length 1 for
      * each.
