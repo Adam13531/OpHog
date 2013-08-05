@@ -66,6 +66,8 @@
         var $showQuests = $('#showQuests');
         var $showUnitPlacement = $('#showUnitPlacement');
         var $createUnits = $('#createUnits');
+        var $grantMoney = $('#grantMoney');
+        var $goToOverworld = $('#goToOverworld');
         $settingsButton.button({
               icons: {
                 primary: 'ui-icon-gear'
@@ -114,6 +116,24 @@
                 newUnit.placeUnit(23,9,game.MovementAI.FOLLOW_PATH);
                 game.UnitManager.addUnit(newUnit);
             };
+        });
+
+        $grantMoney.button();
+        $grantMoney.click(function() {
+            $settingsDialog.dialog('close');
+            game.Player.modifyCoins(9999999);
+        });
+
+        $goToOverworld.button();
+        $goToOverworld.click(function() {
+            $settingsDialog.dialog('close');
+
+            // Set the game state to something that has a valid transition to
+            // the overworld state. We may not have a valid transition to the
+            // win state, so we manually set it here instead of going through
+            // setState.
+            game.GameStateManager.currentState = game.GameStates.NORMAL_WIN_SCREEN;
+            game.GameStateManager.enterOverworldState();
         });
 
         var settingsWidth = $settingsButton.width();
