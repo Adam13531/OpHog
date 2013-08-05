@@ -143,7 +143,7 @@
     for ( var key in game.ItemType ) {
         var item = game.ItemType[key];
         item.htmlDescription = item.name + '<br/>' + item.htmlDescription;
-
+        game.util.useDefaultIfUndefined(item, 'usable', false);
         // Add mods to the item's description.
         if ( item.mods !== undefined ) {
             if ( item.usable ) {
@@ -181,6 +181,27 @@
     window.game.GenerateRandomItem = function() {
         return new game.Item(Math.floor(Math.random() * 8));
     };
+
+    /**
+     * Generates a random item. If usable is true, a random usable item is returned.
+     * Otherwise, a random equippable item is returned. This function was created so
+     * random items can get placed into inventories.
+     * @param  {Boolean} usable - true if the desired item is usable
+     * @return {Item} - A random item
+     */
+    // TODO: rename this to GenerateRandomItem and get rid of the old one completely
+    window.game.GenerateRandomInventoryItem = function(usable) {
+        var validItemList = [];
+
+        for ( var key in game.ItemType ) {
+            var item = game.ItemType[key];
+            if ( item.usable == usable) {
+                validItemList.push(new game.Item(item.id));
+            }
+        }
+
+        return game.util.randomArrayElement(validItemList);
+    }
 
     /**
      * Items can't be both stackable and equippable.

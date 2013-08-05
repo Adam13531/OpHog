@@ -13,7 +13,7 @@
         this.$itemDescriptionID.html('<p>Click a slot to select it.</p>');
 
         $('#shop-screen').dialog({
-            autoOpen: false,
+            autoOpen: true,
             resizable:false,
             autoResize: true,
             width: 195,
