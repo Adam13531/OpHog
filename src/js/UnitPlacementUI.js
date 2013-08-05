@@ -168,22 +168,28 @@
         },
 
 		/**
-		* Figures out the CSS unit class for a specific unit type and returns it. This
-		* unit class is used to specify which image in the CSS file to use.
-		* @param  {PlaceableUnitType} unitType Type of unit
-		* @return {String}          Classes for the particular unit
+         * Figures out the CSS unit class for a specific unit type and returns
+         * it. This unit class is used to specify which image in the CSS file to
+         * use.
+         * @param  {PlaceableUnitType} unitType - Type of unit
+         * @param  {Number} index - the row index of the unit (color is based on
+         * this). Specify 0 to get the "default" color.
+         * @return {String}          Classes for the particular unit
 		*/
-		getCSSUnitClass: function(unitType) {
-			var unitClass;
+		getCSSUnitClass: function(unitType, index) {
+            // All classes start with this. We append to this string below.
+			var unitClass = 'char-sprite ';
+            if ( index > 4 ) index = 0;
+            
 			switch (unitType) {
 			    case game.PlaceableUnitType.ARCHER:
-			        unitClass = 'char-sprite arch32-png';
+                    unitClass += 'arch-alt-' + index + '-png';
 			        break;
 			    case game.PlaceableUnitType.WARRIOR:
-			        unitClass = 'char-sprite war32-png';
+                    unitClass += 'war-alt-' + index + '-png';
 			        break;
 			    case game.PlaceableUnitType.WIZARD:
-			        unitClass = 'char-sprite wiz32-png';
+                    unitClass += 'wiz-alt-' + index + '-png';
 			        break;
 			    default:
 			        console.log("ERROR: Unit type doesn't exist.")
@@ -244,6 +250,16 @@
         },
 
         /**
+         * Sets the buy icon to the correct unit color.
+         */
+        setBuyIconClass: function() {
+            var numUnits = game.UnitManager.getNumOfPlayerUnits(this.unitType);
+            var $unitPlacementBuyIcon = $('#unitPlacementBuyIcon');
+            $unitPlacementBuyIcon.removeAttr('class');
+            $unitPlacementBuyIcon.addClass(this.getCSSUnitClass(this.unitType, numUnits));
+        },
+
+        /**
          * Allows the user to place units and buy slots for all the units of the
          * specified unit type.
          * @param {PlaceableUnitType} unitType Type of unit
@@ -256,15 +272,17 @@
 			
 			$('#buyingScreenContainer').append('<div id="unitContainer">');
 			for (var i = 0; i < unitArray.length; i++) {
-				this.addSlotToPage(unitArray[i]);
+				this.addSlotToPage(unitArray[i], i);
 			}
 			$('#buyingScreenContainer').append('</div>');
 
-            var imageHTML = '<img src="'+game.imagePath+'/img_trans.png" class="'+this.getCSSUnitClass(unitType)+'" />';
+            var imageHTML = '<img id="unitPlacementBuyIcon" src="'+game.imagePath+'/img_trans.png"/>';
 
-			// Add a button to allow the player to buy a new slot
-			$('#buyingScreenContainer').append('<button id="buySlotButton"></button>' +
-												'<span id=buySlotButtonDescription>- Buy ' + imageHTML + ' slot</span>');
+            // Add a button to allow the player to buy a new slot
+            $('#buyingScreenContainer').append('<button id="buySlotButton"></button>' +
+                                                '<span id=buySlotButtonDescription>- Buy ' + imageHTML + ' slot</span>');
+
+            this.setBuyIconClass();
             $('#buySlotButton').button();
             $('#buySlotButton').text(this.costToPurchaseSlot(this.unitType));
             $('#buySlotButton').css({
@@ -285,10 +303,10 @@
 
 			$('#buyingScreenContainer').append('<div id="changingPagesDiv">' +
 											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
-											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitLeftImage) + '" />' +
+											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitLeftImage, 0) + '" />' +
 											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px; margin-right:2.00em">0</span>' +
 											   '<span id="rightUnitAmount" style="font-weight: bold; font-size: 20px">0</span>' +
-											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitRightImage) + '" />' +
+											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitRightImage, 0) + '" />' +
 											   '<img id="rightArrowImg" src="'+game.imagePath+'/right_arrow.png" width="32" height="32"/>' +
 											   '</div>');
 			$('#leftArrowImg,#leftUnit,#leftUnitAmount').click(function() {
@@ -409,12 +427,13 @@
         /**
          * Adds a slot to the page
          * @param {Unit} unit  Unit that will be in the slot
+         * @param {Number} index - the row index of the unit
          */
-        addSlotToPage: function(unit) {
+        addSlotToPage: function(unit, index) {
             var id = unit.id;
 
 			$('#unitContainer').append('<div id="unit'+id+'">' +
-										'<img id="unitImage'+id+'" src="'+game.imagePath+'/img_trans.png" class="'+this.getCSSUnitClass(unit.unitType)+'" />' +
+										'<img id="unitImage'+id+'" src="'+game.imagePath+'/img_trans.png" class="'+this.getCSSUnitClass(unit.unitType, index)+'" />' +
 										'<span id="unitCost'+id+'" style="font-weight: bold; font-size: 20px"/>' +
 										'<span id="unitLevel'+id+'" style="font-weight: bold; font-size: 20px"/>' +
 										'<span id="unitExperience'+id+'" style="font-weight: bold; font-size: 20px"/>' +
@@ -481,14 +500,32 @@
             var oldBuyYPosition = $('#buySlotButton').position().top;
             var containerY = $('#buyingScreenContainer').parent().position().top;
 
+            var numUnits = game.UnitManager.getNumOfPlayerUnits(this.unitType);
+            var isArcher = (this.unitType == game.PlaceableUnitType.ARCHER);
+            var isWarrior = (this.unitType == game.PlaceableUnitType.WARRIOR);
+            var isWizard = (this.unitType == game.PlaceableUnitType.WIZARD);
+
 			newUnit = new game.Unit(this.unitType, game.PlayerFlags.PLAYER, 1);
+
+            if ( numUnits >= 1 && numUnits <= 4 ) {
+                var extraCostumesArray = null;
+                if ( isArcher ) extraCostumesArray = game.EXTRA_ARCHER_COSTUMES;
+                if ( isWarrior ) extraCostumesArray = game.EXTRA_WARRIOR_COSTUMES;
+                if ( isWizard ) extraCostumesArray = game.EXTRA_WIZARD_COSTUMES;
+
+                // Modify the appearance of the new unit
+                newUnit.graphicIndexes = extraCostumesArray[numUnits - 1];
+            }
+
 			game.UnitManager.addUnit(newUnit);
-			game.UnitPlacementUI.addSlotToPage(newUnit);
+			game.UnitPlacementUI.addSlotToPage(newUnit, numUnits);
 
             var newBuyYPosition = $('#buySlotButton').position().top;
             $('#buyingScreenContainer').parent().css( {
                 top: Math.max(0, containerY + oldBuyYPosition - newBuyYPosition)
             });
+
+            this.setBuyIconClass();
         },
 
         /**

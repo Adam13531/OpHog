@@ -44,4 +44,16 @@
      */
     window.game.DEFAULT_FONT_SIZE = 12;
 
+    /**
+     * Each class has 5 costumes (the default is specified in UnitData.js). The
+     * classes are only 1x1, so we only need to specify an array of length 1 for
+     * each.
+     *
+     * These are the 4 alternate costumes.
+     * @type {Array:Number}
+     */
+    window.game.EXTRA_ARCHER_COSTUMES = [[352],[353],[354],[355]];
+    window.game.EXTRA_WARRIOR_COSTUMES = [[356],[357],[358],[359]];
+    window.game.EXTRA_WIZARD_COSTUMES = [[360],[361],[362],[363]];
+
 }());

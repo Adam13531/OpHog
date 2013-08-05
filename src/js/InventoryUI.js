@@ -38,9 +38,9 @@
          * Sets up the entire Inventory UI.
          */
         setupUI: function() {
-            $('#war-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite war32-png' + '"/>');
-            $('#wiz-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite wiz32-png' + '"/>');
-            $('#arch-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '"/>');
+            $('#war-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite war-alt-0-png' + '"/>');
+            $('#wiz-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite wiz-alt-0-png' + '"/>');
+            $('#arch-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch-alt-0-png' + '"/>');
 
             // Put some starter text for the description
             $('#item-description').html('<h2>Click a slot to select it.</h2>');
