@@ -370,18 +370,41 @@
                     zoomSpeed *= -1;
                 }
 
-                var zoomingBelow1 = (camera.curZoom + zoomSpeed < 1);
+                // NONE OF THESE LESS-THAN-ONE VALUES ARE SUPPORTED WITHOUT
+                // HAVING GRAPHICAL GLITCHES
+                var zoomValuesLessThanOne = [camera.minZoom, .5, .75];
 
                 // If zooming would push you below 1...
-                if ( zoomingBelow1 ) {
-                    // Jump right from whatever you're at to .75.
+                if ( camera.curZoom + zoomSpeed < 1 ) {
+                    // Jump right from whatever you're at to the highest zoom
+                    // value that's less than one.
                     if ( camera.curZoom >= 1 ) {
-                        camera.curZoom = .75;
+                        camera.curZoom = zoomValuesLessThanOne[zoomValuesLessThanOne.length - 1];
                     } else {
-                        camera.curZoom -= .25;
+                        for (var i = 0; i < zoomValuesLessThanOne.length; i++) {
+                            if ( camera.curZoom == zoomValuesLessThanOne[i] ) {
+                                camera.curZoom = zoomValuesLessThanOne[Math.max(0, i-1)];
+                                break;
+                            }
+                        };
                     }
                 } else {
-                    camera.curZoom += zoomSpeed;
+                    // If you're zoomed out beneath 1, then go back up the
+                    // incremental array.
+                    if ( camera.curZoom < 1 ) {
+                        for (var i = 0; i < zoomValuesLessThanOne.length; i++) {
+                            if ( camera.curZoom == zoomValuesLessThanOne[i] ) {
+                                if ( i == zoomValuesLessThanOne.length - 1 ) {
+                                    camera.curZoom = 1;
+                                } else {
+                                    camera.curZoom = zoomValuesLessThanOne[i+1];
+                                }
+                                break;
+                            }
+                        };
+                    } else {
+                        camera.curZoom += zoomSpeed;
+                    }
                 }
 
                 camera.zoomChanged();
