@@ -430,7 +430,17 @@
 			function unitClicked(event) {
                 var unit = event.data.unitClicked;
                 var cost = game.UnitPlacementUI.costToPlaceUnit(unit);
-                if (!game.GameStateManager.isNormalGameplay() || unit.hasBeenPlaced || !game.Player.hasThisMuchMoney(cost)) {
+                if (!game.GameStateManager.isNormalGameplay()) {
+                    return;
+                }
+
+                // If the unit has been placed, center the camera on that unit
+                if ( unit.hasBeenPlaced ) {
+                    game.Camera.panInstantlyTo(unit.getCenterX(), unit.getCenterY(), true);
+                    return;
+                }
+
+                if ( !game.Player.hasThisMuchMoney(cost) ) {
                     return;
                 }
 
