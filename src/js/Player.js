@@ -159,6 +159,7 @@
             this.coins += amount;
 
             game.UnitPlacementUI.playerCoinsChanged();
+            game.ShopUI.playerCoinsChanged();
         },
 
         /**

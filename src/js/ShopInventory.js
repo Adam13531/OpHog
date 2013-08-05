@@ -5,7 +5,7 @@
      * inventory is refreshed with new items.
      * @type {Number}
      */
-    window.game.INITIAL_SHOP_INVENTORY_REFRESH_TIME = 5;
+    window.game.INITIAL_SHOP_INVENTORY_REFRESH_TIME = 15;
 
 	/**
 	 * Inventory for the shop. This inherits from game.Inventory
@@ -60,6 +60,12 @@
             this.generateItems();
             this.timeUntilNewInventoryItems = game.INITIAL_SHOP_INVENTORY_REFRESH_TIME;
         }
+        var roundedTime = Math.ceil(this.timeUntilNewInventoryItems);
+        var minutes = Math.floor(roundedTime / 60);
+        var seconds = roundedTime % 60;
+        var secondsString = (seconds >= 10) ? seconds : '0' + seconds;
+        
+        $('#newItemTimer').text('New items in: ' + minutes + ':' + secondsString);
     };
 
 }()); 

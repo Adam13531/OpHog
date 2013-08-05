@@ -1,6 +1,15 @@
 ( function() {
 
     /**
+     * Flags to let us know how much of an item was added to an inventory
+     */
+    window.game.AddedItemToInventoryState = {
+        NOT_ADDED: 1,
+        PARTIALLY_ADDED: 2,
+        FULLY_ADDED: 4,
+    };
+
+    /**
      * Inventory base-class constructor
      * 
      * The useThisConstructor parameter needs to be checked so that
@@ -90,19 +99,13 @@
         return matchingSlots;
     };
 
-    /**
-     * This attempts to add the item to the inventory. If the item is
-     * stackable, then existing stacks will be topped off before searching
-     * for empty slot(s).
-     * @param {Item} item - the item to add
-     * @return {Boolean} true if the item was completely added, false if
-     * partially added (in the case of stackable items) or not at all added
-     */
     window.game.Inventory.prototype.addItem = function(item) {
 
-        if ( item == null ) return true;
+        // if ( item == null ) return true;
+        if ( item == null ) return game.AddedItemToInventoryState.FULLY_ADDED;
 
-        var addedItem = false;
+        // var addedItem = false;
+        var addedItemState = game.AddedItemToInventoryState.NOT_ADDED;
         var emptySlot = null;
 
         // When we add a stackable item, we distribute the original item
@@ -120,7 +123,8 @@
             emptySlot = this.getFirstEmptySlot(item.usable ? game.SlotTypes.USABLE : game.SlotTypes.EQUIP);
             if ( emptySlot != null ) {
                 emptySlot.setItem(item);
-                addedItem = true;
+                // addedItem = true;
+                addedItemState = game.AddedItemToInventoryState.FULLY_ADDED;
             }
         } else {
             // We got here, so the item has to be usable and stackable.
@@ -135,7 +139,7 @@
                 // Add as much as we can
                 quantityLeft = this.slots[i].addQuantity(quantityLeft);
                 if ( quantityLeft == 0 ) {
-                    addedItem = true;
+                    // addedItem = true;
                     break;
                 }
             };
@@ -156,12 +160,17 @@
                 quantityLeft -= newItem.quantity;
             }
 
-            if ( quantityLeft == 0 ) {
-                addedItem = true;
-            }
         }
 
-        return addedItem;
+        if ( quantityLeft == 0 ) {
+            // addedItem = true;
+            addedItemState = game.AddedItemToInventoryState.FULLY_ADDED;
+        } else if ( quantityLeft != originalQuantity ) {
+            addedItemState = game.AddedItemToInventoryState.PARTIALLY_ADDED;
+        }
+
+        // return addedItem;
+        return addedItemState;
     };
 
     /**

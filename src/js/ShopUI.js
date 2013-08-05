@@ -18,7 +18,7 @@
             autoOpen: true,
             resizable:false,
             autoResize: true,
-            width: 195,
+            width: 400,
             height: 342,
 
             // Wrap the dialog in a span so that it gets themed correctly.
@@ -46,9 +46,11 @@
                 game.ShopUI.$itemDescriptionID.html(game.DEFAULT_SHOP_UI_DESCRIPTION);
                 return;
             }
+            var cost = game.ShopUI.getBuyPrice();
+            var item = game.ShopUI.getSelectedSlot().slot.item;
+            game.Player.modifyCoins(-cost);
 
-            // console.log('Going to buy this item: ' + game.ShopUI.getSelectedSlot().slot.item.itemID); 
-            game.Player.inventory.addItem(game.ShopUI.getSelectedSlot().slot.item);
+            game.Player.inventory.addItem(item);
         });
     };
 
@@ -92,6 +94,7 @@
 
     window.game.ShopUI.prototype.clickedSlot = function(slotUI) {
         game.InventoryUI.prototype.clickedSlot.call(this, slotUI);
+        this.updateBuyButton();
         this.updateDescription();
     };
 
@@ -100,6 +103,45 @@
 
         // Update the description
         this.updateDescription();
+    };
+
+    //TODO: This is test code. Real buy prices will be computed
+    // probably in Item.js in a better way
+    window.game.ShopUI.prototype.getBuyPrice = function() {
+        // var item = this.getSelectedSlot().slot.item;
+        if ( this.getSelectedSlot() == null) {
+            return 0;
+        }
+
+        var item = this.getSelectedSlot().slot.item;
+        if ( item == null ) {
+            return 0;
+        }
+
+        return item.itemID * 1000;
+    };
+
+    window.game.ShopUI.prototype.updateDescription = function() {
+        game.InventoryUI.prototype.updateDescription.call(this);
+
+        var cost = this.getBuyPrice();
+        if ( !game.Player.hasThisMuchMoney(cost) ) {
+            this.$itemDescriptionID.html('You don\'t have enough coins');
+        }
+    };
+
+    window.game.ShopUI.prototype.playerCoinsChanged = function() {
+        this.updateBuyButton();
+        this.updateDescription();
+    };
+
+    window.game.ShopUI.prototype.updateBuyButton = function() {
+        var cost = this.getBuyPrice();
+        if ( !game.Player.hasThisMuchMoney(cost) ) {
+            $('#shopBuyButton').attr('disabled', 'disabled');
+        } else {
+            $('#shopBuyButton').removeAttr('disabled');
+        }
     };
 
 }());
