@@ -1,5 +1,7 @@
 ( function() {
 
+    window.game.DEFAULT_SHOP_UI_DESCRIPTION = '<p>Select an item you would like to buy.</p>';
+
 	/**
 	 * Marketplace for users to purchase items. There is only one of these
 	 * objects. This inherits from game.InventoryUI
@@ -10,7 +12,7 @@
 
         this.$itemDescriptionID = $('#shopui-item-description');
 
-        this.$itemDescriptionID.html('<p>Click a slot to select it.</p>');
+        this.$itemDescriptionID.html(game.DEFAULT_SHOP_UI_DESCRIPTION);
 
         $('#shop-screen').dialog({
             autoOpen: true,
@@ -32,6 +34,21 @@
                 at: 'center',
                 of: ('#canvas')
             },
+        });
+
+        // Turn this into a jQuery button so it gets themed
+        $('#shopBuyButton').button();
+
+        $('#shopBuyButton').click(function() {
+            // Update the description to let the user know that they need to
+            // select the item they want to purchase.
+            if ( game.ShopUI.getSelectedSlot() == null ) {
+                game.ShopUI.$itemDescriptionID.html(game.DEFAULT_SHOP_UI_DESCRIPTION);
+                return;
+            }
+
+            // console.log('Going to buy this item: ' + game.ShopUI.getSelectedSlot().slot.item.itemID); 
+            game.Player.inventory.addItem(game.ShopUI.getSelectedSlot().slot.item);
         });
     };
 
