@@ -5,17 +5,17 @@
      * inventory is refreshed with new items.
      * @type {Number}
      */
-    window.game.INITIAL_SHOP_INVENTORY_REFRESH_TIME = 15;
+    window.game.INITIAL_SHOP_INVENTORY_REFRESH_TIME = 5;
 
 	/**
 	 * Inventory for the shop. This inherits from game.Inventory
 	 */
-	window.game.ShopInventory = function ShopInventory() {
-		this.base = game.Inventory;
-		this.base(true);
-	};
+    window.game.ShopInventory = function ShopInventory() {
+      this.base = game.Inventory;
+      this.base(true);
+    };
 
-	window.game.ShopInventory.prototype = new game.Inventory;
+    window.game.ShopInventory.prototype = new game.Inventory;
 
     window.game.ShopInventory.prototype.init = function() {
         // Add equippable slots
@@ -36,7 +36,7 @@
          * Time in seconds until the inventory refreshes with new items
          * @type {Number}
          */
-        this.timeUntilNewInventoryItems = game.INITIAL_SHOP_INVENTORY_REFRESH_TIME;
+         this.timeUntilNewInventoryItems = game.INITIAL_SHOP_INVENTORY_REFRESH_TIME;
     };
 
     window.game.ShopInventory.prototype.generateItems = function() {
@@ -46,25 +46,27 @@
         };
     };
 
-	window.game.ShopInventory.prototype.addSlot = function(slot) {
-		game.Inventory.prototype.addSlot.call(this, slot);
+    window.game.ShopInventory.prototype.addSlot = function(slot) {
+      game.Inventory.prototype.addSlot.call(this, slot);
 
         // Tell the UI that we've added a slot so it will add the graphic
         // to the UI.
         game.ShopUI.addedSlot(slot);
-	};
+    };
 
     window.game.ShopInventory.prototype.update = function(deltaInSeconds) {
         this.timeUntilNewInventoryItems -= deltaInSeconds;
         if (this.timeUntilNewInventoryItems < 0) {
             this.generateItems();
             this.timeUntilNewInventoryItems = game.INITIAL_SHOP_INVENTORY_REFRESH_TIME;
+            // Let the UI know that there are new items in the inventory
+            game.ShopUI.newItemsInInventory();
         }
         var roundedTime = Math.ceil(this.timeUntilNewInventoryItems);
         var minutes = Math.floor(roundedTime / 60);
         var seconds = roundedTime % 60;
         var secondsString = (seconds >= 10) ? seconds : '0' + seconds;
-        
+
         $('#newItemTimer').text('New items in: ' + minutes + ':' + secondsString);
     };
 

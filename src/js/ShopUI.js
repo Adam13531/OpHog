@@ -49,8 +49,15 @@
             var cost = game.ShopUI.getBuyPrice();
             var item = game.ShopUI.getSelectedSlot().slot.item;
             game.Player.modifyCoins(-cost);
-
-            game.Player.inventory.addItem(item);
+            var added = game.Player.inventory.addItem(item);
+            if ( added != game.AddedItemToInventoryState.NOT_ADDED) {
+                game.ShopUI.getSelectedSlot().slot.setItem(null); // Removes the bought item
+                game.ShopUI.updateBuyButton();
+            } else {
+                // Give the player their money back if they couldn't get the item
+                // into their inventory.
+                game.Player.modifyCoins(cost);
+            }
         });
     };
 
@@ -121,15 +128,6 @@
         return item.itemID * 1000;
     };
 
-    window.game.ShopUI.prototype.updateDescription = function() {
-        game.InventoryUI.prototype.updateDescription.call(this);
-
-        var cost = this.getBuyPrice();
-        if ( !game.Player.hasThisMuchMoney(cost) ) {
-            this.$itemDescriptionID.html('You don\'t have enough coins');
-        }
-    };
-
     window.game.ShopUI.prototype.playerCoinsChanged = function() {
         this.updateBuyButton();
         this.updateDescription();
@@ -137,11 +135,24 @@
 
     window.game.ShopUI.prototype.updateBuyButton = function() {
         var cost = this.getBuyPrice();
-        if ( !game.Player.hasThisMuchMoney(cost) ) {
-            $('#shopBuyButton').attr('disabled', 'disabled');
+        if ( !game.Player.hasThisMuchMoney(cost) ||
+              this.getSelectedSlot() == null ||
+              this.getSelectedSlot().isEmpty() ) {
+            $('#shopBuyButton').button('disable');
         } else {
-            $('#shopBuyButton').removeAttr('disabled');
+            $('#shopBuyButton').button('enable');
         }
+    };
+
+    /**
+     * Updates the UI because new items have been added to the inventory.
+     * Ex) If a player bought something, that slot will be blank, 
+     * so the buy button will be disabled. When this inventory refreshes, 
+     * it should enable the buy button again if the player can buy the 
+     * new item that appears there.
+     */
+    window.game.ShopUI.prototype.newItemsInInventory = function() {
+        this.updateBuyButton();
     };
 
 }());
