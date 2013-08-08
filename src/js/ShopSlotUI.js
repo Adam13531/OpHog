@@ -3,6 +3,9 @@
 	window.game.ShopSlotUI = function ShopSlotUI(domSelector, slot) {
 		this.base = game.SlotUI;
 		this.base(true, domSelector, slot);
+
+        // Allow the user to double-click an item to buy it
+        $(this.$spanSelector).dblclick(game.ShopUI.buyItem());
 	};
 
 	window.game.ShopSlotUI.prototype = new game.SlotUI;

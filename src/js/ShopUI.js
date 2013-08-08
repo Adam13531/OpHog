@@ -39,26 +39,7 @@
         // Turn this into a jQuery button so it gets themed
         $('#shopBuyButton').button();
 
-        $('#shopBuyButton').click(function() {
-            // Update the description to let the user know that they need to
-            // select the item they want to purchase.
-            if ( game.ShopUI.getSelectedSlot() == null ) {
-                game.ShopUI.$itemDescriptionID.html(game.DEFAULT_SHOP_UI_DESCRIPTION);
-                return;
-            }
-            var cost = game.ShopUI.getBuyPrice();
-            var item = game.ShopUI.getSelectedSlot().slot.item;
-            game.Player.modifyCoins(-cost);
-            var added = game.Player.inventory.addItem(item);
-            if ( added != game.AddedItemToInventoryState.NOT_ADDED) {
-                game.ShopUI.getSelectedSlot().slot.setItem(null); // Removes the bought item
-                game.ShopUI.updateBuyButton();
-            } else {
-                // Give the player their money back if they couldn't get the item
-                // into their inventory.
-                game.Player.modifyCoins(cost);
-            }
-        });
+        $('#shopBuyButton').click(this.buyItem());
     };
 
     window.game.ShopUI.prototype = new game.InventoryUI;
@@ -134,10 +115,7 @@
     };
 
     window.game.ShopUI.prototype.updateBuyButton = function() {
-        var cost = this.getBuyPrice();
-        if ( !game.Player.hasThisMuchMoney(cost) ||
-              this.getSelectedSlot() == null ||
-              this.getSelectedSlot().isEmpty() ) {
+        if ( !this.playerCanBuyItem() ) {
             $('#shopBuyButton').button('disable');
         } else {
             $('#shopBuyButton').button('enable');
@@ -153,6 +131,46 @@
      */
     window.game.ShopUI.prototype.newItemsInInventory = function() {
         this.updateBuyButton();
+    };
+
+    window.game.ShopUI.prototype.buyItem = function() {
+        return function() {
+            // Update the description to let the user know that they need to
+            // select the item they want to purchase.
+            if ( game.ShopUI.getSelectedSlot() == null ) {
+                game.ShopUI.$itemDescriptionID.html(game.DEFAULT_SHOP_UI_DESCRIPTION);
+                return;
+            }
+
+            if ( !game.ShopUI.playerCanBuyItem() ) {
+                return;
+            }
+
+            var cost = game.ShopUI.getBuyPrice();
+            var item = game.ShopUI.getSelectedSlot().slot.item;
+            game.Player.modifyCoins(-cost);
+            var added = game.Player.inventory.addItem(item);
+            if ( added != game.AddedItemToInventoryState.NOT_ADDED) {
+                game.ShopUI.getSelectedSlot().slot.setItem(null); // Removes the bought item
+                debugger;
+                game.ShopUI.updateBuyButton();
+            } else {
+                // Give the player their money back if they couldn't get the item
+                // into their inventory.
+                game.Player.modifyCoins(cost);
+            }
+        };
+    };
+
+    window.game.ShopUI.prototype.playerCanBuyItem = function() {
+        var cost = this.getBuyPrice();
+        if (  !game.Player.hasThisMuchMoney(cost) ||
+              this.getSelectedSlot() == null ||
+              this.getSelectedSlot().isEmpty() ) {
+            return false;
+        } else {
+            return true;
+        }
     };
 
 }());
