@@ -260,7 +260,7 @@
             // Check to see if the user tapped a spawner
             if (game.UnitPlacementUI.canSpawnUnits() && tileIsSpawnPoint) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
-                $('#buyingScreenContainer').dialog('open');
+                game.UnitPlacementUI.show();
             } else {
                 $('#buyingScreenContainer').dialog('close');
             }
@@ -508,6 +508,7 @@
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
 
+        game.UnitPlacementUI.highlightCurrentSpawnPoint(ctx);
         game.GeneratorManager.draw(ctx);
         game.CollectibleManager.draw(ctx);
         game.UnitManager.draw(ctx);

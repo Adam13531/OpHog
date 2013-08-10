@@ -65,6 +65,19 @@
          * @type {Number}
          */
         lastYPosition: null,
+
+        /**
+         * The alpha value to use when highlighting a spawner.
+         * @type {Number}
+         */
+        highlightAlpha: .4,
+
+        /**
+         * The direction in which the alpha is changing. This is only positive
+         * or negative 1.
+         * @type {Number}
+         */
+        highlightAlphaChange: 1,
 		
         /**
          * Computes the cost to buy a slot for the current unit type
@@ -493,6 +506,73 @@
         setSpawnPoint: function(tileX, tileY) {
         	this.spawnPointX = tileX;
         	this.spawnPointY = tileY;
+        },
+
+        /**
+         * Draws a highlight around the currently selected spawn point so that
+         * you know where your units will come out.
+         * @param  {Object} ctx - the canvas context
+         */
+        highlightCurrentSpawnPoint: function(ctx) {
+            // Only do this if the window is open
+            if ( !$('#buyingScreenContainer').dialog('isOpen') ) {
+                return;
+            }
+
+            ctx.save();
+
+            var worldX = this.spawnPointX * tileSize;
+            var worldY = this.spawnPointY * tileSize;
+
+            var padding = game.STATUS_EFFECT_PADDING;
+
+            // The lowest alpha to use
+            var lowerBound = 0;
+
+            // The highest alpha to use
+            var upperBound = .7;
+
+            // The speed at which to cycle through the alphas
+            var speed = .0125;
+            this.highlightAlpha += this.highlightAlphaChange * speed;
+
+            // Cap at the bounds
+            if ( this.highlightAlpha >= upperBound ) {
+                this.highlightAlpha = upperBound - .00001;
+                this.highlightAlphaChange *= -1;
+            } else if ( this.highlightAlpha <= lowerBound ) {
+                this.highlightAlpha = lowerBound + .00001;
+                this.highlightAlphaChange *= -1;
+            }
+
+            var blink = game.alphaBlink * 53;
+            var blink2 = game.alphaBlink * 29;
+            var r = Math.floor(blink % 255);
+            var g = Math.floor(blink2 % 255);
+
+            // After 128, cycle back down so that it doesn't go from 0 to 255
+            // back to 0 (it would be an abrupt change to black sometimes). This
+            // makes it smoother. We can later multiply these values by 2 if we
+            // want since they won't be higher than 128, but the darker colors
+            // seem to work better.
+            if ( r > 128 ) r = 255 - r;
+            if ( g > 128 ) g = 255 - g;
+            ctx.lineWidth = padding * 2;
+            ctx.strokeStyle = 'rgba(' + r + ', ' + g + ',0, ' + this.highlightAlpha + ')';
+            ctx.strokeRect(worldX - padding, worldY - padding, tileSize + padding * 2, tileSize + padding * 2);
+            ctx.restore();
+        },
+
+        /**
+         * Show the UI.
+         */
+        show: function() {
+            $('#buyingScreenContainer').dialog('open');
+
+            // Reset some of the highlight values so that you know right away
+            // whether you tapped the spawner.
+            this.highlightAlpha = 1;
+            this.highlightAlphaChange = -1;
         },
 
         /**
