@@ -99,7 +99,7 @@
         var item = slot.item;
         var desc = '<no description for this> - ' + 'Slot type: ' + slot.slotType + ' Item: ' + item;
         if (item == null) {
-            desc = 'You don\'t have an item selected.<br/><br/>Scroll the slots above by dragging.';
+            desc = 'You don\'t have an item selected.';
         } else {
             desc = item.htmlDescription;
         }
