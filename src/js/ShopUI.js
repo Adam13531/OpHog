@@ -120,6 +120,7 @@
         } else {
             $('#shopBuyButton').button('enable');
         }
+        $('#shopBuyButton').text('Buy $' + this.getBuyPrice());
     };
 
     /**
