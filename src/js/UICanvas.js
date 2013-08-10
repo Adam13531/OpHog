@@ -134,39 +134,15 @@
             if ( !unit.hasBeenPlaced ) {
                 return;
             }
-            this.uictx.save();
 
-            // Properties of the life bar rectangle
             var w = unit.width;
             var h = 10;
             var x = this.drawX;
             var y = this.drawY - h;
             this.drawY += h + 1;
-
             var percentLife = Math.min(1, Math.max(0, unit.life / unit.getMaxLife()));
 
-            // Draw a rectangle as the background
-            this.uictx.fillStyle = 'rgba(0, 0, 0, .75)';
-            this.uictx.fillRect(x,y,w,h);
-
-            // Draw a rectangle to show how much life you have
-            this.uictx.fillStyle = 'rgba(200, 0, 0, .75)';
-            this.uictx.fillRect(x,y,w * percentLife, h);
-
-            // Draw a border
-            this.uictx.strokeStyle = 'rgba(255, 0, 0, .75)';
-            this.uictx.strokeRect(x,y,w, h);
-
-            // Draw the percentage
-            this.uictx.font = '12px Futura, Helvetica, sans-serif';
-            var text = game.util.formatPercentString(percentLife, 0) + '%';
-            var width = this.uictx.measureText(text).width;
-
-            this.uictx.textBaseline = 'top';
-            this.uictx.fillStyle = '#fff';
-            this.uictx.fillText(text, x + w / 2 - width / 2, y - 2);
-
-            this.uictx.restore();
+            game.graphicsUtil.drawBar(this.uictx, x,y,w,h, percentLife, {barR:200, borderR:255});
         },
 
         /**
@@ -174,39 +150,14 @@
          * @param  {Unit} unit - the unit whose portrait you're drawing
          */
         drawExpBar: function(unit) {
-            this.uictx.save();
-
-            // Properties of the life bar rectangle
             var w = unit.width;
             var h = 10;
             var x = this.drawX;
             var y = this.drawY - h;
             this.drawY += h + 1;
-
             var exp = unit.experience;
 
-            // Draw a rectangle as the background
-            this.uictx.fillStyle = 'rgba(0, 0, 0, .75)';
-            this.uictx.fillRect(x,y,w,h);
-
-            // Draw a rectangle to show how much life you have
-            this.uictx.fillStyle = 'rgba(0, 200, 0, .75)';
-            this.uictx.fillRect(x,y,w * exp / 100.0, h);
-
-            // Draw a border
-            this.uictx.strokeStyle = 'rgba(0, 255, 0, .75)';
-            this.uictx.strokeRect(x,y,w, h);
-
-            // Draw the percentage
-            this.uictx.font = '12px Futura, Helvetica, sans-serif';
-            var text = exp;
-            var width = this.uictx.measureText(text).width;
-
-            this.uictx.textBaseline = 'top';
-            this.uictx.fillStyle = '#fff';
-            this.uictx.fillText(text, x + w / 2 - width / 2, y - 2);
-
-            this.uictx.restore();
+            game.graphicsUtil.drawBar(this.uictx, x,y,w,h, exp / 100, {barG:200, borderG:255, text:exp});
         },
 
         /**

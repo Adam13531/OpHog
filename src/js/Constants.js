@@ -8,6 +8,7 @@
     window.game = {};
     window.ui = {};
     window.game.util = {};
+    window.game.graphicsUtil = {};
 
     /**
      * The relative path from Javascript files to the resource folder.

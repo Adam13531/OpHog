@@ -1113,38 +1113,14 @@
      * @param  {Object} ctx - the canvas context
      */
     window.game.Unit.prototype.drawLifeBar = function(ctx) {
-        ctx.save();
-
         // Properties of the life bar rectangle
         var w = this.width;
         var h = 10;
         var x = this.x;
         var y = this.y + this.height - h;
-
         var percentLife = Math.min(1, Math.max(0, this.life / this.getMaxLife()));
 
-        // Draw a rectangle as the background
-        ctx.fillStyle = 'rgba(0, 0, 0, .75)';
-        ctx.fillRect(x,y,w,h);
-
-        // Draw a rectangle to show how much life you have
-        ctx.fillStyle = 'rgba(200, 0, 0, .75)';
-        ctx.fillRect(x,y,w * percentLife, h);
-
-        // Draw a border
-        ctx.strokeStyle = 'rgba(255, 0, 0, .75)';
-        ctx.strokeRect(x,y,w, h);
-
-        // Draw the percentage
-        ctx.font = '12px Futura, Helvetica, sans-serif';
-        var text = game.util.formatPercentString(percentLife, 0) + '%';
-        var width = ctx.measureText(text).width;
-
-        ctx.textBaseline = 'top';
-        ctx.fillStyle = '#fff';
-        ctx.fillText(text, x + w / 2 - width / 2, y - 2);
-
-        ctx.restore();
+        game.graphicsUtil.drawBar(ctx, x,y,w,h, percentLife, {barR:200, borderR:255});
     };
 
     /**

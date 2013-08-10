@@ -69,30 +69,13 @@
                 for (var i = 0; i < castleTiles.length; i++) {
                     var castleTile = castleTiles[i];
                     
-                    // Properties of the life bar rectangle
                     var w = tileSize;
                     var h = 10;
                     var x = castleTile.x * tileSize;
                     var y = (castleTile.y * tileSize) + tileSize - h;
-
                     var percentLife = Math.min(1, Math.max(0, game.Player.castleLife / game.FULL_CASTLE_LIFE));
 
-                    // Draw a rectangle as the background
-                    ctx.fillStyle = 'rgba(0, 0, 0,.75)';
-                    ctx.fillRect(x,y,w,h);
-
-                    // Draw a rectangle to show how much life you have
-                    ctx.fillStyle = 'rgba(200, 0, 0,.75)';
-                    ctx.fillRect(x,y,w * percentLife, h);
-
-                    // Draw a border
-                    ctx.strokeStyle = 'rgba(255, 0, 0,.75)';
-                    ctx.strokeRect(x,y,w, h);
-
-                    // Draw the percentage
-                    var text = game.util.formatPercentString(percentLife, 0) + '%';
-
-                    game.TextManager.drawTextImmediate(ctx, text, x + w/2, y - 2);
+                    game.graphicsUtil.drawBar(ctx, x,y,w,h, percentLife, {barR:200, borderR:255});
                 };
             }
             ctx.restore();
