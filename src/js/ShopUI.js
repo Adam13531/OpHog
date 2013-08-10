@@ -19,7 +19,7 @@
             resizable:false,
             autoResize: true,
             width: 400,
-            height: 342,
+            height: 310,
 
             // Wrap the dialog in a span so that it gets themed correctly.
             appendTo:"#shopDialogThemeSpan",
