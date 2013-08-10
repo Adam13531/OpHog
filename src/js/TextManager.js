@@ -36,7 +36,7 @@
          * Draws text a single time. 
          * @param  {Object} ctx     - the canvas context
          * @param  {String} text    - the text to draw
-         * @param  {Number} centerX - the center X coordinate (see below for which coordinate system they're in)
+         * @param  {Number} x - the X coordinate (see treatXAsCenter for how this is used)
          * @param  {Number} y - the Y coordinate. Depending on the options you pass, this will either represent the top, middle, or bottom coordinate
          * @param  {Object} options - all other font-drawing options. You don't have to specify any of these, in which case defaults will be used.
          *         {Boolean} screenCoords - if true, x and y are in screen coordinates, otherwise they're in world coordinates. Default is false.
@@ -48,8 +48,11 @@
          *         values, but I can't reliably compute height, so they may appear
          *         out of bounds if you use them: http://www.w3schools.com/tags/canvas_textbaseline.asp
          *         {Boolean} clamp  - if true, this will clamp world coordinates to the world size. Defaults to true.
+         *         {Boolean} treatXAsCenter  - if true, this will center the 
+         *         text at that X coordinate, otherwise it will put the text's 
+         *         left side at the X. Defaults to true.
          */
-        drawTextImmediate: function(ctx, text, centerX, y, options) {
+        drawTextImmediate: function(ctx, text, x, y, options) {
             // Set default values
             if ( options === undefined ) options = {};
             var useScreenCoordinates = (options.screenCoords === undefined ? false : options.screenCoords);
@@ -58,6 +61,7 @@
             var color = (options.color === undefined ? '#fff' : options.color);
             var baseline = (options.baseline === undefined ? 'top' : options.baseline);
             var clamp = (options.clamp === undefined ? true : options.clamp);
+            var treatXAsCenter = (options.treatXAsCenter === undefined ? true : options.treatXAsCenter);
 
             // Translate to correct coordinate space
             ctx.save();
@@ -74,7 +78,9 @@
             ctx.textBaseline = baseline;
             ctx.fillStyle = color;
 
-            var x = centerX - width / 2;
+            if ( treatXAsCenter ) {
+                x -= width / 2;
+            } 
 
             // Clamp to world coordinates
             if ( !useScreenCoordinates && clamp ) {

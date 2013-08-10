@@ -287,11 +287,11 @@
     function initSettings() {
         ctx = $('#canvas')[0].getContext('2d');
 
-        var canvasPos = $('#canvas').position();
-
         //Calculate screen height and width
         screenWidth = parseInt($('#canvas').attr('width'));
         screenHeight = parseInt($('#canvas').attr('height'));
+
+        game.UICanvas.initialize();
 
         addKeyboardListeners();
     }
@@ -532,6 +532,8 @@
         game.Player.drawCastleLife(ctx);
 
         ctx.restore();
+
+        game.UICanvas.draw();
     }
 
     function doneLoadingEverything() {
