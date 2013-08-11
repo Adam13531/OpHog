@@ -27,9 +27,9 @@
          */
         this.usingItem = null;
 
-        $('#war-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite war32-png' + '"/>');
-        $('#wiz-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite wiz32-png' + '"/>');
-        $('#arch-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch32-png' + '"/>');
+        $('#war-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite war-alt-0-png' + '"/>');
+        $('#wiz-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite wiz-alt-0-png' + '"/>');
+        $('#arch-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch-alt-0-png' + '"/>');
 
         // Put some starter text for the description
         this.$itemDescriptionID.html('<h2>Click a slot to select it.</h2>');
@@ -120,7 +120,6 @@
     
     /**
      * Exit USE mode. This will hide the instructions that show up.
-     * @return {null}
      */
     window.game.PlayerInventoryUI.prototype.exitUseMode = function(doNotCallShowUI) {
         $('#useItemInstructions').hide();
@@ -141,7 +140,6 @@
      * Sells the selected item.
      *
      * For now, this actually just destroys the item.
-     * @return {null}
      */
     window.game.PlayerInventoryUI.prototype.sellSelectedItem = function() {
         if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
@@ -304,7 +302,6 @@
      * I made this function because 'usingItem' is stored as an item, not a
      * slot, so there's no easy way to know which slot the item is in once
      * you've depleted it, so we just remove all depleted items.
-     * @return {null}
      */
     window.game.PlayerInventoryUI.prototype.removeDepletedItems = function() {
         for (var i = 0; i < this.slots.length; i++) {
@@ -318,7 +315,6 @@
 
     /**
      * Update the instructions that appear when you're in USE mode.
-     * @return {null}
      */
     window.game.PlayerInventoryUI.prototype.updateUseInstructions = function() {
         var item = this.usingItem;
@@ -374,10 +370,9 @@
 
     /**
      * Enters USE mode. This will hide the inventory screen.
-     * @return {null}
      */
     window.game.PlayerInventoryUI.prototype.enterUseMode = function() {
-        if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
+        if ( !this.canUseItem() ) {
             return;
         }
 
@@ -411,7 +406,6 @@
     /**
      * Updates the sell button with the appropriate text. Also
      * enables/disables the button.
-     * @return {null}
      */
     window.game.PlayerInventoryUI.prototype.updateSellButton = function() {
         if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
@@ -507,7 +501,6 @@
     /**
      * This is its own function because setScrollbars also needs to be
      * called every time you show the inventory screen.
-     * @return {null}
      */
     window.game.PlayerInventoryUI.prototype.show = function() {
         $('#inventory-screen').dialog('open');
@@ -518,7 +511,6 @@
 
     /**
      * Convenience function to hide the inventory UI
-     * @return {undefined}
      */
     window.game.PlayerInventoryUI.prototype.hide = function() {
         $('#inventory-screen').dialog('close');
@@ -547,33 +539,41 @@
 
     /**
      * Enables or disables the useItemButton appropriately.
-     * @return {undefined}
      */
     window.game.PlayerInventoryUI.prototype.setUseItemButtonState = function() {
-        var selectedSlotUI = this.selectedSlotUI;
-        if ( selectedSlotUI == null ) return;
-        var slot = selectedSlotUI.slot;
-
-        // Only enable the use button if we're in the correct game state.
-        var correctGameState = (game.GameStateManager.isNormalGameplay() || game.GameStateManager.isMinigameGameplay());
-
-        // If we selected a usable item, enable the 'Use' button.
-        if ( correctGameState && !slot.isEmpty() && slot.isUsableSlot() ) {
+        if ( this.canUseItem() ) {
             this.$useItemButton.button('enable');
         } else {
             this.$useItemButton.button('disable');
         }
     };
 
+    /**
+     * @return {Boolean} true if you can use the selected item. If there's
+     * no item selected or if we're in the wrong game state, then this
+     * returns false.
+     */
+    window.game.PlayerInventoryUI.prototype.canUseItem = function() {
+        var selectedSlotUI = this.selectedSlotUI;
+        if ( selectedSlotUI == null ) return false;
+        var slot = selectedSlotUI.slot;
+
+        var correctGameState = (game.GameStateManager.isNormalGameplay() || game.GameStateManager.isMinigameGameplay());
+
+        return correctGameState && !slot.isEmpty() && slot.isUsableSlot();
+    };
+
     window.game.PlayerInventoryUI.prototype.clickedSlot = function(slotUI) {
         game.InventoryUI.prototype.clickedSlot.call(this, slotUI);
 
-        this.updateDescription();
         this.updateSellButton();
+        this.updateDescription();
     };
 
     window.game.PlayerInventoryUI.prototype.updatedSlot = function(slotIndex) {
-        game.InventoryUI.prototype.updatedSlot.call(this, slotIndex);
+        if ( !game.InventoryUI.prototype.updatedSlot.call(this, slotIndex) ) {
+            return false;
+        }
 
         // Update the description
         this.updateDescription();
@@ -583,6 +583,8 @@
         // too, for example, if we just acquired more of the item that we're
         // currently using.
         this.updateUseInstructions();
+
+        return true;
     };
 
     window.game.PlayerInventoryUI.prototype.updateDescription = function() {

@@ -28,7 +28,7 @@
 
             var unitsOfThisType = game.UnitManager.getUnits(unitTypeToUpdate);
             for (var i = 0; i < unitsOfThisType.length; i++) {
-                unitsOfThisType[i].equipmentChanged();
+                game.UnitPlacementUI.updateUnit(unitsOfThisType[i]);
             };
         }
 	};

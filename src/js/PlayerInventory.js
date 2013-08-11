@@ -38,8 +38,10 @@
 
 	window.game.PlayerInventory.prototype = new game.Inventory;
 
+    /**
+     * This is a debug function for now that will set a few different slots.
+     */
 	window.game.PlayerInventory.prototype.generateItems = function() {
-		// Fill some of the slots (this is debug code)
         this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.CREATE_SPAWNER.id));
         this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.MEGA_CREATE_SPAWNER.id));
         this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.STAT_GEM.id));
@@ -62,16 +64,70 @@
 	};
 
 	window.game.PlayerInventory.prototype.addItem = function(item) {
-		var originalQuantity = item.quantity;
-		var addedItemState = game.Inventory.prototype.addItem.call(this, item);
+        if ( item == null ) return game.AddedItemToInventoryState.FULLY_ADDED;
 
-		if (addedItemState != game.AddedItemToInventoryState.NOT_ADDED) {
-	        // Notify appropriate listeners
-	        game.LootUI.addItemNotification(item, addedItemState, originalQuantity);
-	        game.QuestManager.collectedAnItem();
-		}
+        var addedItemState = game.AddedItemToInventoryState.NOT_ADDED;
+        var emptySlot = null;
 
-		return addedItemState
+        // When we add a stackable item, we distribute the original item
+        // into our inventory, thus decreasing the quantity. We keep this
+        // around so that the loot summary can display the correct quantity.
+        var originalQuantity = item.quantity;
+
+        // If the item is equippable or can't be stacked, then the only way
+        // it will fit is by finding an empty slot.
+        if ( !item.usable || !item.stackable) {
+            emptySlot = this.getFirstEmptySlot(item.usable ? game.SlotTypes.USABLE : game.SlotTypes.EQUIP);
+            if ( emptySlot != null ) {
+                emptySlot.setItem(item);
+                addedItemState = game.AddedItemToInventoryState.FULLY_ADDED;
+            }
+        } else {
+            // We got here, so the item has to be usable and stackable.
+            //
+            // First, go through each slot. If there's an item of the same
+            // type, then deposit as much as possible into that slot.
+            var quantityLeft = item.quantity;
+            for (var i = 0; i < this.slots.length; i++) {
+                var slotItem = this.slots[i].item;
+                if ( slotItem == null || slotItem.itemID != item.itemID ) continue;
+
+                // Add as much as we can
+                quantityLeft = this.slots[i].addQuantity(quantityLeft);
+                if ( quantityLeft == 0 ) {
+                    break;
+                }
+            };
+
+            // If there's still something left after that, then we need to
+            // keep finding empty slots to fill.
+            while ( quantityLeft > 0 ) {
+                emptySlot = this.getFirstEmptySlot(game.SlotTypes.USABLE);
+                if ( emptySlot == null ) {
+                    break;
+                }
+
+                // Make a new item so that multiple slots don't reference
+                // the same item.
+                var newItem = new game.Item(item.itemID);
+                newItem.quantity = Math.min(quantityLeft, game.maxSlotQuantity);
+                emptySlot.setItem(newItem);
+                quantityLeft -= newItem.quantity;
+            }
+
+        }
+
+        if ( quantityLeft == 0 ) {
+            addedItemState = game.AddedItemToInventoryState.FULLY_ADDED;
+        } else if ( quantityLeft != originalQuantity ) {
+            addedItemState = game.AddedItemToInventoryState.PARTIALLY_ADDED;
+        }
+
+        var didItemFullyFit = (addedItemState == game.AddedItemToInventoryState.FULLY_ADDED);
+        game.LootUI.addItemNotification(item, didItemFullyFit, originalQuantity);
+        game.QuestManager.collectedAnItem();
+
+        return addedItemState;
 	};
 
 	/**

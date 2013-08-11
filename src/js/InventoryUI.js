@@ -58,14 +58,17 @@
     /**
      * This is called when a slot's item is changed.
      * @param  {Number} slotIndex The index of the Slot/SlotUI that changed.
+     * @return {Boolean} - true if this was a valid slot index
      */
     window.game.InventoryUI.prototype.updatedSlot = function(slotIndex) {
         // This is necessary because Slot sets an item before a corresponding
         // SlotUI even exists, so we need to make sure it's been added.
-        if ( slotIndex >= this.slots.length ) return;
+        if ( slotIndex >= this.slots.length ) return false;
 
         // Update the slot UI
         this.slots[slotIndex].updateItem();
+
+        return true;
     };
 
     /**
@@ -89,7 +92,6 @@
 
     /**
      * Updates the description based on which item is selected.
-     * @return {null}
      */
     window.game.InventoryUI.prototype.updateDescription = function() {
         // Make a var here so I don't have to type 'this' all the time

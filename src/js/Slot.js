@@ -13,15 +13,17 @@
 
     /**
      * Slot base-class constructor. useThisConstructor is here to ensure that
-     * this constructor is only being used when a base class really wants
-     * to call it. That's because it gets called when a base class first inherits from
-     * it.
-     * This class is completely unaware of SlotUI; any UI updates
-     * that must be done must go through InventoryUI. For this reason, the
-     * slotIndex must always match the corresponding SlotUI's index.
-     * @param {Boolean} useThisConstructor - True when this constructor code should run
+     * this constructor is only being used when a base class really wants to
+     * call it. That's because it gets called when a base class first inherits
+     * from it.
+     *
+     * This class is completely unaware of SlotUI; any UI updates that must be
+     * done must go through InventoryUI. For this reason, the slotIndex must
+     * always match the corresponding SlotUI's index.
+     * @param {Boolean} useThisConstructor - True when this constructor code
+     * should run
      * @param {SlotTypes} slotType - the type of the slot
-     * @param {Number} slotID ID for this slot
+     * @param {Number} slotID - ID for this slot
      */
     window.game.Slot = function Slot(useThisConstructor, slotType, slotID) {
         if ( useThisConstructor === undefined ) return;

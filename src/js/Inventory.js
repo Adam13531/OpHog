@@ -1,24 +1,23 @@
 ( function() {
 
     /**
-     * Flags to let us know how much of an item was added to an inventory
+     * Status to let us know how much of an item was added to an inventory.
      */
     window.game.AddedItemToInventoryState = {
-        NOT_ADDED: 1,
-        PARTIALLY_ADDED: 2,
-        FULLY_ADDED: 4
+        NOT_ADDED: 'not added',
+        PARTIALLY_ADDED: 'partially added',
+        FULLY_ADDED: 'fully added'
     };
 
     /**
      * Inventory base-class constructor
-     * 
-     * The useThisConstructor parameter needs to be checked so that
-     * the slots don't get created twice. When nothing is passed
-     * in (i.e., when a base class first inherits from this class
-     * using "new"), then this constructor won't be run. Therefore,
-     * when a base class inherits from this, then in that class'
-     * constructor, you need to have code like this if you want to use
-     * this constructor:
+     *
+     * The useThisConstructor parameter needs to be checked so that the slots
+     * don't get created twice. When nothing is passed in (i.e., when a base
+     * class first inherits from this class using "new"), then this constructor
+     * won't be run. Therefore, when a base class inherits from this, then in
+     * that class' constructor, you need to have code like this if you want to
+     * use this constructor:
      *
      * this.base = game.Inventory;
      * this.base(true); // Pass in true (or anything really) to make sure the 
@@ -28,8 +27,8 @@
      * want to use this constructor, then pass in true (or anything really. it
      * just needs to be something so that the parameter isn't undefined).
      * There is probably a better way to do this.
-     * @param {null} useThisConstructor Tells us whether or not to run the code
-     * in this constructor
+     * @param {Boolean} useThisConstructor Tells us whether or not to run the 
+     * code in this constructor
      */
     window.game.Inventory = function Inventory(useThisConstructor) {
         if ( useThisConstructor === undefined ) return;
@@ -52,7 +51,6 @@
      */
     window.game.Inventory.prototype.generateItems = function() {
         console.log('generateItems - unimplemented in game.Inventory base class');
-        return null;
     };
 
     /**
@@ -78,77 +76,6 @@
         };
 
         return null;
-    };
-
-    window.game.Inventory.prototype.addItem = function(item) {
-
-        // if ( item == null ) return true;
-        if ( item == null ) return game.AddedItemToInventoryState.FULLY_ADDED;
-
-        // var addedItem = false;
-        var addedItemState = game.AddedItemToInventoryState.NOT_ADDED;
-        var emptySlot = null;
-
-        // When we add a stackable item, we distribute the original item
-        // into our inventory, thus decreasing the quantity. We keep this
-        // around so that the loot summary can display the correct quantity.
-        var originalQuantity = item.quantity;
-
-        // If the item is equippable or can't be stacked, then the only way
-        // it will fit is by finding an empty slot.
-        // 
-        //
-        // TODO: technically it could also fit if it's equippable by a class
-        // and that's our only empty slot...
-        if ( !item.usable || !item.stackable) {
-            emptySlot = this.getFirstEmptySlot(item.usable ? game.SlotTypes.USABLE : game.SlotTypes.EQUIP);
-            if ( emptySlot != null ) {
-                emptySlot.setItem(item);
-                // addedItem = true;
-                addedItemState = game.AddedItemToInventoryState.FULLY_ADDED;
-            }
-        } else {
-            // We got here, so the item has to be usable and stackable.
-            //
-            // First, go through each slot. If there's an item of the same
-            // type, then deposit as much as possible into that slot.
-            var quantityLeft = item.quantity;
-            for (var i = 0; i < this.slots.length; i++) {
-                var slotItem = this.slots[i].item;
-                if ( slotItem == null || slotItem.itemID != item.itemID ) continue;
-
-                // Add as much as we can
-                quantityLeft = this.slots[i].addQuantity(quantityLeft);
-                if ( quantityLeft == 0 ) {
-                    break;
-                }
-            };
-
-            // If there's still something left after that, then we need to
-            // keep finding empty slots to fill.
-            while ( quantityLeft > 0 ) {
-                emptySlot = this.getFirstEmptySlot(game.SlotTypes.USABLE);
-                if ( emptySlot == null ) {
-                    break;
-                }
-
-                // Make a new item so that multiple slots don't reference
-                // the same item.
-                var newItem = new game.Item(item.itemID);
-                newItem.quantity = Math.min(quantityLeft, game.maxSlotQuantity);
-                emptySlot.setItem(newItem);
-                quantityLeft -= newItem.quantity;
-            }
-
-        }
-
-        if ( quantityLeft == 0 ) {
-            addedItemState = game.AddedItemToInventoryState.FULLY_ADDED;
-        } else if ( quantityLeft != originalQuantity ) {
-            addedItemState = game.AddedItemToInventoryState.PARTIALLY_ADDED;
-        }
-
-        return addedItemState;
     };
 
     /**

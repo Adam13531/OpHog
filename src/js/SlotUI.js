@@ -2,11 +2,13 @@
 
     /**
      * SlotUI base-class constructor. useThisConstructor is here to ensure that
-     * this constructor is only being used when a base class really wants
-     * to call it. That's because it gets called when a base class first inherits from
-     * it.
-     * @param {Boolean} useThisConstructor - True when this constructor code should run
-     * @param {String} domSelector - the jquery selector for the span representing the slot (e.g. '#some-span')
+     * this constructor is only being used when a base class really wants to
+     * call it. That's because it gets called when a base class first inherits
+     * from it.
+     * @param {Boolean} useThisConstructor - True when this constructor code
+     * should run
+     * @param {String} domSelector - the jquery selector for the span
+     * representing the slot (e.g. '#some-span')
      * @param {Slot} slot - the Slot backing this SlotUI.
      */
     window.game.SlotUI = function SlotUI(useThisConstructor, domSelector, slot) {
@@ -19,6 +21,9 @@
         // background and the foreground.
         //
         // The image needs an ID too so that accept() will work.
+        // 
+        // Not all child classes will use all of these DOM elements. TODO:
+        // refactor this.
         $(domSelector).append(
             '<span id="slot' + this.slotIndex +'"style="position:relative;display:inline-block;margin:1px;width:32px;height:32px">' +
             '<img style="z-index:5" src="' + this.getBackImage() + '" width="32" height="32"/>' +
@@ -46,8 +51,6 @@
         this.$greenImage = this.$itemImage.next();
         this.$redImage = this.$greenImage.next();
 
-       
-
         // Position the images so that they're on top of each other.
         $.each([this.$itemImage, this.$greenImage, this.$redImage], function(index, value) {
             value.css({
@@ -66,6 +69,11 @@
 
     };
 
+    /**
+     * Highlights or unhighlights the slot.
+     * @param  {Boolean} isGreen - true if you want the green image to show
+     * @param  {Boolean} isRed   - true if you want the red image to show
+     */
     window.game.SlotUI.prototype.highlight = function(isGreen, isRed) {
         if ( isGreen ) {
             this.$greenImage.show();
@@ -160,7 +168,6 @@
 
     /**
      * Changes the background image of this slot back to normal.
-     * @return {null}
      */
     window.game.SlotUI.prototype.deselectSlot = function() {
         var img = this.getBackImage();

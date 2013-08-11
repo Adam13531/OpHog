@@ -91,9 +91,12 @@
     };
 
     window.game.ShopUI.prototype.updatedSlot = function(slotIndex) {
-        game.InventoryUI.prototype.updatedSlot.call(this, slotIndex);
+        if (!game.InventoryUI.prototype.updatedSlot.call(this, slotIndex)) {
+            return false;
+        }
 
         this.updateDescription();
+        return true;
     };
 
     //TODO: This is test code. Real buy prices will be computed
