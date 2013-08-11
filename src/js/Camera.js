@@ -12,7 +12,9 @@
 
         /**
          * Minimum zoom value. The code doesn't handle this going below 1 very
-         * well.
+         * well. If we ever want zooming out below 1 to be a feature, then we'll
+         * need to make sure that the pan values are always integers, and even
+         * then it will probably still have graphical glitches.
          * @type {Number}
          */
         minZoom: .3,
@@ -99,7 +101,6 @@
 
         /**
          * Sets the view so that zoom and pan values are within valid ranges.
-         * @return {null}
          */
         initialize: function() {
             this.zoomChanged();
@@ -112,7 +113,6 @@
          * held.
          * @param  {Number} delta    The number of ms since the last time this
          * was called.
-         * @return {null}
          */
         update: function(keysDown, delta) {
             this.handleInput(keysDown, delta);
@@ -120,16 +120,42 @@
         },
 
         /**
-         * Centers the camera instantaneously at the specified world position
+         * Moves the camera instantaneously at the specified world position
          * without changing the zoom level.
          * @param  {Number} worldX - x in world coordinates
          * @param  {Number} worldY - y in world coordinates
+         * @param  {Boolean} centerCamera - if true, this will center the camera
+         * at the specified coordinates, otherwise it will treat those as the
+         * upper-left coordinates of the camera.
          */
-        panInstantlyTo: function(worldX, worldY) {
-            this.curPanX = worldX - this.viewWidth / 2;
-            this.curPanY = worldY - this.viewHeight / 2;
+        panInstantlyTo: function(worldX, worldY, centerCamera) {
+            if ( centerCamera ) {
+                this.curPanX = worldX - this.viewWidth / 2;
+                this.curPanY = worldY - this.viewHeight / 2;
+            } else {
+                this.curPanX = worldX;
+                this.curPanY = worldY;
+            }
 
             this.clampPanValues();
+        },
+
+        /**
+         * @return {Number} - the current zoom level. See the comment for
+         * curZoom for information on ranges.
+         */
+        getCurrentZoom: function() {
+            return this.curZoom;
+        },
+
+        /**
+         * Sets the current zoom level. See the comment for curZoom for
+         * information on ranges.
+         * @param  {Number} newZoomLevel - the new zoom level
+         */
+        instantlySetZoom: function(newZoomLevel) {
+            this.curZoom = newZoomLevel;
+            this.zoomChanged();
         },
 
         /**
@@ -153,24 +179,24 @@
                 this.curPanY -= panSpeed;
             }
 
-            // Clamp the pan values so that we don't scroll out of bounds.
+            // Clamp the pan values so that we don't scroll out of bounds. This
+            // is actually called every game loop.
             this.clampPanValues();
         },
 
         /**
          * If the camera is shaking, then we update the coordinates here.
          * @param  {Number} delta - number of ms since this was last called
-         * @return {null}
          */
         updateShake: function(delta) {
             if ( this.shakeTimer <= 0 ) {
                 return;
             }
 
-            var amplitude = 50;
+            var frequency = 50;
             var offset = 10;
-            this.shakeX = Math.sin(game.alphaBlink * amplitude) * offset;
-            this.shakeY = -Math.cos(game.alphaBlink * amplitude) * offset;
+            this.shakeX = Math.sin(game.alphaBlink * frequency) * offset;
+            this.shakeY = -Math.cos(game.alphaBlink * frequency) * offset;
 
             this.shakeTimer -= delta;
             if ( this.shakeTimer <= 0 ) {
@@ -182,13 +208,30 @@
         /**
          * This function clamps the zoom values between min and max, then
          * updates the scroll boundaries.
-         * @return {null}
+         *
+         * It also ensures that zoom levels >= 1 are always integers so that you
+         * don't get graphical glitches (see clampPanValues).
          */
         zoomChanged: function() {
+            if ( this.curZoom > 1 ) {
+                this.curZoom = Math.round(this.curZoom);
+            }
+
             this.curZoom = Math.min(this.maxZoom, this.curZoom);
             this.curZoom = Math.max(this.minZoom, this.curZoom);
 
             this.computeScrollBoundaries();
+        },
+
+        /**
+         * @return {Number} - the center X coordinate (in world space) that this
+         * camera is currently looking at
+         */
+        getCenterX: function() {
+            return this.curPanX + this.viewWidth / 2;
+        },
+        getCenterY: function() {
+            return this.curPanY + this.viewHeight / 2;
         },
 
         /**
@@ -267,7 +310,6 @@
          * function.
          *
          * It figures out the new maximum scroll values.
-         * @return {null}
          */
         computeScrollBoundaries: function() {
             this.maxPanX = currentMap.widthInPixels - (screenWidth / this.curZoom);
@@ -280,11 +322,19 @@
         },
 
         /**
-         * This function prevents scrolling out of bounds.
-         * @return {null}
+         * This function prevents scrolling out of bounds. It also makes sure
+         * that the pan values are always integers so that you don't get weird
+         * graphical glitches (they usually manifest in the form of
+         * vertical/horizontal lines on the sides of tiles).
          */
         clampPanValues: function() {
-            return;
+            // This may be helpful in the future.
+            // this.curPanX = Math.round(this.curPanX / this.curZoom) * this.curZoom;
+            // this.curPanY = Math.round(this.curPanY / this.curZoom) * this.curZoom;
+            
+            this.curPanX = Math.round(this.curPanX);
+            this.curPanY = Math.round(this.curPanY);
+
             this.curPanX = Math.min(Math.max(0, this.curPanX), this.maxPanX);
             this.curPanY = Math.min(Math.max(0, this.curPanY), this.maxPanY);
         },
@@ -293,7 +343,6 @@
          * Before drawing something that is influenced by the camera, you need
          * to call this.
          * @param  {Object} ctx Canvas context.
-         * @return {null}
          */
         scaleAndTranslate: function(ctx) {
             ctx.scale(this.curZoom, this.curZoom);
@@ -316,12 +365,48 @@
             var camera = this;
 
             return function(event, delta) {
-                var zoomSpeed = .5;
+                var zoomSpeed = 1;
                 if ( delta < 0 ) {
                     zoomSpeed *= -1;
                 }
 
-                camera.curZoom += zoomSpeed;
+                // NONE OF THESE LESS-THAN-ONE VALUES ARE SUPPORTED WITHOUT
+                // HAVING GRAPHICAL GLITCHES
+                var zoomValuesLessThanOne = [camera.minZoom, .5, .75];
+
+                // If zooming would push you below 1...
+                if ( camera.curZoom + zoomSpeed < 1 ) {
+                    // Jump right from whatever you're at to the highest zoom
+                    // value that's less than one.
+                    if ( camera.curZoom >= 1 ) {
+                        camera.curZoom = zoomValuesLessThanOne[zoomValuesLessThanOne.length - 1];
+                    } else {
+                        for (var i = 0; i < zoomValuesLessThanOne.length; i++) {
+                            if ( camera.curZoom == zoomValuesLessThanOne[i] ) {
+                                camera.curZoom = zoomValuesLessThanOne[Math.max(0, i-1)];
+                                break;
+                            }
+                        };
+                    }
+                } else {
+                    // If you're zoomed out beneath 1, then go back up the
+                    // incremental array.
+                    if ( camera.curZoom < 1 ) {
+                        for (var i = 0; i < zoomValuesLessThanOne.length; i++) {
+                            if ( camera.curZoom == zoomValuesLessThanOne[i] ) {
+                                if ( i == zoomValuesLessThanOne.length - 1 ) {
+                                    camera.curZoom = 1;
+                                } else {
+                                    camera.curZoom = zoomValuesLessThanOne[i+1];
+                                }
+                                break;
+                            }
+                        };
+                    } else {
+                        camera.curZoom += zoomSpeed;
+                    }
+                }
+
                 camera.zoomChanged();
 
                 // This is CLOSE to the final formula for zooming at where your
@@ -342,6 +427,7 @@
             var camera = this;
 
             return function(event) {
+                game.HammerHelper.hammerDragging = true;
                 camera.dragStartPos = {
                     origPanX: camera.curPanX,
                     origPanY: camera.curPanY
@@ -357,8 +443,8 @@
             var camera = this;
 
             return function(event) {
-                camera.curPanX = camera.dragStartPos.origPanX - event.distanceX / camera.curZoom;
-                camera.curPanY = camera.dragStartPos.origPanY - event.distanceY / camera.curZoom;
+                camera.curPanX = camera.dragStartPos.origPanX - event.gesture.deltaX / camera.curZoom;
+                camera.curPanY = camera.dragStartPos.origPanY - event.gesture.deltaY / camera.curZoom;
             };
         },
 
@@ -371,8 +457,9 @@
             var camera = this;
 
             return function(event) {
-               camera.pinchZoomStartingScale = event.scale; 
-               ctxOrigZoom = camera.curZoom;
+                game.HammerHelper.hammerTransforming = true;
+                camera.pinchZoomStartingScale = event.gesture.scale; 
+                ctxOrigZoom = camera.curZoom;
             };
         },
 
@@ -384,7 +471,14 @@
             var camera = this;
 
             return function(event) {
-                camera.curZoom = ctxOrigZoom + (event.scale - camera.pinchZoomStartingScale) / 2.0;
+                var delta = event.gesture.scale - camera.pinchZoomStartingScale;
+
+                if ( delta >= 1 ) {
+                    camera.curZoom = ctxOrigZoom + delta / 2.0;
+                } else {
+                    camera.curZoom = ctxOrigZoom + delta * 2.0;
+                }
+
                 camera.zoomChanged();
             };
         },

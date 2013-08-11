@@ -95,11 +95,35 @@
     };
 
     /**
-     * Returns base64-encoded image data for an individual, double-sized sprite.
-     * @param  {Number} graphicIndex - the index of the sprite in the sheet
-     * @param  {Boolean} hFlip        - if true, horizontally flip the sprite
+     * See getSpriteData.
+     * @param  {game.UnitData} unitData - the unit data to pull the graphic
+     * indexes and dimensions from.
      */
-    window.game.SpriteSheet.prototype.getLargeSpriteData = function(graphicIndex, hFlip) {
+    window.game.SpriteSheet.prototype.getSpriteDataFromUnitData = function(unitData, hFlip) {
+        return this.getSpriteData(unitData.graphicIndexes, unitData.width, unitData.height, hFlip);
+    };
+
+    /**
+     * See getSpriteData.
+     * @param  {Number} graphicIndex - a single graphic index
+     */
+    window.game.SpriteSheet.prototype.getSpriteDataFromSingleIndex = function(graphicIndex, hFlip) {
+        return this.getSpriteData([graphicIndex], 1, 1, hFlip);
+    };
+
+    /**
+     * Returns base64-encoded image data for a set of up to four graphic
+     * indexes.
+     *
+     * The sprite returned will be justified to the left and bottom of a 2x2
+     * square.
+     * @param  {Array:Number} graphicIndexes - the graphic indexes
+     * @param  {Number} width         - the width in tiles
+     * @param  {Number} height        - the height in tiles
+     * @param  {Boolean} hFlip        - if true, horizontally flip the sprite
+     * @return {String}                base64-encoded image data
+     */
+    window.game.SpriteSheet.prototype.getSpriteData = function(graphicIndexes, width, height, hFlip) {
         // Create an empty canvas element. This is a virtual element and does
         // not exist in the DOM yet.
         var canvas = document.createElement("canvas");
@@ -108,9 +132,29 @@
 
         // Copy the image contents to the canvas
         var ctx = canvas.getContext("2d");
-        ctx.scale(2,2);
 
-        this.drawSprite(ctx, graphicIndex, 0, 0, hFlip);
+        // Justify to the left side
+        if ( width == 1 && hFlip ) {
+            ctx.translate(-canvas.width / 2, 0);
+        }
+
+        // Justify to the bottom
+        if ( height == 1 ) {
+            ctx.translate(0,canvas.height /2);
+        }
+
+        if ( hFlip ) {
+            ctx.translate(canvas.width,0);
+            ctx.scale(-1,1);
+        }
+
+        var index = 0;
+        for (var j = 0; j < height; j++) {
+            for (var i = 0; i < width; i++) {
+                this.drawSprite(ctx, graphicIndexes[index], i * tileSize, j * tileSize, false);
+                index++;
+            };
+        };
 
         var dataURL = canvas.toDataURL("image/png");
         return dataURL;

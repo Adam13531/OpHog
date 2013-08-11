@@ -11,10 +11,11 @@
      * @param {Number} width                - width of this map
      * @param {Boolean} isOverworldMap - true if this is the overworld map.
      */
-    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width, isOverworldMap) {
+    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width, difficulty, isOverworldMap) {
         this.numCols = width;
         this.numRows = mapTilesIndices.length / this.numCols;
         this.isOverworldMap = isOverworldMap;
+        this.difficulty = difficulty;
 
         this.tileset = game.TilesetManager.getTilesetByID(tilesetID);
 
@@ -98,6 +99,27 @@
         // can be populated when it's null. We can't just populate it here
         // because at this point, everything on the map is still foggy.
         this.tileOfLastMap = null;
+
+        // These coordinates are the position where the camera was looking when
+        // you switched away from the overworld map.
+        this.lastCameraX = null;
+        this.lastCameraY = null;
+
+        // Similarly, this is the last zoom level.
+        this.lastCameraZoom = null;
+    };
+
+    /**
+     * Sets the last camera coordinates, which is only used for the overworld
+     * map. This is the last position where the camera was looking.
+     * @param  {Number} centerX - the center camera X in world coordinates
+     * @param  {Number} centerY - the center camera Y in world coordinates
+     * @param  {Number} zoomLevel - the camera's zoom level (1 == no special zoom).
+     */
+    window.game.Map.prototype.setLastCameraProperties = function(centerX, centerY, zoomLevel) {
+        this.lastCameraX = centerX;
+        this.lastCameraY = centerY;
+        this.lastCameraZoom = zoomLevel;
     };
 
     /**
@@ -110,6 +132,7 @@
         if ( this.tileOfLastMap == null ) {
             var visibleSpawners = this.getAllTiles(game.TileFlags.SPAWNER | game.TileFlags.UNFOGGY);
             this.tileOfLastMap = game.util.randomArrayElement(visibleSpawners);
+            this.setLastCameraProperties(this.tileOfLastMap.x * tileSize, this.tileOfLastMap.y * tileSize, game.Camera.getCurrentZoom());
         }
 
         return this.tileOfLastMap;
@@ -130,8 +153,9 @@
      * because placing the boss depends on a fully constructed map.
      */
     window.game.Map.prototype.addBossUnit = function() {
-        // Make a lv. 20 tree
-        var bossUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.BOSS | game.PlayerFlags.ENEMY,20);
+        // Make a boss whose level is based on the difficulty.
+        var level = Math.ceil(3.5 * this.difficulty + 16.6667);
+        var bossUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.BOSS | game.PlayerFlags.ENEMY,level);
         bossUnit.movementAI = game.MovementAI.LEASH_TO_TILE;
         bossUnit.convertToBoss();
 
@@ -251,9 +275,9 @@
                     // is just debug logic).
                     var relativeWeight = enemyID + 1;
 
-                    // These level ranges are arbitrary
-                    var minLevel = 1;
-                    var maxLevel = 5;
+                    // Base the level range on the difficulty.
+                    var minLevel = Math.ceil(this.difficulty * .9);
+                    var maxLevel = Math.ceil(this.difficulty * 1.1);
                     var possibleEnemy = new game.PossibleEnemy(enemyID, relativeWeight, minLevel, maxLevel);
                     possibleEnemies.push(possibleEnemy);
                 }
@@ -1353,8 +1377,8 @@
     window.game.Map.prototype.drawOverworldDescriptions = function(ctx) {
         if ( !this.isOverworldMap || !game.keyPressedToDisplayLifeBars ) return;
 
-        for (var i = 0; i < game.overworldMapNodes.length; i++) {
-            var node = game.overworldMapNodes[i];
+        for (var i = 0; i < game.OverworldMapData.overworldMapNodes.length; i++) {
+            var node = game.OverworldMapData.overworldMapNodes[i];
 
             // Don't draw if it's foggy
             if ( this.isFoggy(node.x, node.y) ) continue;

@@ -204,9 +204,6 @@
          * @type {Boolean}
          */
         this.gaveOutQuest = false;
-
-        // Populate this.mods
-        this.equipmentChanged();
     };
 
     /**
@@ -322,6 +319,9 @@
 
         // Purge status effects
         this.removeStatusEffects();
+
+        // Populate this.mods
+        this.populateMods();
 
         if ( this.isPlayer() ) {
             game.QuestManager.placedAUnit(this.unitType);
@@ -556,18 +556,10 @@
         }
 
         // In order to find the next tile, we need to know our previous tile. If
-        // we just placed this unit, then there is no previousTile, so we need
-        // to set a reasonable previousTile.
+        // we just placed this unit, then there is no previousTile, but we can
+        // just set it to tile because its left/right-list contains itself.
         if ( this.previousTile == null ) {
-
-            // If we're an endpoint, then our only choice is the current tile.
-            if ( isTileALeftEndpoint ) {
                 this.previousTile = tile;
-            } else {
-                // Otherwise, we can randomly pick a leftNeighbor.
-                var leftNeighborIndex = game.util.randomKeyFromDict(listToUse);
-                this.previousTile = currentMap.mapTiles[leftNeighborIndex];
-            }
         }
 
         // Randomly choose a valid neighbor
@@ -805,15 +797,13 @@
     };
 
     /**
-     * Call this function any time this unit's equipment changes. It will set up
-     * this.mods.
-     * @return {undefined}
+     * Sets up 'this.mods'.
      */
-    window.game.Unit.prototype.equipmentChanged = function() {
+    window.game.Unit.prototype.populateMods = function() {
         this.mods = [];
 
         // Go through each equipped items and add its mods to this unit's mods.
-        var equippedItems = this.getClassEquippedItems();
+        var equippedItems = game.Inventory.getClassEquippedItems(this.unitType);
         for (var i = 0; i < equippedItems.length; i++) {
             var equippedItem = equippedItems[i];
             for (var j = 0; j < equippedItem.mods.length; j++) {
@@ -829,48 +819,6 @@
     window.game.Unit.prototype.isPlaceableUnit = function() {
         var type = this.unitType;
         return (type == game.PlaceableUnitType.ARCHER || type == game.PlaceableUnitType.WARRIOR || type == game.PlaceableUnitType.WIZARD);
-    };
-
-    /**
-     * Gets the items that are equipped to this class. This does not work for
-     * enemies because it looks in your inventory.
-     * @return {Array:Item} - the items that are equipped to this class.
-     */
-    window.game.Unit.prototype.getClassEquippedItems = function() {
-        if ( !this.isPlayer() ) {
-            return [];
-        }
-
-        var slotType = null;
-        var classSlots;
-        var equippedItems = [];
-
-        switch ( this.unitType ) {
-            case game.PlaceableUnitType.ARCHER:
-                slotType = game.SlotTypes.ARCH;
-                break;
-            case game.PlaceableUnitType.WARRIOR:
-                slotType = game.SlotTypes.WAR;
-                break;
-            case game.PlaceableUnitType.WIZARD:
-                slotType = game.SlotTypes.WIZ;
-                break;
-            default:
-                slotType = null;
-                break;
-        }
-
-        if ( slotType != null ) {
-            classSlots = game.Player.inventory.getAllSlotsOfType(slotType);
-
-            for (var i = 0; i < classSlots.length; i++) {
-                if ( !classSlots[i].isEmpty() ) {
-                    equippedItems.push(classSlots[i].item);
-                }
-            };
-        }
-
-        return equippedItems;
     };
 
     window.game.Unit.prototype.projectileCallback = function(projectile) {
@@ -1165,38 +1113,14 @@
      * @param  {Object} ctx - the canvas context
      */
     window.game.Unit.prototype.drawLifeBar = function(ctx) {
-        ctx.save();
-
         // Properties of the life bar rectangle
         var w = this.width;
         var h = 10;
         var x = this.x;
         var y = this.y + this.height - h;
-
         var percentLife = Math.min(1, Math.max(0, this.life / this.getMaxLife()));
 
-        // Draw a rectangle as the background
-        ctx.fillStyle = 'rgba(0, 0, 0, .75)';
-        ctx.fillRect(x,y,w,h);
-
-        // Draw a rectangle to show how much life you have
-        ctx.fillStyle = 'rgba(200, 0, 0, .75)';
-        ctx.fillRect(x,y,w * percentLife, h);
-
-        // Draw a border
-        ctx.strokeStyle = 'rgba(255, 0, 0, .75)';
-        ctx.strokeRect(x,y,w, h);
-
-        // Draw the percentage
-        ctx.font = '12px Futura, Helvetica, sans-serif';
-        var text = game.util.formatPercentString(percentLife, 0) + '%';
-        var width = ctx.measureText(text).width;
-
-        ctx.textBaseline = 'top';
-        ctx.fillStyle = '#fff';
-        ctx.fillText(text, x + w / 2 - width / 2, y - 2);
-
-        ctx.restore();
+        game.graphicsUtil.drawBar(ctx, x,y,w,h, percentLife, {barR:200, borderR:255});
     };
 
     /**
@@ -1306,7 +1230,7 @@
             // Size will be in the range [-3,3]. This will make the '!' grow and
             // shrink.
             var size = Math.ceil(Math.sin(game.alphaBlink * 4) * 3);
-            game.TextManager.drawTextImmediate(ctx, '!', x, y, {fontSize:23 + size, color:'#ff0', baseline:'bottom'});
+            game.TextManager.drawTextImmediate(ctx, '!', x, y, {fontSize:23 + size, color:'#ff0', baseline:'bottom', clamp:false});
         }
 
     };

@@ -98,6 +98,22 @@
             return false;
         },
 
+        /**
+         * This will add all placed units to a new battle at the specified
+         * point. This is used by the minigame so that units don't need to walk
+         * to any specific point before they'll get in a battle.
+         * @param  {Number} centerX - X position in world coordinates
+         * @param  {Number} centerY - Y position in world coordinates
+         */
+        makeBattleForPlacedUnits: function(centerX, centerY) {
+            var gameUnits = game.UnitManager.gameUnits;
+            var newBattle = new game.Battle(centerX, centerY);
+            for (var i = 0; i < gameUnits.length; i++) {
+                newBattle.addUnit(gameUnits[i]);
+            };
+            this.battles.push(newBattle);
+        },
+
         checkForBattles: function(allUnits) {
             // Split units up into player and enemy units
             var playerUnits = new Array();
@@ -147,15 +163,20 @@
                         continue;
                     }
 
+                    // Battles between two 1x1 foes will be about three tiles
+                    // wide, so we start battles when they're approximately
+                    // where they are after the battle was started.
+                    var battleStartDistance = tileSize * 4;
+                    if ( enemy.isBoss() ) {
+                        battleStartDistance *= 2;
+                    }
+
                     enemyCenterX = enemy.getCenterX();
                     enemyCenterY = enemy.getCenterY();
 
                     var dist = window.game.util.distance(playerCenterX, playerCenterY, enemyCenterX, enemyCenterY);
 
-                    // Battles between two 1x1 foes will be about three tiles
-                    // wide, so we start battles when they're approximately
-                    // where they are after the battle was started.
-                    if (dist <= tileSize * 4) {
+                    if (dist <= battleStartDistance) {
                         // Start a battle
                         var centerX = Math.floor((playerCenterX + enemyCenterX) / 2.0);
                         var centerY = Math.floor((playerCenterY + enemyCenterY) / 2.0);

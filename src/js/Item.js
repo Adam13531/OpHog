@@ -68,7 +68,8 @@
             htmlDescription:'<font color="#660000"><b>This sword can actually only pierce hearts.<b/></font>',
             equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
             cssClass:'item-sprite sword32-png',
-            mods: [new game.LifeLeech(.5, .5), new game.MultipleProjectiles(2)]
+            mods: [new game.LifeLeech(.5, .5), new game.MultipleProjectiles(2)],
+            placementCost: 10
         },
         HEAL_GEM: {
             id: 3,
@@ -154,6 +155,12 @@
                 item.htmlDescription += '<br/>' + item.mods[i].getDescription();
             };
         }
+
+        if ( item.usable == false || item.usable === undefined ) {
+            // Make sure all equippable items have a placementCost.
+            game.util.useDefaultIfUndefined(item, 'placementCost', 0);
+            item.htmlDescription += '<br/>' + 'Increases placement cost by ' + item.placementCost;
+        }
     }
 
     /**
@@ -235,6 +242,7 @@
             }
         } else {
             this.equippableBy = itemData.equippableBy;
+            this.placementCost = itemData.placementCost;
         }
 
         this.mods = [];

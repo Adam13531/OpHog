@@ -115,8 +115,8 @@ textarea {
 .ui-slider-range{position:absolute;width:100%;background-color:lightgrey}
 
 
-.equip-slot{background-color:#3f48cc;color:white;text-align:center;}
-.use-slot{background-color:#880015;color:white;text-align:center;}
+.equip-slot{background-color:#3f48cc;color:white;text-align:center;font-size:80%;}
+.use-slot{background-color:#880015;color:white;text-align:center;font-size:80%;}
 .test3{background-color:white;color:black;}
 
 
@@ -129,14 +129,52 @@ textarea {
     background: url(../../res/img/char_32.png) 0 0 no-repeat;
 }
 
-.arch32-png {
+.arch-alt-0-png {
     background-position: -0px -0px;
 }
-.war32-png {
+.arch-alt-1-png {
+    background-position: -0px -704px;
+}
+.arch-alt-2-png {
+    background-position: -32px -704px;
+}
+.arch-alt-3-png {
+    background-position: -64px -704px;
+}
+.arch-alt-4-png {
+    background-position: -96px -704px;
+}
+
+.war-alt-0-png {
     background-position: -32px -0px;
 }
-.wiz32-png {
+.war-alt-1-png {
+    background-position: -128px -704px;
+}
+.war-alt-2-png {
+    background-position: -160px -704px;
+}
+.war-alt-3-png {
+    background-position: -192px -704px;
+}
+.war-alt-4-png {
+    background-position: -224px -704px;
+}
+
+.wiz-alt-0-png {
     background-position: -64px -0px;
+}
+.wiz-alt-1-png {
+    background-position: -256px -704px;
+}
+.wiz-alt-2-png {
+    background-position: -288px -704px;
+}
+.wiz-alt-3-png {
+    background-position: -320px -704px;
+}
+.wiz-alt-4-png {
+    background-position: -352px -704px;
 }
 
 .smallDiamond-png {

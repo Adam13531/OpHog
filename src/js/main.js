@@ -50,9 +50,8 @@
 
         // Uncomment this if you want to jump directly to normal gameplay when
         // you first start the game.
-        // game.GameStateManager.returnToNormalGameplay();
+        // game.GameStateManager.debugTransitionFromOverworldToNormalMap();
     }
-
 
     function makeUI() {
         // This requires that the spritesheets were loaded.
@@ -68,6 +67,8 @@
         var $showUnitPlacement = $('#showUnitPlacement');
         var $showShop = $('#showShop');
         var $createUnits = $('#createUnits');
+        var $grantMoney = $('#grantMoney');
+        var $goToOverworld = $('#goToOverworld');
         $settingsButton.button({
               icons: {
                 primary: 'ui-icon-gear'
@@ -75,6 +76,7 @@
               text: false
           });
 
+        game.GameStateManager.setupTransitionButton();
 
         $showInventory.button();
         $showInventory.click(function() {
@@ -123,53 +125,22 @@
             };
         });
 
-        // Handle all the events from a user clicking/tapping the canvas
-        $canvas.click(function(event) {
-            // Apparently offsetX and offsetY aren't in every browser...
-            // http://stackoverflow.com/questions/11334452/event-offsetx-in-firefox
-            var offsetX = event.offsetX==undefined?event.originalEvent.layerX:event.offsetX;
-            var offsetY = event.offsetY==undefined?event.originalEvent.layerY:event.offsetY;
+        $grantMoney.button();
+        $grantMoney.click(function() {
+            $settingsDialog.dialog('close');
+            game.Player.modifyCoins(9999999);
+        });
 
-            // Convert to world coordinates and also tile coordinates
-            var worldX = game.Camera.canvasXToWorldX(offsetX);
-            var worldY = game.Camera.canvasYToWorldY(offsetY);
-            var tileX = Math.floor(worldX / tileSize);
-            var tileY = Math.floor(worldY / tileSize);
+        $goToOverworld.button();
+        $goToOverworld.click(function() {
+            $settingsDialog.dialog('close');
 
-            // Make sure the tile is in-bounds
-            if ( tileX < 0 || tileX >= currentMap.numCols || tileY < 0 || tileY >= currentMap.numRows ) {
-                return;
-            }
-
-            var tile = currentMap.getTile(tileX, tileY);
-            
-            // If you're currently trying to use an item, then check to see if
-            // the user clicked a valid target
-            if ( game.playerInventoryUI.attemptToUseItem(worldX, worldY) ) {
-                // If that worked, then we don't attempt to open the spawners
-                // (perhaps you were targeting a unit on your spawner, or you
-                // were targeting the spawner itself - you wouldn't want to open
-                // the placement UI).
-                return;
-            }
-
-            var tileIsSpawnPoint = currentMap.isSpawnerPoint(tileX, tileY);
-
-            // Clicking a "spawner" in the overworld will take you to a map to
-            // play normally on.
-            if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !currentMap.isFoggy(tileX, tileY)) {
-                game.overworldMap.tileOfLastMap = tile;
-                game.GameStateManager.transitionToNormalMap();
-                return;
-            }
-
-            // Check to see if the user tapped a spawner
-            if (game.UnitPlacementUI.canSpawnUnits() && tileIsSpawnPoint) {
-                game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
-                $('#buyingScreenContainer').dialog('open');
-            } else {
-                $('#buyingScreenContainer').dialog('close');
-            }
+            // Set the game state to something that has a valid transition to
+            // the overworld state. We may not have a valid transition to the
+            // win state, so we manually set it here instead of going through
+            // setState.
+            game.GameStateManager.currentState = game.GameStates.NORMAL_WIN_SCREEN;
+            game.GameStateManager.enterOverworldState();
         });
 
         var settingsWidth = $settingsButton.width();
@@ -239,18 +210,68 @@
             $($toggleParticlesButton.selector + ' ~ label > span').text(text);
         });
 
-        // Look at https://github.com/EightMedia/hammer.js/blob/master/hammer.js to figure out what's in the event.
-        // You get scale, rotation, distance, etc.
+        // To see what's in Hammer events, look at their wiki (currently located
+        // here: https://github.com/EightMedia/hammer.js/wiki/Getting-Started).
         // 
-        // Pretty sure you should only call this once. Calling it multiple times will result in multiple events being fired.
-        $canvas.hammer({prevent_default:true});
-        
+        // game.util.dumpObject comes in handy here too.
+        var hammertime = $canvas.hammer({prevent_default:true});
+
         // Get all of the camera's event handlers.
-        $canvas.bind('transformstart', game.Camera.getTransformStartEventHandler());
-        $canvas.bind('transform', game.Camera.getTransformEventHandler());
-        $canvas.bind('transformend', function(event) {/*This does nothing*/});
-        $canvas.bind('dragstart', game.Camera.getDragStartEventHandler());
-        $canvas.bind('drag', game.Camera.getDragEventHandler());
+        hammertime.on('transformstart', game.Camera.getTransformStartEventHandler());
+        hammertime.on('transform', game.Camera.getTransformEventHandler());
+        hammertime.on('dragstart', game.Camera.getDragStartEventHandler());
+        hammertime.on('drag', game.Camera.getDragEventHandler());
+        hammertime.on('dragend', function(event) { game.HammerHelper.hammerResetDragging = true; } );
+        hammertime.on('transformend', function(event) { game.HammerHelper.hammerResetTransforming = true; } );
+
+        // Handle all the events from a user clicking/tapping the canvas
+        hammertime.on('release', function(event) {
+            if ( game.HammerHelper.hammerDragging == true || game.HammerHelper.hammerTransforming == true ) return;
+            // This works on Chrome, Firefox, and IE on a desktop, and Safari and Chrome on an iPad, so it probably works for everything.
+            var offsetX = event.gesture.center.pageX - event.gesture.target.offsetLeft;
+            var offsetY = event.gesture.center.pageY - event.gesture.target.offsetTop;
+
+            // Convert to world coordinates and also tile coordinates
+            var worldX = game.Camera.canvasXToWorldX(offsetX);
+            var worldY = game.Camera.canvasYToWorldY(offsetY);
+            var tileX = Math.floor(worldX / tileSize);
+            var tileY = Math.floor(worldY / tileSize);
+
+            // Make sure the tile is in-bounds
+            if ( tileX < 0 || tileX >= currentMap.numCols || tileY < 0 || tileY >= currentMap.numRows ) {
+                return;
+            }
+
+            var tile = currentMap.getTile(tileX, tileY);
+            
+            // If you're currently trying to use an item, then check to see if
+            // the user clicked a valid target
+            if ( game.InventoryUI.attemptToUseItem(worldX, worldY) ) {
+                // If that worked, then we don't attempt to open the spawners
+                // (perhaps you were targeting a unit on your spawner, or you
+                // were targeting the spawner itself - you wouldn't want to open
+                // the placement UI).
+                return;
+            }
+
+            var tileIsSpawnPoint = currentMap.isSpawnerPoint(tileX, tileY);
+
+            // Clicking a "spawner" in the overworld will take you to a map to
+            // play normally on.
+            if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !currentMap.isFoggy(tileX, tileY)) {
+                game.overworldMap.tileOfLastMap = tile;
+                game.GameStateManager.transitionToNormalMap();
+                return;
+            }
+
+            // Check to see if the user tapped a spawner
+            if (game.UnitPlacementUI.canSpawnUnits() && tileIsSpawnPoint) {
+                game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
+                game.UnitPlacementUI.show();
+            } else {
+                $('#buyingScreenContainer').dialog('close');
+            }
+        });
 
         $canvas.mousewheel(game.Camera.getMouseWheelEventHandler());
 
@@ -273,11 +294,11 @@
     function initSettings() {
         ctx = $('#canvas')[0].getContext('2d');
 
-        var canvasPos = $('#canvas').position();
-
         //Calculate screen height and width
         screenWidth = parseInt($('#canvas').attr('width'));
         screenHeight = parseInt($('#canvas').attr('height'));
+
+        game.UICanvas.initialize();
 
         addKeyboardListeners();
     }
@@ -384,12 +405,6 @@
                 game.Player.modifyCoins(coins);
             }
 
-            // 'G' - return to normal gameplay from a win/lose state. This is
-            // 'the only way you can revert for now.
-            if (evt.keyCode == game.Key.DOM_VK_G) {
-                game.GameStateManager.confirmedWinOrLose();
-            }
-
             // 'Y' - Opens shopUI
             if (evt.keyCode == game.Key.DOM_VK_Y) {
                 var $shopUIScreen = $('#shop-screen');
@@ -412,69 +427,14 @@
                 game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
             }
 
-            // 'H' - win the game. This is the only way you can enter this state
-            // 'for now.
+            // 'H' - win the game.
             if (evt.keyCode == game.Key.DOM_VK_H) {
                 game.GameStateManager.enterWinState();
             }
 
-            // 'J' - lose the game. This is the only way you can enter this
-            // 'state for now.
+            // 'J' - lose the game.
             if (evt.keyCode == game.Key.DOM_VK_J) {
                 game.GameStateManager.enterLoseState();
-            }
-
-            var unitType = null;
-            if (evt.keyCode == game.Key.DOM_VK_1) {
-                unitType = game.UnitType.ORC;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_2) {
-                unitType = game.UnitType.DRAGON;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_3) {
-                unitType = game.UnitType.CENTAUR;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_4) {
-                unitType = game.UnitType.TREE;
-            }
-            if ( unitType != null ) {
-                var newUnit = new game.Unit(unitType.id,game.PlayerFlags.PLAYER,1);
-                newUnit.placeUnit(1, 9,game.MovementAI.FOLLOW_PATH);
-                game.UnitManager.addUnit(newUnit);
-            }
-
-            var enemyUnitType = null;
-            if (evt.keyCode == game.Key.DOM_VK_5) {
-                enemyUnitType = game.UnitType.ORC;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_6) {
-                enemyUnitType = game.UnitType.DRAGON;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_7) {
-                enemyUnitType = game.UnitType.CENTAUR;
-            }
-            if (evt.keyCode == game.Key.DOM_VK_8) {
-                enemyUnitType = game.UnitType.TREE;
-            }
-            if ( enemyUnitType != null ) {
-                var newUnit = new game.Unit(enemyUnitType.id,game.PlayerFlags.ENEMY,1);
-                newUnit.placeUnit(23,9,game.MovementAI.FOLLOW_PATH);
-                game.UnitManager.addUnit(newUnit);
-            }
-
-            if (evt.keyCode == game.Key.DOM_VK_9) {
-                for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.PLAYER,1);
-                    newUnit.placeUnit(1,9,game.MovementAI.FOLLOW_PATH);
-                    game.UnitManager.addUnit(newUnit);
-                };
-            }
-            if (evt.keyCode == game.Key.DOM_VK_0) {
-                for (var i = 0; i < 20; i++) {
-                    var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.ENEMY,1);
-                    newUnit.placeUnit(23,9,game.MovementAI.FOLLOW_PATH);
-                    game.UnitManager.addUnit(newUnit);
-                };
             }
 
             // Pressing 'i' will toggle the inventory screen
@@ -516,6 +476,17 @@
         // engage in battles.
         delta = Math.min(delta, game.msPerFrame * 2);
 
+        // 'G' - speed up the game. This is only a debug function, so it may
+        // 'cause glitches.
+        if ( keysDown[game.Key.DOM_VK_G] ) {
+            delta *= 2;
+        }
+
+        // 'V' - speed up the game (see 'G'). Can be combined with 'G'.
+        if ( keysDown[game.Key.DOM_VK_V] ) {
+            delta *= 4;
+        }
+
         var deltaAsSec = delta / 1000;
 
         game.alphaBlink += deltaAsSec;
@@ -532,6 +503,8 @@
         ctx.restore();
 
         game.GameStateManager.update(delta);
+
+        game.HammerHelper.update();
 
         // Update battles before units so that when the battle is over, the dead
         // units can be removed immediately by the UnitManager
@@ -553,6 +526,7 @@
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
 
+        game.UnitPlacementUI.highlightCurrentSpawnPoint(ctx);
         game.GeneratorManager.draw(ctx);
         game.CollectibleManager.draw(ctx);
         game.UnitManager.draw(ctx);
@@ -576,6 +550,8 @@
         game.Player.drawCastleLife(ctx);
 
         ctx.restore();
+
+        game.UICanvas.draw();
     }
 
     function doneLoadingEverything() {

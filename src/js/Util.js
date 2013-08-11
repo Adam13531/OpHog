@@ -385,4 +385,16 @@
         debugDiv.text(text);
     };
 
+    /**
+     * Dumps the properties of an object directly into the DOM.
+     * @param  {Object} object - any object
+     */
+    window.game.util.dumpObject = function(object) {
+        for (var prop in object) {
+            if ( object.hasOwnProperty(prop) ) {
+                this.debugDisplayText(prop + ': ' + object[prop], '' + prop);
+            }
+        };
+    };
+
 }());

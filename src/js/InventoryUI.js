@@ -24,6 +24,8 @@
         /**
          * Holds the id of the HTML tag for the item description. This
          * is a jQuery selector.
+         * This is the item that you're using. If this is null, then you're not
+         * in USE mode. It is set when you click "Use" so that you can still
          *
          * Ex) Let's say you have this div:
          * <div id="item-description"></div>

@@ -39,6 +39,10 @@
         this.centerX = centerX;
         this.centerY = centerY;
 
+        // This is set to true when the boss joins, and it stays true even if
+        // the boss dies.
+        this.containsBoss = false;
+
         // There are two "join circles" - one centered on the player's units,
         // and one around the enemies. A unit touching *either* of these circles
         // will join the battle.
@@ -266,7 +270,294 @@
     window.game.Battle.prototype.playerWon = function() {
         return this.battleWinner == game.BattleWinner.PLAYER;
     };
-    
+
+    /**
+     * Generates experience for this battle for the player.
+     *
+     * Here are some general scenarios we want to cover:
+     *
+     * YOUR TEAM               ENEMY TEAM                 EXP GIVEN
+     * 5000                    1,1,1,1,1                      1
+     * 5000,1                  100                          0,100
+     * 5000,1                  100                     1,0 if your lv. 1 dies
+     * 100,100                 1                       1,0 or 0,1 (doesn't matter)
+     * 
+     * The algorithm works something like this:
+     *
+     * 1. Create buckets like "tiny exp", "little exp", "normal exp", "lots of
+     * exp", "tons of exp". The lowest bucket is always only 1 exp, and the
+     * highest is always 100 exp.
+     *
+     * 2. Make each bucket correspond to some percentage of the enemy's level.
+     * E.g. the above 5 buckets could be [50%, 75%, 100%, 125%, 150%]. This
+     * means that if you're level 100 and you're fighting a level 125 enemy, you
+     * would get "lots of exp". If the enemy is only level 55, you'd get "tiny
+     * exp" because that's closer to the 50% bucket.
+     *
+     * 3. Bucketize your units by considering each living player unit and each
+     * enemy unit.
+     *
+     * 4. Only consider the highest bucket. That way, if you have a lv. 1 and a
+     * lv. 500 vs. a lv. 250, that would correspond to "tons of exp" and "tiny
+     * exp" respectively for your units. There's no reason the lv. 500 should
+     * even get a point though, so we give it all to the lv. 1.
+     *
+     * 5. Give experience based on how many enemies there were.
+     */
+    window.game.Battle.prototype.generateExperience = function() {
+        var logging = false;
+
+        // Get all living player units
+        var livingPlayerUnits = [];
+        for (var i = 0; i < this.playerUnits.length; i++) {
+            var unit = this.playerUnits[i];
+
+            // Ignore dead units
+            if ( unit.isLiving() ) {
+                livingPlayerUnits.push(unit);
+            };
+
+        };
+
+        /**
+         * The bucketized units. The higher the index into this array, the more
+         * experience you'll get.
+         * @type {Array:(Array:Unit)}
+         */
+        var buckets = [];
+
+        /**
+         * The percent of the enemy's level that you would need to be in order
+         * to be placed in the corresponding bucket.
+         *
+         * The percents should always go up since rewards go up as you go
+         * further ni the array.
+         * @type {Array:Number}
+         */
+        var percentLevel = [];
+
+        /**
+         * The number of buckets. Most of this algorithm should work smoothly as
+         * long as this number is at least 3.
+         * @type {Number}
+         */
+        var numBuckets = 5;
+
+        /**
+         * The reward amount at each bucket level. The first element is always
+         * 1, and the last is always 100.
+         * @type {Array:Number}
+         */
+        var rewardLevel = [];
+
+        var percentIncrement = 1 / (numBuckets - 1);
+
+        // Initialize each array
+        for (var i = 0; i < numBuckets; i++) {
+            buckets.push([]);
+            percentLevel.push(.5 + i * percentIncrement);
+            rewardLevel.push(0);
+        };
+
+        // Each award will be cut in half at each bucket:
+        // [100,50,25,13,7,4,2,1,1,1,1,...]
+        var rewardAmount = 100;
+        rewardLevel[rewardLevel.length - 1] = 100;
+        for (var i = rewardLevel.length - 1; i >= 0; i--) {
+            rewardLevel[i] = rewardAmount;
+            rewardAmount = Math.ceil(rewardAmount / 2);
+        };
+
+        // Ensure that the last reward level is 1.
+        rewardLevel[0] = 1;
+
+        if ( logging ) {
+            console.log('----------------------------');
+            console.log('Enemy levels:');
+            for (var i = 0; i < this.enemyUnits.length; i++) {
+                console.log('\t' + this.enemyUnits[i].level);
+            };
+        }
+
+        // Figure out the highest player level of the living units.
+        var highestPlayerLevel = 0;
+        for (var i = 0; i < livingPlayerUnits.length; i++) {
+            var playerUnit = livingPlayerUnits[i];
+
+            highestPlayerLevel = Math.max(playerUnit.level, highestPlayerLevel);
+        };
+
+        // If the highest level is relatively low, then we shift the percent
+        // levels so that you don't end up getting 100 exp. when you're lv. 1
+        // and fight a single lv. 2.
+        if ( highestPlayerLevel < 5 ) {
+            var percentIncrement = 5 / (numBuckets - 1);
+            for (var i = 0; i < numBuckets; i++) {
+                percentLevel[i] = .1 + i * percentIncrement;
+            };
+
+            // This eliminates the chance of you getting just 1 exp. because it
+            // says that an enemy's level would need to be closer to -10 (or
+            // lower) than the next increment to give you 1 exp.
+            percentLevel[0] = -10;
+        } else if ( highestPlayerLevel < 10 ) {
+            var percentIncrement = 1.5 / (numBuckets - 1);
+            for (var i = 0; i < numBuckets; i++) {
+                percentLevel[i] = .3 + i * percentIncrement;
+            };
+        }
+
+        // Figure out which bucket we're going to retain (see algorithm in the
+        // function-level comments - we only retain a single bucket).
+        var highestBucketWithUnits = 0;
+        for (var i = 0; i < livingPlayerUnits.length; i++) {
+            var playerUnit = livingPlayerUnits[i];
+            var playerLevel = playerUnit.level;
+
+            // Keep track of the highest enemyBucketNumber that we find so that
+            // we can later add this unit to that bucket. This means we'll get
+            // experience as though we only fought the highest level enemies
+            // from the group.
+            var highestBucketIndexForThisUnit = 0;
+            for (var j = 0; j < this.enemyUnits.length; j++) {
+                var enemyUnit = this.enemyUnits[j];
+                var enemyLevel = enemyUnit.level;
+
+                var percent = enemyLevel / playerLevel;
+
+                // Figure out the bucket number for this enemy.
+                var enemyBucketNumber = 0;
+
+                if ( percent <= percentLevel[0] ) {
+                    enemyBucketNumber = 0;
+                } else if ( percent >= percentLevel[numBuckets - 1] ) {
+                    enemyBucketNumber = numBuckets - 1;
+                } else {
+                    // We're one of the middle buckets, so figure out which
+                    // percent we're closest to. For example, if the splits are
+                    // [50%,100%,150%,200%], then 111% would put us in bucket 1,
+                    // not bucket 2.
+                    var smallestDifference = 999999;
+                    for (var k = 0; k < percentLevel.length; k++) {
+                        var difference = Math.abs(percentLevel[k] - percent);
+
+                        if ( difference < smallestDifference ) {
+                            smallestDifference = difference;
+                            enemyBucketNumber = k;
+                        }
+                    };
+                }
+
+                // Take the higher bucket number now.
+                highestBucketIndexForThisUnit = Math.max(highestBucketIndexForThisUnit, enemyBucketNumber);
+            };
+
+            // Add the unit to the highest bucket we found
+            buckets[highestBucketIndexForThisUnit].push(playerUnit);
+            highestBucketWithUnits = Math.max(highestBucketIndexForThisUnit, highestBucketWithUnits);
+        }
+
+        if ( logging ) {
+            for (var i = 0; i < buckets.length; i++) {
+                var bucket = buckets[i];
+                console.log('Bucket #' + i + ' contains ' + bucket.length + ' unit(s):');
+                for (var j = 0; j < bucket.length; j++) {
+                    console.log('\t' + bucket[j].level);
+                };
+            };
+        }
+
+        // Only give experience to the highest bucket that has units.
+        var rewardBucket = buckets[highestBucketWithUnits];
+
+        // Figure out the average player level in the reward bucket.
+        var averagePlayerLevel;
+        var sumPlayerLevel = 0;
+        for (var i = 0; i < rewardBucket.length; i++) {
+            sumPlayerLevel += rewardBucket[i].level;
+        };
+
+        averagePlayerLevel = sumPlayerLevel / rewardBucket.length;
+
+        // We take the average of this percent level and the one below it to
+        // accommodate what will happen if you're not strictly above the current
+        // percent level. For example, if you're level 84 and you fought a level
+        // 54, then the percent would be 64%. If the splits were
+        // [50%,75%,100%,125%,150%], then you should be in bucket 1. The
+        // percentAllowed will be 62.5% so that the level 54 is counted for more
+        // than 1 exp.
+        var lowerPercentLevel = percentLevel[Math.max(0, highestBucketWithUnits-1)];
+        var percentAllowed = (lowerPercentLevel + percentLevel[highestBucketWithUnits]) / 2;
+
+        // Figure out which enemy level that percentage corresponds to.
+        var lowestEnemyLevelAllowed = averagePlayerLevel * percentAllowed;
+
+        // Figure out how many enemies are above the lowest allowed level.
+        var numEnemiesInRange = 0;
+        for (var i = 0; i < this.enemyUnits.length; i++) {
+            var enemyUnit = this.enemyUnits[i];
+            var enemyLevel = enemyUnit.level;
+            if ( enemyLevel >= lowestEnemyLevelAllowed ) {
+                numEnemiesInRange++;
+            }
+        };
+
+        // You can't get more than one level per unit.
+        var maxExperience = 100 * rewardBucket.length;
+
+        // Calculate the total experience.
+        var totalExperience = 0;
+
+        if ( highestBucketWithUnits == 0 ) {
+            totalExperience = 1;
+        } else if ( highestBucketWithUnits == numBuckets - 1) {
+            totalExperience = maxExperience;
+        } else {
+            totalExperience = numEnemiesInRange * rewardLevel[highestBucketWithUnits];
+
+            // Fudge it a bit so that you aren't always getting the same amount
+            // of experience.
+            var extraExp = Math.random() / 9 * totalExperience;
+            totalExperience += Math.floor(extraExp);
+        }
+
+        // Make sure you're not above the maximum.
+        totalExperience = Math.min(totalExperience, maxExperience);
+
+        // Spawn a text object where the enemies used to be
+        var expString = '+' + totalExperience + ' exp';
+        var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true, '#0f0', true);
+        game.TextManager.addTextObj(textObj);
+
+        if ( logging ) {
+            console.log('Your units gained ' + totalExperience + ' total:');
+        }
+
+        // Sort the reward bucket ascending so that the lower levels get
+        // experience first.
+        rewardBucket.sort(function(unit1, unit2) {
+            return unit1.level - unit2.level;
+        });
+
+        // Finally, give the experience out.
+        var expPerUnit = Math.ceil(totalExperience / rewardBucket.length);
+        for (var i = 0; i < rewardBucket.length; i++) {
+            var unit = rewardBucket[i];
+            var expForThisUnit = Math.min(totalExperience, expPerUnit);
+            totalExperience -= expForThisUnit;
+
+            if ( logging ) {
+                console.log('\tLv.' + unit.level + ' unit gained ' + expForThisUnit + ' exp');
+            }
+
+            // This will also level up the unit if appropriate
+            unit.gainExperience(expForThisUnit);
+
+            // Update the unit placement UI
+            game.UnitPlacementUI.updateUnit(unit);
+        };
+    };
+
     /**
      * Each enemy unit has a chance of dropping loot according to its loot
      * table.
@@ -349,7 +640,6 @@
         return null;
     }
     
-
     /**
      * This is called by the BattleManager RIGHT before the battle is removed
      * from existence. It will remove units from battle and guide them to their
@@ -366,31 +656,13 @@
         // See the function-level comments.
         var losingTeam = this.getLosingTeam();
 
-        // If the player won, then we should add experience.
-        if ( this.battleWinner == game.BattleWinner.PLAYER ) {
-            // Hard-code this for now
-            var experienceGranted = 50;
-            var expString = '+' + experienceGranted + ' exp';
-
-            // Spawn a text object where the enemies used to be
-            var textObj = new game.TextObj(this.enemyCenterX, this.enemyCenterY, expString, true, '#0f0', true);
-            game.TextManager.addTextObj(textObj);
-
-            // Give the experience to all living player units
-            for (var i = 0; i < this.units.length; i++) {
-                var unit = this.units[i];
-
-                // Ignore enemy and dead units
-                if ( !unit.isPlayer() || !unit.isLiving() ) continue;
-
-                // This will also level up the unit if appropriate
-                unit.gainExperience(experienceGranted);
-
-                // Update the unit placement UI
-                game.UnitPlacementUI.updateUnit(unit);
-            };
-
-            // Generate items and give them to the player
+        if ( this.battleWinner == game.BattleWinner.PLAYER && game.GameStateManager.isMinigameGameplay() ) {
+            // You don't get normal experience or loot if you were playing the
+            // minigame.
+            game.MinigameUI.wonMinigame();
+        } else if ( this.battleWinner == game.BattleWinner.PLAYER ) {
+            // Generate experience and items
+            this.generateExperience();
             this.generateLoot();
 
             // Let the quest manager know too so that it can update quests
@@ -492,6 +764,10 @@
             this.playerUnits.push(unit);
         } else {
             this.enemyUnits.push(unit);
+
+            if ( unit.isBoss() ) {
+                this.containsBoss = true;
+            }
         }
 
         var numPlayers = this.playerUnits.length;
@@ -727,6 +1003,14 @@
             this.enemyJoinRadius = radius;
         }
 
+        // The battle with the boss should be expanded to make it easier for
+        // units to join.
+        if ( this.containsBoss ) {
+            this.playerJoinRadius *= 1.25;
+            this.enemyJoinRadius *= 1.5;
+            this.enemyJoinRadius = Math.max(tileSize * 5, this.enemyJoinRadius);
+        }
+
         // Go through in order of largest units and place that unit as far to
         // the right as possible while attempting to center it vertically
         for (var i = 0; i < unitsToPosition.length; i++) {
@@ -805,6 +1089,7 @@
 
     window.game.Battle.prototype.debugDrawBattleBackground = function(ctx) {
         ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 1;
         ctx.strokeRect(this.debugPlayerX, this.debugPlayerY, this.debugPlayerW, this.debugPlayerH);
         var width = this.debugPlayerW / tileSize;
         var height = this.debugPlayerH / tileSize;

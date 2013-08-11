@@ -34,15 +34,6 @@
 	 */
 	window.game.NUM_PLACEABLE_UNIT_CLASSES = Object.keys(game.PlaceableUnitType).length;
 
-	/**
-	 * Calculates the cost to place the unit
-	 * @param  {Unit} unit Unit that can be placed
-	 * @return {Number}    Cost to place the unit 
-	 */
-	function costToPlaceUnit(unit) {
-		return (unit.level * 50);
-	};
-
     // There's only one unit placement UI, so we'll define everything in a single
     // object.
     window.game.UnitPlacementUI = {
@@ -74,6 +65,19 @@
          * @type {Number}
          */
         lastYPosition: null,
+
+        /**
+         * The alpha value to use when highlighting a spawner.
+         * @type {Number}
+         */
+        highlightAlpha: .4,
+
+        /**
+         * The direction in which the alpha is changing. This is only positive
+         * or negative 1.
+         * @type {Number}
+         */
+        highlightAlphaChange: 1,
 		
         /**
          * Computes the cost to buy a slot for the current unit type
@@ -112,8 +116,25 @@
             this.addUnit();
             this.addUnit();
             this.addUnit();
-            this.navigateToPage(currentType);
+
+            // Set coins before navigating back to the page so that the button's
+            // enabled/disabled state is set correctly.
             game.Player.coins = currentCoins;
+            this.navigateToPage(currentType);
+        },
+
+        /**
+         * Calculates the cost to place the specified unit
+         * @param  {Unit} unit - Unit that can be placed
+         * @return {Number}    Cost to place the unit 
+         */
+        costToPlaceUnit: function(unit) {
+            var itemsEquippedToClass = game.Inventory.getClassEquippedItems(unit.unitType);
+            var costAdded = 0;
+            for (var i = 0; i < itemsEquippedToClass.length; i++) {
+                costAdded += itemsEquippedToClass[i].placementCost;
+            };
+            return (unit.level * 50) + costAdded;
         },
 
 		/**
@@ -160,22 +181,28 @@
         },
 
 		/**
-		* Figures out the CSS unit class for a specific unit type and returns it. This
-		* unit class is used to specify which image in the CSS file to use.
-		* @param  {PlaceableUnitType} unitType Type of unit
-		* @return {String}          Classes for the particular unit
+         * Figures out the CSS unit class for a specific unit type and returns
+         * it. This unit class is used to specify which image in the CSS file to
+         * use.
+         * @param  {PlaceableUnitType} unitType - Type of unit
+         * @param  {Number} index - the row index of the unit (color is based on
+         * this). Specify 0 to get the "default" color.
+         * @return {String}          Classes for the particular unit
 		*/
-		getCSSUnitClass: function(unitType) {
-			var unitClass;
+		getCSSUnitClass: function(unitType, index) {
+            // All classes start with this. We append to this string below.
+			var unitClass = 'char-sprite ';
+            if ( index >= game.MAX_UNITS_PER_CLASS ) index = 0;
+
 			switch (unitType) {
 			    case game.PlaceableUnitType.ARCHER:
-			        unitClass = 'char-sprite arch32-png';
+                    unitClass += 'arch-alt-' + index + '-png';
 			        break;
 			    case game.PlaceableUnitType.WARRIOR:
-			        unitClass = 'char-sprite war32-png';
+                    unitClass += 'war-alt-' + index + '-png';
 			        break;
 			    case game.PlaceableUnitType.WIZARD:
-			        unitClass = 'char-sprite wiz32-png';
+                    unitClass += 'wiz-alt-' + index + '-png';
 			        break;
 			    default:
 			        console.log("ERROR: Unit type doesn't exist.")
@@ -236,6 +263,26 @@
         },
 
         /**
+         * Sets the buy icon to the correct unit color.
+         *
+         * This will outright remove the buying elements if you already have the
+         * max number of units.
+         */
+        setBuyIconClass: function() {
+            var numUnits = game.UnitManager.getNumOfPlayerUnits(this.unitType);
+
+            // Remove the buy buttons if you have all of the units of this type.
+            if ( numUnits == game.MAX_UNITS_PER_CLASS ) {
+                $('#buySlotButtonDescription').remove();
+                $('#buySlotButton').remove();
+                return;
+            }
+            var $unitPlacementBuyIcon = $('#unitPlacementBuyIcon');
+            $unitPlacementBuyIcon.removeAttr('class');
+            $unitPlacementBuyIcon.addClass(this.getCSSUnitClass(this.unitType, numUnits));
+        },
+
+        /**
          * Allows the user to place units and buy slots for all the units of the
          * specified unit type.
          * @param {PlaceableUnitType} unitType Type of unit
@@ -248,15 +295,22 @@
 			
 			$('#buyingScreenContainer').append('<div id="unitContainer">');
 			for (var i = 0; i < unitArray.length; i++) {
-				this.addSlotToPage(unitArray[i]);
+				this.addSlotToPage(unitArray[i], i);
 			}
 			$('#buyingScreenContainer').append('</div>');
 
-			// Add a button to allow the player to buy a new slot
-			$('#buyingScreenContainer').append('<button id="buySlotButton">'+ 
-												this.costToPurchaseSlot(this.unitType) +
-												'</button>' +
-												'<span id=buySlotButtonDescription>- Buy slot</span>');
+            var imageHTML = '<img id="unitPlacementBuyIcon" src="'+game.imagePath+'/img_trans.png"/>';
+
+            // Add a button to allow the player to buy a new slot
+            $('#buyingScreenContainer').append('<button id="buySlotButton"></button>' +
+                                                '<span id=buySlotButtonDescription>- Buy ' + imageHTML + ' slot</span>');
+
+            this.setBuyIconClass();
+            $('#buySlotButton').button();
+            $('#buySlotButton').text(this.costToPurchaseSlot(this.unitType));
+            $('#buySlotButton').css({
+                'padding': '2px 2px 2px 2px'
+            });
 			$('#buySlotButton').click(function() {
 				game.UnitPlacementUI.addUnit();
 			});
@@ -272,10 +326,10 @@
 
 			$('#buyingScreenContainer').append('<div id="changingPagesDiv">' +
 											   '<img id="leftArrowImg" src="'+game.imagePath+'/left_arrow.png" width="32" height="32"/>' +
-											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitLeftImage) + '" />' +
+											   '<img id="leftUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitLeftImage, 0) + '" />' +
 											   '<span id="leftUnitAmount" style="font-weight: bold; font-size: 20px; margin-right:2.00em">0</span>' +
 											   '<span id="rightUnitAmount" style="font-weight: bold; font-size: 20px">0</span>' +
-											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitRightImage) + '" />' +
+											   '<img id="rightUnit" src="'+game.imagePath+'/img_trans.png" class="' + this.getCSSUnitClass(nextUnitRightImage, 0) + '" />' +
 											   '<img id="rightArrowImg" src="'+game.imagePath+'/right_arrow.png" width="32" height="32"/>' +
 											   '</div>');
 			$('#leftArrowImg,#leftUnit,#leftUnitAmount').click(function() {
@@ -334,7 +388,7 @@
             // UI, so there's nothing to update here.
         	if ( $costTag.length == 0 || $levelTag.length == 0 || $expTag.length == 0 ) return;
 
-            var cost = costToPlaceUnit(unit);
+            var cost = this.costToPlaceUnit(unit);
         	$costTag.text(cost);
         	$levelTag.text(unit.level);
         	$expTag.text(unit.experience);
@@ -376,9 +430,9 @@
             // Update the "buy" button
             var cost = this.costToPurchaseSlot();
             if ( !game.Player.hasThisMuchMoney(cost) ) {
-                $('#buySlotButton').attr('disabled', 'disabled');
+                $('#buySlotButton').button('disable');
             } else {
-                $('#buySlotButton').removeAttr('disabled');
+                $('#buySlotButton').button('enable');
             }
         },
 
@@ -396,12 +450,13 @@
         /**
          * Adds a slot to the page
          * @param {Unit} unit  Unit that will be in the slot
+         * @param {Number} index - the row index of the unit
          */
-        addSlotToPage: function(unit) {
+        addSlotToPage: function(unit, index) {
             var id = unit.id;
 
 			$('#unitContainer').append('<div id="unit'+id+'">' +
-										'<img id="unitImage'+id+'" src="'+game.imagePath+'/img_trans.png" class="'+this.getCSSUnitClass(unit.unitType)+'" />' +
+										'<img id="unitImage'+id+'" src="'+game.imagePath+'/img_trans.png" class="'+this.getCSSUnitClass(unit.unitType, index)+'" />' +
 										'<span id="unitCost'+id+'" style="font-weight: bold; font-size: 20px"/>' +
 										'<span id="unitLevel'+id+'" style="font-weight: bold; font-size: 20px"/>' +
 										'<span id="unitExperience'+id+'" style="font-weight: bold; font-size: 20px"/>' +
@@ -416,8 +471,18 @@
 			$('#unit'+id).click({unitClicked: unit}, unitClicked);
 			function unitClicked(event) {
                 var unit = event.data.unitClicked;
-                var cost = costToPlaceUnit(unit);
-                if (!game.GameStateManager.isNormalGameplay() || unit.hasBeenPlaced || !game.Player.hasThisMuchMoney(cost)) {
+                var cost = game.UnitPlacementUI.costToPlaceUnit(unit);
+                if (!game.GameStateManager.isNormalGameplay()) {
+                    return;
+                }
+
+                // If the unit has been placed, center the camera on that unit
+                if ( unit.hasBeenPlaced ) {
+                    game.Camera.panInstantlyTo(unit.getCenterX(), unit.getCenterY(), true);
+                    return;
+                }
+
+                if ( !game.Player.hasThisMuchMoney(cost) ) {
                     return;
                 }
 
@@ -444,6 +509,73 @@
         },
 
         /**
+         * Draws a highlight around the currently selected spawn point so that
+         * you know where your units will come out.
+         * @param  {Object} ctx - the canvas context
+         */
+        highlightCurrentSpawnPoint: function(ctx) {
+            // Only do this if the window is open
+            if ( !$('#buyingScreenContainer').dialog('isOpen') ) {
+                return;
+            }
+
+            ctx.save();
+
+            var worldX = this.spawnPointX * tileSize;
+            var worldY = this.spawnPointY * tileSize;
+
+            var padding = game.STATUS_EFFECT_PADDING;
+
+            // The lowest alpha to use
+            var lowerBound = 0;
+
+            // The highest alpha to use
+            var upperBound = .7;
+
+            // The speed at which to cycle through the alphas
+            var speed = .0125;
+            this.highlightAlpha += this.highlightAlphaChange * speed;
+
+            // Cap at the bounds
+            if ( this.highlightAlpha >= upperBound ) {
+                this.highlightAlpha = upperBound - .00001;
+                this.highlightAlphaChange *= -1;
+            } else if ( this.highlightAlpha <= lowerBound ) {
+                this.highlightAlpha = lowerBound + .00001;
+                this.highlightAlphaChange *= -1;
+            }
+
+            var blink = game.alphaBlink * 53;
+            var blink2 = game.alphaBlink * 29;
+            var r = Math.floor(blink % 255);
+            var g = Math.floor(blink2 % 255);
+
+            // After 128, cycle back down so that it doesn't go from 0 to 255
+            // back to 0 (it would be an abrupt change to black sometimes). This
+            // makes it smoother. We can later multiply these values by 2 if we
+            // want since they won't be higher than 128, but the darker colors
+            // seem to work better.
+            if ( r > 128 ) r = 255 - r;
+            if ( g > 128 ) g = 255 - g;
+            ctx.lineWidth = padding * 2;
+            ctx.strokeStyle = 'rgba(' + r + ', ' + g + ',0, ' + this.highlightAlpha + ')';
+            ctx.strokeRect(worldX - padding, worldY - padding, tileSize + padding * 2, tileSize + padding * 2);
+            ctx.restore();
+        },
+
+        /**
+         * Show the UI.
+         */
+        show: function() {
+            $('#buyingScreenContainer').dialog('open');
+
+            // Reset some of the highlight values so that you know right away
+            // whether you tapped the spawner.
+            this.highlightAlpha = 1;
+            this.highlightAlphaChange = -1;
+        },
+
+        /**
          * Adds a unit to the UI
          */
         addUnit: function() {
@@ -451,6 +583,15 @@
             if (!game.Player.hasThisMuchMoney(cost)) {
                 return;
             }
+
+            var numUnits = game.UnitManager.getNumOfPlayerUnits(this.unitType);
+            if ( numUnits == game.MAX_UNITS_PER_CLASS ) {
+                // The only way the code should be able to get here is via a
+                // debug function like debugAddUnits, but it doesn't hurt to
+                // have this check.
+                return;
+            }
+
             game.Player.modifyCoins(-cost);
 
             // Keep track of where the 'buy' button is so that we can restore
@@ -458,14 +599,35 @@
             var oldBuyYPosition = $('#buySlotButton').position().top;
             var containerY = $('#buyingScreenContainer').parent().position().top;
 
-			newUnit = new game.Unit(this.unitType, game.PlayerFlags.PLAYER, 1);
-			game.UnitManager.addUnit(newUnit);
-			game.UnitPlacementUI.addSlotToPage(newUnit);
+            var isArcher = (this.unitType == game.PlaceableUnitType.ARCHER);
+            var isWarrior = (this.unitType == game.PlaceableUnitType.WARRIOR);
+            var isWizard = (this.unitType == game.PlaceableUnitType.WIZARD);
 
-            var newBuyYPosition = $('#buySlotButton').position().top;
-            $('#buyingScreenContainer').parent().css( {
-                top: Math.max(0, containerY + oldBuyYPosition - newBuyYPosition)
-            });
+			newUnit = new game.Unit(this.unitType, game.PlayerFlags.PLAYER, 1);
+
+            if ( numUnits >= 1 && numUnits <= game.MAX_UNITS_PER_CLASS - 1 ) {
+                var extraCostumesArray = null;
+                if ( isArcher ) extraCostumesArray = game.EXTRA_ARCHER_COSTUMES;
+                if ( isWarrior ) extraCostumesArray = game.EXTRA_WARRIOR_COSTUMES;
+                if ( isWizard ) extraCostumesArray = game.EXTRA_WIZARD_COSTUMES;
+
+                // Modify the appearance of the new unit
+                newUnit.graphicIndexes = extraCostumesArray[numUnits - 1];
+            }
+
+			game.UnitManager.addUnit(newUnit);
+			game.UnitPlacementUI.addSlotToPage(newUnit, numUnits);
+
+            // Don't adjust the window position if we're removing the buy
+            // buttons.
+            if ( numUnits < game.MAX_UNITS_PER_CLASS - 1 ) {
+                var newBuyYPosition = $('#buySlotButton').position().top;
+                $('#buyingScreenContainer').parent().css( {
+                    top: Math.max(0, containerY + oldBuyYPosition - newBuyYPosition)
+                });
+            }
+
+            this.setBuyIconClass();
         },
 
         /**

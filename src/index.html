@@ -31,10 +31,11 @@
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
-		<div id="container" style="border:1px solid; cursor:none; width:800px; height:608px;">
+		<div id="container" style="border:1px solid; cursor:none; width:800px; height:668px;">
 			<!-- Give the canvas a cursor -->
-	        <canvas id="canvas" style="cursor: pointer;z-index:1" width="800" height="608" >
-	        </canvas>
+            <canvas id="canvas" style="cursor: pointer;z-index:1" width="800" height="608" ></canvas>
+            <!-- <canvas id="ui-canvas" style="cursor: pointer;z-index:1;" width="800" height="50" ></canvas> -->
+            <canvas id="ui-canvas" style="cursor: pointer;z-index:1; position:relative;top:-5px;left:0px" width="800" height="60" ></canvas>
 	    </div>
 	    
 	    <!-- This is to correct a really weird problem that's only in Chrome.
@@ -46,6 +47,10 @@
 	    	(the item image, not the slot background image) that shows this problem.
 	    	 -->
 	    <span id="garbage"></span>
+
+        <span class="le-frog">
+            <button style="display:none;z-index:0" id='transitionStateButton'></button>
+        </span>
 	    
 	    <div id="inventory-screen" title="Inventory">
 
@@ -84,18 +89,18 @@
 		<script src="js/vendor/jquery.mousewheel.js"></script>
 		<script src="js/vendor/ui/jquery-ui-1.10.2.custom.js"></script>
         <!-- This needs to be defined after jquery-ui -->
+        <!-- Touch punch allows various jquery UI components to work with touch. -->
         <script src="js/vendor/jquery.ui.touch-punch.js"></script>
-        <!-- <script src="js/vendor/jgestures.js"></script> -->
-        <script src="js/vendor/hammer.js"></script>
         <script src="js/vendor/ui/jquery.hammer.js"></script>
-        <script src="js/vendor/ui/jquery.specialevent.hammer.js"></script>
         <script src="js/plugins.js"></script>
 
         <!-- Constants.js should come first since it defines window.game and window.game.util -->
         <script src="js/Constants.js"></script>
+        <script src="js/HammerHelper.js"></script>
         <script src="js/JSONDecycle.js"></script>
         <script src="js/OverworldMap.js"></script>
         <script src="js/Util.js"></script>
+        <script src="js/GraphicsUtil.js"></script>
         <script src="js/KeyEventConstants.js"></script>
         <script src="js/Camera.js"></script>
         <script src="js/GameStateManager.js"></script>
@@ -141,6 +146,7 @@
         <script src="js/quest/PlaceUnit.js"></script>
         <script src="js/QuestManager.js"></script>
         <script src="js/QuestUI.js"></script>
+        <script src="js/MinigameData.js"></script>
         <script src="js/MinigameUI.js"></script>
         <script src="js/scrollable.js"></script>
         <script src="js/Battle.js"></script>
@@ -156,6 +162,7 @@
         <script src="js/CollectibleManager.js"></script>
         <script src="js/Map.js"></script>
         <script src="js/GameDataManager.js"></script>
+        <script src="js/UICanvas.js"></script>
         <script src="js/main.js"></script>
         
         <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
@@ -198,6 +205,8 @@
             <button style="margin-top:5px;" id='showUnitPlacement'>Place Units</button><br/>
             <button style="margin-top:5px;" id='showShop'>Shop</button><br/>
             <button style="margin-top:5px;" id='createUnits'>Create Units</button><br/>
+            <button style="margin-top:5px;" id='grantMoney'>Grant money</button><br/>
+            <button style="margin-top:5px;" id='goToOverworld'>Go to overworld</button><br/>
         </div>
 
         <div id='useItemInstructions' style="background-color:#22a050;color:white;text-align:center;"></div>

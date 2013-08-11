@@ -101,6 +101,15 @@
         },
 
         /**
+         * This is a debug-only function that will transition directly from the
+         * overworld to a normal map without needing to click anything.
+         */
+        debugTransitionFromOverworldToNormalMap: function() {
+            this.transitionToNormalMap();
+            this.returnToNormalGameplay();
+        },
+
+        /**
          * These are functions that should be called when you either win or
          * lose.
          * @return {undefined}
@@ -113,26 +122,53 @@
         },
 
         /**
-         * Initializes the overworld map. This should only be called once.
+         * Sets up the transition button, which is the button you click to
+         * transition between states.
          */
-        initializeOverworldMap: function() {
-            var width = 50;
-            var mapTileIndices = game.overworldMapTileIndices;
+        setupTransitionButton: function() {
+            var $transitionStateButton = $('#transitionStateButton');
+            $transitionStateButton.button();
+            $transitionStateButton.css({
+                'padding': '6px'
+            });
 
-            // Put each node into the map
-            for (var i = 0; i < game.overworldMapNodes.length; i++) {
-                var node = game.overworldMapNodes[i];
-                var index = node.y * width + node.x;
+            $transitionStateButton.click(function(gameStateManager) {
+                return function() {
+                    // For now, the button will only transition between the
+                    // win/lose states.
+                    gameStateManager.confirmedWinOrLose();
+                }
+            }(this));
+                
+            this.hideTransitionButton();
+        },
 
-                // Make them look like blue spawners
-                mapTileIndices[index] = 65;
-            };
+        /**
+         * Hides the transition button.
+         */
+        hideTransitionButton: function() {
+            $('#transitionStateButton').hide();
+        },
 
-            var doodadIndices = new Array(mapTileIndices.length);
-            var tilesetID = game.TilesetManager.MARSH_TILESET_ID;
-            game.overworldMap = new game.Map(mapTileIndices, doodadIndices, tilesetID, width, true);
+        /**
+         * Positions and sets the text of the transition button.
+         * @param  {Number} centerX - x, in screen coordinates
+         * @param  {Number} centerY - y, in screen coordinates
+         * @param  {String} text    - the text to show on the button
+         */
+        setTransitionButton: function(centerX, centerY, text) {
+            var $transitionStateButton = $('#transitionStateButton');
+            $transitionStateButton.text(text);
 
-            game.overworldMap.setFog(1, 3, 3, false);
+            var left = centerX - $transitionStateButton.width() / 2;
+            var top = centerY - $transitionStateButton.height() / 2;
+            $transitionStateButton.css({
+                'position': 'absolute',
+                'left': left + 'px',
+                'top': top + 'px'
+            });
+
+            $transitionStateButton.show();
         },
 
         /**
@@ -147,7 +183,7 @@
             game.TilesetManager.init();
 
             if ( game.overworldMap == null ) {
-                this.initializeOverworldMap();
+                game.OverworldMapData.initializeOverworldMap();
             }
 
             currentMap = game.overworldMap;
@@ -155,8 +191,13 @@
             game.Camera.initialize();
 
             // Place all of your units at the last map node you clicked.
-            var tileOfLastMap = game.overworldMap.getTileOfLastMap();
+            var tileOfLastMap = currentMap.getTileOfLastMap();
 
+            // Restore the camera's zoom and pan properties to be what they were
+            // when you were last looking at the overworld.
+            game.Camera.instantlySetZoom(currentMap.lastCameraZoom);
+            game.Camera.panInstantlyTo(currentMap.lastCameraX, currentMap.lastCameraY, true);
+            
             // Give them the movement AI that will make them wander
             game.UnitManager.placeAllPlayerUnits(tileOfLastMap.x, tileOfLastMap.y, game.MovementAI.WANDER_UNFOGGY_WALKABLE);
         },
@@ -173,11 +214,31 @@
 
             game.TilesetManager.init();
             game.MapGenerator.init();
-            currentMap = game.MapGenerator.generateRandomMap(50,25, 1);
+
+            // We're looking at the overworld map right now, so save the camera
+            // coordinates
+            game.overworldMap.setLastCameraProperties(game.Camera.getCenterX(), game.Camera.getCenterY(), game.Camera.getCurrentZoom());
+
+            // Set the right difficulty
+            var difficultyToUse = 1;
+
+            var nodeOfMap = game.OverworldMapData.getOverworldNodeOfLastMap();
+            difficultyToUse = nodeOfMap.difficulty;
+        
+            currentMap = game.MapGenerator.generateRandomMap(50, 25, difficultyToUse);
 
             // Initialize the camera so that the zoom and pan values aren't out
             // of bounds.
             game.Camera.initialize();
+
+            // Make sure you're not beneath level 1 zoom
+            if ( game.Camera.getCurrentZoom() < 1 ) {
+                game.Camera.instantlySetZoom(1);
+            }
+
+            // Pan to the upper left so that they can at least see one of the
+            // spawn points.
+            game.Camera.panInstantlyTo(0, 0, false);
         },
 
         /**
@@ -185,6 +246,8 @@
          * that they're done reading the win/lose screens.
          */
         confirmedWinOrLose: function() {
+            this.hideTransitionButton();
+
             if ( this.inLoseState() ) {
                 this.returnToNormalGameplay();
             } else if ( this.inWinState() || this.inMinigameWinState() || this.inMinigameLoseState() ) {
@@ -313,6 +376,7 @@
             if ( this.previousState == game.GameStates.NORMAL_GAMEPLAY && this.inLoseState() ) {
                 this.commonWinLoseFunctions();
                 game.Player.modifyCoins(-1000);
+                this.setTransitionButton(screenWidth / 2, screenHeight / 2, 'Retry');
             }
 
             // Normal state --> win
@@ -320,31 +384,12 @@
                 this.commonWinLoseFunctions();
                 game.Player.castleLife = game.FULL_CASTLE_LIFE;
                 currentMap.clearAllFog();
+
+                // Clear fog on the overworld map too
+                game.OverworldMapData.clearFog();
+
+                game.MinigameUI.populateUI();
                 game.MinigameUI.show();
-            }
-
-            // Normal win state --> minigame gameplay
-            if ( this.previousState == game.GameStates.NORMAL_WIN_SCREEN && this.isMinigameGameplay() ) {
-                // For now, the battle takes place in the middle of the map
-                var tileX = Math.floor(currentMap.numCols / 2);
-                var tileY = Math.floor(currentMap.numRows / 2);
-
-                // Move camera to middle of the map
-                game.Camera.panInstantlyTo(tileX * tileSize, tileY * tileSize);
-
-                // Spawn all of your units
-                game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
-
-                // Spawn some enemies too
-                var numEnemies = 5;
-                var enemyLevel = 5;
-                for (var i = 0; i < numEnemies; i++) {
-                    var newUnit = new game.Unit(game.UnitType.ORC.id, game.PlayerFlags.ENEMY, enemyLevel);
-                    newUnit.placeUnit(tileX, tileY, game.MovementAI.FOLLOW_PATH);
-                    game.UnitManager.addUnit(newUnit);
-                };
-
-                game.MinigameUI.hide();
             }
 
             // Minigame gameplay --> minigame lose
@@ -352,6 +397,7 @@
                 this.commonWinLoseFunctions();
                 var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'You lost the minigame', true, '#f00', false);
                 game.TextManager.addTextObj(textObj);
+                this.setTransitionButton(screenWidth / 2, screenHeight / 2, 'Back to overworld');
             }
 
             // Minigame gameplay --> minigame win
@@ -359,6 +405,7 @@
                 this.commonWinLoseFunctions();
                 var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'You won the minigame', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
+                this.setTransitionButton(screenWidth / 2, screenHeight / 2, 'Back to overworld');
             }
 
             // Minigame lose --> overworld map
@@ -395,6 +442,10 @@
                 if ( game.UnitManager.areAllUnitsAtTheirDestinations() ) {
                     this.returnToNormalGameplay();
                 }
+            } else if ( this.inWinState() ) {
+                // The minigame UI shouldn't be closeable, but if they somehow
+                // found a way to close it, then pop it up again.
+                game.MinigameUI.showIfHidden();
             }
         },
 
@@ -424,12 +475,12 @@
             var color;
             var text = null;
             if ( inWinState ) {
-                text = 'You won! (press "G" for now)';
+                text = 'You won!';
                 color = '#0b0';
             }
 
             if ( inLoseState ) {
-                text = 'You lost! (press "G" for now)';
+                text = 'You lost!';
                 color = '#b00';
             }
 
