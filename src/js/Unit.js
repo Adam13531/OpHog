@@ -153,8 +153,8 @@
 
         this.restoreLife();
 
-        this.width = tileSize * this.widthInTiles;
-        this.height = tileSize * this.heightInTiles;
+        this.width = game.TILESIZE * this.widthInTiles;
+        this.height = game.TILESIZE * this.heightInTiles;
 
         this.areaInTiles = this.widthInTiles * this.heightInTiles;
 
@@ -299,8 +299,8 @@
             this.movementAI = movementAI;
         }
 
-        var centerXPx = tileX * tileSize + tileSize / 2;
-        var centerYPx = tileY * tileSize + tileSize / 2;
+        var centerXPx = tileX * game.TILESIZE + game.TILESIZE / 2;
+        var centerYPx = tileY * game.TILESIZE + game.TILESIZE / 2;
         this.setCenterX(centerXPx);
         this.setCenterY(centerYPx);
         this.restoreLife();
@@ -459,7 +459,7 @@
     window.game.Unit.prototype.acquireNewDestinationMoveSpecificTile = function() {
         var startTile = this.getCenterTile();
 
-        var path = currentMap.findPathWithoutFog(startTile, this.specificTile);
+        var path = game.currentMap.findPathWithoutFog(startTile, this.specificTile);
 
         // This is possible if you somehow uncovered fog far away and it's not
         // connected.
@@ -479,8 +479,8 @@
             destTile = path[1];
         }
 
-        this.destX = destTile.x * tileSize + tileSize / 2;
-        this.destY = destTile.y * tileSize + tileSize / 2;
+        this.destX = destTile.x * game.TILESIZE + game.TILESIZE / 2;
+        this.destY = destTile.y * game.TILESIZE + game.TILESIZE / 2;
     };
 
     /**
@@ -490,13 +490,13 @@
     window.game.Unit.prototype.acquireNewDestinationWanderWalkable = function() {
         var currentTile = this.getCenterTile();
 
-        var possibleTiles = currentMap.getWalkableUnfoggyNeighbors(currentTile);
+        var possibleTiles = game.currentMap.getWalkableUnfoggyNeighbors(currentTile);
 
         // Randomly pick one as our destination
         var destTile = game.util.randomArrayElement(possibleTiles);
 
-        this.destX = destTile.x * tileSize + tileSize / 2;
-        this.destY = destTile.y * tileSize + tileSize / 2;
+        this.destX = destTile.x * game.TILESIZE + game.TILESIZE / 2;
+        this.destY = destTile.y * game.TILESIZE + game.TILESIZE / 2;
     };
 
     /**
@@ -517,8 +517,8 @@
         var tileX = this.leashTileX - this.leashRadius + game.util.randomInteger(0, this.leashRadius * 2 + 1);
         var tileY = this.leashTileY - this.leashRadius + game.util.randomInteger(0, this.leashRadius * 2 + 1);
 
-        this.destX = tileX * tileSize + tileSize / 2;
-        this.destY = tileY * tileSize + tileSize / 2;
+        this.destX = tileX * game.TILESIZE + game.TILESIZE / 2;
+        this.destY = tileY * game.TILESIZE + game.TILESIZE / 2;
     };
 
     /**
@@ -551,7 +551,7 @@
                 this.destY = this.getCenterY();
             }
 
-            this.destX += this.isPlayer() ? tileSize : -tileSize;
+            this.destX += this.isPlayer() ? game.TILESIZE : -game.TILESIZE;
             return;
         }
 
@@ -639,8 +639,8 @@
             // map (because they will attack the castle when they get to the
             // boundary), but for now, it happens a lot and there's no way to
             // use or kill the unit.
-            var outOfBounds = 4 * tileSize;
-            if ( this.x < -outOfBounds || this.x > currentMap.numCols * tileSize + outOfBounds ) {
+            var outOfBounds = 4 * game.TILESIZE;
+            if ( this.x < -outOfBounds || this.x > game.currentMap.numCols * game.TILESIZE + outOfBounds ) {
                 this.removeUnitFromMap();
             }
 
@@ -650,7 +650,7 @@
 
         // Clear some fog every loop, even if we're in battle.
         if ( this.isPlayer() && game.GameStateManager.isNormalGameplay() ) {
-            currentMap.setFog(this.getCenterTileX(), this.getCenterTileY(), 3, false, true);
+            game.currentMap.setFog(this.getCenterTileX(), this.getCenterTileY(), 3, false, true);
         }
 
         this.updateStatusEffects(delta);
@@ -711,7 +711,7 @@
             // When enemies are at their destinations, we clear fog around that
             // enemy so that the player can see what's going on in a battle.
             if ( !this.isPlayer() ) {
-                currentMap.revealFogAroundUnit(this);
+                game.currentMap.revealFogAroundUnit(this);
             }
 
             var cooldownDifference = 100 * deltaAsSec;
@@ -994,19 +994,19 @@
     window.game.Unit.prototype.getCenterTile = function() {
         var tY = this.getCenterTileY();
         var tX = this.getCenterTileX();
-        if ( tX >= 0 && tX <= currentMap.numCols - 1 && tY >= 0 && tY <= currentMap.numRows - 1 ) {
-            return currentMap.getTile(tX, tY);
+        if ( tX >= 0 && tX <= game.currentMap.numCols - 1 && tY >= 0 && tY <= game.currentMap.numRows - 1 ) {
+            return game.currentMap.getTile(tX, tY);
         } else {
             return null;
         }
     };
 
     window.game.Unit.prototype.getCenterTileX = function() {
-        return Math.floor(this.getCenterX() / tileSize);
+        return Math.floor(this.getCenterX() / game.TILESIZE);
     };
 
     window.game.Unit.prototype.getCenterTileY = function() {
-        return Math.floor(this.getCenterY() / tileSize);
+        return Math.floor(this.getCenterY() / game.TILESIZE);
     };
 
     window.game.Unit.prototype.setCenterX = function(pixelX) {
@@ -1022,7 +1022,7 @@
     };
 
     window.game.Unit.prototype.isOffScreen = function() {
-        return this.x < -tileSize || this.x > 25 * tileSize;
+        return this.x < -game.TILESIZE || this.x > 25 * game.TILESIZE;
     };
 
     /**
@@ -1166,7 +1166,7 @@
         if ( this.isInBattle() && !this.isLiving() ) {
             // Draw the tombstone at the center so that it doesn't look awkward
             // for big units.
-            objSheet.drawSprite(ctx, 19, this.getCenterX() - tileSize / 2, this.getCenterY() - tileSize / 2, !this.isPlayer());              
+            objSheet.drawSprite(ctx, 19, this.getCenterX() - game.TILESIZE / 2, this.getCenterY() - game.TILESIZE / 2, !this.isPlayer());              
         } else {
 
             // Draw all status effects
@@ -1193,7 +1193,7 @@
                         if ( index == 3 ) indexToUse = 2;
                     }
 
-                    charSheet.drawSprite(ctx, this.graphicIndexes[indexToUse], this.x + i * tileSize, this.y + j * tileSize, !this.isPlayer());
+                    charSheet.drawSprite(ctx, this.graphicIndexes[indexToUse], this.x + i * game.TILESIZE, this.y + j * game.TILESIZE, !this.isPlayer());
 
                     index++;
                 };

@@ -103,8 +103,8 @@
             this.y = this.y - this.height / 2;
 
             // Make sure the text object can't start off-screen.
-            this.x = Math.min(currentMap.widthInPixels - width, Math.max(0, this.x));
-            this.y = Math.min(currentMap.heightInPixels - this.height, Math.max(0, this.y));
+            this.x = Math.min(game.currentMap.widthInPixels - width, Math.max(0, this.x));
+            this.y = Math.min(game.currentMap.heightInPixels - this.height, Math.max(0, this.y));
         }
 
         ctx.textBaseline = 'top';

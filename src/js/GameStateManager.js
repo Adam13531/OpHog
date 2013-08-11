@@ -16,7 +16,7 @@
     };
 
     /**
-     * This is the overworld map. When you're in the OVERWORLD state, currentMap
+     * This is the overworld map. When you're in the OVERWORLD state, game.currentMap
      * will be set to this. We keep a reference to this around so that we don't
      * need to recompute the world map every time we switch back to it, but also
      * because we need to save/load it correctly.
@@ -186,17 +186,17 @@
                 game.OverworldMapData.initializeOverworldMap();
             }
 
-            currentMap = game.overworldMap;
+            game.currentMap = game.overworldMap;
 
             game.Camera.initialize();
 
             // Place all of your units at the last map node you clicked.
-            var tileOfLastMap = currentMap.getTileOfLastMap();
+            var tileOfLastMap = game.currentMap.getTileOfLastMap();
 
             // Restore the camera's zoom and pan properties to be what they were
             // when you were last looking at the overworld.
-            game.Camera.instantlySetZoom(currentMap.lastCameraZoom);
-            game.Camera.panInstantlyTo(currentMap.lastCameraX, currentMap.lastCameraY, true);
+            game.Camera.instantlySetZoom(game.currentMap.lastCameraZoom);
+            game.Camera.panInstantlyTo(game.currentMap.lastCameraX, game.currentMap.lastCameraY, true);
             
             // Give them the movement AI that will make them wander
             game.UnitManager.placeAllPlayerUnits(tileOfLastMap.x, tileOfLastMap.y, game.MovementAI.WANDER_UNFOGGY_WALKABLE);
@@ -225,7 +225,7 @@
             var nodeOfMap = game.OverworldMapData.getOverworldNodeOfLastMap();
             difficultyToUse = nodeOfMap.difficulty;
         
-            currentMap = game.MapGenerator.generateRandomMap(50, 25, difficultyToUse);
+            game.currentMap = game.MapGenerator.generateRandomMap(50, 25, difficultyToUse);
 
             // Initialize the camera so that the zoom and pan values aren't out
             // of bounds.
@@ -366,8 +366,8 @@
                 // Note that placing the boss and NPCs is also done in the map's
                 // initialize function, so if we add more code here, we should
                 // refactor that.
-                currentMap.addBossUnit();
-                currentMap.placeNPCs();
+                game.currentMap.addBossUnit();
+                game.currentMap.placeNPCs();
                 game.Player.castleLife = game.FULL_CASTLE_LIFE;
             }
 
@@ -381,14 +381,14 @@
             if ( this.previousState == game.GameStates.NORMAL_GAMEPLAY && this.inLoseState() ) {
                 this.commonWinLoseFunctions();
                 game.Player.modifyCoins(-1000);
-                this.setTransitionButton(screenWidth / 2, screenHeight / 2, 'Retry');
+                this.setTransitionButton(game.canvasWidth / 2, game.canvasHeight / 2, 'Retry');
             }
 
             // Normal state --> win
             if ( this.previousState == game.GameStates.NORMAL_GAMEPLAY && this.inWinState() ) {
                 this.commonWinLoseFunctions();
                 game.Player.castleLife = game.FULL_CASTLE_LIFE;
-                currentMap.clearAllFog();
+                game.currentMap.clearAllFog();
 
                 // Clear fog on the overworld map too
                 game.OverworldMapData.clearFog();
@@ -400,17 +400,17 @@
             // Minigame gameplay --> minigame lose
             if ( this.previousState == game.GameStates.MINIGAME_GAMEPLAY && this.inMinigameLoseState() ) {
                 this.commonWinLoseFunctions();
-                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'You lost the minigame', true, '#f00', false);
+                var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'You lost the minigame', true, '#f00', false);
                 game.TextManager.addTextObj(textObj);
-                this.setTransitionButton(screenWidth / 2, screenHeight / 2, 'Back to overworld');
+                this.setTransitionButton(game.canvasWidth / 2, game.canvasHeight / 2, 'Back to overworld');
             }
 
             // Minigame gameplay --> minigame win
             if ( this.previousState == game.GameStates.MINIGAME_GAMEPLAY && this.inMinigameWinState() ) {
                 this.commonWinLoseFunctions();
-                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'You won the minigame', true, '#0f0', false);
+                var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'You won the minigame', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
-                this.setTransitionButton(screenWidth / 2, screenHeight / 2, 'Back to overworld');
+                this.setTransitionButton(game.canvasWidth / 2, game.canvasHeight / 2, 'Back to overworld');
             }
 
             // Minigame lose --> overworld map
@@ -473,7 +473,7 @@
                 // "anything.
                 ctx.save();
                 ctx.fillStyle = 'rgba(37,37,37,.5)';
-                ctx.fillRect(0, 0, screenWidth, screenHeight);
+                ctx.fillRect(0, 0, game.canvasWidth, game.canvasHeight);
                 ctx.restore();
             }
 
@@ -490,7 +490,7 @@
             }
 
             if ( text != null ) {
-                var x = screenWidth / 2;
+                var x = game.canvasWidth / 2;
                 var y = 150;
                 var fontSize = 60;
 

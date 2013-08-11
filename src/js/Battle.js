@@ -54,11 +54,11 @@
         // Coordinate units are in pixels.
         this.playerCenterX = centerX;
         this.playerCenterY = centerY;
-        this.playerJoinRadius = tileSize * 1.5;
+        this.playerJoinRadius = game.TILESIZE * 1.5;
 
         this.enemyCenterX = centerX;
         this.enemyCenterY = centerY;
-        this.enemyJoinRadius = tileSize * 1.5;
+        this.enemyJoinRadius = game.TILESIZE * 1.5;
 
         // When we add a unit, we set this to true. We don't reposition units
         // immediately because it's "costly" for large battles (shouldn't be too
@@ -105,7 +105,7 @@
         // The "false ||" is just being used as a line-continuation operator.
         return false || 
             // The centers of the battles are really close
-            window.game.util.distance(this.centerX, this.centerY, battle.centerX, battle.centerY) < tileSize * 2 || 
+            window.game.util.distance(this.centerX, this.centerY, battle.centerX, battle.centerY) < game.TILESIZE * 2 || 
 
             // This player circle with other player circle
             window.game.util.circlesCollide(px1, py1, pr1, px2, py2, pr2) ||
@@ -986,19 +986,19 @@
         });
 
         var stagingAreaCenterX;
-        var stagingAreaCenterY = this.centerY - (height / 2 * tileSize);
+        var stagingAreaCenterY = this.centerY - (height / 2 * game.TILESIZE);
 
         // Base the battle-join radius on the size of the perfect square.
-        var radius = (height / 2) * tileSize;
+        var radius = (height / 2) * game.TILESIZE;
 
         if ( isPlayer ) {
-            stagingAreaCenterX = this.centerX - (width * tileSize);
-            this.playerCenterX = this.centerX - (height / 2) * tileSize;
+            stagingAreaCenterX = this.centerX - (width * game.TILESIZE);
+            this.playerCenterX = this.centerX - (height / 2) * game.TILESIZE;
             this.playerCenterY = this.centerY;
             this.playerJoinRadius = radius;
         } else {
-            stagingAreaCenterX = this.centerX + 1 * tileSize;
-            this.enemyCenterX = this.centerX + (height / 2) * tileSize + tileSize;
+            stagingAreaCenterX = this.centerX + 1 * game.TILESIZE;
+            this.enemyCenterX = this.centerX + (height / 2) * game.TILESIZE + game.TILESIZE;
             this.enemyCenterY = this.centerY;
             this.enemyJoinRadius = radius;
         }
@@ -1008,7 +1008,7 @@
         if ( this.containsBoss ) {
             this.playerJoinRadius *= 1.25;
             this.enemyJoinRadius *= 1.5;
-            this.enemyJoinRadius = Math.max(tileSize * 5, this.enemyJoinRadius);
+            this.enemyJoinRadius = Math.max(game.TILESIZE * 5, this.enemyJoinRadius);
         }
 
         // Go through in order of largest units and place that unit as far to
@@ -1067,8 +1067,8 @@
                 }
             };
 
-            var desiredX = attemptX * tileSize + stagingAreaCenterX;
-            var desiredY = attemptY * tileSize + stagingAreaCenterY;
+            var desiredX = attemptX * game.TILESIZE + stagingAreaCenterX;
+            var desiredY = attemptY * game.TILESIZE + stagingAreaCenterY;
 
             // desiredBattleTile coordinates are based on the staging rect
             // that's set up. (0,0) is the upper-left-most tile in a battle, but
@@ -1082,8 +1082,8 @@
         if ( isPlayer ) {
             this.debugPlayerX = stagingAreaCenterX;
             this.debugPlayerY = stagingAreaCenterY;
-            this.debugPlayerW = width * tileSize;
-            this.debugPlayerH = height * tileSize;
+            this.debugPlayerW = width * game.TILESIZE;
+            this.debugPlayerH = height * game.TILESIZE;
         }
     };
 
@@ -1091,11 +1091,11 @@
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = 1;
         ctx.strokeRect(this.debugPlayerX, this.debugPlayerY, this.debugPlayerW, this.debugPlayerH);
-        var width = this.debugPlayerW / tileSize;
-        var height = this.debugPlayerH / tileSize;
+        var width = this.debugPlayerW / game.TILESIZE;
+        var height = this.debugPlayerH / game.TILESIZE;
         for (var i = 0; i < width; i++) {
             for (var j = 0; j < height; j++) {
-                ctx.strokeRect(this.debugPlayerX + i * tileSize, this.debugPlayerY + j * tileSize, tileSize, tileSize);
+                ctx.strokeRect(this.debugPlayerX + i * game.TILESIZE, this.debugPlayerY + j * game.TILESIZE, game.TILESIZE, game.TILESIZE);
             };
         };
 

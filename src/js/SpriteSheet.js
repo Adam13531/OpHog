@@ -151,7 +151,7 @@
         var index = 0;
         for (var j = 0; j < height; j++) {
             for (var i = 0; i < width; i++) {
-                this.drawSprite(ctx, graphicIndexes[index], i * tileSize, j * tileSize, false);
+                this.drawSprite(ctx, graphicIndexes[index], i * this.tileSize, j * this.tileSize, false);
                 index++;
             };
         };

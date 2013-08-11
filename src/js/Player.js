@@ -61,21 +61,21 @@
             if ( game.castleFlashScreenTimer > 0 ) {
                 var redValue = Math.max(255-game.castleFlashScreenTimer, 0);
                 ctx.fillStyle = 'rgba(' + redValue + ', 0, 0, .3)';
-                ctx.fillRect(0, 0, screenWidth, screenHeight);
+                ctx.fillRect(0, 0, game.canvasWidth, game.canvasHeight);
             }
             // Switch from screen coordinates to camera coordinates
             game.Camera.scaleAndTranslate(ctx);
             // Draw castle's life over them for the user to see
             if ( game.keyPressedToDisplayLifeBars ) {
 
-                var castleTiles = currentMap.getAllTiles(game.TileFlags.CASTLE);
+                var castleTiles = game.currentMap.getAllTiles(game.TileFlags.CASTLE);
                 for (var i = 0; i < castleTiles.length; i++) {
                     var castleTile = castleTiles[i];
                     
-                    var w = tileSize;
+                    var w = game.TILESIZE;
                     var h = 10;
-                    var x = castleTile.x * tileSize;
-                    var y = (castleTile.y * tileSize) + tileSize - h;
+                    var x = castleTile.x * game.TILESIZE;
+                    var y = (castleTile.y * game.TILESIZE) + game.TILESIZE - h;
                     var percentLife = Math.min(1, Math.max(0, game.Player.castleLife / game.FULL_CASTLE_LIFE));
 
                     game.graphicsUtil.drawBar(ctx, x,y,w,h, percentLife, {barR:200, borderR:255});
@@ -94,7 +94,7 @@
             ctx.font = '12px Futura, Helvetica, sans-serif';
             var text = 'Coins: ' + this.coins;
             var width = ctx.measureText(text).width;
-            var x = screenWidth / 2 - width / 2;
+            var x = game.canvasWidth / 2 - width / 2;
             var y = 5;
 
             if ( this.coins >= 0 ) {

@@ -310,8 +310,8 @@
     window.game.Item.prototype.useOnMap = function(x, y) {
         var used = false;
 
-        var tileX = Math.floor(x / tileSize);
-        var tileY = Math.floor(y / tileSize);
+        var tileX = Math.floor(x / game.TILESIZE);
+        var tileY = Math.floor(y / game.TILESIZE);
 
         if ( this.itemID == game.ItemType.LEAF.id ) {
             // For now, every tile will be considered valid, so we'll always set
@@ -320,16 +320,16 @@
             if ( used ) {
                 // For now, the only effect is to clear fog, so we'll hard-code that
                 // here. Eventually, it should check item type or effect.
-                currentMap.setFog(tileX, tileY, 4, false, true);
+                game.currentMap.setFog(tileX, tileY, 4, false, true);
             }
         }
 
         // Only tiles close to spawners are valid.
         if ( this.itemID == game.ItemType.CREATE_SPAWNER.id ) {
-            used = currentMap.attemptToCreateSpawner(tileX, tileY, 6);
+            used = game.currentMap.attemptToCreateSpawner(tileX, tileY, 6);
         }
         if ( this.itemID == game.ItemType.MEGA_CREATE_SPAWNER.id ) {
-            used = currentMap.attemptToCreateSpawner(tileX, tileY, 20);
+            used = game.currentMap.attemptToCreateSpawner(tileX, tileY, 20);
         }
 
         if ( used ) {

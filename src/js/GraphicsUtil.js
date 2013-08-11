@@ -1,5 +1,8 @@
 ( function() {
 
+    window.game.canvasWidth = null;
+    window.game.canvasHeight = null;
+
     /**
      * Draws a bar, e.g. a life bar or experience bar.
      * @param  {Object} ctx         - the canvas context

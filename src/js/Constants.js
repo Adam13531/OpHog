@@ -53,6 +53,12 @@
     window.game.MAX_UNITS_PER_CLASS = 5;
 
     /**
+     * The size of a tile.
+     * @type {Number}
+     */
+    window.game.TILESIZE = 32;
+
+    /**
      * Each class has 5 costumes (the default is specified in UnitData.js). The
      * classes are only 1x1, so we only need to specify an array of length 1 for
      * each.

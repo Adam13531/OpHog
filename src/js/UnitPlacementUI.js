@@ -521,8 +521,8 @@
 
             ctx.save();
 
-            var worldX = this.spawnPointX * tileSize;
-            var worldY = this.spawnPointY * tileSize;
+            var worldX = this.spawnPointX * game.TILESIZE;
+            var worldY = this.spawnPointY * game.TILESIZE;
 
             var padding = game.STATUS_EFFECT_PADDING;
 
@@ -559,7 +559,7 @@
             if ( g > 128 ) g = 255 - g;
             ctx.lineWidth = padding * 2;
             ctx.strokeStyle = 'rgba(' + r + ', ' + g + ',0, ' + this.highlightAlpha + ')';
-            ctx.strokeRect(worldX - padding, worldY - padding, tileSize + padding * 2, tileSize + padding * 2);
+            ctx.strokeRect(worldX - padding, worldY - padding, game.TILESIZE + padding * 2, game.TILESIZE + padding * 2);
             ctx.restore();
         },
 

@@ -111,8 +111,8 @@
         // Only draw if the camera can see this
         if ( !game.Camera.canSeeTileCoordinates(this.tileX, this.tileY) ) return;
         
-        var worldX = this.tileX * tileSize;
-        var worldY = this.tileY * tileSize;
+        var worldX = this.tileX * game.TILESIZE;
+        var worldY = this.tileY * game.TILESIZE;
         ctx.save();
 
         // Draw the item with transparency when it's about to die
@@ -142,7 +142,7 @@
 
             // Draw a glowy background
             ctx.fillStyle = 'rgba(200, 255, 0, ' + this.glowAlpha + ')';
-            ctx.fillRect(worldX, worldY, tileSize, tileSize);
+            ctx.fillRect(worldX, worldY, game.TILESIZE, game.TILESIZE);
         }
 
         objSheet.drawSprite(ctx, this.graphicIndex, worldX, worldY);

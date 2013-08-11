@@ -68,7 +68,7 @@
                 var offsetY = event.gesture.center.pageY - event.gesture.target.offsetTop;
 
                 // Figure out which portrait you clicked
-                var portraitNumber = Math.floor(offsetX / (tileSize + game.UICanvas.xPadding));
+                var portraitNumber = Math.floor(offsetX / (game.TILESIZE + game.UICanvas.xPadding));
 
                 // Make sure that corresponds to a unit
                 if ( portraitNumber < 0 || portraitNumber >= game.UICanvas.units.length ) {

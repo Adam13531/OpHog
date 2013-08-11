@@ -84,7 +84,7 @@
 
             // Clamp to world coordinates
             if ( !useScreenCoordinates && clamp ) {
-                x = Math.max(0, Math.min(x, currentMap.widthInPixels - width));
+                x = Math.max(0, Math.min(x, game.currentMap.widthInPixels - width));
 
                 // To figure out where the 'y' should be clamped, we need to
                 // take our baseline into account.
@@ -101,7 +101,7 @@
                 }
 
                 var bottomY = topY + height;
-                var lowestPossibleCoord = currentMap.heightInPixels - height;
+                var lowestPossibleCoord = game.currentMap.heightInPixels - height;
 
                 // There should never be a case where our font is bigger than
                 // the screen, so the below can be an 'else if' and not just an

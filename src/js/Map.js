@@ -1,5 +1,7 @@
 ( function() {
 
+    window.game.currentMap = null;
+
     /**
      * Makes a new map. This will also call this.initialize(), because the
      * constructor itself only sets up very basic things.
@@ -43,8 +45,8 @@
             this.fog.push(true);
         };
 
-        this.widthInPixels = this.numCols * tileSize;
-        this.heightInPixels = this.numRows * tileSize;
+        this.widthInPixels = this.numCols * game.TILESIZE;
+        this.heightInPixels = this.numRows * game.TILESIZE;
 
         this.areaInTiles = this.numCols * this.numRows;
 
@@ -132,7 +134,7 @@
         if ( this.tileOfLastMap == null ) {
             var visibleSpawners = this.getAllTiles(game.TileFlags.SPAWNER | game.TileFlags.UNFOGGY);
             this.tileOfLastMap = game.util.randomArrayElement(visibleSpawners);
-            this.setLastCameraProperties(this.tileOfLastMap.x * tileSize, this.tileOfLastMap.y * tileSize, game.Camera.getCurrentZoom());
+            this.setLastCameraProperties(this.tileOfLastMap.x * game.TILESIZE, this.tileOfLastMap.y * game.TILESIZE, game.Camera.getCurrentZoom());
         }
 
         return this.tileOfLastMap;
@@ -1304,14 +1306,14 @@
                             // with. TODO: we should be able to remove this
                             // eventually and not see units show up behind
                             // castles.
-                            ctx.fillRect(0, 0, tileSize, tileSize);
+                            ctx.fillRect(0, 0, game.TILESIZE, game.TILESIZE);
                             envSheet.drawSprite(ctx, graphic, 0,0);
                             if ( doodadGraphic != null ) {
                                 envSheet.drawSprite(ctx, doodadGraphic, 0,0);
                             }
                             if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
                                 ctx.fillStyle = greenFillStyle;
-                                ctx.fillRect(0,0,tileSize,tileSize);
+                                ctx.fillRect(0,0,game.TILESIZE,game.TILESIZE);
                                 ctx.fillStyle = regularFillStyle;
                             }
                         }
@@ -1325,16 +1327,16 @@
                             }
                             if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
                                 ctx.fillStyle = greenFillStyle;
-                                ctx.fillRect(0,0,tileSize,tileSize);
+                                ctx.fillRect(0,0,game.TILESIZE,game.TILESIZE);
                                 ctx.fillStyle = regularFillStyle;
                             }
                         }
                     }
                 }                    
 
-                ctx.translate(tileSize, 0);
+                ctx.translate(game.TILESIZE, 0);
             }
-            ctx.translate(-tileSize * this.numCols, tileSize);
+            ctx.translate(-game.TILESIZE * this.numCols, game.TILESIZE);
         }
     };
 
@@ -1362,7 +1364,7 @@
                 if ( this.fog[y * this.numCols + x] ) {
                     // Only draw fog if the camera can see it
                     if ( game.Camera.canSeeTileCoordinates(x, y) ) {
-                        ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+                        ctx.fillRect(x * game.TILESIZE, y * game.TILESIZE, game.TILESIZE, game.TILESIZE);
                     }
                 }
             }
@@ -1383,8 +1385,8 @@
             // Don't draw if it's foggy
             if ( this.isFoggy(node.x, node.y) ) continue;
 
-            var x = node.x * tileSize + tileSize / 2;
-            var y = node.y * tileSize;
+            var x = node.x * game.TILESIZE + game.TILESIZE / 2;
+            var y = node.y * game.TILESIZE;
             var difficultyText = 'Difficulty: ' + node.difficulty;
 
             game.TextManager.drawTextImmediate(ctx, node.description, x, y);

@@ -137,14 +137,14 @@
      * Convenience function to get the the world X of this tile's center.
      */
     window.game.Tile.prototype.getPixelCenterX = function() {
-        return this.x * tileSize + tileSize / 2;
+        return this.x * game.TILESIZE + game.TILESIZE / 2;
     };
 
     /**
      * Convenience function to get the the world Y of this tile's center.
      */
     window.game.Tile.prototype.getPixelCenterY = function() {
-        return this.y * tileSize + tileSize / 2;
+        return this.y * game.TILESIZE + game.TILESIZE / 2;
     };
 
     /**

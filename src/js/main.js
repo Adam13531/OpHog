@@ -1,17 +1,9 @@
 ( function() {
 
-    // Global
-    tileSize = 32;
-
     var gameloopId;
 
-    var pinchZoomStart;
     var ctxOrigZoom;
 
-    /**
-     * [Global] The map we're looking at right now.
-     * @type {Map}
-     */
     // Time (in MS) of the last update.
     var lastUpdate;
 
@@ -34,9 +26,9 @@
     function init() {
         initSettings();
 
-        envSheet = new game.SpriteSheet(game.imagePath + '/env_32.png', tileSize, function() {
-            objSheet = new game.SpriteSheet(game.imagePath + '/obj_32.png', tileSize, function() {
-                charSheet = new game.SpriteSheet(game.imagePath + '/char_32.png', tileSize, doneLoadingEverything);
+        envSheet = new game.SpriteSheet(game.imagePath + '/env_32.png', game.TILESIZE, function() {
+            objSheet = new game.SpriteSheet(game.imagePath + '/obj_32.png', game.TILESIZE, function() {
+                charSheet = new game.SpriteSheet(game.imagePath + '/char_32.png', game.TILESIZE, doneLoadingEverything);
             });
         });
     }
@@ -234,15 +226,15 @@
             // Convert to world coordinates and also tile coordinates
             var worldX = game.Camera.canvasXToWorldX(offsetX);
             var worldY = game.Camera.canvasYToWorldY(offsetY);
-            var tileX = Math.floor(worldX / tileSize);
-            var tileY = Math.floor(worldY / tileSize);
+            var tileX = Math.floor(worldX / game.TILESIZE);
+            var tileY = Math.floor(worldY / game.TILESIZE);
 
             // Make sure the tile is in-bounds
-            if ( tileX < 0 || tileX >= currentMap.numCols || tileY < 0 || tileY >= currentMap.numRows ) {
+            if ( tileX < 0 || tileX >= game.currentMap.numCols || tileY < 0 || tileY >= game.currentMap.numRows ) {
                 return;
             }
 
-            var tile = currentMap.getTile(tileX, tileY);
+            var tile = game.currentMap.getTile(tileX, tileY);
             
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target
@@ -254,11 +246,11 @@
                 return;
             }
 
-            var tileIsSpawnPoint = currentMap.isSpawnerPoint(tileX, tileY);
+            var tileIsSpawnPoint = game.currentMap.isSpawnerPoint(tileX, tileY);
 
             // Clicking a "spawner" in the overworld will take you to a map to
             // play normally on.
-            if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !currentMap.isFoggy(tileX, tileY)) {
+            if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !game.currentMap.isFoggy(tileX, tileY)) {
                 game.overworldMap.tileOfLastMap = tile;
                 game.GameStateManager.transitionToNormalMap();
                 return;
@@ -278,7 +270,7 @@
         // Initialize the UI showing the inventory.
         // We initialize the UI first so that the character pictures show up
         // before the equipment slots.
-        window.game.playerInventoryUI = new game.PlayerInventoryUI();
+        game.playerInventoryUI = new game.PlayerInventoryUI();
         game.Player.inventory = new game.PlayerInventory();
 
         // Initialize the quest slots
@@ -287,16 +279,16 @@
         game.UnitPlacementUI.setupUI();
         game.LootUI.setupUI();
         game.QuestUI.setupUI();
-        window.game.ShopUI = new game.ShopUI();
-        window.game.ShopInventory = new game.ShopInventory();
+        game.ShopUI = new game.ShopUI();
+        game.ShopInventory = new game.ShopInventory();
     }
 
     function initSettings() {
         ctx = $('#canvas')[0].getContext('2d');
 
-        //Calculate screen height and width
-        screenWidth = parseInt($('#canvas').attr('width'));
-        screenHeight = parseInt($('#canvas').attr('height'));
+        //Calculate canvas height and width
+        game.canvasWidth = parseInt($('#canvas').attr('width'));
+        game.canvasHeight = parseInt($('#canvas').attr('height'));
 
         game.UICanvas.initialize();
 
@@ -346,14 +338,14 @@
             // 'Z' - save game
             if ( evt.keyCode == game.Key.DOM_VK_Z ) {
                 game.GameDataManager.saveGame();
-                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'SAVING', true, '#0f0', false);
+                var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'SAVING', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
             }
 
             // 'X' - load game
             if ( evt.keyCode == game.Key.DOM_VK_X ) {
                 game.GameDataManager.loadGame();
-                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'LOADING', true, '#0f0', false);
+                var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'LOADING', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
             }
 
@@ -365,7 +357,7 @@
 
             // 'F' - Clears all fog from current map
             if ( evt.keyCode == game.Key.DOM_VK_F) {
-                currentMap.clearAllFog();
+                game.currentMap.clearAllFog();
             }
 
             // 'U' - shake the camera
@@ -498,7 +490,7 @@
         // parallax background or not have a transparent map.
         ctx.save();
         ctx.fillStyle = '#373737';
-        ctx.fillRect(0, 0, screenWidth, screenHeight);
+        ctx.fillRect(0, 0, game.canvasWidth, game.canvasHeight);
 
         ctx.restore();
 
@@ -521,7 +513,7 @@
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
 
-        currentMap.draw(ctx, false);
+        game.currentMap.draw(ctx, false);
         ctx.restore();
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);
@@ -535,9 +527,9 @@
 
         // Fog will cover everything drawn before this line of code (e.g. units,
         // projectiles).
-        currentMap.drawFog(ctx);
+        game.currentMap.drawFog(ctx);
 
-        currentMap.drawOverworldDescriptions(ctx);
+        game.currentMap.drawOverworldDescriptions(ctx);
 
         // Restore so that the camera will stop affecting the following draw
         // commands.

@@ -269,9 +269,9 @@
          * @return {Boolean} - see canSeeRect
          */
         canSeeTile: function(tile) {
-            var tX = tile.x * tileSize;
-            var tY = tile.y * tileSize;
-            return this.canSeeRect(tX, tY, tileSize, tileSize);
+            var tX = tile.x * game.TILESIZE;
+            var tY = tile.y * game.TILESIZE;
+            return this.canSeeRect(tX, tY, game.TILESIZE, game.TILESIZE);
         },
 
         /**
@@ -282,9 +282,9 @@
          * @return {Boolean} - see canSeeRect
          */
         canSeeTileCoordinates: function(tileX, tileY) {
-            var tX = tileX * tileSize;
-            var tY = tileY * tileSize;
-            return this.canSeeRect(tX, tY, tileSize, tileSize);
+            var tX = tileX * game.TILESIZE;
+            var tY = tileY * game.TILESIZE;
+            return this.canSeeRect(tX, tY, game.TILESIZE, game.TILESIZE);
         },
 
         /**
@@ -312,11 +312,11 @@
          * It figures out the new maximum scroll values.
          */
         computeScrollBoundaries: function() {
-            this.maxPanX = currentMap.widthInPixels - (screenWidth / this.curZoom);
-            this.maxPanY = currentMap.heightInPixels - (screenHeight / this.curZoom);
+            this.maxPanX = game.currentMap.widthInPixels - (game.canvasWidth / this.curZoom);
+            this.maxPanY = game.currentMap.heightInPixels - (game.canvasHeight / this.curZoom);
 
-            this.viewWidth = screenWidth / this.curZoom;
-            this.viewHeight = screenHeight / this.curZoom;
+            this.viewWidth = game.canvasWidth / this.curZoom;
+            this.viewHeight = game.canvasHeight / this.curZoom;
 
             this.clampPanValues();
         },

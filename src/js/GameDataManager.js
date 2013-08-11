@@ -55,11 +55,11 @@
 
             // Go through each tile and get rid of its left/rightList. We can't
             // save these because they are absolutely massive when stringified.
-            for (var i = 0; i < currentMap.mapTiles.length; i++) {
-                leftLists.push(currentMap.mapTiles[i].leftList);
-                rightLists.push(currentMap.mapTiles[i].rightList);
-                delete currentMap.mapTiles[i].leftList;
-                delete currentMap.mapTiles[i].rightList;
+            for (var i = 0; i < game.currentMap.mapTiles.length; i++) {
+                leftLists.push(game.currentMap.mapTiles[i].leftList);
+                rightLists.push(game.currentMap.mapTiles[i].rightList);
+                delete game.currentMap.mapTiles[i].leftList;
+                delete game.currentMap.mapTiles[i].rightList;
             };
 
             console.log('Saving the map');
@@ -85,9 +85,9 @@
 
             // Restore leftList and rightList so that our current game still
             // works.
-            for (var i = 0; i < currentMap.mapTiles.length; i++) {
-                currentMap.mapTiles[i].leftList = leftLists[i];
-                currentMap.mapTiles[i].rightList = rightLists[i];
+            for (var i = 0; i < game.currentMap.mapTiles.length; i++) {
+                game.currentMap.mapTiles[i].leftList = leftLists[i];
+                game.currentMap.mapTiles[i].rightList = rightLists[i];
             };
         },
 
@@ -306,7 +306,7 @@
                 // Change tiles so that they point to the correct objects with
                 // leftList and rightList set (tileIndex is still valid).
                 if ( finalUnit.previousTile != null ) {
-                    finalUnit.previousTile = currentMap.mapTiles[finalUnit.previousTile.tileIndex];
+                    finalUnit.previousTile = game.currentMap.mapTiles[finalUnit.previousTile.tileIndex];
                 }
 
                 // Change statusEffects from Objects into StatusEffects
@@ -511,14 +511,14 @@
          * will be recomputed when we load.
          */
         saveMap: function() {
-            var lookingAtOverworld = currentMap.isOverworldMap;
+            var lookingAtOverworld = game.currentMap.isOverworldMap;
             if ( !lookingAtOverworld ) {
-                localStorage.mapTilesIndices = JSON.stringify(currentMap.mapTilesIndices);
-                localStorage.doodadIndices = JSON.stringify(currentMap.doodadIndices);
-                localStorage.tilesetID = currentMap.tileset.id;
-                localStorage.mapDifficulty = currentMap.difficulty;
-                localStorage.numCols = currentMap.numCols;
-                localStorage.fog = JSON.stringify(currentMap.fog);
+                localStorage.mapTilesIndices = JSON.stringify(game.currentMap.mapTilesIndices);
+                localStorage.doodadIndices = JSON.stringify(game.currentMap.doodadIndices);
+                localStorage.tilesetID = game.currentMap.tileset.id;
+                localStorage.mapDifficulty = game.currentMap.difficulty;
+                localStorage.numCols = game.currentMap.numCols;
+                localStorage.fog = JSON.stringify(game.currentMap.fog);
             }
             localStorage.lookingAtOverworld = lookingAtOverworld;
             localStorage.overworldFog = JSON.stringify(game.overworldMap.fog);
@@ -545,12 +545,12 @@
                 var fog = JSON.parse(localStorage.fog);
 
                 // This will reform all tiles' leftList and rightList.
-                currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, difficulty, false);
+                game.currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, difficulty, false);
 
                 // Restore fog
-                currentMap.fog = fog;
+                game.currentMap.fog = fog;
             } else {
-                currentMap = game.overworldMap;
+                game.currentMap = game.overworldMap;
             }
         },
 

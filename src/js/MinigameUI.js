@@ -95,8 +95,8 @@
             var spider = game.UnitType.SPIDER;
             var orc = game.UnitType.ORC;
 
-            var baseCoinAmount = currentMap.difficulty * 300;
-            var coinBonusPerDifficulty = currentMap.difficulty * 400;
+            var baseCoinAmount = game.currentMap.difficulty * 300;
+            var coinBonusPerDifficulty = game.currentMap.difficulty * 400;
 
             this.minigameData = [];
             this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10], [spider,10], [orc,10]], baseCoinAmount + coinBonusPerDifficulty * 4));
@@ -191,7 +191,7 @@
             game.Player.modifyCoins(moneyGiven);
 
             var coinString = '+' + moneyGiven + ' coin' + (moneyGiven != 1 ? 's' : '');
-            var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2 + 40, coinString, true, '#0f0', false);
+            var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2 + 40, coinString, true, '#0f0', false);
 
             game.TextManager.addTextObj(textObj);
         },
@@ -207,10 +207,10 @@
             this.selectedMinigame = minigameData;
 
             // For now, the battle takes place in the middle of the map
-            var tileX = Math.floor(currentMap.numCols / 2);
-            var tileY = Math.floor(currentMap.numRows / 2);
-            var centerX = tileX * tileSize + tileSize / 2;
-            var centerY = tileY * tileSize + tileSize / 2;
+            var tileX = Math.floor(game.currentMap.numCols / 2);
+            var tileY = Math.floor(game.currentMap.numRows / 2);
+            var centerX = tileX * game.TILESIZE + game.TILESIZE / 2;
+            var centerY = tileY * game.TILESIZE + game.TILESIZE / 2;
 
             // Move camera to middle of the map
             game.Camera.panInstantlyTo(centerX, centerY, true);
@@ -219,7 +219,7 @@
             game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
 
             // Spawn the enemies
-            var enemyLevel = currentMap.difficulty * 2 + 3;
+            var enemyLevel = game.currentMap.difficulty * 2 + 3;
             for (var i = 0; i < enemies.length; i++) {
                 var enemyData = enemies[i][0];
                 var quantity = enemies[i][1];

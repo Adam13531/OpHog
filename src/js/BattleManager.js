@@ -166,7 +166,7 @@
                     // Battles between two 1x1 foes will be about three tiles
                     // wide, so we start battles when they're approximately
                     // where they are after the battle was started.
-                    var battleStartDistance = tileSize * 4;
+                    var battleStartDistance = game.TILESIZE * 4;
                     if ( enemy.isBoss() ) {
                         battleStartDistance *= 2;
                     }

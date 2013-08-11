@@ -168,10 +168,10 @@
             return true;
         } else if ( useTarget == game.UseTarget.MAP_WALKABLE_ONLY ) {
             if ( this.usingItem.itemID == game.ItemType.CREATE_SPAWNER.id ) {
-                return currentMap.isValidTileToCreateSpawner(tileX,tileY,6);
+                return game.currentMap.isValidTileToCreateSpawner(tileX,tileY,6);
             }
             if ( this.usingItem.itemID == game.ItemType.MEGA_CREATE_SPAWNER.id ) {
-                return currentMap.isValidTileToCreateSpawner(tileX,tileY,20);
+                return game.currentMap.isValidTileToCreateSpawner(tileX,tileY,20);
             }
             console.log('Error in isTileAUseTarget: ' + this.usingItem.name);
             return true;
@@ -227,8 +227,8 @@
 
         var useTarget = this.usingItem.useTarget;
         var used = false;
-        var tileX = Math.floor(x / tileSize);
-        var tileY = Math.floor(y / tileSize);
+        var tileX = Math.floor(x / game.TILESIZE);
+        var tileY = Math.floor(y / game.TILESIZE);
 
         // Check to see if you're targeting a unit
         if ( useTarget == game.UseTarget.LIVING_PLAYER_UNIT || 
@@ -604,8 +604,8 @@
 
         var useTarget = this.usingItem.useTarget;
         var used = false;
-        var tileX = Math.floor(x / tileSize);
-        var tileY = Math.floor(y / tileSize);
+        var tileX = Math.floor(x / game.TILESIZE);
+        var tileY = Math.floor(y / game.TILESIZE);
 
         // Check to see if you're targeting a unit
         if ( useTarget == game.UseTarget.LIVING_PLAYER_UNIT || 

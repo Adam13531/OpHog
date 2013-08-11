@@ -155,7 +155,7 @@
                     // Check to see if they're close enough to each other
                     // for the NPC to give out a quest. If they are, give
                     // out a new quest.
-                    if (distance < (tileSize * 1.5) &&
+                    if (distance < (game.TILESIZE * 1.5) &&
                         game.QuestManager.canAcceptQuests()) {
                         game.QuestManager.addNewQuest();
                         npcUnit.gaveOutQuest = true;

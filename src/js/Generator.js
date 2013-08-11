@@ -22,7 +22,7 @@
         // Only draw if the camera can see this
         if ( !game.Camera.canSeeTileCoordinates(this.tileX, this.tileY) ) return; 
 
-        envSheet.drawSprite(ctx, 91, this.tileX * tileSize, this.tileY * tileSize);
+        envSheet.drawSprite(ctx, 91, this.tileX * game.TILESIZE, this.tileY * game.TILESIZE);
     };
 
 

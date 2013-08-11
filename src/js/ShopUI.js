@@ -174,7 +174,7 @@
                 // into their inventory.
                 game.Player.modifyCoins(cost);
                 // Alert the player that they don't have enough inventory space
-                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'You don\'t have enough inventory space', true, '#f00', false);
+                var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'You don\'t have enough inventory space', true, '#f00', false);
                 game.TextManager.addTextObj(textObj);
             }
         };

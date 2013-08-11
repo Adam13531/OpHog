@@ -29,7 +29,7 @@
             }
 
             // Get a random walkable point
-            var randomWalkableTile = currentMap.getRandomWalkableTile();
+            var randomWalkableTile = game.currentMap.getRandomWalkableTile();
 
             // Make the Collectible based on that.
             var collectible = new game.Collectible(randomWalkableTile.x, randomWalkableTile.y, type);
@@ -124,7 +124,7 @@
             // 
             // It's based on the size of the map, so a 25x25 map will have a
             // .004 initial chance to spawn a collectible.
-            var initialChanceToSpawn = currentMap.areaInTiles * .0000064;
+            var initialChanceToSpawn = game.currentMap.areaInTiles * .0000064;
 
             var chanceToSpawnCollectible = initialChanceToSpawn / (this.collectibles.length + 1);
             if ( Math.random() < chanceToSpawnCollectible ) this.addNewCollectible();
