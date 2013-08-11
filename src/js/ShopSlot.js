@@ -1,12 +1,14 @@
 ( function() {
 
-	window.game.ShopSlot = function ShopSlot(slotType) {
+    /**
+     * Slots that belong in the shops's inventory. This class inherits from
+     * game.Slot.
+     * @param {game.SlotTypes} slotType Type of slot this is
+     * @param {Number} slotID ID for this slot
+     */
+	window.game.ShopSlot = function ShopSlot(slotType, slotID) {
 		this.base = game.Slot;
-		this.base(true, slotType, game.ShopInventory.slotID++);
-
-		// Number representing the index of the slot itself. This must match
-        // the index of the corresponding SlotUI.
-        // this.slotIndex = game.ShopInventory.slotID++;
+		this.base(true, slotType, slotID);
 	};
 
 	window.game.ShopSlot.prototype = new game.Slot;

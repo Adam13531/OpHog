@@ -257,10 +257,8 @@
         // Initialize the UI showing the inventory.
         // We initialize the UI first so that the character pictures show up
         // before the equipment slots.
-        // game.InventoryUI.setupUI();
         window.game.playerInventoryUI = new game.PlayerInventoryUI();
         game.Player.inventory = new game.PlayerInventory();
-        game.Player.inventory.init();
 
         // Initialize the quest slots
         game.QuestManager.initialize();
@@ -270,7 +268,6 @@
         game.QuestUI.setupUI();
         window.game.ShopUI = new game.ShopUI();
         window.game.ShopInventory = new game.ShopInventory();
-        game.ShopInventory.init();
     }
 
     function initSettings() {

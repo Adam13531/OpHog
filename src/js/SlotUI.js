@@ -2,9 +2,10 @@
 
     /**
      * SlotUI base-class constructor. useThisConstructor is here to ensure that
-     * this constructor is only being used when the base class really wants
-     * to call it because it gets called when the base class first inherits from
+     * this constructor is only being used when a base class really wants
+     * to call it. That's because it gets called when a base class first inherits from
      * it.
+     * @param {Boolean} useThisConstructor - True when this constructor code should run
      * @param {String} domSelector - the jquery selector for the span representing the slot (e.g. '#some-span')
      * @param {Slot} slot - the Slot backing this SlotUI.
      */

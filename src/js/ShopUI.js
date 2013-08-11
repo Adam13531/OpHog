@@ -1,5 +1,9 @@
 ( function() {
 
+    /**
+     * Default text that shows up in the item description part of the Shop UI
+     * @type {String}
+     */
     window.game.DEFAULT_SHOP_UI_DESCRIPTION = '<p>Select an item you would like to buy.</p>';
 
 	/**
@@ -89,7 +93,6 @@
     window.game.ShopUI.prototype.updatedSlot = function(slotIndex) {
         game.InventoryUI.prototype.updatedSlot.call(this, slotIndex);
 
-        // Update the description
         this.updateDescription();
     };
 
@@ -109,11 +112,20 @@
         return item.itemID * 1000;
     };
 
+    /**
+     * Basically an event handler that gets alerted when the player either gains
+     * or loses money.
+     */
     window.game.ShopUI.prototype.playerCoinsChanged = function() {
         this.updateBuyButton();
         this.updateDescription();
     };
 
+    /**
+     * Updates the buy button. It either gets enabled or disabled based on
+     * whether or not the currently selected item is buyable. The cost of the
+     * item is also always displayed on the buy button.
+     */
     window.game.ShopUI.prototype.updateBuyButton = function() {
         if ( !this.itemIsBuyable() ) {
             $('#shopBuyButton').button('disable');
@@ -158,12 +170,18 @@
                 // Give the player their money back if they couldn't get the item
                 // into their inventory.
                 game.Player.modifyCoins(cost);
+                // Alert the player that they don't have enough inventory space
                 var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'You don\'t have enough inventory space', true, '#f00', false);
                 game.TextManager.addTextObj(textObj);
             }
         };
     };
 
+    /**
+     * Checks to see if an item is buyable. 
+     * @return {Boolean} - Returns true if the player has enough money and the 
+     * currently selected slot isn't null or empty
+     */
     window.game.ShopUI.prototype.itemIsBuyable = function() {
         var cost = this.getBuyPrice();
         if (  !game.Player.hasThisMuchMoney(cost) ||

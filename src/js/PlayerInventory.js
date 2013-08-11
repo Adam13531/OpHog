@@ -7,54 +7,51 @@
 		this.base = game.Inventory;
 		this.base(true); // Pass in true (or anything really) to make sure the 
 						 // base constructor will be called
-	};
-
-	window.game.PlayerInventory.prototype = new game.Inventory;
-
-	window.game.PlayerInventory.prototype.init = function() {
-
+		
 		// Add equippable slots
-        for (var i = 0; i < 2; i++) {
-            var newSlot = new game.PlayerSlot(game.SlotTypes.EQUIP);
+        for (var i = 0; i < 32; i++) {
+            var newSlot = new game.PlayerSlot(game.SlotTypes.EQUIP, this.slotID++);
             this.addSlot(newSlot);
         };
 
         // Add usable slots
-        for (var i = 0; i < 2; i++) {
-            var newSlot = new game.PlayerSlot(game.SlotTypes.USABLE);
+        for (var i = 0; i < 32; i++) {
+            var newSlot = new game.PlayerSlot(game.SlotTypes.USABLE, this.slotID++);
             this.addSlot(newSlot);
         };
 
 		// Add slots for each character class
 		for (var i = 0; i < 2; i++) {
-			var newSlot = new game.PlayerSlot(game.SlotTypes.WAR);
+			var newSlot = new game.PlayerSlot(game.SlotTypes.WAR, this.slotID++);
 			this.addSlot(newSlot);
 		};
 		for (var i = 0; i < 2; i++) {
-			var newSlot = new game.PlayerSlot(game.SlotTypes.WIZ);
+			var newSlot = new game.PlayerSlot(game.SlotTypes.WIZ, this.slotID++);
 			this.addSlot(newSlot);
 		};
 		for (var i = 0; i < 2; i++) {
-			var newSlot = new game.PlayerSlot(game.SlotTypes.ARCH);
+			var newSlot = new game.PlayerSlot(game.SlotTypes.ARCH, this.slotID++);
 			this.addSlot(newSlot);
 		};
 		this.generateItems();
 	};
 
+	window.game.PlayerInventory.prototype = new game.Inventory;
+
 	window.game.PlayerInventory.prototype.generateItems = function() {
 		// Fill some of the slots (this is debug code)
-        // this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.CREATE_SPAWNER.id));
-        // this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.MEGA_CREATE_SPAWNER.id));
-        // this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.STAT_GEM.id));
-        // this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.POTION.id));
-        // this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.LEAF.id));
-        // this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.HEAL_GEM.id));
-        // this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.POISON_GEM.id));
-        // this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(game.ItemType.SHIELD.id));
-        // this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(game.ItemType.SHIELD.id));
-        // this.getFirstEmptySlot(game.SlotTypes.WAR).setItem(new game.Item(game.ItemType.SHIELD.id));
-        // this.getFirstEmptySlot(game.SlotTypes.WAR).setItem(new game.Item(game.ItemType.SWORD.id));
-        // this.getFirstEmptySlot(game.SlotTypes.ARCH).setItem(new game.Item(game.ItemType.SWORD.id));
+        this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.CREATE_SPAWNER.id));
+        this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.MEGA_CREATE_SPAWNER.id));
+        this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.STAT_GEM.id));
+        this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.POTION.id));
+        this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.LEAF.id));
+        this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.HEAL_GEM.id));
+        this.getFirstEmptySlot(game.SlotTypes.USABLE).setItem(new game.Item(game.ItemType.POISON_GEM.id));
+        this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(game.ItemType.SHIELD.id));
+        this.getFirstEmptySlot(game.SlotTypes.EQUIP).setItem(new game.Item(game.ItemType.SHIELD.id));
+        this.getFirstEmptySlot(game.SlotTypes.WAR).setItem(new game.Item(game.ItemType.SHIELD.id));
+        this.getFirstEmptySlot(game.SlotTypes.WAR).setItem(new game.Item(game.ItemType.SWORD.id));
+        this.getFirstEmptySlot(game.SlotTypes.ARCH).setItem(new game.Item(game.ItemType.SWORD.id));
 	};
 
 	window.game.PlayerInventory.prototype.addSlot = function(slot) {
