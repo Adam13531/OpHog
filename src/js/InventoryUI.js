@@ -105,14 +105,11 @@
         }
 
         if (slot.isEquipSlot()) {
-            // $('#item-description').attr('class', 'equip-slot');
             this.$itemDescriptionID.attr('class', 'equip-slot');
         } else if (slot.isUsableSlot()) {
-            // $('#item-description').attr('class', 'use-slot');
             this.$itemDescriptionID.attr('class', 'use-slot');
         }
 
-        // $('#item-description').html(desc);
         this.$itemDescriptionID.html(desc);
     };
 

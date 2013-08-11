@@ -1,7 +1,7 @@
 ( function() {
 	
 	/**
-	 * Slots that actually get placed on the inventory UI for the player.
+	 * Slots that actually get placed in the inventory UI for the player.
 	 * This inherits from SlotUI.
 	 * @param {String} domSelector - the jquery selector for the span representing the slot (e.g. '#some-span')
      * @param {Slot} slot - the Slot backing this SlotUI.

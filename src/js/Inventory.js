@@ -137,7 +137,6 @@
                 // Add as much as we can
                 quantityLeft = this.slots[i].addQuantity(quantityLeft);
                 if ( quantityLeft == 0 ) {
-                    // addedItem = true;
                     break;
                 }
             };
@@ -161,13 +160,11 @@
         }
 
         if ( quantityLeft == 0 ) {
-            // addedItem = true;
             addedItemState = game.AddedItemToInventoryState.FULLY_ADDED;
         } else if ( quantityLeft != originalQuantity ) {
             addedItemState = game.AddedItemToInventoryState.PARTIALLY_ADDED;
         }
 
-        // return addedItem;
         return addedItemState;
     };
 

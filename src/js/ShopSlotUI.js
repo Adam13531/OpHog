@@ -1,5 +1,11 @@
 ( function() {
 
+    /**
+     * Slots that actually get placed in the inventory UI for the player.
+     * This inherits from SlotUI.
+     * @param {String} domSelector - the jquery selector for the span representing the slot (e.g. '#some-span')
+     * @param {Slot} slot - the Slot backing this SlotUI.
+     */
 	window.game.ShopSlotUI = function ShopSlotUI(domSelector, slot) {
 		this.base = game.SlotUI;
 		this.base(true, domSelector, slot);
