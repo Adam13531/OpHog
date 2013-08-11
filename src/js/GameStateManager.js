@@ -292,6 +292,11 @@
                 return false;
             }
 
+            // Null --> overworld Allow this only because you may save the game
+            // while you're on the overworld, and then when you load it, it will
+            // force this transition.
+            if ( this.currentState == null && newState == game.GameStates.OVERWORLD ) return true;
+
             // Lose state --> normal gameplay
             if ( this.inLoseState() && newState == game.GameStates.NORMAL_GAMEPLAY ) return true;
 
