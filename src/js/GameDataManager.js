@@ -580,9 +580,11 @@
          * Saves the player.
          */
         savePlayer: function() {
-            // The Player is a simple object with no reference loops, so we can
-            // simply stringify it and restore it later
+            // Don't save the inventory since that's done in a different function.
+            var backupInventory = game.Player.inventory;
+            game.Player.inventory = null;
             localStorage.player = JSON.stringify(game.Player);
+            game.Player.inventory = backupInventory;
         },
 
         /**
@@ -591,6 +593,8 @@
         loadPlayer: function() {
             // Set each property of the camera.
             JSON.parse(localStorage.player, function(k, v) {
+                if ( k == 'inventory' ) return;
+                
                 // The last property will be the empty string with no value.
                 if ( k === "" ) return;
 
