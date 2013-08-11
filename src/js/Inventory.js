@@ -6,7 +6,7 @@
     window.game.AddedItemToInventoryState = {
         NOT_ADDED: 1,
         PARTIALLY_ADDED: 2,
-        FULLY_ADDED: 4,
+        FULLY_ADDED: 4
     };
 
     /**

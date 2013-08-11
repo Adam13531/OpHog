@@ -115,7 +115,7 @@
     };
 
     window.game.ShopUI.prototype.updateBuyButton = function() {
-        if ( !this.playerCanBuyItem() ) {
+        if ( !this.itemIsBuyable() ) {
             $('#shopBuyButton').button('disable');
         } else {
             $('#shopBuyButton').button('enable');
@@ -143,7 +143,7 @@
                 return;
             }
 
-            if ( !game.ShopUI.playerCanBuyItem() ) {
+            if ( !game.ShopUI.itemIsBuyable() ) {
                 return;
             }
 
@@ -153,17 +153,18 @@
             var added = game.Player.inventory.addItem(item);
             if ( added != game.AddedItemToInventoryState.NOT_ADDED) {
                 game.ShopUI.getSelectedSlot().slot.setItem(null); // Removes the bought item
-                debugger;
                 game.ShopUI.updateBuyButton();
             } else {
                 // Give the player their money back if they couldn't get the item
                 // into their inventory.
                 game.Player.modifyCoins(cost);
+                var textObj = new game.TextObj(screenWidth / 2, screenHeight / 2, 'You don\'t have enough inventory space', true, '#f00', false);
+                game.TextManager.addTextObj(textObj);
             }
         };
     };
 
-    window.game.ShopUI.prototype.playerCanBuyItem = function() {
+    window.game.ShopUI.prototype.itemIsBuyable = function() {
         var cost = this.getBuyPrice();
         if (  !game.Player.hasThisMuchMoney(cost) ||
               this.getSelectedSlot() == null ||
