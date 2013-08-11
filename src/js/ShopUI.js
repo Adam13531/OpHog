@@ -22,7 +22,7 @@
             autoOpen: false,
             resizable:false,
             autoResize: true,
-            width: 400,
+            width: 360,
             height: 310,
 
             // Wrap the dialog in a span so that it gets themed correctly.

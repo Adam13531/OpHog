@@ -7,9 +7,6 @@
      */
     window.game.castleFlashScreenTimer = 0;
 
-    /**
-     * There is only one Player
-     */
     window.game.Player = {
         /**
          * The number of coins you have.

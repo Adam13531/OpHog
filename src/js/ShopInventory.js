@@ -5,7 +5,7 @@
      * inventory is refreshed with new items.
      * @type {Number}
      */
-    window.game.INITIAL_SHOP_INVENTORY_REFRESH_TIME = 5;
+    window.game.INITIAL_SHOP_INVENTORY_REFRESH_TIME = 20;
 
 	/**
 	 * Inventory for the shop. This inherits from game.Inventory
