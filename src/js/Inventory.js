@@ -80,48 +80,6 @@
         return null;
     };
 
-        /**
-         * Gets the items that are equipped to the specified class.
-         * @param {game.PlaceableUnitType} unitType - the class you want the
-         * items for.
-         * @return {Array:Item} - the items that are equipped to this class.
-         */
-        getClassEquippedItems: function(unitType) {
-            var slotType = null;
-            var classSlots;
-            var equippedItems = [];
-
-            switch ( unitType ) {
-                case game.PlaceableUnitType.ARCHER:
-                    slotType = game.SlotTypes.ARCH;
-                    break;
-                case game.PlaceableUnitType.WARRIOR:
-                    slotType = game.SlotTypes.WAR;
-                    break;
-                case game.PlaceableUnitType.WIZARD:
-                    slotType = game.SlotTypes.WIZ;
-                    break;
-                default:
-                    slotType = null;
-                    break;
-            }
-
-            if ( slotType != null ) {
-                classSlots = this.getAllSlotsOfType(slotType);
-
-                for (var i = 0; i < classSlots.length; i++) {
-                    if ( !classSlots[i].isEmpty() ) {
-                        equippedItems.push(classSlots[i].item);
-                    }
-                };
-            }
-
-            return equippedItems;
-        },
-
-        return matchingSlots;
-    };
-
     window.game.Inventory.prototype.addItem = function(item) {
 
         // if ( item == null ) return true;

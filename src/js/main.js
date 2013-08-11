@@ -246,7 +246,7 @@
             
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target
-            if ( game.InventoryUI.attemptToUseItem(worldX, worldY) ) {
+            if ( game.playerInventoryUI.attemptToUseItem(worldX, worldY) ) {
                 // If that worked, then we don't attempt to open the spawners
                 // (perhaps you were targeting a unit on your spawner, or you
                 // were targeting the spawner itself - you wouldn't want to open

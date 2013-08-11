@@ -590,4 +590,85 @@
         this.setUseItemButtonState();
     };
 
+    /**
+     * Attempts to use an item at the passed-in point, which may represent a
+     * unit, a battle, a map tile, or nothing.
+     * @param  {Number} x - world coordinate
+     * @param  {Number} y - world coordinate
+     * @return {Boolean}   true if the item was used
+     */
+    window.game.PlayerInventoryUI.attemptToUseItem = function(x, y) {
+        if ( !this.isInUseMode() ) return false;
+
+        var useTarget = this.usingItem.useTarget;
+        var used = false;
+        var tileX = Math.floor(x / tileSize);
+        var tileY = Math.floor(y / tileSize);
+
+        // Check to see if you're targeting a unit
+        if ( useTarget == game.UseTarget.LIVING_PLAYER_UNIT || 
+            useTarget == game.UseTarget.LIVING_PLAYER_AND_ENEMY_UNIT 
+            || useTarget == game.UseTarget.LIVING_ENEMY_UNIT ) {
+
+            // Get all units at that point; we want to use the item on the
+            // first VALID unit that we find, not just the first unit.
+            var collidingUnits = game.UnitManager.getUnitsAtPoint(x, y);
+            for (var i = 0; i < collidingUnits.length; i++) {
+
+                if ( this.isUnitAUseTarget(collidingUnits[i]) ) {
+                    this.usingItem.useOnUnit(collidingUnits[i]);
+                    used = true;
+
+                    // Break so that we don't use it on multiple units (i.e.
+                    // if the units occupy the same spot)
+                    break;
+                }
+            };
+        } else if ( this.isTileAUseTarget(tileX, tileY) ) {
+            used = this.usingItem.useOnMap(x, y);
+        }
+
+        if ( used ) {
+            // Check to see if we depleted the item
+            if ( this.usingItem.isDepleted() ) {
+                this.removeDepletedItems();
+
+                // If we have another stack of that item, start using that.
+                var slotWithSameItem = game.Inventory.getSlotWithItem(this.usingItem);
+                if ( slotWithSameItem == null ) {
+                    this.exitUseMode();
+                } else {
+                    this.usingItem = slotWithSameItem.item;
+                }
+            } else {
+                // We call this because the item still exists, but
+                // its quantity is lower.
+                this.updateUseInstructions();
+
+                // This updates the text on the item
+                this.getSlotUIWithItem(this.usingItem).updateItem();
+            }
+        }
+
+        return used;
+    };
+
+    /**
+     * Remove all depleted items from the inventory. This is always safe to
+     * call this since depleted items should never exist.
+     *
+     * I made this function because 'usingItem' is stored as an item, not a
+     * slot, so there's no easy way to know which slot the item is in once
+     * you've depleted it, so we just remove all depleted items.
+     */
+    window.game.PlayerInventoryUI.removeDepletedItems = function() {
+        for (var i = 0; i < this.slots.length; i++) {
+            var slot = this.slots[i].slot;
+
+            if ( slot.isUsableSlot() && !slot.isEmpty() && slot.item.isDepleted() ) {
+                slot.setItem(null);
+            }
+        };
+    };
+
 }());

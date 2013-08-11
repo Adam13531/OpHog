@@ -19,7 +19,7 @@
         this.$itemDescriptionID.html(game.DEFAULT_SHOP_UI_DESCRIPTION);
 
         $('#shop-screen').dialog({
-            autoOpen: true,
+            autoOpen: false,
             resizable:false,
             autoResize: true,
             width: 400,

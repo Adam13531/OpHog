@@ -211,7 +211,7 @@
         saveInventory: function() {
             // The Inventory itself just has an array of Slots. Each Slot has an
             // item.
-            localStorage.inventory = JSON.stringify(JSON.decycle(game.Inventory));
+            localStorage.inventory = JSON.stringify(JSON.decycle(game.Player.inventory));
             localStorage.lastSlotID = game.slotID;
         },
 

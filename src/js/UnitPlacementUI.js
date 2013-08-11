@@ -129,7 +129,7 @@
          * @return {Number}    Cost to place the unit 
          */
         costToPlaceUnit: function(unit) {
-            var itemsEquippedToClass = game.Inventory.getClassEquippedItems(unit.unitType);
+            var itemsEquippedToClass = game.Player.inventory.getClassEquippedItems(unit.unitType);
             var costAdded = 0;
             for (var i = 0; i < itemsEquippedToClass.length; i++) {
                 costAdded += itemsEquippedToClass[i].placementCost;
