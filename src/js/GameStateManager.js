@@ -226,6 +226,7 @@
             difficultyToUse = nodeOfMap.difficulty;
         
             game.currentMap = game.MapGenerator.generateRandomMap(50, 25, difficultyToUse);
+            game.UnitPlacementUI.initializeSpawnPoint();
 
             // Initialize the camera so that the zoom and pan values aren't out
             // of bounds.

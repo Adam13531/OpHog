@@ -546,6 +546,7 @@
 
                 // This will reform all tiles' leftList and rightList.
                 game.currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, difficulty, false);
+                game.UnitPlacementUI.initializeSpawnPoint();
 
                 // Restore fog
                 game.currentMap.fog = fog;

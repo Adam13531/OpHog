@@ -46,6 +46,14 @@
         units: [],
 
         /**
+         * "Buy new unit" buttons will show up if you don't already have the
+         * maximum number of units in a class. This will tell you which buttons
+         * we're displaying and in what order.
+         * @type {Array:game.PlaceableUnitType}
+         */
+        buyButtonUnitTypes: [],
+
+        /**
          * Initialize the UI.
          */
         initialize: function() {
@@ -70,17 +78,64 @@
                 // Figure out which portrait you clicked
                 var portraitNumber = Math.floor(offsetX / (game.TILESIZE + game.UICanvas.xPadding));
 
+                var numUnitPortraits = game.UICanvas.units.length;
+                var numbuyButtonUnitTypes = game.UICanvas.buyButtonUnitTypes.length;
+
                 // Make sure that corresponds to a unit
-                if ( portraitNumber < 0 || portraitNumber >= game.UICanvas.units.length ) {
+                if ( portraitNumber < 0 || portraitNumber >= numUnitPortraits + numbuyButtonUnitTypes ) {
                     return;
                 }
 
-                var unit = game.UICanvas.units[portraitNumber];
+                if ( portraitNumber < numUnitPortraits ) {
+                    var unit = game.UICanvas.units[portraitNumber];
 
-                // Center the camera on that unit if it's already been placed.
-                if ( unit.hasBeenPlaced ) {
-                    game.Camera.panInstantlyTo(unit.getCenterX(), unit.getCenterY(), true);
+                    // Center the camera on that unit if it's already been placed.
+                    if ( unit.hasBeenPlaced ) {
+                        game.Camera.panInstantlyTo(unit.getCenterX(), unit.getCenterY(), true);
+                    } else {
+                        var cost = game.UnitPlacementUI.costToPlaceUnit(unit);
+                        if (!game.GameStateManager.isNormalGameplay()) {
+                            return;
+                        }
+
+                        if ( !game.Player.hasThisMuchMoney(cost) ) {
+                            return;
+                        }
+
+                        unit.placeUnit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY, game.MovementAI.FOLLOW_PATH);
+                        game.Player.modifyCoins(-cost);
+                        game.UnitPlacementUI.updateUnit(unit);
+                    }
+                } else {
+
+                    var unitType = game.UICanvas.buyButtonUnitTypes[portraitNumber - numUnitPortraits];
+                    var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
+                    var cost = game.UNIT_PLACEMENT_SLOT_COST * (numUnits + 1);
+
+                    if (!game.Player.hasThisMuchMoney(cost)) {
+                        return;
+                    }
+
+                    game.Player.modifyCoins(-cost);
+
+                    newUnit = new game.Unit(unitType, game.PlayerFlags.PLAYER, 1);
+
+                    var extraCostumesArray = null;
+                    var isArcher = (unitType == game.PlaceableUnitType.ARCHER);
+                    var isWarrior = (unitType == game.PlaceableUnitType.WARRIOR);
+                    var isWizard = (unitType == game.PlaceableUnitType.WIZARD);
+
+                    if ( isArcher ) extraCostumesArray = game.EXTRA_ARCHER_COSTUMES;
+                    if ( isWarrior ) extraCostumesArray = game.EXTRA_WARRIOR_COSTUMES;
+                    if ( isWizard ) extraCostumesArray = game.EXTRA_WIZARD_COSTUMES;
+                    
+                    newUnit.graphicIndexes = extraCostumesArray[numUnits - 1];
+
+                    game.UnitManager.addUnit(newUnit);
+                    game.UnitPlacementUI.addSlotToPage(newUnit, numUnits);
                 }
+
+
                 
             });
         },
@@ -96,6 +151,7 @@
             this.drawLifeBar(unit);
             this.drawExpBar(unit);
             this.drawLevel(unit);
+            this.drawPlacementCost(unit);
         },
 
         /**
@@ -119,11 +175,70 @@
         },
 
         /**
+         * Draws a "buy new unit" button.
+         * @param  {game.PlaceableUnitType} unitType - the unit type of the
+         * button to draw.
+         */
+        drawBuyButton: function(unitType) {
+            var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
+
+            if ( numUnits == game.MAX_UNITS_PER_CLASS ) {
+                return;
+            }
+
+            this.buyButtonUnitTypes.push(unitType);
+            var extraCostumesArray = null;
+
+            var isArcher = (unitType == game.PlaceableUnitType.ARCHER);
+            var isWarrior = (unitType == game.PlaceableUnitType.WARRIOR);
+            var isWizard = (unitType == game.PlaceableUnitType.WIZARD);
+
+            if ( isArcher ) extraCostumesArray = game.EXTRA_ARCHER_COSTUMES;
+            if ( isWarrior ) extraCostumesArray = game.EXTRA_WARRIOR_COSTUMES;
+            if ( isWizard ) extraCostumesArray = game.EXTRA_WIZARD_COSTUMES;
+
+            // Modify the appearance of the new unit
+            var graphicIndexes = extraCostumesArray[numUnits - 1];
+
+            charSheet.drawSprite(this.uictx, graphicIndexes[0], this.drawX, this.drawY, false);
+
+            var cost = game.UNIT_PLACEMENT_SLOT_COST * 
+                (numUnits + 1);
+
+
+            var fontColor = '#fff';
+            if ( !game.Player.hasThisMuchMoney(cost) ) {
+                fontColor = '#f00';
+            }
+            game.TextManager.drawTextImmediate(this.uictx, '$' + cost, this.drawX, this.drawY + 25, {screenCoords:true, fontSize:12, baseline:'top', treatXAsCenter:false, color:fontColor});
+            this.drawX += game.TILESIZE + this.xPadding;
+
+        },
+
+        /**
          * Draws just the unit's level.
          * @param  {Unit} unit - the unit whose portrait you're drawing
          */
         drawLevel: function(unit) {
             game.TextManager.drawTextImmediate(this.uictx, 'Lv ' + unit.level, this.drawX, this.drawY - 10, {screenCoords:true, fontSize:12, baseline:'top', treatXAsCenter:false});
+        },
+
+        /**
+         * Draws the placement cost underneath a placeable unit.
+         * @param  {Unit} unit - the unit whose portrait you're drawing
+         */
+        drawPlacementCost: function(unit) {
+            if ( unit.hasBeenPlaced ) {
+                return;
+            }
+
+            var cost = game.UnitPlacementUI.costToPlaceUnit(unit);
+
+            var fontColor = '#fff';
+            if ( !game.Player.hasThisMuchMoney(cost) ) {
+                fontColor = '#f00';
+            }
+            game.TextManager.drawTextImmediate(this.uictx, '$' + cost, this.drawX, this.drawY, {screenCoords:true, fontSize:12, baseline:'top', treatXAsCenter:false, color:fontColor});
         },
 
         /**
@@ -184,6 +299,13 @@
                 this.drawPortrait(unit);
                 this.drawX += unit.width + this.xPadding;
             };
+
+            this.buyButtonUnitTypes = [];
+            for (var i = 0; i < types.length; i++) {
+                this.drawY = 0;
+                this.drawBuyButton(types[i]);
+            }
+
         }
     };
 }()); 

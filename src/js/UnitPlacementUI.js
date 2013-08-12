@@ -124,6 +124,25 @@
         },
 
         /**
+         * Sets the spawn location to the first visible spawner in the map. That
+         * way, you don't have to click a spawner when the map begins if you
+         * want to start spawning units right away.
+         */
+        initializeSpawnPoint: function() {
+            var visibleSpawners = game.currentMap.getAllTiles(game.TileFlags.SPAWNER | game.TileFlags.UNFOGGY);
+
+            // This should never happen.
+            if ( visibleSpawners.length == 0 ) {
+                game.util.debugDisplayText('No visible spawners found.', 'no vis spawners');
+                return;
+            }
+            
+            var firstSpawner = visibleSpawners[0];
+            this.spawnPointX = firstSpawner.x;
+            this.spawnPointY = firstSpawner.y;
+        },
+
+        /**
          * Calculates the cost to place the specified unit
          * @param  {Unit} unit - Unit that can be placed
          * @return {Number}    Cost to place the unit 
@@ -514,8 +533,7 @@
          * @param  {Object} ctx - the canvas context
          */
         highlightCurrentSpawnPoint: function(ctx) {
-            // Only do this if the window is open
-            if ( !$('#buyingScreenContainer').dialog('isOpen') ) {
+            if ( !game.GameStateManager.isNormalGameplay() ) {
                 return;
             }
 
