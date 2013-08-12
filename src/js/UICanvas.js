@@ -114,6 +114,21 @@
             this.drawExpBar(unit);
             this.drawLevel(unit);
             this.drawPlacementCost(unit);
+            this.drawXIfDead(unit);
+        },
+
+        /**
+         * This draws an 'X' over dead units. We don't draw a tombstone so that
+         * you still get the visual indicator of color for each unit.
+         *
+         * This doesn't cover the level of the unit in case you want to use a
+         * revive item; you'd probably care about level.
+         * @param  {Unit} unit - the unit whose portrait you want to draw
+         */
+        drawXIfDead: function(unit) {
+            if ( !unit.isLiving() && unit.hasBeenPlaced ) {
+                game.TextManager.drawTextImmediate(this.uictx, 'X', this.drawX, -5, {screenCoords:true, fontSize:50, color:'#f00', baseline:'top', treatXAsCenter:false});
+            }
         },
 
         /**
@@ -122,12 +137,7 @@
          */
         drawUnitImage: function(unit) {
             charSheet.drawSprite(this.uictx, unit.graphicIndexes[0], this.drawX, this.drawY, !unit.isPlayer());
-            if ( !unit.isLiving() && unit.hasBeenPlaced ) {
-                // Draw an 'X' over dead units. We don't draw a tombstone so
-                // that you still get the visual indicator of color for each
-                // unit.
-                game.TextManager.drawTextImmediate(this.uictx, 'X', this.drawX + 3, this.drawY - 10, {screenCoords:true, fontSize:36, color:'#f00', baseline:'top', treatXAsCenter:false});
-            } else if ( !unit.hasBeenPlaced ) {
+            if ( !unit.hasBeenPlaced ) {
                 // Gray out units that haven't been placed
                 this.uictx.save();
                 this.uictx.fillStyle = 'rgba(0, 0, 0, .75)';
