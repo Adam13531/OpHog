@@ -65,11 +65,11 @@
 
         /**
          * This is used by the GameStateManager.
-         * @return {Boolean} true if all units are at their destinations.
+         * @return {Boolean} true if all placed units are at their destinations.
          */
         areAllUnitsAtTheirDestinations: function() {
             for (var i = 0; i < this.gameUnits.length; i++) {
-                if ( !this.gameUnits[i].isAtDestination() ) {
+                if ( this.gameUnits[i].hasBeenPlaced && !this.gameUnits[i].isAtDestination() ) {
                     return false;
                 }
             };
@@ -125,6 +125,36 @@
             game.BattleManager.checkForBattles(this.gameUnits);
 
             this.checkForGettingQuests(npcUnits, placedPlayerUnits);
+        },
+
+        /**
+         * Returns the graphic indexes for a unit costume.
+         * @param  {game.PlaceableUnitType} unitType - the unit whose costume
+         * you want to get
+         * @param  {Number} alternateCostumeNumber - the alternate costume
+         * number to get. This ranges from 0 to game.MAX_UNITS_PER_CLASS-1. You
+         * can also specify -1, in which case it will return the index
+         * corresponding to the next unpurchased unit of that class.
+         * @return {Array:Number)} - the graphic indexes of the unit costume.
+         */
+        getUnitCostume: function(unitType, alternateCostumeNumber) {
+            var extraCostumesArray = null;
+
+            if ( unitType == game.PlaceableUnitType.ARCHER ) {
+                extraCostumesArray = game.EXTRA_ARCHER_COSTUMES;
+            } else if ( unitType == game.PlaceableUnitType.WARRIOR ) {
+                extraCostumesArray = game.EXTRA_WARRIOR_COSTUMES;
+            } else {
+                extraCostumesArray = game.EXTRA_WIZARD_COSTUMES;
+            }
+
+            // Special case
+            if ( alternateCostumeNumber == -1 ) {
+                var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
+                alternateCostumeNumber = numUnits - 1;
+            }
+
+            return extraCostumesArray[alternateCostumeNumber];
         },
 
         /**
@@ -190,7 +220,7 @@
         makeAllPlayerUnitsMoveToTile: function(tile) {
             for (var i = 0; i < game.UnitManager.gameUnits.length; i++) {
                 var unit = game.UnitManager.gameUnits[i];
-                if ( unit.isPlayer() ) {
+                if ( unit.isPlayer() && unit.hasBeenPlaced ) {
                     unit.moveToSpecificTile(tile);
                 }
             };

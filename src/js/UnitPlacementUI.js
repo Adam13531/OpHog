@@ -12,6 +12,17 @@
 		WIZARD: game.UnitType.PLAYER_WIZARD.id
 	};
 
+    /**
+     * The return value of placeUnit.
+     * @type {Object}
+     */
+    window.game.PlaceUnitStatus = {
+        CANNOT_SPAWN_UNITS: 'cannot spawn units',
+        UNIT_ALREADY_PLACED: 'unit already placed',
+        NOT_ENOUGH_MONEY: 'not enough money',
+        SUCCESSFULLY_PLACED: 'successfully placed'
+    };
+
 	/**
 	 * The amount a slot costs per level
 	 * @type {Number}
@@ -80,12 +91,15 @@
         highlightAlphaChange: 1,
 		
         /**
-         * Computes the cost to buy a slot for the current unit type
+         * Computes the cost to buy a slot for the specified unit type. This is
+         * passed in so that other callers can use the function too.
+         * @param {game.PlaceableUnitType} unitType - the unit type you want to
+         * know the cost of.
          * @return {Number}           Amount that the new slot will cost
          */
-        costToPurchaseSlot: function() {
+        costToPurchaseSlot: function(unitType) {
             return game.UNIT_PLACEMENT_SLOT_COST * 
-                (game.UnitManager.getNumOfPlayerUnits(this.unitType) + 1);
+                (game.UnitManager.getNumOfPlayerUnits(unitType) + 1);
         },
 
         /**
@@ -154,6 +168,96 @@
                 costAdded += itemsEquippedToClass[i].placementCost;
             };
             return (unit.level * 50) + costAdded;
+        },
+
+        /**
+         * Places a unit, if possible. This costs money.
+         * @param  {Unit} unit - the unit to place
+         * @return {game.PlaceUnitStatus} - the error or success code.
+         */
+        placeUnit: function(unit) {
+            var cost = this.costToPlaceUnit(unit);
+            if (!this.canSpawnUnits()) {
+                return game.PlaceUnitStatus.CANNOT_SPAWN_UNITS;
+            }
+
+            if ( unit.hasBeenPlaced ) {
+                return game.PlaceUnitStatus.UNIT_ALREADY_PLACED;
+            }
+
+            if ( !game.Player.hasThisMuchMoney(cost) ) {
+                return game.PlaceUnitStatus.NOT_ENOUGH_MONEY;
+            }
+
+            unit.placeUnit(this.spawnPointX, this.spawnPointY, game.MovementAI.FOLLOW_PATH);
+            game.Player.modifyCoins(-cost);
+            game.UnitPlacementUI.updateUnit(unit);
+
+            return game.PlaceUnitStatus.SUCCESSFULLY_PLACED;
+        },
+
+        /**
+         * Buys a new unit slot. unitType is passed in so that this code can be
+         * used elsewhere to buy a unit regardless of what the unit placement UI
+         * is currently showing.
+         * @param  {game.PlaceableUnitType} unitType - the unit type to buy
+         */
+        buyNewUnit: function(unitType) {
+            // Make sure the player can afford it
+            var cost = this.costToPurchaseSlot(unitType);
+            if (!game.Player.hasThisMuchMoney(cost)) {
+                return;
+            }
+
+            // Make sure the player doesn't already have the max number of units
+            var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
+            if ( numUnits == game.MAX_UNITS_PER_CLASS ) {
+                // The only way the code should be able to get here is via a
+                // debug function like debugAddUnits, but it doesn't hurt to
+                // have this check.
+                return;
+            }
+
+            // If the unit placement UI triggered this call, then this will be
+            // true. Otherwise, it can be false.
+            var buyingDisplayedUnitType = (unitType == this.unitType);
+
+            game.Player.modifyCoins(-cost);
+
+            // Keep track of where the 'buy' button is so that we can restore
+            // that position at the end of this function.
+            if ( buyingDisplayedUnitType ) {
+                var oldBuyYPosition = $('#buySlotButton').position().top;
+                var containerY = $('#buyingScreenContainer').parent().position().top;
+            }
+
+            // Create the new unit
+            var newUnit = new game.Unit(unitType, game.PlayerFlags.PLAYER, 1);
+
+            // Give it an alternate costume if it isn't the first unit
+            if ( numUnits >= 1 && numUnits <= game.MAX_UNITS_PER_CLASS - 1 ) {
+                newUnit.graphicIndexes = game.UnitManager.getUnitCostume(unitType, -1);
+            }
+
+            game.UnitManager.addUnit(newUnit);
+
+            if ( buyingDisplayedUnitType ) {
+                game.UnitPlacementUI.addSlotToPage(newUnit, numUnits);
+
+                // Adjust the window position unless we're removing the buy
+                // buttons.
+                if ( numUnits < game.MAX_UNITS_PER_CLASS - 1 ) {
+                    var newBuyYPosition = $('#buySlotButton').position().top;
+                    $('#buyingScreenContainer').parent().css( {
+                        top: Math.max(0, containerY + oldBuyYPosition - newBuyYPosition)
+                    });
+                }
+            } else {
+                // We bought a unit from another page, so update the counts.
+                this.updateAvailableUnitCounts();
+            }
+
+            this.setBuyIconClass();
         },
 
 		/**
@@ -447,7 +551,7 @@
             this.updateAllUnits();
 
             // Update the "buy" button
-            var cost = this.costToPurchaseSlot();
+            var cost = this.costToPurchaseSlot(this.unitType);
             if ( !game.Player.hasThisMuchMoney(cost) ) {
                 $('#buySlotButton').button('disable');
             } else {
@@ -490,24 +594,13 @@
 			$('#unit'+id).click({unitClicked: unit}, unitClicked);
 			function unitClicked(event) {
                 var unit = event.data.unitClicked;
-                var cost = game.UnitPlacementUI.costToPlaceUnit(unit);
-                if (!game.GameStateManager.isNormalGameplay()) {
-                    return;
-                }
+                var placementStatus = game.UnitPlacementUI.placeUnit(unit);
 
                 // If the unit has been placed, center the camera on that unit
-                if ( unit.hasBeenPlaced ) {
+                if ( placementStatus == game.PlaceUnitStatus.UNIT_ALREADY_PLACED ) {
                     game.Camera.panInstantlyTo(unit.getCenterX(), unit.getCenterY(), true);
                     return;
                 }
-
-                if ( !game.Player.hasThisMuchMoney(cost) ) {
-                    return;
-                }
-
-				unit.placeUnit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY, game.MovementAI.FOLLOW_PATH);
-                game.Player.modifyCoins(-cost);
-				game.UnitPlacementUI.updateUnit(unit);
 			}
 
 			// Update the text of the button to show the new cost of buying
@@ -597,7 +690,7 @@
          * Adds a unit to the UI
          */
         addUnit: function() {
-            var cost = this.costToPurchaseSlot();
+            var cost = this.costToPurchaseSlot(this.unitType);
             if (!game.Player.hasThisMuchMoney(cost)) {
                 return;
             }
@@ -617,20 +710,11 @@
             var oldBuyYPosition = $('#buySlotButton').position().top;
             var containerY = $('#buyingScreenContainer').parent().position().top;
 
-            var isArcher = (this.unitType == game.PlaceableUnitType.ARCHER);
-            var isWarrior = (this.unitType == game.PlaceableUnitType.WARRIOR);
-            var isWizard = (this.unitType == game.PlaceableUnitType.WIZARD);
-
-			newUnit = new game.Unit(this.unitType, game.PlayerFlags.PLAYER, 1);
+			var newUnit = new game.Unit(this.unitType, game.PlayerFlags.PLAYER, 1);
 
             if ( numUnits >= 1 && numUnits <= game.MAX_UNITS_PER_CLASS - 1 ) {
-                var extraCostumesArray = null;
-                if ( isArcher ) extraCostumesArray = game.EXTRA_ARCHER_COSTUMES;
-                if ( isWarrior ) extraCostumesArray = game.EXTRA_WARRIOR_COSTUMES;
-                if ( isWizard ) extraCostumesArray = game.EXTRA_WIZARD_COSTUMES;
-
                 // Modify the appearance of the new unit
-                newUnit.graphicIndexes = extraCostumesArray[numUnits - 1];
+                newUnit.graphicIndexes = game.UnitManager.getUnitCostume(this.unitType, -1);
             }
 
 			game.UnitManager.addUnit(newUnit);

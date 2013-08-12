@@ -64,7 +64,7 @@
      * each.
      *
      * These are the 4 alternate costumes.
-     * @type {Array:Number}
+     * @type {Array:(Array:Number)}
      */
     window.game.EXTRA_ARCHER_COSTUMES = [[352],[353],[354],[355]];
     window.game.EXTRA_WARRIOR_COSTUMES = [[356],[357],[358],[359]];

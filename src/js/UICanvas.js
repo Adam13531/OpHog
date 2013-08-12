@@ -93,50 +93,12 @@
                     if ( unit.hasBeenPlaced ) {
                         game.Camera.panInstantlyTo(unit.getCenterX(), unit.getCenterY(), true);
                     } else {
-                        var cost = game.UnitPlacementUI.costToPlaceUnit(unit);
-                        if (!game.GameStateManager.isNormalGameplay()) {
-                            return;
-                        }
-
-                        if ( !game.Player.hasThisMuchMoney(cost) ) {
-                            return;
-                        }
-
-                        unit.placeUnit(game.UnitPlacementUI.spawnPointX, game.UnitPlacementUI.spawnPointY, game.MovementAI.FOLLOW_PATH);
-                        game.Player.modifyCoins(-cost);
-                        game.UnitPlacementUI.updateUnit(unit);
+                        game.UnitPlacementUI.placeUnit(unit);
                     }
                 } else {
-
                     var unitType = game.UICanvas.buyButtonUnitTypes[portraitNumber - numUnitPortraits];
-                    var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
-                    var cost = game.UNIT_PLACEMENT_SLOT_COST * (numUnits + 1);
-
-                    if (!game.Player.hasThisMuchMoney(cost)) {
-                        return;
-                    }
-
-                    game.Player.modifyCoins(-cost);
-
-                    newUnit = new game.Unit(unitType, game.PlayerFlags.PLAYER, 1);
-
-                    var extraCostumesArray = null;
-                    var isArcher = (unitType == game.PlaceableUnitType.ARCHER);
-                    var isWarrior = (unitType == game.PlaceableUnitType.WARRIOR);
-                    var isWizard = (unitType == game.PlaceableUnitType.WIZARD);
-
-                    if ( isArcher ) extraCostumesArray = game.EXTRA_ARCHER_COSTUMES;
-                    if ( isWarrior ) extraCostumesArray = game.EXTRA_WARRIOR_COSTUMES;
-                    if ( isWizard ) extraCostumesArray = game.EXTRA_WIZARD_COSTUMES;
-                    
-                    newUnit.graphicIndexes = extraCostumesArray[numUnits - 1];
-
-                    game.UnitManager.addUnit(newUnit);
-                    game.UnitPlacementUI.addSlotToPage(newUnit, numUnits);
+                    game.UnitPlacementUI.buyNewUnit(unitType);
                 }
-
-
-                
             });
         },
 
@@ -187,24 +149,11 @@
             }
 
             this.buyButtonUnitTypes.push(unitType);
-            var extraCostumesArray = null;
 
-            var isArcher = (unitType == game.PlaceableUnitType.ARCHER);
-            var isWarrior = (unitType == game.PlaceableUnitType.WARRIOR);
-            var isWizard = (unitType == game.PlaceableUnitType.WIZARD);
-
-            if ( isArcher ) extraCostumesArray = game.EXTRA_ARCHER_COSTUMES;
-            if ( isWarrior ) extraCostumesArray = game.EXTRA_WARRIOR_COSTUMES;
-            if ( isWizard ) extraCostumesArray = game.EXTRA_WIZARD_COSTUMES;
-
-            // Modify the appearance of the new unit
-            var graphicIndexes = extraCostumesArray[numUnits - 1];
-
+            var graphicIndexes = game.UnitManager.getUnitCostume(unitType, -1);
             charSheet.drawSprite(this.uictx, graphicIndexes[0], this.drawX, this.drawY, false);
 
-            var cost = game.UNIT_PLACEMENT_SLOT_COST * 
-                (numUnits + 1);
-
+            var cost = game.UnitPlacementUI.costToPurchaseSlot(unitType);
 
             var fontColor = '#fff';
             if ( !game.Player.hasThisMuchMoney(cost) ) {
@@ -212,7 +161,6 @@
             }
             game.TextManager.drawTextImmediate(this.uictx, '$' + cost, this.drawX, this.drawY + 25, {screenCoords:true, fontSize:12, baseline:'top', treatXAsCenter:false, color:fontColor});
             this.drawX += game.TILESIZE + this.xPadding;
-
         },
 
         /**
