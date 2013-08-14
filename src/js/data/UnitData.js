@@ -345,6 +345,17 @@
     };
 
     /**
+     * Each class has 5 costumes (the default is specified in game.UnitType).
+     * The classes are only 1x1, so we only need to specify an array of length 1
+     * for each.
+     * 
+     * @type {Array:(Array:Number)}
+     */
+    window.game.EXTRA_ARCHER_COSTUMES = [game.UnitType.PLAYER_ARCHER.graphicIndexes, [352],[353],[354],[355]];
+    window.game.EXTRA_WARRIOR_COSTUMES = [game.UnitType.PLAYER_WARRIOR.graphicIndexes, [356],[357],[358],[359]];
+    window.game.EXTRA_WIZARD_COSTUMES = [game.UnitType.PLAYER_WIZARD.graphicIndexes, [360],[361],[362],[363]];
+
+    /**
      * Gets unit data based on the ID passed in. 'level' is used to level up
      * the unit a certain number of times before returning the data.
      *

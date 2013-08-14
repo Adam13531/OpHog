@@ -37,7 +37,6 @@
      * This is called after makeUI is called and everything is loaded.
      */
     function setStartingGameState() {
-        game.UnitPlacementUI.debugAddUnits();
         game.GameStateManager.switchToOverworldMap();
 
         // Uncomment this if you want to jump directly to normal gameplay when

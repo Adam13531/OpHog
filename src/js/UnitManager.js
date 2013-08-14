@@ -131,13 +131,14 @@
          * Returns the graphic indexes for a unit costume.
          * @param  {game.PlaceableUnitType} unitType - the unit whose costume
          * you want to get
-         * @param  {Number} alternateCostumeNumber - the alternate costume
-         * number to get. This ranges from 0 to game.MAX_UNITS_PER_CLASS-1. You
-         * can also specify -1, in which case it will return the index
-         * corresponding to the next unpurchased unit of that class.
+         * @param  {Number} costumeNumber - the costume number to get. This
+         * ranges from 0 to game.MAX_UNITS_PER_CLASS. 0 is the standard costume.
+         * 1 is the first alternate one, etc. You can also specify -1, in which
+         * case it will return the index corresponding to the next unpurchased
+         * unit of that class.
          * @return {Array:Number)} - the graphic indexes of the unit costume.
          */
-        getUnitCostume: function(unitType, alternateCostumeNumber) {
+        getUnitCostume: function(unitType, costumeNumber) {
             var extraCostumesArray = null;
 
             if ( unitType == game.PlaceableUnitType.ARCHER ) {
@@ -149,12 +150,12 @@
             }
 
             // Special case
-            if ( alternateCostumeNumber == -1 ) {
+            if ( costumeNumber == -1 ) {
                 var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
-                alternateCostumeNumber = numUnits - 1;
+                costumeNumber = numUnits;
             }
 
-            return extraCostumesArray[alternateCostumeNumber];
+            return extraCostumesArray[costumeNumber];
         },
 
         /**
