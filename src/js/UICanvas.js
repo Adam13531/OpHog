@@ -168,6 +168,12 @@
             var fontColor = '#fff';
             if ( !game.Player.hasThisMuchMoney(cost) ) {
                 fontColor = '#f00';
+
+                // Gray out the button if you don't have enough money.
+                this.uictx.save();
+                this.uictx.fillStyle = 'rgba(0, 0, 0, .75)';
+                this.uictx.fillRect(this.drawX, this.drawY, game.TILESIZE, game.TILESIZE);
+                this.uictx.restore();
             }
             game.TextManager.drawTextImmediate(this.uictx, '$' + cost, this.drawX, this.drawY + 25, {screenCoords:true, fontSize:12, baseline:'top', treatXAsCenter:false, color:fontColor});
             this.drawX += game.TILESIZE + this.xPadding;
