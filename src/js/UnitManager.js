@@ -41,8 +41,7 @@
 
             for (var i = 0; i < this.gameUnits.length; i++) {
                 var unit = this.gameUnits[i];
-                if ( x >= unit.x && x <= unit.x + unit.width && 
-                    y >= unit.y && y <= unit.y + unit.height ) {
+                if ( game.util.pointInRect(x, y, unit.x, unit.y, unit.width, unit.height) ) {
                     collidingUnits.push(unit);
                 }
             };

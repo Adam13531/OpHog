@@ -184,13 +184,21 @@
     /**
      * Two circles collide if the distance between their centers is less than
      * the sum of their radii.
-     * @param  {number} x1 Center X of circle 1 (in pixels)
-     * @param  {number} y1 Center Y of circle 1 (in pixels)
-     * @param  {number} r1 Radius of circle 1 (in pixels)
-     * @return {boolean}    true if they collide
+     * @param  {Number} x1 Center X of circle 1 (in pixels)
+     * @param  {Number} y1 Center Y of circle 1 (in pixels)
+     * @param  {Number} r1 Radius of circle 1 (in pixels)
+     * @return {Boolean}    true if they collide
      */
     window.game.util.circlesCollide = function(x1, y1, r1, x2, y2, r2) {
         return window.game.util.distance(x1, y1, x2, y2) <= (r1 + r2);
+    };
+
+    /**
+     * @return {Boolean} true if the point (x,y) is inside the rectangle (rectX,
+     * rectY, rectW, rectH).
+     */
+    window.game.util.pointInRect = function(x, y, rectX, rectY, rectW, rectH) {
+        return ( x >= rectX && x <= rectX + rectW && y >= rectY && y <= rectY + rectH );
     };
 
     /**
