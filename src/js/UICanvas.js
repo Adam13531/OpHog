@@ -39,11 +39,11 @@
         xPadding: 15,
 
         /**
-         * The units to draw. We keep track of which order we drew them in so
-         * that when we click one, we don't have to recompute the order.
-         * @type {Array}
+         * Any buttons that show up on the portrait UI. These are used for
+         * placing units or buying new slots.
+         * @type {Array:PortraitUIButton}
          */
-        units: [],
+        buttons: [],
 
         /**
          * "Buy new unit" buttons will show up if you don't already have the
@@ -69,37 +69,48 @@
          * Adds any input handlers to the canvas.
          */
         setupInputHandlers: function() {
-
             var hammertime = $('#ui-canvas').hammer({prevent_default:true});
             hammertime.on('release', function(event) {
                 var offsetX = event.gesture.center.pageX - event.gesture.target.offsetLeft;
                 var offsetY = event.gesture.center.pageY - event.gesture.target.offsetTop;
 
                 // Figure out which portrait you clicked
-                var portraitNumber = Math.floor(offsetX / (game.TILESIZE + game.UICanvas.xPadding));
-
-                var numUnitPortraits = game.UICanvas.units.length;
-                var numbuyButtonUnitTypes = game.UICanvas.buyButtonUnitTypes.length;
-
-                // Make sure that corresponds to a unit
-                if ( portraitNumber < 0 || portraitNumber >= numUnitPortraits + numbuyButtonUnitTypes ) {
-                    return;
-                }
-
-                if ( portraitNumber < numUnitPortraits ) {
-                    var unit = game.UICanvas.units[portraitNumber];
-
-                    // Center the camera on that unit if it's already been placed.
-                    if ( unit.hasBeenPlaced ) {
-                        game.Camera.panInstantlyTo(unit.getCenterX(), unit.getCenterY(), true);
-                    } else {
-                        game.UnitPlacementUI.placeUnit(unit);
+                for (var i = 0; i < game.UICanvas.buttons.length; i++) {
+                    var button = game.UICanvas.buttons[i];
+                    if ( offsetX >= button.x && offsetX <= button.right && offsetY >= button.y && offsetY <= button.bottom ) {
+                        button.callback();
+                        break;
                     }
-                } else {
-                    var unitType = game.UICanvas.buyButtonUnitTypes[portraitNumber - numUnitPortraits];
-                    game.UnitPlacementUI.buyNewUnit(unitType);
-                }
+                };
             });
+        },
+
+        /**
+         * @param  {Unit} unit - the unit whose portrait you clicked
+         * @return {Function} - a function to be called when that unit portrait
+         * is clicked.
+         */
+        getUnitPortraitClicked: function(unit) {
+            return function() {
+                // Center the camera on that unit if it's already been placed.
+                if ( unit.hasBeenPlaced ) {
+                    game.Camera.panInstantlyTo(unit.getCenterX(), unit.getCenterY(), true);
+                } else {
+                    game.UnitPlacementUI.placeUnit(unit);
+                }
+            };
+        },
+
+        /**
+         * @param  {game.PlaceableUnitType} unitType - the unit type of the buy
+         * button that was clicked.
+         * @return {Function} - a function to be called when that buy button is
+         * clicked.
+         */
+        getBuyButtonClicked: function(unitType) {
+            return function() {
+                game.UnitPlacementUI.buyNewUnit(unitType);
+            };
         },
 
         /**
@@ -153,12 +164,6 @@
          */
         drawBuyButton: function(unitType) {
             var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
-
-            if ( numUnits == game.MAX_UNITS_PER_CLASS ) {
-                return;
-            }
-
-            this.buyButtonUnitTypes.push(unitType);
 
             var graphicIndexes = game.UnitManager.getUnitCostume(unitType, -1);
             charSheet.drawSprite(this.uictx, graphicIndexes[0], this.drawX, this.drawY, false);
@@ -249,26 +254,47 @@
             this.uictx.fillRect(0, 0, this.width, this.height);
             this.uictx.restore();
 
-            // Draw each unit portrait
-            this.drawX = 0;
-            this.units = [];
+            // All of the unit types. If we already have all of the units of a
+            // given type, then we will filter it out below.
             var types = [game.PlaceableUnitType.ARCHER, game.PlaceableUnitType.WARRIOR, game.PlaceableUnitType.WIZARD];
+
+            this.buyButtonUnitTypes = [];
+            this.buttons = [];
+            this.drawX = 0;
+
+            // This will contain all of the units you've purchased already.
+            var units = [];
             for (var i = 0; i < types.length; i++) {
-                game.util.pushAllToArray(this.units, game.UnitManager.getUnits(types[i]));
+                var unitsOfType = game.UnitManager.getUnits(types[i]);
+
+                // Filter out the types that we've already maxed
+                if ( unitsOfType.length != game.MAX_UNITS_PER_CLASS ) {
+                    this.buyButtonUnitTypes.push(types[i]);
+                }
+
+                game.util.pushAllToArray(units, unitsOfType);
             };
 
-            for (var i = 0; i < this.units.length; i++) {
-                var unit = this.units[i];
+            // Draw all of the units you've already purchased
+            for (var i = 0; i < units.length; i++) {
+                var unit = units[i];
                 this.drawY = 0;
+
+                this.buttons.push(new game.PortraitUIButton(this.drawX, this.drawY, game.TILESIZE, this.height, this.getUnitPortraitClicked(unit)));
                 this.drawPortrait(unit);
                 this.drawX += unit.width + this.xPadding;
             };
 
-            this.buyButtonUnitTypes = [];
-            for (var i = 0; i < types.length; i++) {
+            // Draw all of the "buy slot" buttons all the way to the right so
+            // that they don't move when you purchase a unit.
+            this.drawX = game.canvasWidth - (this.buyButtonUnitTypes.length * (game.TILESIZE + this.xPadding));
+            for (var i = 0; i < this.buyButtonUnitTypes.length; i++) {
+                var unitType = this.buyButtonUnitTypes[i];
                 this.drawY = 0;
-                this.drawBuyButton(types[i]);
-            }
+
+                this.buttons.push(new game.PortraitUIButton(this.drawX, this.drawY, game.TILESIZE, this.height, this.getBuyButtonClicked(unitType)));
+                this.drawBuyButton(unitType);
+            };
 
         }
     };
