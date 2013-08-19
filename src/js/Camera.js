@@ -103,7 +103,7 @@
          * Sets the view so that zoom and pan values are within valid ranges.
          */
         initialize: function() {
-            this.zoomChanged();
+            this.browserSizeChanged();
         },
 
         /**
@@ -303,6 +303,62 @@
          */
         canvasYToWorldY: function(y) {
             return y = (y / this.curZoom) + this.curPanY + this.shakeY;
+        },
+
+        /**
+         * When the browser size changes, call this function. It will adjust the
+         * size of the canvases and position of any other relevant DOM elements.
+         */
+        browserSizeChanged: function() {
+            var browserHeight = $(window).height();
+
+            var $canvas = $('#canvas');
+            var $uiCanvas = $('#ui-canvas');
+
+            // Update these variables
+            game.canvasWidth = $canvas.width();
+            game.UICanvas.width = $uiCanvas.width();
+            game.UICanvas.height = $uiCanvas.height();
+
+            // The UI-canvas should always have dedicated space at the bottom of
+            // the screen.
+            var uiCanvasPos = $uiCanvas.position();
+            var newTop = browserHeight - game.UICanvas.height;
+            $uiCanvas.css({
+                position:'absolute',
+                top: newTop + 'px'
+            });
+            
+            // The canvas will scale according to where the UI-canvas is.
+            game.canvasHeight = newTop;
+            $canvas.css({
+                position:'absolute',
+                height: newTop +'px',
+                top: '0px'
+            });
+
+            // Modify the canvas contexts too or else everything will be weirdly
+            // stretched.
+            var ctx = $canvas[0].getContext('2d');
+            var uictx = game.UICanvas.uictx;
+            ctx.canvas.width = game.canvasWidth;
+            ctx.canvas.height = game.canvasHeight;
+            uictx.canvas.width = game.UICanvas.width;
+            uictx.canvas.height = game.UICanvas.height;
+
+            // Change the position of the settings button.
+            var $settingsButton = $('#settingsButton');
+            var canvasPos = $canvas.position();
+            var settingsWidth = $settingsButton.width();
+            $settingsButton.css({
+                position : 'absolute',
+                top : (canvasPos.top + 5) + 'px',
+                left : (canvasPos.left + $canvas.width() - settingsWidth - 5) + 'px'
+            });
+
+            // The zoom hasn't changed yet, but we might eventually do that, and
+            // either way, this will modify the pan boundaries.
+            this.zoomChanged();
         },
             
         /**

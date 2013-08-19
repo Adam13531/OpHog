@@ -60,12 +60,17 @@
         var $createUnits = $('#createUnits');
         var $grantMoney = $('#grantMoney');
         var $goToOverworld = $('#goToOverworld');
+
         $settingsButton.button({
-              icons: {
+            icons: {
                 primary: 'ui-icon-gear'
-              },
-              text: false
-          });
+            },
+            text: false
+        });
+        $settingsButton.click(function() {
+            $settingsDialog.dialog('open');
+            $settingsButton.hide();
+        });
 
         game.GameStateManager.setupTransitionButton();
 
@@ -132,18 +137,6 @@
             // setState.
             game.GameStateManager.currentState = game.GameStates.NORMAL_WIN_SCREEN;
             game.GameStateManager.enterOverworldState();
-        });
-
-        var settingsWidth = $settingsButton.width();
-
-        $settingsButton.css({
-            position : 'absolute',
-            top : (canvasPos.top + 5) + 'px',
-            left : (canvasPos.left + $canvas.width() - settingsWidth - 5) + 'px'
-        });
-        $settingsButton.click(function() {
-            $settingsDialog.dialog('open');
-            $settingsButton.hide();
         });
 
         var $settingsDialog = $('#settingsDialog');
@@ -262,6 +255,10 @@
             } else {
                 $('#buyingScreenContainer').dialog('close');
             }
+        });
+
+        $(window).resize(function() {
+            game.Camera.browserSizeChanged();
         });
 
         $canvas.mousewheel(game.Camera.getMouseWheelEventHandler());
