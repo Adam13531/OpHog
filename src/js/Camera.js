@@ -356,6 +356,9 @@
                 left : (canvasPos.left + $canvas.width() - settingsWidth - 5) + 'px'
             });
 
+            // Make sure the portrait UI isn't scrolled too far.
+            game.UICanvas.scrollX = Math.min(game.UICanvas.scrollX, game.UICanvas.maxScrollX);
+
             // The zoom hasn't changed yet, but we might eventually do that, and
             // either way, this will modify the pan boundaries.
             this.zoomChanged();

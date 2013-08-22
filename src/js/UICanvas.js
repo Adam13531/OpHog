@@ -46,12 +46,49 @@
         buttons: [],
 
         /**
-         * "Buy new unit" buttons will show up if you don't already have the
-         * maximum number of units in a class. This will tell you which buttons
-         * we're displaying and in what order.
+         * Buy-unit buttons will show up if you don't already have the maximum
+         * number of units in a class. This will tell you which buttons we're
+         * displaying and in what order.
          * @type {Array:game.PlaceableUnitType}
          */
         buyButtonUnitTypes: [],
+
+        /**
+         * All of the placeable units that you own, whether they've been placed
+         * or not. We keep track of this so that we know what we drew and in
+         * which order.
+         * @type {Array:Unit}
+         */
+        units: [],
+
+        /**
+         * This is used by the drag event handlers to keep track of where the
+         * mouse was when you started dragging.
+         *
+         * This is different from the Camera's because you can drag this canvas
+         * separately from the main canvas. This object also only keeps track of
+         * scrolling in one direction.
+         * @type {Object}
+         */
+        dragStartPos: {},
+
+        /**
+         * The number of pixels that you've scrolled the unit portraits. The
+         * bigger the number, the further to the right you've scrolled.
+         *
+         * Note that the buttons will be drawn at negative values when you
+         * scroll, so there's no need to use scrollX in the tap event
+         * coordinates.
+         * @type {Number}
+         */
+        scrollX: 0,
+
+        /**
+         * The largest scroll value. This is based on how many units you have
+         * and the width of the canvas.
+         * @type {Number}
+         */
+        maxScrollX: 0,
 
         /**
          * Initialize the UI.
@@ -71,11 +108,14 @@
         setupInputHandlers: function() {
             var hammertime = $('#ui-canvas').hammer({prevent_default:true});
             hammertime.on('release', function(event) {
+                if ( game.HammerHelper.hammerDragging == true ) return;
                 var offsetX = event.gesture.center.pageX - event.gesture.target.offsetLeft;
                 var offsetY = event.gesture.center.pageY - event.gesture.target.offsetTop;
 
-                // Figure out which portrait you clicked
-                for (var i = 0; i < game.UICanvas.buttons.length; i++) {
+                // Figure out which portrait you clicked. Start from the end and
+                // go backwards so that we check the buy-slot buttons first. We
+                // do this since they appear on top of the unit portraits.
+                for (var i = game.UICanvas.buttons.length - 1; i >=0; i--) {
                     var button = game.UICanvas.buttons[i];
                     if ( offsetX >= button.x && offsetX <= button.right && offsetY >= button.y && offsetY <= button.bottom ) {
                         button.callback();
@@ -83,6 +123,40 @@
                     }
                 };
             });
+
+            hammertime.on('dragstart', this.getDragStartEventHandler());
+            hammertime.on('drag', this.getDragEventHandler());
+            hammertime.on('dragend', game.HammerHelper.getResetDraggingHandler());
+        },
+
+        /**
+         * Returns a function that will set the drag start positions (which will
+         * be used by the drag event handler).
+         */
+        getDragStartEventHandler: function() {
+            // Enclose 'this' in the returned function.
+            var uiCanvas = this;
+
+            return function(event) {
+                game.HammerHelper.hammerDragging = true;
+                uiCanvas.dragStartPos = {
+                    origScrollX: uiCanvas.scrollX
+                };
+            };
+        },
+
+        /**
+         * Returns a function that will scroll the canvas.
+         */
+        getDragEventHandler: function() {
+            // Enclose 'this' in the returned function.
+            var uiCanvas = this;
+
+            return function(event) {
+                uiCanvas.scrollX = uiCanvas.dragStartPos.origScrollX - event.gesture.deltaX;
+                uiCanvas.scrollX = Math.min(uiCanvas.scrollX, uiCanvas.maxScrollX);
+                uiCanvas.scrollX = Math.max(uiCanvas.scrollX, 0);
+            };
         },
 
         /**
@@ -111,6 +185,30 @@
             return function() {
                 game.UnitPlacementUI.buyNewUnit(unitType);
             };
+        },
+
+        /**
+         * Draws all portraits.
+         */
+        drawAllPortraits: function() {
+            // Clip to just the portrait area so that we don't draw underneath
+            // the buy-unit buttons.
+            this.uictx.save();
+            this.uictx.beginPath();
+            this.uictx.rect(0, 0, this.getPortraitAreaWidth(), this.height);
+            this.uictx.clip();
+
+            // Draw all of the units you've already purchased
+            for (var i = 0; i < this.units.length; i++) {
+                var unit = this.units[i];
+                this.drawY = 0;
+
+                this.buttons.push(new game.PortraitUIButton(this.drawX, this.drawY, game.TILESIZE, this.height, this.getUnitPortraitClicked(unit)));
+                this.drawPortrait(unit);
+                this.drawX += unit.width + this.xPadding;
+            };
+
+            this.uictx.restore();
         },
 
         /**
@@ -158,7 +256,23 @@
         },
 
         /**
-         * Draws a "buy new unit" button.
+         * Draws all buy-unit buttons..
+         */
+        drawAllBuyButtons: function() {
+            // Draw all the way to the right so that they don't move when you
+            // purchase a unit.
+            this.drawX = this.getPortraitAreaWidth();
+            for (var i = 0; i < this.buyButtonUnitTypes.length; i++) {
+                var unitType = this.buyButtonUnitTypes[i];
+                this.drawY = 0;
+
+                this.buttons.push(new game.PortraitUIButton(this.drawX, this.drawY, game.TILESIZE, this.height, this.getBuyButtonClicked(unitType)));
+                this.drawBuyButton(unitType);
+            };
+        },
+
+        /**
+         * Draws a buy-unit button.
          * @param  {game.PlaceableUnitType} unitType - the unit type of the
          * button to draw.
          */
@@ -245,6 +359,50 @@
         },
 
         /**
+         * @return {Number} the amount of pixels dedicated to the unit portraits
+         * themselves.
+         */
+        getPortraitAreaWidth: function() {
+            return game.canvasWidth - (this.buyButtonUnitTypes.length * (game.TILESIZE + this.xPadding));
+        },
+
+        /**
+         * @return {Number} the amount of pixels required to draw each unit
+         * portrait.
+         */
+        getWidthNeededToDrawPortraits: function() {
+            return this.units.length * (game.TILESIZE + this.xPadding);
+        },
+
+        /**
+         * Draws a scrollbar on the unit portraits if necessary.
+         */
+        drawScrollBarIfNecessary: function() {
+            if ( this.maxScrollX <= 0 ) return;
+            this.uictx.save();
+
+            var h = 3;
+            var portraitAreaWidth = this.getPortraitAreaWidth();
+            var alpha = Math.sin(game.alphaBlink * 4) * .1 + .3;
+
+            // Figure out where to draw the bar and how big
+            var percentWidth = portraitAreaWidth / this.getWidthNeededToDrawPortraits();
+            var width = percentWidth * portraitAreaWidth;
+            var percentX = this.scrollX / (this.maxScrollX);
+            var x = percentX * (portraitAreaWidth - width);
+
+            // Draw a 1-pixel scrollbar "track"
+            this.uictx.fillStyle = 'rgba(128,0,0, ' + alpha + ')';
+            this.uictx.fillRect(0,this.height - 2,portraitAreaWidth,1);
+
+            // Draw the scrollbar
+            this.uictx.fillStyle = 'rgba(255,0,0, ' + alpha + ')';
+            this.uictx.fillRect(x,this.height - h,width,h);
+
+            this.uictx.restore();
+        },
+
+        /**
          * Draws all unit portraits.
          */
         draw: function() {
@@ -260,10 +418,10 @@
 
             this.buyButtonUnitTypes = [];
             this.buttons = [];
-            this.drawX = 0;
+            this.drawX = -this.scrollX;
 
             // This will contain all of the units you've purchased already.
-            var units = [];
+            this.units = [];
             for (var i = 0; i < types.length; i++) {
                 var unitsOfType = game.UnitManager.getUnits(types[i]);
 
@@ -272,29 +430,17 @@
                     this.buyButtonUnitTypes.push(types[i]);
                 }
 
-                game.util.pushAllToArray(units, unitsOfType);
+                game.util.pushAllToArray(this.units, unitsOfType);
             };
 
-            // Draw all of the units you've already purchased
-            for (var i = 0; i < units.length; i++) {
-                var unit = units[i];
-                this.drawY = 0;
+            // The width of all purchased units minus the visible width
+            this.maxScrollX = this.getWidthNeededToDrawPortraits() - this.getPortraitAreaWidth();
+            this.maxScrollX = Math.max(0, this.maxScrollX);
 
-                this.buttons.push(new game.PortraitUIButton(this.drawX, this.drawY, game.TILESIZE, this.height, this.getUnitPortraitClicked(unit)));
-                this.drawPortrait(unit);
-                this.drawX += unit.width + this.xPadding;
-            };
+            this.drawAllPortraits();
+            this.drawAllBuyButtons();
 
-            // Draw all of the "buy slot" buttons all the way to the right so
-            // that they don't move when you purchase a unit.
-            this.drawX = game.canvasWidth - (this.buyButtonUnitTypes.length * (game.TILESIZE + this.xPadding));
-            for (var i = 0; i < this.buyButtonUnitTypes.length; i++) {
-                var unitType = this.buyButtonUnitTypes[i];
-                this.drawY = 0;
-
-                this.buttons.push(new game.PortraitUIButton(this.drawX, this.drawY, game.TILESIZE, this.height, this.getBuyButtonClicked(unitType)));
-                this.drawBuyButton(unitType);
-            };
+            this.drawScrollBarIfNecessary();
 
         }
     };

@@ -205,7 +205,7 @@
         hammertime.on('transform', game.Camera.getTransformEventHandler());
         hammertime.on('dragstart', game.Camera.getDragStartEventHandler());
         hammertime.on('drag', game.Camera.getDragEventHandler());
-        hammertime.on('dragend', function(event) { game.HammerHelper.hammerResetDragging = true; } );
+        hammertime.on('dragend', game.HammerHelper.getResetDraggingHandler() );
         hammertime.on('transformend', function(event) { game.HammerHelper.hammerResetTransforming = true; } );
 
         // Handle all the events from a user clicking/tapping the canvas
