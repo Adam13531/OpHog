@@ -251,9 +251,6 @@
             // Check to see if the user tapped a spawner
             if (game.UnitPlacementUI.canSpawnUnits() && tileIsSpawnPoint) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
-                game.UnitPlacementUI.show();
-            } else {
-                $('#buyingScreenContainer').dialog('close');
             }
         });
 
