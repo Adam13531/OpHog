@@ -372,7 +372,7 @@
      */
     window.game.util.debugDisplayText = function(text, labelIdentifierNumber) {
         // If you didn't supply an argument, set the ID to 1
-        if ( typeof labelIdentifierNumber === "undefined" ) labelIdentifierNumber = "1";
+        if ( typeof labelIdentifierNumber === 'undefined' ) labelIdentifierNumber = '1';
 
         // Get rid of spaces since they screw this up somehow. The '/g' is
         // needed to replace all of the spaces.
@@ -384,13 +384,22 @@
         var debugDiv = $('#' + divID);
         if ( debugDiv.length == 0 ) {
             // It didn't, so add it before the canvas
-            $('#container').before('<div id="' + divID +'"></div>');
+            $('#canvas').before('<div id="' + divID +'"></div>');
 
             // Obtain the div now that it exists
             debugDiv = $('#' + divID);
         }
 
         debugDiv.text(text);
+        debugDiv.css({
+            'color': '#fff',
+            'position': 'absolute',
+            'top': '0px',
+            'left': '0px',
+            'font-size': '2em',
+            'z-index': '99999'
+        });
+        debugDiv.addClass('outline-font');
     };
 
     /**
