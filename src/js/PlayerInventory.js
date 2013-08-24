@@ -34,6 +34,9 @@
 			this.addSlot(newSlot);
 		};
 		this.generateItems();
+
+        // Have the first item selected by default
+        game.playerInventoryUI.clickedSlot(game.playerInventoryUI.slots[0]);
 	};
 
 	window.game.PlayerInventory.prototype = new game.Inventory;
