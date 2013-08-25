@@ -189,7 +189,7 @@
      * not in USE mode.
      */
     window.game.PlayerInventoryUI.prototype.isUnitAUseTarget = function(unit) {
-        if (!this.isInUseMode()) return false;
+        if (!this.isInUseMode() || !unit.hasBeenPlaced) return false;
 
         var useTarget = this.usingItem.useTarget;
         var isPlayer = unit.isPlayer();
@@ -213,6 +213,47 @@
         }
 
         return false;
+    };
+
+    /**
+     * Adjusts the state associated with using an item. For example, updating
+     * the quantity of an item or depleting it.
+     */
+    window.game.PlayerInventoryUI.prototype.justUsedItem = function() {
+        // Check to see if we depleted the item
+        if ( this.usingItem.isDepleted() ) {
+            this.removeDepletedItems();
+
+            // If we have another stack of that item, start using that.
+            var slotWithSameItem = game.Player.inventory.getSlotWithItem(this.usingItem);
+            if ( slotWithSameItem == null ) {
+                this.exitUseMode();
+            } else {
+                this.usingItem = slotWithSameItem.item;
+            }
+        } else {
+            // We call this because the item still exists, but
+            // its quantity is lower.
+            this.updateUseInstructions();
+
+            // This updates the text on the item
+            this.getSlotUIWithItem(this.usingItem).updateItem();
+        }
+    };
+
+    /**
+     * Uses an item on a unit if the conditions are appropriate (you're in USE
+     * mode, 'unit' is a valid target).
+     * @param  {Unit} unit - the unit to use the item on
+     * @return {Boolean}      true if the item was used
+     */
+    window.game.PlayerInventoryUI.prototype.useItemOnUnit = function(unit) {
+        if ( !this.isInUseMode() || !this.isUnitAUseTarget(unit) ) return false;
+
+        this.usingItem.useOnUnit(unit);
+        this.justUsedItem();
+
+        return true;
     };
 
     /**
@@ -240,13 +281,10 @@
             var collidingUnits = game.UnitManager.getUnitsAtPoint(x, y);
             for (var i = 0; i < collidingUnits.length; i++) {
 
-                if ( this.isUnitAUseTarget(collidingUnits[i]) ) {
-                    this.usingItem.useOnUnit(collidingUnits[i]);
-                    used = true;
-
-                    // Break so that we don't use it on multiple units (i.e.
-                    // if the units occupy the same spot)
-                    break;
+                if ( this.useItemOnUnit(collidingUnits[i]) ) {
+                    // Return so that we don't use it on multiple units (i.e. if
+                    // the units occupy the same spot)
+                    return true;
                 }
             };
         } else if ( this.isTileAUseTarget(tileX, tileY) ) {
@@ -254,25 +292,7 @@
         }
 
         if ( used ) {
-            // Check to see if we depleted the item
-            if ( this.usingItem.isDepleted() ) {
-                this.removeDepletedItems();
-
-                // If we have another stack of that item, start using that.
-                var slotWithSameItem = game.Player.inventory.getSlotWithItem(this.usingItem);
-                if ( slotWithSameItem == null ) {
-                    this.exitUseMode();
-                } else {
-                    this.usingItem = slotWithSameItem.item;
-                }
-            } else {
-                // We call this because the item still exists, but
-                // its quantity is lower.
-                this.updateUseInstructions();
-
-                // This updates the text on the item
-                this.getSlotUIWithItem(this.usingItem).updateItem();
-            }
+            this.justUsedItem();
         }
 
         return used;

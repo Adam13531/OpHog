@@ -168,7 +168,12 @@
             return function() {
                 // Center the camera on that unit if it's already been placed.
                 if ( unit.hasBeenPlaced ) {
-                    game.Camera.panInstantlyTo(unit.getCenterX(), unit.getCenterY(), true);
+                    // Attempt to use an item on the unit.
+                    if ( !game.playerInventoryUI.useItemOnUnit(unit) ) {
+                        // If that didn't work, then just center the camera on
+                        // the unit.
+                        game.Camera.panInstantlyTo(unit.getCenterX(), unit.getCenterY(), true);
+                    }
                 } else {
                     game.UnitPlacementUI.placeUnit(unit);
                 }
@@ -224,6 +229,23 @@
             this.drawLevel(unit);
             this.drawPlacementCost(unit);
             this.drawXIfDead(unit);
+
+            this.drawUseOverlay(unit);
+        },
+
+        /**
+         * Draws a green box on the unit if it's a valid USE target.
+         * @param  {Unit} unit - the unit whose portrait you're drawing
+         */
+        drawUseOverlay: function(unit) {
+            if ( !game.playerInventoryUI.isUnitAUseTarget(unit) ) return;
+
+            this.uictx.save();
+            var blink = Math.sin(game.alphaBlink * 4);
+            var alpha = blink * .1 + .3;
+            this.uictx.fillStyle = 'rgba(0, 255, 0, ' + alpha + ')';
+            this.uictx.fillRect(this.drawX, 0, game.TILESIZE, game.TILESIZE);
+            this.uictx.restore();
         },
 
         /**
