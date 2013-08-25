@@ -615,7 +615,7 @@
          * Loads the game state.
          */
         loadGameState: function() {
-            game.GameStateManager.hideTransitionButton();
+            game.GameStateManager.hideTransitionButtons();
 
             var currentState = JSON.parse(localStorage.currentGameState);
             var previousState = JSON.parse(localStorage.previousGameState);

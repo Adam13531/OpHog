@@ -73,7 +73,7 @@
             $settingsButton.hide();
         });
 
-        game.GameStateManager.setupTransitionButton();
+        game.GameStateManager.setupTransitionButtons();
 
         $showInventory.button();
         $showInventory.click(function() {

@@ -112,7 +112,6 @@
         /**
          * These are functions that should be called when you either win or
          * lose.
-         * @return {undefined}
          */
         commonWinLoseFunctions: function () {
             game.BattleManager.removeAllBattles();
@@ -122,53 +121,103 @@
         },
 
         /**
-         * Sets up the transition button, which is the button you click to
-         * transition between states.
+         * Sets up the transition buttons, which are the "retry" and "go to
+         * overworld" buttons.
          */
-        setupTransitionButton: function() {
-            var $transitionStateButton = $('#transitionStateButton');
-            $transitionStateButton.button();
-            $transitionStateButton.css({
-                'padding': '6px'
-            });
+        setupTransitionButtons: function() {
+            var $retryButton = $('#retryButton');
+            var $goToOverworldButton = $('#goToOverworldButton');
+            var buttons = [$retryButton, $goToOverworldButton];
 
-            $transitionStateButton.click(function(gameStateManager) {
+            // Perform some actions on both buttons
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].button();
+                buttons[i].css({
+                    'padding': '6px'
+                });
+            };
+
+            $retryButton.text('Retry');
+            $goToOverworldButton.text('Return to overworld');
+
+            $retryButton.click(function(gameStateManager) {
                 return function() {
-                    // For now, the button will only transition between the
-                    // win/lose states.
-                    gameStateManager.confirmedWinOrLose();
+                    gameStateManager.returnToNormalGameplay();
                 }
             }(this));
                 
-            this.hideTransitionButton();
+            $goToOverworldButton.click(function(gameStateManager) {
+                return function() {
+                    gameStateManager.enterOverworldState();
+                }
+            }(this));
+                
+            this.hideTransitionButtons();
         },
 
         /**
-         * Hides the transition button.
+         * Hides the transition buttons.
          */
-        hideTransitionButton: function() {
-            $('#transitionStateButton').hide();
+        hideTransitionButtons: function() {
+            $('#retryButton').hide();
+            $('#goToOverworldButton').hide();
         },
 
         /**
-         * Positions and sets the text of the transition button.
-         * @param  {Number} centerX - x, in screen coordinates
-         * @param  {Number} centerY - y, in screen coordinates
-         * @param  {String} text    - the text to show on the button
+         * Positions and shows the transition buttons.
+         *
+         * The buttons will always be positioned in the center of the canvas.
+         * @param {Boolean} showRetry - if true, show the 'retry' button.
+         * @param {Boolean} showOverworld - if true, show the 'go to overworld'
+         * button.
          */
-        setTransitionButton: function(centerX, centerY, text) {
-            var $transitionStateButton = $('#transitionStateButton');
-            $transitionStateButton.text(text);
+        showTransitionButtons: function(showRetry, showOverworld) {
+            var centerX = game.canvasWidth / 2;
+            var centerY = game.canvasHeight / 2;
+            var padding = 5;
 
-            var left = centerX - $transitionStateButton.width() / 2;
-            var top = centerY - $transitionStateButton.height() / 2;
-            $transitionStateButton.css({
+            var $goToOverworldButton = $('#goToOverworldButton');
+            var $retryButton = $('#retryButton');
+
+            var retryWidth = parseInt($retryButton.css('width'));
+            var goToOverworldWidth = parseInt($goToOverworldButton.css('width'));
+            var height = parseInt($goToOverworldButton.css('height'));
+
+            var top = centerY - height / 2;
+
+            // Set both buttons' left coordinates to be the center of the
+            // screen. This way, if we don't change them below, they'll be
+            // positioned correctly.
+            var retryLeft = centerX - retryWidth / 2;
+            var overworldLeft = centerX - goToOverworldWidth / 2;
+
+            // If they're both showing, then we need to take both widths into
+            // account for positioning them.
+            if ( showRetry && showOverworld ) {
+                var totalWidth = retryWidth + padding + goToOverworldWidth;
+                retryLeft = centerX - totalWidth / 2;
+                overworldLeft = retryLeft + retryWidth + padding;
+            }
+
+            $retryButton.css({
                 'position': 'absolute',
-                'left': left + 'px',
+                'left': retryLeft + 'px',
                 'top': top + 'px'
             });
 
-            $transitionStateButton.show();
+            $goToOverworldButton.css({
+                'position': 'absolute',
+                'left': overworldLeft + 'px',
+                'top': top + 'px'
+            });
+
+            if ( showOverworld ) {
+                $goToOverworldButton.show();
+            }
+
+            if ( showRetry ) {
+                $retryButton.show();
+            }
         },
 
         /**
@@ -204,7 +253,6 @@
 
         /**
          * This will remove any map-specific entities and generate a new map.
-         * @return {undefined}
          */
         switchToNewMap: function() {
             game.BattleManager.removeAllBattles();
@@ -240,20 +288,6 @@
             // Pan to the upper left so that they can at least see one of the
             // spawn points.
             game.Camera.panInstantlyTo(0, 0, false);
-        },
-
-        /**
-         * This is called right now when the user presses 'G', which indicates
-         * that they're done reading the win/lose screens.
-         */
-        confirmedWinOrLose: function() {
-            this.hideTransitionButton();
-
-            if ( this.inLoseState() ) {
-                this.returnToNormalGameplay();
-            } else if ( this.inWinState() || this.inMinigameWinState() || this.inMinigameLoseState() ) {
-                this.enterOverworldState();
-            }
         },
 
         /**
@@ -301,6 +335,9 @@
             // Lose state --> normal gameplay
             if ( this.inLoseState() && newState == game.GameStates.NORMAL_GAMEPLAY ) return true;
 
+            // Lose state --> overworld
+            if ( this.inLoseState() && newState == game.GameStates.OVERWORLD ) return true;
+
             // Win state --> overworld
             if ( this.inWinState() && newState == game.GameStates.OVERWORLD ) return true;
 
@@ -345,7 +382,6 @@
         /**
          * Sets the state of the game.
          * @param  {game.GameStates} newState - the new state
-         * @return {undefined}
          */
         setState: function(newState) {
             if ( !this.isValidStateTransition(newState) ) {
@@ -358,6 +394,9 @@
             // Regardless of how we transitioned, setting the state of this
             // button shouldn't hurt.
             game.playerInventoryUI.setUseItemButtonState();
+
+            // Same thing with these buttons
+            this.hideTransitionButtons();
 
             // Lose state --> normal gameplay
             // 
@@ -378,11 +417,16 @@
                 this.switchToOverworldMap();
             }
 
+            // Lose state --> overworld
+            if ( this.previousState == game.GameStates.NORMAL_LOSE_SCREEN && this.inOverworldMap() ) {
+                this.switchToOverworldMap();
+            }
+
             // Normal state --> lose
             if ( this.previousState == game.GameStates.NORMAL_GAMEPLAY && this.inLoseState() ) {
                 this.commonWinLoseFunctions();
                 game.Player.modifyCoins(-1000);
-                this.setTransitionButton(game.canvasWidth / 2, game.canvasHeight / 2, 'Retry');
+                this.showTransitionButtons(true, true);
             }
 
             // Normal state --> win
@@ -403,7 +447,7 @@
                 this.commonWinLoseFunctions();
                 var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'You lost the minigame', true, '#f00', false);
                 game.TextManager.addTextObj(textObj);
-                this.setTransitionButton(game.canvasWidth / 2, game.canvasHeight / 2, 'Back to overworld');
+                this.showTransitionButtons(false, true);
             }
 
             // Minigame gameplay --> minigame win
@@ -411,7 +455,7 @@
                 this.commonWinLoseFunctions();
                 var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'You won the minigame', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
-                this.setTransitionButton(game.canvasWidth / 2, game.canvasHeight / 2, 'Back to overworld');
+                this.showTransitionButtons(false, true);
             }
 
             // Minigame lose --> overworld map
@@ -458,7 +502,6 @@
         /**
          * Draws the state if appropriate.
          * @param  {Object} ctx - the canvas context
-         * @return {undefined}
          */
         draw: function(ctx) {
             // There's nothing to draw when you're playing normally.
@@ -492,7 +535,7 @@
 
             if ( text != null ) {
                 var x = game.canvasWidth / 2;
-                var y = 150;
+                var y = game.canvasHeight / 2 - 120;
                 var fontSize = 60;
 
                 game.TextManager.drawTextImmediate(ctx, text, x, y, {screenCoords:true, fontSize:60, color:color});

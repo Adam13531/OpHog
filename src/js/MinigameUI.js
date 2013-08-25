@@ -163,7 +163,7 @@
 
             $('#minigame-cancel-button').click(function(minigameUI) {
                 return function() {
-                    game.GameStateManager.confirmedWinOrLose();
+                    game.GameStateManager.enterOverworldState();
                 }
             }(this));
         },
