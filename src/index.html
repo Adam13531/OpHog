@@ -72,11 +72,16 @@
 	    </div>
 
         <div id="shop-screen" title="Shop">
-            <button id="shopBuyButton" style="margin-bottom:5px">Buy</button>
-            <span id="newItemTimer" style="float: right"></span>
-            <!-- Items the user can buy -->
-            <div id="shopui-equippable-item-pane" style="margin: 0" class="static-pane"></div>
-            <div id="shopui-usable-item-pane" class="static-pane"></div>
+            <div id="shop_div_without_item_description_in_it" style="position:absolute;top:0px;left:0px;width:100%;margin-top:5px">
+                <div id="shop_div_buy_button_and_timer" style="width: 340px;margin: 0px auto;">
+                    <button id="shopBuyButton" style="margin-bottom:5px; font-size:.75em">Buy</button>
+                    <span id="newItemTimer" style="float: right"></span>
+                </div>
+
+                <!-- Items the user can buy -->
+                <div id="shopui-equippable-item-pane" class="static-pane"></div>
+                <div id="shopui-usable-item-pane" class="static-pane"></div>
+            </div>
 
             <!-- Description text of the selected item -->
             <div id="shopui-item-description" class="equip-slot" style="position:absolute;top:120px;left:0px;border:1px solid gray;width:99%;height:132px"></div>

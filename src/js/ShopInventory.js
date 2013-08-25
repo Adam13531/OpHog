@@ -33,6 +33,9 @@
         * @type {Number}
         */
         this.timeUntilNewInventoryItems = game.INITIAL_SHOP_INVENTORY_REFRESH_TIME;
+
+        // Have the first item show by default by making it selected
+        game.ShopUI.clickedSlot(game.ShopUI.slots[0]);
     };
 
     window.game.ShopInventory.prototype = new game.Inventory;
