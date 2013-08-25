@@ -58,4 +58,16 @@
      */
     window.game.TILESIZE = 32;
 
+    /**
+     * Amount of ms it takes to fade in dialogs.
+     * @type {Number}
+     */
+    window.game.DIALOG_SHOW_MS = 150;
+
+    /**
+     * Amount of ms it takes to fade out dialogs.
+     * @type {Number}
+     */
+    window.game.DIALOG_HIDE_MS = 400;
+
 }());

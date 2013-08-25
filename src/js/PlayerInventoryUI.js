@@ -97,13 +97,13 @@
             appendTo:"#inventoryThemeSpan",
             hide: {
                 effect: 'fade',
-                duration: 400
+                duration: game.DIALOG_HIDE_MS
             },
 
             // Fade in very quickly
             show: {
                 effect: 'fade',
-                duration: 150
+                duration: game.DIALOG_SHOW_MS
             },
 
             // Position the inventory screen in the center of the canvas

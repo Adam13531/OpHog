@@ -51,6 +51,8 @@
         var $canvas = $('#canvas');
         var canvasPos = $canvas.position();
         var $toggleParticlesButton = $('#toggleParticlesButton');
+        var $lowGraphicsButton = $('#graphicsLow');
+        var $highGraphicsButton = $('#graphicsHigh');
 
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
@@ -150,7 +152,7 @@
                 // 
                 // Fade is one of the few effects we can use.
                 effect: 'fade',
-                duration: 400
+                duration: game.DIALOG_HIDE_MS
             },
 
             // Wrap the dialog in a span so that it gets themed correctly.
@@ -192,6 +194,18 @@
 
             // The text actually goes in a sibling label's child span.
             $($toggleParticlesButton.selector + ' ~ label > span').text(text);
+        });
+
+        $lowGraphicsButton.button();
+        $highGraphicsButton.button();
+
+        $lowGraphicsButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.LOW);
+        });
+        $highGraphicsButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
         });
 
         // To see what's in Hammer events, look at their wiki (currently located
@@ -274,6 +288,8 @@
         game.QuestUI.setupUI();
         game.ShopUI = new game.ShopUI();
         game.ShopInventory = new game.ShopInventory();
+		// Start out with HIGH graphics settings for now.
+        game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
     }
 
     function initSettings() {

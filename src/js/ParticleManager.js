@@ -18,12 +18,16 @@
         enabled: true,
 
         toggleEnabled: function() {
-            if ( this.enabled ) {
+            this.setEnabled(!this.enabled);
+        },
+
+        setEnabled: function(enabled) {
+            if ( !enabled ) {
                 // Get rid of existing systems
                 this.systems = [];
             }
 
-            this.enabled = !this.enabled;
+            this.enabled = enabled;
         },
 
         addSystem: function(system) {

@@ -206,6 +206,17 @@
         },
 
         /**
+         * Sets the minimum zoom, zooming in if you're currently below it.
+         * @param {Number} minZoom - the new minimum zoom
+         */
+        setMinZoom: function(minZoom) {
+            this.minZoom = minZoom;
+            if ( this.curZoom < this.minZoom ) {
+                this.instantlySetZoom(this.minZoom);
+            }
+        },
+
+        /**
          * This function clamps the zoom values between min and max, then
          * updates the scroll boundaries.
          *

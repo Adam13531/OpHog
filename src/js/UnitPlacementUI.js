@@ -295,7 +295,7 @@
                 appendTo:"#unitPlacementDialogThemeSpan",
                 hide: {
                     effect: 'fade',
-                    duration: 400
+                    duration: game.DIALOG_HIDE_MS
                 },
     
                 // Position the unit placement screen in the center of the canvas

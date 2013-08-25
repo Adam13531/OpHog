@@ -66,7 +66,7 @@
                 // Fade in very quickly
                 show: {
                     effect: 'fade',
-                    duration: 150
+                    duration: game.DIALOG_SHOW_MS
                 },
 
                 // Position at the center of the canvas
