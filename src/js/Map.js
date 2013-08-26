@@ -11,13 +11,14 @@
      * undefined if there is no doodad at that location.
      * @param {Number} tilesetID - the ID of the tileset to use
      * @param {Number} width                - width of this map
+     * @param {Object} nodeOfMap - an object from game.OverworldMapData.overworldMapNodes
      * @param {Boolean} isOverworldMap - true if this is the overworld map.
      */
-    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width, difficulty, isOverworldMap) {
+    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width, nodeOfMap, isOverworldMap) {
         this.numCols = width;
         this.numRows = mapTilesIndices.length / this.numCols;
         this.isOverworldMap = isOverworldMap;
-        this.difficulty = difficulty;
+        this.nodeOfMap = nodeOfMap;
 
         this.tileset = game.TilesetManager.getTilesetByID(tilesetID);
 
@@ -155,9 +156,9 @@
      * because placing the boss depends on a fully constructed map.
      */
     window.game.Map.prototype.addBossUnit = function() {
-        // Make a boss whose level is based on the difficulty.
-        var level = Math.ceil(3.5 * this.difficulty + 16.6667);
-        var bossUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.BOSS | game.PlayerFlags.ENEMY,level);
+        var id = this.nodeOfMap.boss.id;
+        var level = this.nodeOfMap.boss.level;
+        var bossUnit = new game.Unit(id,game.PlayerFlags.BOSS | game.PlayerFlags.ENEMY,level);
         bossUnit.movementAI = game.MovementAI.LEASH_TO_TILE;
         bossUnit.convertToBoss();
 
@@ -252,12 +253,29 @@
      * Places generators randomly on the map.
      */
     window.game.Map.prototype.placeGenerators = function() {
-        // Get 7 generators that are minimally 7 tiles from every spawner.
-        var generatorTiles = this.getRandomPlaceableTiles(7, 7);
+        var numGenerators = 0;
 
-        // This is a debug value and will eventually be based on the map number
-        // or something. Actually, a lot of this code will change.
-        var highestEnemyID = 4;
+        // Tiles where generators will go
+        var generatorTiles;
+
+        // The following variables are just short-hand.
+        var nodeOfMap = this.nodeOfMap;
+        var chancePerWalkableTile = nodeOfMap.generators.chancePerWalkableTile;
+        var generatorPlacement = nodeOfMap.generators.placement;
+        var spread = nodeOfMap.generators.spread;
+        var enemies = nodeOfMap.enemies;
+
+        if ( chancePerWalkableTile !== undefined ) {
+            var numWalkableTiles = this.getAllTiles(game.TileFlags.WALKABLE).length;
+            numGenerators = Math.round(numWalkableTiles * chancePerWalkableTile);
+        }
+
+        // There has to be at least one generator...
+        numGenerators = Math.max(numGenerators, 1);
+
+        if ( generatorPlacement == game.GeneratorPlacement.RANDOM ) {
+            generatorTiles = this.getRandomPlaceableTiles(nodeOfMap.generators.minDistanceFromSpawn, numGenerators);
+        }
 
         // Make generators at each spot that we determined above
         for (var i = 0; i < generatorTiles.length; i++) {
@@ -265,26 +283,21 @@
 
             // Figure out which enemies can be spawned from this generator.
             var possibleEnemies = [];
-            
-            // Go through each ID and potentially make a PossibleEnemy.
-            for (var enemyID = 0; enemyID < highestEnemyID; enemyID++) {
-                var r = game.util.randomInteger(0, 2);
 
-                // If we randomly generated 0 OR if we didn't add any possible
-                // enemies yet, then we will add this type.
-                if ( r == 0 || (enemyID == highestEnemyID - 1 && possibleEnemies.length == 0) ) {
-                    // Enemies with higher IDs will appear more frequently (this
-                    // is just debug logic).
-                    var relativeWeight = enemyID + 1;
+            // Randomly choose enemies from the given types
+            if ( spread == game.GeneratorEnemySpread.ALL ) {
+                for (var j = 0; j < enemies.length; j++) {
+                    var enemy = enemies[j]; 
 
-                    // Base the level range on the difficulty.
-                    var minLevel = Math.ceil(this.difficulty * .9);
-                    var maxLevel = Math.ceil(this.difficulty * 1.1);
+                    var enemyID = enemy.id;           
+                    var relativeWeight = enemy.relativeWeight;
+                    var minLevel = enemy.minLevel;
+                    var maxLevel = enemy.maxLevel;
                     var possibleEnemy = new game.PossibleEnemy(enemyID, relativeWeight, minLevel, maxLevel);
                     possibleEnemies.push(possibleEnemy);
-                }
-            };
-
+                };
+            }
+            
             var generator = new game.Generator(generatorTile.x, generatorTile.y, possibleEnemies);
             game.GeneratorManager.addGenerator(generator);
         };
@@ -1393,7 +1406,6 @@
             game.TextManager.drawTextImmediate(ctx, difficultyText, x, y + game.DEFAULT_FONT_SIZE);
         };
     };
-
 
     /**
      * This clears all of the fog on the map.

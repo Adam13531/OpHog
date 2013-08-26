@@ -516,7 +516,7 @@
                 localStorage.mapTilesIndices = JSON.stringify(game.currentMap.mapTilesIndices);
                 localStorage.doodadIndices = JSON.stringify(game.currentMap.doodadIndices);
                 localStorage.tilesetID = game.currentMap.tileset.id;
-                localStorage.mapDifficulty = game.currentMap.difficulty;
+                localStorage.currentMapNode = JSON.stringify(game.currentMap.nodeOfMap);
                 localStorage.numCols = game.currentMap.numCols;
                 localStorage.fog = JSON.stringify(game.currentMap.fog);
             }
@@ -540,12 +540,12 @@
                 var mapTilesIndices = JSON.parse(localStorage.mapTilesIndices);
                 var doodadIndices = JSON.parse(localStorage.doodadIndices);
                 var tilesetID = Number(localStorage.tilesetID);
-                var difficulty = Number(localStorage.mapDifficulty);
+                var nodeOfMap = JSON.parse(localStorage.currentMapNode);
                 var numCols = Number(localStorage.numCols);
                 var fog = JSON.parse(localStorage.fog);
 
                 // This will reform all tiles' leftList and rightList.
-                game.currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, difficulty, false);
+                game.currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, nodeOfMap, false);
                 game.UnitPlacementUI.initializeSpawnPoint();
 
                 // Restore fog

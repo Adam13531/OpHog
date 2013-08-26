@@ -95,8 +95,9 @@
             var spider = game.UnitType.SPIDER;
             var orc = game.UnitType.ORC;
 
-            var baseCoinAmount = game.currentMap.difficulty * 300;
-            var coinBonusPerDifficulty = game.currentMap.difficulty * 400;
+            var difficulty = game.currentMap.nodeOfMap.difficulty;
+            var baseCoinAmount = difficulty * 300;
+            var coinBonusPerDifficulty = difficulty * 400;
 
             this.minigameData = [];
             this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10], [spider,10], [orc,10]], baseCoinAmount + coinBonusPerDifficulty * 4));
@@ -219,7 +220,8 @@
             game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
 
             // Spawn the enemies
-            var enemyLevel = game.currentMap.difficulty * 2 + 3;
+            var difficulty = game.currentMap.nodeOfMap.difficulty;
+            var enemyLevel = difficulty * 2 + 3;
             for (var i = 0; i < enemies.length; i++) {
                 var enemyData = enemies[i][0];
                 var quantity = enemies[i][1];

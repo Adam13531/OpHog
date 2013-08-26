@@ -1,5 +1,23 @@
 ( function() {
 
+    /**
+     * You specify enemies for each overworld map node, but this is what tells
+     * you how generators will choose which enemies to spawn.
+     * @type {Object}
+     */
+    window.game.GeneratorEnemySpread = {
+        ALL: 'randomly pull from all available monster types'
+    };
+
+    /**
+     * You specify a generators for each overworld map node, but this is what
+     * tells you how those generators will be placed.
+     * @type {Object}
+     */
+    window.game.GeneratorPlacement = {
+        RANDOM: 'randomly place generators',
+    };
+
     window.game.OverworldMapData = {
         
         /**
@@ -43,6 +61,31 @@
          *     description - String - this will show verbatim over the node
          *     difficulty - Number - difficulty of the map that will be generated
          *     clearFog - Array:Array - an array of patches of fog to clear. Each array is [tileX, tileY, radius].
+         *
+         *     enemies - Array:Object - an array of objects with the following:
+         *         id - Number - the ID of the enemy (see UnitData.js)
+         *         levelRange - Array[2] - an array of [minLevel, maxLevel].
+         *             OR
+         *             You could specify minLevel (Number) and maxLevel (Number)
+         *             if you want
+         *         relativeWeight - Number - optional (defaults to 1000). The 
+         *             relative weight that this enemy will spawn.
+         *     generators - Object - an object with the following;
+         *         chancePerWalkableTile - Number - this is a way to specify the
+         *             number of generators that will show on a map. This is the
+         *             "chance" that a walkable tile will be a generator, so if
+         *             you have 100 walkable tiles and you specify .05 for this
+         *             number, you'll end up with 5 generators.
+         *         spread - game.GeneratorEnemySpread - this tells the generator
+         *             how to pick enemies
+         *         placement - game.GeneratorPlacement - this tells the map how
+         *             to lay out generators
+         *         minDistanceFromSpawn - Number - optional (defaults to 7). The
+         *             minimum distance that generators can appear to spawn points.
+         *     boss - Object - an object with the following:
+         *         id - Number - the ID of the boss (see UnitData.js)
+         *         level - Number - the level of the boss
+         *         
          * @type {Array:Object}
          */
         overworldMapNodes: [
@@ -51,42 +94,185 @@
             y: 3,
             description: 'Green Hill Zone',
             difficulty: 1,
-            clearFog: [[6,2,2], [2,7,3]]
+            clearFog: [[6,2,2], [2,7,3]],
+
+            enemies: [
+                {
+                    id: game.UnitType.ORC.id,
+                    levelRange: [1,1],
+                },
+                {
+                    id: game.UnitType.SPIDER.id,
+                    levelRange: [1,1],
+                }
+            ],
+
+            generators: {
+                chancePerWalkableTile: .02,
+                spread: game.GeneratorEnemySpread.ALL,
+                placement: game.GeneratorPlacement.RANDOM,
+                minDistanceFromSpawn: 7
+            },
+
+            boss: {
+                id: game.UnitType.TREE.id,
+                level: 20
+            }
         },
         {
             x:7,
             y:1,
             description: 'Pumpkin Hill',
             difficulty: 2,
-            clearFog: [[9,3,3]]
+            clearFog: [[9,3,3]],
+
+            enemies: [
+                {
+                    id: game.UnitType.ORC.id,
+                    levelRange: [1,2],
+                },
+                {
+                    id: game.UnitType.SPIDER.id,
+                    levelRange: [1,2],
+                },
+                {
+                    id: game.UnitType.SCORPION.id,
+                    levelRange: [4,6],
+                    relativeWeight: 250
+                }
+            ],
+
+            generators: {
+                chancePerWalkableTile: .02,
+                spread: game.GeneratorEnemySpread.ALL,
+                placement: game.GeneratorPlacement.RANDOM,
+                minDistanceFromSpawn: 7
+            },
+
+            boss: {
+                id: game.UnitType.TREE.id,
+                level: 20
+            }
         },
         {
             x:9,
             y:5,
             description: 'Bot Land',
             difficulty: 3,
-            clearFog: [[6,10,6]]
+            clearFog: [[6,10,6]],
+
+            enemies: [
+                {
+                    id: game.UnitType.ORC.id,
+                    levelRange: [4,6],
+                },
+                {
+                    id: game.UnitType.SPIDER.id,
+                    levelRange: [4,6],
+                }
+            ],
+
+            generators: {
+                chancePerWalkableTile: .02,
+                spread: game.GeneratorEnemySpread.ALL,
+                placement: game.GeneratorPlacement.RANDOM,
+                minDistanceFromSpawn: 7
+            },
+
+            boss: {
+                id: game.UnitType.TREE.id,
+                level: 20
+            }
         },
         {
             x:11,
             y:1,
             description: 'The Casino',
             difficulty: 4,
-            clearFog: [[14,5,4]]
+            clearFog: [[14,5,4]],
+
+            enemies: [
+                {
+                    id: game.UnitType.ORC.id,
+                    levelRange: [8,10],
+                },
+                {
+                    id: game.UnitType.SPIDER.id,
+                    levelRange: [8,10],
+                }
+            ],
+
+            generators: {
+                chancePerWalkableTile: .02,
+                spread: game.GeneratorEnemySpread.ALL,
+                placement: game.GeneratorPlacement.RANDOM,
+                minDistanceFromSpawn: 7
+            },
+
+            boss: {
+                id: game.UnitType.TREE.id,
+                level: 20
+            }
         },
         {
             x:14,
             y:5,
             description: 'The Future',
             difficulty: 5,
-            clearFog: [[19,3,12]]
+            clearFog: [[19,3,12]],
+
+            enemies: [
+                {
+                    id: game.UnitType.ORC.id,
+                    levelRange: [10,15],
+                },
+                {
+                    id: game.UnitType.SPIDER.id,
+                    levelRange: [10,15],
+                }
+            ],
+
+            generators: {
+                chancePerWalkableTile: .02,
+                spread: game.GeneratorEnemySpread.ALL,
+                placement: game.GeneratorPlacement.RANDOM,
+                minDistanceFromSpawn: 7
+            },
+
+            boss: {
+                id: game.UnitType.TREE.id,
+                level: 20
+            }
         },
         {
             x:19,
             y:3,
             description: 'Lazy Town',
             difficulty: 6,
-            clearFog: [[19,3,9999]]
+            clearFog: [[19,3,9999]],
+
+            enemies: [
+                {
+                    id: game.UnitType.CENTAUR.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.DRAGON.id,
+                    levelRange: [20,25],
+                }
+            ],
+
+            generators: {
+                chancePerWalkableTile: .02,
+                spread: game.GeneratorEnemySpread.ALL,
+                placement: game.GeneratorPlacement.RANDOM,
+                minDistanceFromSpawn: 7
+            },
+
+            boss: {
+                id: game.UnitType.TREE.id,
+                level: 40
+            }
         }
         ],
 
@@ -172,4 +358,120 @@
             game.overworldMap.setFog(1, 3, 3, false);
         }
     };
+}());
+
+/**
+ * This function fills in any missing data from overworldMapNodes. It is called
+ * immediately after it is defined (it's an IIFE).
+ */
+( function setupOverworldMapNodes() {
+    var nodes = game.OverworldMapData.overworldMapNodes;
+
+    for (var i = 0; i < nodes.length; i++) {
+        var node = nodes[i];
+        var nodeDescription = (node.description === undefined) ? ('Node #' + i) : ('"' + node.description + '"');
+        var error = false;
+        var enemies = node.enemies;
+        var boss = node.boss;
+        var generators = node.generators;
+
+        if ( enemies === undefined ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' does not have any enemies defined!', 'no enemies' + i);
+        }
+
+        if ( boss === undefined ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' does not have a boss defined!', 'no boss' + i);
+        }
+
+        if ( generators === undefined ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' does not have generators defined!', 'no generators' + i);
+        }
+
+        if ( error ) {
+            continue;
+        }
+
+        for (var j = 0; j < enemies.length; j++) {
+            var enemy = enemies[j];
+            if ( enemy.id === undefined ) {
+                game.util.debugDisplayText(nodeDescription + ' has an enemy with no id!', 'no id' + i + j);
+                continue;
+            }
+
+            if ( enemy.levelRange !== undefined ) {
+                if ( enemy.minLevel !== undefined || enemy.maxLevel !== undefined ) {
+                    game.util.debugDisplayText(nodeDescription + ' specifies both a level range AND a min or max level!', 'range AND min or max' + i + j);
+                    continue;
+                }
+
+                if ( enemy.levelRange.length != 2 ) {
+                    game.util.debugDisplayText(nodeDescription + ' specifies a level range whose length is not 2!', 'level range wrong length' + i + j);
+                    continue;   
+                }
+
+                enemy.minLevel = enemy.levelRange[0];
+                enemy.maxLevel = enemy.levelRange[1];
+            }
+
+            if ( enemy.minLevel === undefined ) {
+                game.util.debugDisplayText(nodeDescription + ' has an enemy with no minLevel!', 'no minLevel' + i + j);
+                continue;
+            }
+
+            if ( enemy.maxLevel === undefined ) {
+                game.util.debugDisplayText(nodeDescription + ' has an enemy with no maxLevel!', 'no maxLevel' + i + j);
+                continue;
+            }
+
+            // Make sure maxLevel is always the bigger of the two values
+            if ( enemy.maxLevel < enemy.minLevel ) {
+                var temp = enemy.maxLevel;
+                enemy.maxLevel = enemy.minLevel;
+                enemy.minLevel = temp;
+            }
+
+            if ( enemy.relativeWeight === undefined ) {
+                // Make the default 1000 so that you've got wiggle-room for
+                // specifying rare enemies. For example, you could specify 10
+                // enemies and give a single one an explicit relativeWeight of
+                // 10, which would make it show up much less often.
+                enemy.relativeWeight = 1000;
+            }
+        };
+
+        for (var j = 0; j < generators.length; j++) {
+            var generator = generators[j];
+            if ( generator.chancePerWalkableTile === undefined ) {
+                game.util.debugDisplayText(nodeDescription + ' has a generator with no chancePerWalkableTile!', 'no chancePerWalkableTile' + i + j);
+                continue;
+            }
+            if ( generator.spread === undefined ) {
+                game.util.debugDisplayText(nodeDescription + ' has a generator with no spread!', 'no spread' + i + j);
+                continue;
+            }
+            if ( generator.placement === undefined ) {
+                game.util.debugDisplayText(nodeDescription + ' has a generator with no placement!', 'no placement' + i + j);
+                continue;
+            }
+
+            if ( generator.minDistanceFromSpawn === undefined ) {
+                generator.minDistanceFromSpawn = 7;
+            }
+        };
+
+        if ( boss.id === undefined ) {
+            game.util.debugDisplayText(nodeDescription + ' has no boss ID!', 'no boss ID' + i);
+            continue;
+        }
+
+        if ( boss.level === undefined ) {
+            game.util.debugDisplayText(nodeDescription + ' has no boss level!', 'no boss level' + i);
+            continue;
+        }
+
+    };
+
 }());

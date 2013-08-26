@@ -534,11 +534,10 @@
          * Generates a random map
          * @param  {Number} width      width of the map to be generated in tiles
          * @param  {Number} height     height of the map to be generated in tiles
-         * @param  {Number} difficulty Difficulty of the map. The higher the
-         *                             difficulty, the harder the map
+         * @param  {Object} nodeOfMap - an object from game.OverworldMapData.overworldMapNodes
          * @return {game.Map}          New auto-generated map, or null if there was an error.
          */
-    	generateRandomMap: function(width, height, difficulty) {
+    	generateRandomMap: function(width, height, nodeOfMap) {
             // Make sure we can use whole puzzle pieces
             if (width * height % game.PUZZLE_PIECE_SIZE != 0) {
                 game.util.debugDisplayText('Fatal map generation error: map size is not a multiple of puzzle piece size', 'map size');
@@ -562,6 +561,7 @@
             // For now, cap the complexity at the number of possible puzzle
             // pieces in a column, otherwise we may not be able to generate a
             // map.
+            var difficulty = nodeOfMap.difficulty;
             this.pathComplexity = Math.min(this.heightInPuzzlePieces, Math.max(1, difficulty));
 
             var sizeInTiles = this.widthInTiles * this.heightInTiles;
@@ -600,7 +600,7 @@
                 this.mapArray[i] = (this.mapArray[i] == 0 ? this.tileset.nonwalkableTileGraphic : this.tileset.walkableTileGraphic);
             };
 
-            var map = new game.Map(this.mapArray, this.doodadIndices, this.tileset.id, this.widthInTiles, difficulty, false);
+            var map = new game.Map(this.mapArray, this.doodadIndices, this.tileset.id, this.widthInTiles, nodeOfMap, false);
 
             // We don't need these any longer, so free the memory.
             delete this.columns;

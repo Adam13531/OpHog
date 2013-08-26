@@ -267,13 +267,8 @@
             // coordinates
             game.overworldMap.setLastCameraProperties(game.Camera.getCenterX(), game.Camera.getCenterY(), game.Camera.getCurrentZoom());
 
-            // Set the right difficulty
-            var difficultyToUse = 1;
-
             var nodeOfMap = game.OverworldMapData.getOverworldNodeOfLastMap();
-            difficultyToUse = nodeOfMap.difficulty;
-        
-            game.currentMap = game.MapGenerator.generateRandomMap(50, 25, difficultyToUse);
+            game.currentMap = game.MapGenerator.generateRandomMap(50, 25, nodeOfMap);
             game.UnitPlacementUI.initializeSpawnPoint();
 
             // Initialize the camera so that the zoom and pan values aren't out
