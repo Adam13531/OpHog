@@ -365,41 +365,65 @@
      * console.log. In that case, you should use this function, which will add a
      * div to the page (if it doesn't already exist), then set the text of that
      * div.
-     * @param  {String} text                  The text to display.
-     * @param  {Number} labelIdentifierNumber A number corresponding to debug
-     * text. Specifying this argument will let you put multiple debug outputs on
-     * the same page.
+     *
+     * All divs are added to one "master container" div because the canvas will
+     * always be positioned at (0,0), so the "master container" will be put at
+     * (0,0) on top of the canvas, then divs added to that can still flow
+     * downwards.
+     * @param  {String} text - the text to display.
+     * @param  {String} identifierTag - this is optional. If you don't specify
+     * it, it defaults to '1'. This can be any tag text you want, e.g. "unit
+     * error". Specifying the same identifier across multiple calls to this
+     * function will simply update the text you're outputting. Specifying
+     * different identifiers will make multiple divs.
      */
-    window.game.util.debugDisplayText = function(text, labelIdentifierNumber) {
+    window.game.util.debugDisplayText = function(text, identifierTag) {
         // If you didn't supply an argument, set the ID to 1
-        if ( typeof labelIdentifierNumber === 'undefined' ) labelIdentifierNumber = '1';
+        if ( typeof identifierTag === 'undefined' ) identifierTag = '1';
+
+        // Add the "master container" div (see function-level comments) if it
+        // doesn't exist.
+        var $divContainer = $('#allDebugDisplayText');
+        if ( $divContainer.length == 0 ) {
+            $('#canvas').before('<div id="allDebugDisplayText"></div>');
+
+            // Obtain the div now that it exists
+            $divContainer = $('#allDebugDisplayText');
+
+            $divContainer.css({
+                'position': 'absolute',
+                'top': '0px',
+                'left': '0px',
+                'z-index': '99999',
+                'width': '100%'
+            });
+
+            // All child divs will get this
+            $divContainer.addClass('outline-font');
+        }
 
         // Get rid of spaces since they screw this up somehow. The '/g' is
         // needed to replace all of the spaces.
-        labelIdentifierNumber = labelIdentifierNumber.replace(/ /g, '');
+        identifierTag = identifierTag.replace(/ /g, '');
         
-        var divID = 'debugOutput' + labelIdentifierNumber;
+        var divID = 'debugOutput' + identifierTag;
 
         // See if the div already exists
-        var debugDiv = $('#' + divID);
-        if ( debugDiv.length == 0 ) {
+        var $debugDiv = $('#' + divID);
+        if ( $debugDiv.length == 0 ) {
             // It didn't, so add it before the canvas
-            $('#canvas').before('<div id="' + divID +'"></div>');
+            $divContainer.append('<div id="' + divID +'"></div>');
 
             // Obtain the div now that it exists
-            debugDiv = $('#' + divID);
+            $debugDiv = $('#' + divID);
         }
 
-        debugDiv.text(text);
-        debugDiv.css({
+        $debugDiv.text(text);
+        $debugDiv.css({
             'color': '#fff',
-            'position': 'absolute',
-            'top': '0px',
-            'left': '0px',
             'font-size': '2em',
             'z-index': '99999'
         });
-        debugDiv.addClass('outline-font');
     };
 
     /**
