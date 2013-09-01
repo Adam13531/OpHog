@@ -134,6 +134,30 @@
                 // yet.
                 this.addIcon(i, objSheet.getSpriteDataFromSingleIndex(0, true), minigameData.moneyGiven);
 
+                // CSS properties for the money image and text that shows the
+                // reward amount.
+                var moneyCSSOptions = {
+                    'float':'right'
+                };
+
+                // Align the award money to the right
+                //
+                // game.domID always holds a new ID that can be used, so subtract 
+                // 1 from it to get the one that was just created for the money
+                // span.
+                var moneyDomImgID = game.domID-1;
+                var moneySpanImgID = 'minigame_img' + i + 'e' + moneyDomImgID;
+                var $moneyImgSpan = $('#' + moneySpanImgID);
+                $moneyImgSpan.css(moneyCSSOptions);
+
+                var moneyDomTextID = game.domID-1;
+                var moneySpanTextID = 'minigame_text' + i + 'e' + moneyDomTextID;
+                var $moneyTextSpan = $('#' + moneySpanTextID);
+                // Override any previous specification of "left" to make sure
+                // the money amount doesn't go outside of the div
+                moneyCSSOptions['left'] = '0px';
+                $moneyTextSpan.css(moneyCSSOptions);
+
                 $('#' + divID).css(cssToSet);
                 $('#' + divID).click(this.getStartMinigameFunction(i));
             };
@@ -273,8 +297,8 @@
                 'vertical-align': 'bottom',
                 'position': 'relative',
                 'left': '35px',
-                'top': '40px'
-            })
+                'top': '45px'
+            });
 
             $secondSpan.html('<b>x' + quantity + '</b>');
             $secondSpan.addClass('outline-font');
