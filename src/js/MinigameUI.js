@@ -145,13 +145,12 @@
                 // game.domID always holds a new ID that can be used, so subtract 
                 // 1 from it to get the one that was just created for the money
                 // span.
-                var moneyDomImgID = game.domID-1;
-                var moneySpanImgID = 'minigame_img' + i + 'e' + moneyDomImgID;
+                var moneyDomID = game.domID-1;
+                var moneySpanImgID = 'minigame_img' + i + 'e' + moneyDomID;
                 var $moneyImgSpan = $('#' + moneySpanImgID);
                 $moneyImgSpan.css(moneyCSSOptions);
 
-                var moneyDomTextID = game.domID-1;
-                var moneySpanTextID = 'minigame_text' + i + 'e' + moneyDomTextID;
+                var moneySpanTextID = 'minigame_text' + i + 'e' + moneyDomID;
                 var $moneyTextSpan = $('#' + moneySpanTextID);
                 // Override any previous specification of "left" to make sure
                 // the money amount doesn't go outside of the div
