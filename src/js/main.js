@@ -537,6 +537,8 @@
         ctx.restore();
 
         game.UICanvas.draw();
+        // TODO: Don't pass in just true
+        game.UICanvas.highlightCurrentUnit(true);
     }
 
     function doneLoadingEverything() {

@@ -18,6 +18,10 @@
         // Compute right and bottom for convenience.
         this.right = this.x + this.w;
         this.bottom = this.y + this.h;
-    };
 
+        this.centerX = this.x + this.w / 2;
+        this.centerY = this.y + this.h / 2;
+        this.centerTileX = Math.floor(this.centerX / game.TILESIZE);
+        this.centerTileY = Math.floor(this.centerY / game.TILESIZE);
+    };
 }());

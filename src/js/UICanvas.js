@@ -90,6 +90,10 @@
          */
         maxScrollX: 0,
 
+        currentHighlightedUnitX: 0,
+
+        currentHighlightedUnitY: 0,
+
         /**
          * Initialize the UI.
          */
@@ -202,6 +206,8 @@
             this.uictx.beginPath();
             this.uictx.rect(0, 0, this.getPortraitAreaWidth(), this.height);
             this.uictx.clip();
+            // Start drawing the first one a little bit to the right
+            this.drawX = game.TILESIZE;
 
             // Draw all of the units you've already purchased
             for (var i = 0; i < this.units.length; i++) {
@@ -464,6 +470,40 @@
 
             this.drawScrollBarIfNecessary();
 
+        },
+
+        highlightCurrentUnit: function(playerUsedKeyboard) {
+            if ( !playerUsedKeyboard ) {
+                return;
+            }
+
+            // If the player has units, set the highlight box around the first 
+            // one.
+            // TODO: This is here for initial testing but will have to move. This 
+            // is just code for initialization
+            // if ( this.units.length > 0 ) {
+                this.currentHighlightedUnitX = this.buttons[0].centerTileX;
+                this.currentHighlightedUnitY = this.buttons[0].centerTileY;
+            // } else { // Otherwise, set it around the first portrait button
+                // this.currentHighlightedUnitX = this.buttons[0].getCenterTileX();
+                // this.currentHighlightedUnitY = this.buttons[0].getCenterTileY();
+                //TODO: Also set the padding of the rect in here because this is 
+                // a different size than the ones that are placed
+            // }
+
+            this.uictx.save();
+
+            var worldX = this.currentHighlightedUnitX * game.TILESIZE;
+            var worldY = this.currentHighlightedUnitY * game.TILESIZE;
+
+            var padding = game.STATUS_EFFECT_PADDING;
+
+            r = 255;
+            g = 255;
+            this.uictx.lineWidth = padding;
+            this.uictx.strokeStyle = 'rgba(' + r + ', ' + g + ',0,1)';
+            this.uictx.strokeRect(worldX - padding * 4, worldY + 2, game.TILESIZE + padding * 2, game.TILESIZE + padding * 2);
+            this.uictx.restore();
         }
     };
 }()); 
