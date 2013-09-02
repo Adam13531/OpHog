@@ -403,7 +403,7 @@
                 // refactor that.
                 game.currentMap.addBossUnit();
                 game.currentMap.placeNPCs();
-                game.Player.castleLife = game.FULL_CASTLE_LIFE;
+                game.Player.resetCastleLife();
             }
 
             // Win state --> overworld
@@ -414,6 +414,7 @@
 
             // Lose state --> overworld
             if ( this.previousState == game.GameStates.NORMAL_LOSE_SCREEN && this.inOverworldMap() ) {
+                game.Player.resetCastleLife();
                 this.switchToOverworldMap();
             }
 
@@ -427,7 +428,7 @@
             // Normal state --> win
             if ( this.previousState == game.GameStates.NORMAL_GAMEPLAY && this.inWinState() ) {
                 this.commonWinLoseFunctions();
-                game.Player.castleLife = game.FULL_CASTLE_LIFE;
+                game.Player.resetCastleLife();
                 game.currentMap.clearAllFog();
 
                 // Clear fog on the overworld map too

@@ -85,6 +85,13 @@
         },
 
         /**
+         * Sets castle life to full.
+         */
+        resetCastleLife: function() {
+            this.castleLife = game.FULL_CASTLE_LIFE;
+        },
+
+        /**
          * This draws the number of coins you have on the screen.
          * @param  {Object} ctx - the canvas context
          * @return {undefined}
