@@ -118,6 +118,64 @@
         };
         return sum;
     };
+
+    /**
+     * Randomly pulls unique elements from an array. For example:
+     *
+     * getElementsFromArray([1,2,3,4,5], 3) can return [4,1,3], or [1,5,2], etc.
+     * but it cannot return [1,1,2] (no duplicates allowed unless they existed
+     * in the original array).
+     * @param  {Array} array - any array
+     * @param  {Number} numElements - the number of elements you want
+     * @param  {Boolean} useRelativeWeights - if true, this will randomly take
+     * an element according to the weights of each object (see
+     * randomFromWeights). If false, all elements will have an equal chance at
+     * being chosen.
+     * @return {Array} - an array containing some elements
+     * from the input array.
+     */
+    window.game.util.getElementsFromArray = function(array, numElements, useRelativeWeights) {
+        if ( useRelativeWeights === undefined ) useRelativeWeights = false;
+
+        // Shallow-copy the array so that we can remove from this as we choose.
+        var copy = this.shallowCopyArray(array);
+
+        // The elements that we'll return.
+        var randomElements = [];
+
+        for (var i = 0; i < numElements; i++) {
+            // If there are no more elements in the source array, we're done.
+            if ( copy.length == 0 ) break;
+
+            var index = null;
+
+            if ( useRelativeWeights ) {
+                var randomElement = this.randomFromWeights(copy);
+                if ( randomElement == null ) {
+                    // The only way this is possible is if you don't actually
+                    // have relative weights on each object in the array.
+                    console.log('Error: getElementsFromArray with useRelativeWeights==true returned a null element.');
+                }
+
+                // randomFromWeights returns an object, so we need to figure out
+                // that object's index so that we can later remove it.
+                for (var j = 0; j < copy.length; j++) {
+                    if ( randomElement === copy[j] ) {
+                        index = j;
+                        break;
+                    }
+                };
+
+            } else {
+                index = Math.floor(Math.random() * copy.length);
+            }
+
+            randomElements.push(copy[index]);
+            copy.splice(index, 1);
+        };
+
+        return randomElements;
+    };
     
     /**
      * Given a list of weighted items, this will return one at random (according

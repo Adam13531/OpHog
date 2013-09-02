@@ -15,6 +15,11 @@
 
     window.game.MinigameUI = {
 
+        /**
+         * The number of "options" you have in the minigame. For now, this is
+         * how many divs will show with choices of enemies.
+         * @type {Number}
+         */
         numDifficulties: 5,
 
         /**
@@ -80,31 +85,93 @@
         },
 
         /**
+         * Figures out the minigame data for each choice in the UI.
+         */
+        computeMinigameData: function() {
+
+            this.minigameData = [];
+            var spread = game.currentMap.nodeOfMap.minigame.spread;
+
+            if ( spread == game.MinigameEnemySpread.RANDOM ) {
+                this.computeMinigameDataRandomSpread();
+            }
+        },
+
+        /**
+         * Randomly chooses enemies based on their relative weights.
+         */
+        computeMinigameDataRandomSpread: function() {
+            // Data from the current map node
+            var nodeOfMap = game.currentMap.nodeOfMap;
+            var nodeData = nodeOfMap.minigame;
+            var baseCoins = nodeData.baseCoins;
+            var coinsPerLevel = nodeData.coinsPerLevel;
+
+            // Start with the highest difficulty
+            for (var i = this.numDifficulties - 1; i >= 0; i--) {
+
+                // Get a list of all possible enemies in the map
+                var possibleEnemies = [];
+                for (var j = 0; j < nodeOfMap.enemies.length; j++) {
+                    possibleEnemies.push(nodeOfMap.enemies[j]);
+                };
+
+                // Make sure we don't choose too many types.
+                var numTypesToChoose = Math.min(possibleEnemies.length, Math.min(game.MAXIMUM_ENEMY_TYPES_IN_MINIGAME, this.numDifficulties));
+
+                // These are the types of enemies that will actually show up.
+                // It's an Array of enemies as they show up in the map node.
+                var types = [];
+                types = game.util.getElementsFromArray(possibleEnemies, numTypesToChoose, true);
+
+                // Now figure out how many of each type we want. The key is an
+                // enemy's ID, the value is the quantity of that enemy that will
+                // show up.
+                var enemiesAndQuantities = {};
+
+                for (var j = 0; j < types.length; j++) {
+                    enemiesAndQuantities[types[j].id] = 0;
+                };
+
+                // Figure out how many enemies will show up.
+                var minEnemies = (i + 1) * 5;
+                var maxEnemies = (i + 1) * 7;
+                var numTotalEnemies = game.util.randomInteger(minEnemies, maxEnemies);
+
+                // Make sure there's at least one enemy.
+                numTotalEnemies = Math.max(1, numTotalEnemies);
+
+                // Generate that many enemies
+                for (var j = numTotalEnemies - 1; j >= 0; j--) {
+                    var randomyEnemy = game.util.randomFromWeights(types);
+                    enemiesAndQuantities[randomyEnemy.id]++;
+                };
+
+                // The minigame data takes the enemies as an array, so we
+                // convert from a dict to an array here.
+                var enemiesAsArray = [];
+                for (var enemyID in enemiesAndQuantities) {
+                    var enemy = game.GetUnitDataFromID(enemyID);
+                    var quantity = enemiesAndQuantities[enemyID];
+                    if ( quantity > 0 ) {
+                        enemiesAsArray.push([enemy, quantity]);
+                    }
+                };
+
+                this.minigameData.push(new game.MinigameData(enemiesAsArray, baseCoins + coinsPerLevel * i));
+            };
+        },
+
+        /**
          * This sets up the minigame divs according to the current map.
          */
         populateUI: function() {
             // Remove all existing divs
             $('#minigame-ui').empty();
 
+            this.computeMinigameData();
+
             var heightPercent = Math.floor(100 / this.numDifficulties) - 2;
-
-            // Set up each minigame's data. The first is at the top (hardest),
-            // fifth is at the bottom (easiest).
-            var snake = game.UnitType.SNAKE;
-            var scorpion = game.UnitType.SCORPION;
-            var spider = game.UnitType.SPIDER;
-            var orc = game.UnitType.ORC;
-
-            var difficulty = game.currentMap.nodeOfMap.difficulty;
-            var baseCoinAmount = difficulty * 300;
-            var coinBonusPerDifficulty = difficulty * 400;
-
-            this.minigameData = [];
-            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10], [spider,10], [orc,10]], baseCoinAmount + coinBonusPerDifficulty * 4));
-            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10], [spider,10]], baseCoinAmount + coinBonusPerDifficulty * 3));
-            this.minigameData.push(new game.MinigameData([[snake,10], [scorpion,10]], baseCoinAmount + coinBonusPerDifficulty * 2));
-            this.minigameData.push(new game.MinigameData([[snake,5], [scorpion,5]], baseCoinAmount + coinBonusPerDifficulty * 1));
-            this.minigameData.push(new game.MinigameData([[snake,5]], baseCoinAmount + coinBonusPerDifficulty * 0));
             this.selectedMinigame = null;
 
             for (var i = 0; i < this.numDifficulties; i++) {
