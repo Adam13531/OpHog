@@ -151,11 +151,23 @@
                 // convert from a dict to an array here.
                 var enemiesAsArray = [];
                 for (var enemyID in enemiesAndQuantities) {
-                    var enemy = game.GetUnitDataFromID(enemyID);
                     var quantity = enemiesAndQuantities[enemyID];
-                    if ( quantity > 0 ) {
-                        enemiesAsArray.push([enemy, quantity]);
-                    }
+                    if ( quantity <= 0 ) continue;
+
+                    // We only have the enemy's ID at this point, but we need
+                    // the original data from the map node, so we go through and
+                    // find the enemy by its ID. This is the reason why you're
+                    // not allowed to have multiple enemies with the same ID in
+                    // a map node. Search tag: [minigame_no_dupes].
+                    var enemy = null;
+                    for (var j = 0; j < types.length; j++) {
+                        if ( types[j].id == enemyID ) {
+                            enemy = types[j];
+                            break;
+                        }
+                    };
+
+                    enemiesAsArray.push(new game.PossibleEnemy(enemyID, enemy.relativeWeight, enemy.minLevel, enemy.maxLevel, quantity));
                 };
 
                 this.minigameData.push(new game.MinigameData(enemiesAsArray, baseCoins + coinsPerLevel * i));
@@ -192,8 +204,9 @@
                 var enemies = minigameData.enemies;
 
                 for (var j = 0; j < enemies.length; j++) {
-                    var enemyData = enemies[j][0];
-                    var quantity = enemies[j][1];
+                    var enemy = enemies[j];
+                    var enemyData = game.GetUnitDataFromID(enemy.enemyID);
+                    var quantity = enemy.quantity;
                     this.addIcon(i, charSheet.getSpriteDataFromUnitData(enemyData, true), quantity);
                 };
 
@@ -310,11 +323,11 @@
             game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
 
             // Spawn the enemies
-            var difficulty = game.currentMap.nodeOfMap.difficulty;
-            var enemyLevel = difficulty * 2 + 3;
             for (var i = 0; i < enemies.length; i++) {
-                var enemyData = enemies[i][0];
-                var quantity = enemies[i][1];
+                var enemy = enemies[i];
+                var enemyData = game.GetUnitDataFromID(enemy.enemyID);
+                var quantity = enemy.quantity;
+                var enemyLevel = game.util.randomInteger(enemy.minLevel, enemy.maxLevel);
                 for (var j = 0; j < quantity; j++) {
                     var newUnit = new game.Unit(enemyData.id, game.PlayerFlags.ENEMY, enemyLevel);
                     newUnit.placeUnit(tileX, tileY, game.MovementAI.FOLLOW_PATH);

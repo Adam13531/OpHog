@@ -2,9 +2,7 @@
   
     /**
      * This contains all data associated with a minigame.
-     * @param {Array} enemies - each entry is an array whose elements are
-     * [game.UnitType, Number] (the enemy to be spawned and the number to
-     * spawn).
+     * @param {Array:PossibleEnemy} enemies - the enemies in this minigame
      * @param {Number} moneyGiven - the money given when you complete this
      * minigame.
      */

@@ -464,12 +464,24 @@
             continue;
         }
 
+        // Keep track of which enemies we've seen so that we warn when you have
+        // duplicates.
+        var seenEnemies = {};
         for (var j = 0; j < enemies.length; j++) {
             var enemy = enemies[j];
             if ( enemy.id === undefined ) {
                 game.util.debugDisplayText(nodeDescription + ' has an enemy with no id!', 'no id' + i + j);
                 continue;
             }
+
+            // This is a problem because of how the minigame pulls enemy data
+            // from the map. Search for "[minigame_no_dupes]" for an
+            // explanation.
+            if ( enemy.id in seenEnemies ) {
+                game.util.debugDisplayText(nodeDescription + ' has two enemies with the same ID!', 'duplicate id' + i + j);
+            }
+
+            seenEnemies[enemy.id] = true;
 
             if ( enemy.levelRange !== undefined ) {
                 if ( enemy.minLevel !== undefined || enemy.maxLevel !== undefined ) {
