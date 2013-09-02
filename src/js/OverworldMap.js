@@ -96,7 +96,13 @@
          *         level - Number - the level of the boss
          *     tilesetID - Number - an ID defined in TilesetManager that corresponds
          *             to a tileset.
-         *
+         *     minigame - Object - an object with the following:
+         *         baseCoins - Number - the number of coins to give for the first 
+         *             minigame option
+         *         coinsPerLevel - Number - the number of bonus coins per 
+         *             difficulty level
+         *         spread - game.MinigameEnemySpread - this tells the minigame 
+         *             how to pick enemies
          *
          * Error-checking and the insertion of default values are done in 
          * setupOverworldMapNodes.
@@ -439,6 +445,7 @@
         var boss = node.boss;
         var generators = node.generators;
         var tilesetID = node.tilesetID;
+        var minigame = node.minigame;
 
         if ( enemies === undefined ) {
             error = true;
@@ -458,6 +465,11 @@
         if ( tilesetID === undefined ) {
             error = true;
             game.util.debugDisplayText(nodeDescription + ' does not have a tilesetID defined!', 'no tilesetID' + i);
+        }
+
+        if ( minigame === undefined ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' does not have a minigame defined!', 'no minigame' + i);
         }
 
         if ( error ) {
@@ -551,6 +563,21 @@
 
         if ( boss.level === undefined ) {
             game.util.debugDisplayText(nodeDescription + ' has no boss level!', 'no boss level' + i);
+            continue;
+        }
+
+        if ( minigame.spread === undefined ) {
+            game.util.debugDisplayText(nodeDescription + ' has no minigame spread!', 'no minigame spread' + i);
+            continue;
+        }
+
+        if ( minigame.baseCoins === undefined ) {
+            game.util.debugDisplayText(nodeDescription + ' has no minigame baseCoins!', 'no minigame baseCoins' + i);
+            continue;
+        }
+
+        if ( minigame.coinsPerLevel === undefined ) {
+            game.util.debugDisplayText(nodeDescription + ' has no minigame coinsPerLevel!', 'no minigame coinsPerLevel' + i);
             continue;
         }
 
