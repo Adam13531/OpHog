@@ -85,7 +85,12 @@
          *     boss - Object - an object with the following:
          *         id - Number - the ID of the boss (see UnitData.js)
          *         level - Number - the level of the boss
-         *         
+         *     tilesetID - Number - an ID defined in TilesetManager that corresponds
+         *             to a tileset.
+         *
+         *
+         * Error-checking and the insertion of default values are done in 
+         * setupOverworldMapNodes.
          * @type {Array:Object}
          */
         overworldMapNodes: [
@@ -117,7 +122,9 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 20
-            }
+            },
+
+            tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
             x:7,
@@ -152,7 +159,9 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 20
-            }
+            },
+
+            tilesetID: game.TilesetManager.LAVA_TILESET_ID
         },
         {
             x:9,
@@ -182,7 +191,9 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 20
-            }
+            },
+
+            tilesetID: game.TilesetManager.DESERT_TILESET_ID
         },
         {
             x:11,
@@ -212,7 +223,9 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 20
-            }
+            },
+
+            tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
             x:14,
@@ -242,7 +255,9 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 20
-            }
+            },
+
+            tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
             x:19,
@@ -272,7 +287,9 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 40
-            }
+            },
+
+            tilesetID: game.TilesetManager.MARSH_TILESET_ID
         }
         ],
 
@@ -363,6 +380,8 @@
 /**
  * This function fills in any missing data from overworldMapNodes. It is called
  * immediately after it is defined (it's an IIFE).
+ *
+ * Any errors that print are considered to be programmer errors.
  */
 ( function setupOverworldMapNodes() {
     var nodes = game.OverworldMapData.overworldMapNodes;
@@ -374,6 +393,7 @@
         var enemies = node.enemies;
         var boss = node.boss;
         var generators = node.generators;
+        var tilesetID = node.tilesetID;
 
         if ( enemies === undefined ) {
             error = true;
@@ -388,6 +408,11 @@
         if ( generators === undefined ) {
             error = true;
             game.util.debugDisplayText(nodeDescription + ' does not have generators defined!', 'no generators' + i);
+        }
+
+        if ( tilesetID === undefined ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' does not have a tilesetID defined!', 'no tilesetID' + i);
         }
 
         if ( error ) {

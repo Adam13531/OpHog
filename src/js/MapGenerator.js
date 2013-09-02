@@ -566,7 +566,7 @@
 
             var sizeInTiles = this.widthInTiles * this.heightInTiles;
 
-            this.tileset = game.util.randomArrayElement(game.TilesetManager.tilesets);
+            this.tileset = game.TilesetManager.getTilesetByID(nodeOfMap.tilesetID);
 
             // Generate a map array with all zeroes
             for (var i = 0; i < sizeInTiles; i++) {
