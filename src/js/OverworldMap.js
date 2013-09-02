@@ -10,13 +10,22 @@
     };
 
     /**
-     * You specify a generators for each overworld map node, but this is what
+     * You specify generators for each overworld map node, but this is what
      * tells you how those generators will be placed.
      * @type {Object}
      */
     window.game.GeneratorPlacement = {
         RANDOM: 'randomly place generators',
     };
+
+    /**
+     * You specify a minigame for each overworld map node, but this is what
+     * tells you how the enemies are calculated for each option in the minigame.
+     * @type {Object}
+     */
+    window.game.MinigameEnemySpread = {
+        RANDOM: 'randomly pull from generators',
+    };    
 
     window.game.OverworldMapData = {
         
@@ -85,7 +94,12 @@
          *     boss - Object - an object with the following:
          *         id - Number - the ID of the boss (see UnitData.js)
          *         level - Number - the level of the boss
-         *         
+         *     tilesetID - Number - an ID defined in TilesetManager that corresponds
+         *             to a tileset.
+         *
+         *
+         * Error-checking and the insertion of default values are done in 
+         * setupOverworldMapNodes.
          * @type {Array:Object}
          */
         overworldMapNodes: [
@@ -117,7 +131,15 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 20
-            }
+            },
+
+            minigame: {
+                baseCoins: 300,
+                coinsPerLevel: 400,
+                spread: game.MinigameEnemySpread.RANDOM
+            },
+
+            tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
             x:7,
@@ -152,7 +174,15 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 20
-            }
+            },
+
+            minigame: {
+                baseCoins: 300,
+                coinsPerLevel: 500,
+                spread: game.MinigameEnemySpread.RANDOM
+            },
+
+            tilesetID: game.TilesetManager.LAVA_TILESET_ID
         },
         {
             x:9,
@@ -182,7 +212,15 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 20
-            }
+            },
+
+            minigame: {
+                baseCoins: 400,
+                coinsPerLevel: 400,
+                spread: game.MinigameEnemySpread.RANDOM
+            },
+
+            tilesetID: game.TilesetManager.DESERT_TILESET_ID
         },
         {
             x:11,
@@ -212,7 +250,15 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 20
-            }
+            },
+
+            minigame: {
+                baseCoins: 400,
+                coinsPerLevel: 500,
+                spread: game.MinigameEnemySpread.RANDOM
+            },
+
+            tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
             x:14,
@@ -242,7 +288,15 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 20
-            }
+            },
+
+            minigame: {
+                baseCoins: 500,
+                coinsPerLevel: 600,
+                spread: game.MinigameEnemySpread.RANDOM
+            },
+
+            tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
             x:19,
@@ -272,7 +326,15 @@
             boss: {
                 id: game.UnitType.TREE.id,
                 level: 40
-            }
+            },
+
+            minigame: {
+                baseCoins: 600,
+                coinsPerLevel: 650,
+                spread: game.MinigameEnemySpread.RANDOM
+            },
+
+            tilesetID: game.TilesetManager.MARSH_TILESET_ID
         }
         ],
 
@@ -363,6 +425,8 @@
 /**
  * This function fills in any missing data from overworldMapNodes. It is called
  * immediately after it is defined (it's an IIFE).
+ *
+ * Any errors that print are considered to be programmer errors.
  */
 ( function setupOverworldMapNodes() {
     var nodes = game.OverworldMapData.overworldMapNodes;
@@ -374,6 +438,7 @@
         var enemies = node.enemies;
         var boss = node.boss;
         var generators = node.generators;
+        var tilesetID = node.tilesetID;
 
         if ( enemies === undefined ) {
             error = true;
@@ -388,6 +453,11 @@
         if ( generators === undefined ) {
             error = true;
             game.util.debugDisplayText(nodeDescription + ' does not have generators defined!', 'no generators' + i);
+        }
+
+        if ( tilesetID === undefined ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' does not have a tilesetID defined!', 'no tilesetID' + i);
         }
 
         if ( error ) {

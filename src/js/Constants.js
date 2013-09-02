@@ -70,4 +70,11 @@
      */
     window.game.DIALOG_HIDE_MS = 400;
 
+    /**
+     * This is set to 4 because the width of the UI will only allow four enemies
+     * to be displayed.
+     * @type {Number}
+     */
+    window.game.MAXIMUM_ENEMY_TYPES_IN_MINIGAME = 4;
+
 }());

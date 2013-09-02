@@ -356,12 +356,14 @@
     window.game.EXTRA_WIZARD_COSTUMES = [game.UnitType.PLAYER_WIZARD.graphicIndexes, [360],[361],[362],[363]];
 
     /**
-     * Gets unit data based on the ID passed in. 'level' is used to level up
-     * the unit a certain number of times before returning the data.
+     * Gets unit data based on the ID passed in. 'level' is used to level up the
+     * unit a certain number of times before returning the data.
      *
      * Final stats get stored in finalAtk, finalDef, and finalLife.
      * @param {Number} unitID - the ID of the unit
-     * @param {Number} level  - the level to produce the unit at
+     * @param {Number} level  - the level to produce the unit at. If you omit
+     * this or specify -1, you will simply get the unit data without final
+     * stats.
      * @return {game.UnitType} the associated unit data
      */
     window.game.GetUnitDataFromID = function(unitID, level) {
@@ -370,6 +372,10 @@
             var unitDataTemplate = game.UnitType[key];
             if ( unitDataTemplate.id == unitID ) {
                 unitData = unitDataTemplate;
+
+                if ( level === undefined || level == -1) {
+                    break;
+                }
 
                 // Store in different variables in case the caller still wants
                 // to know the starting value or growth amounts.

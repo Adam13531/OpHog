@@ -100,10 +100,23 @@
         pinchZoomStartingScale: 0,
 
         /**
+         * We can't initialize the browser's size until a map has been loaded,
+         * and we only need to do it "manually" once.
+         * @type {Boolean}
+         */
+        initializedBrowserSize:false,
+
+        /**
          * Sets the view so that zoom and pan values are within valid ranges.
          */
         initialize: function() {
-            this.browserSizeChanged();
+            // See the comment for initializedBrowserSize.
+            if ( !this.initializedBrowserSize ) {
+                this.initializedBrowserSize = true;
+                game.Camera.browserSizeChanged();
+            }
+
+            this.zoomChanged();
         },
 
         /**
