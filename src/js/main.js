@@ -16,6 +16,11 @@
     // This is a dictionary of keycode --> boolean representing whether it is held.
     var keysDown = {};
 
+    // Tells us if the user has used a keyboard or not. We want to keep track 
+    // this because we can do certain things or not do them based on if the user 
+    // has used their keyboard.
+    var playerUsedKeyboard = false;
+
     $(document).ready(function() {
         init();
     });
@@ -292,6 +297,7 @@
         // Pixels/second
         speed = 150;
         $(document).keydown(function(evt) {
+            playerUsedKeyboard = true;
             keysDown[evt.keyCode] = true;
 
             if ($.inArray(evt.keyCode, browserKeysToStop) > -1) {
@@ -537,8 +543,7 @@
         ctx.restore();
 
         game.UICanvas.draw();
-        // TODO: Don't pass in just true
-        game.UICanvas.highlightCurrentUnit(true);
+        game.UICanvas.highlightCurrentUnit(playerUsedKeyboard);
     }
 
     function doneLoadingEverything() {

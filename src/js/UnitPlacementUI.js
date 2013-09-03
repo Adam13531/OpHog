@@ -201,12 +201,13 @@
          * used elsewhere to buy a unit regardless of what the unit placement UI
          * is currently showing.
          * @param  {game.PlaceableUnitType} unitType - the unit type to buy
+         * @return {Boolean} - True if the unit was bought
          */
         buyNewUnit: function(unitType) {
             // Make sure the player can afford it
             var cost = this.costToPurchaseSlot(unitType);
             if (!game.Player.hasThisMuchMoney(cost)) {
-                return;
+                return false;
             }
 
             // Make sure the player doesn't already have the max number of units
@@ -215,7 +216,7 @@
                 // The only way the code should be able to get here is via a
                 // debug function like debugAddUnits, but it doesn't hurt to
                 // have this check.
-                return;
+                return false;
             }
 
             // If the unit placement UI triggered this call, then this will be
@@ -265,6 +266,8 @@
                 var tileOfLastMap = game.currentMap.getTileOfLastMap();
                 game.UnitManager.placeAllPlayerUnits(tileOfLastMap.x, tileOfLastMap.y, game.MovementAI.WANDER_UNFOGGY_WALKABLE);
             }
+
+            return true;
         },
 
 		/**

@@ -90,9 +90,11 @@
          */
         maxScrollX: 0,
 
-        currentHighlightedUnitX: 0,
-
-        currentHighlightedUnitY: 0,
+        /**
+         * Index of the button in the button array that is supposed to be highlighted
+         * @type {Number}
+         */
+        highlightedButtonIndex: 0,
 
         /**
          * Initialize the UI.
@@ -192,7 +194,25 @@
          */
         getBuyButtonClicked: function(unitType) {
             return function() {
-                game.UnitPlacementUI.buyNewUnit(unitType);
+
+                // Don't do anything else if the unit couldn't be purchased
+                if ( !game.UnitPlacementUI.buyNewUnit(unitType) ) {
+                    return;
+                }
+                
+                // Find out if one of the buy buttons is highlighted. If it is, 
+                // update the index because a unit was just bought, and we want 
+                // to make sure that the same button is still highlighted
+                var onBuyButton = (game.UICanvas.highlightedButtonIndex >= game.UICanvas.buttons.length - game.UICanvas.buyButtonUnitTypes.length);
+
+                var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
+                // However, DON'T update the index if the player just bought the 
+                // last possible unit of a class. This is because that button 
+                // to buy more units of that class will disappear, so the buttons 
+                // array will stay the same length.
+                if ( numUnits != game.MAX_UNITS_PER_CLASS ) {
+                    game.UICanvas.highlightedButtonIndex++;
+                }
             };
         },
 
@@ -477,24 +497,10 @@
                 return;
             }
 
-            // If the player has units, set the highlight box around the first 
-            // one.
-            // TODO: This is here for initial testing but will have to move. This 
-            // is just code for initialization
-            // if ( this.units.length > 0 ) {
-                this.currentHighlightedUnitX = this.buttons[0].centerTileX;
-                this.currentHighlightedUnitY = this.buttons[0].centerTileY;
-            // } else { // Otherwise, set it around the first portrait button
-                // this.currentHighlightedUnitX = this.buttons[0].getCenterTileX();
-                // this.currentHighlightedUnitY = this.buttons[0].getCenterTileY();
-                //TODO: Also set the padding of the rect in here because this is 
-                // a different size than the ones that are placed
-            // }
-
             this.uictx.save();
 
-            var worldX = this.currentHighlightedUnitX * game.TILESIZE;
-            var worldY = this.currentHighlightedUnitY * game.TILESIZE;
+            var worldX = this.buttons[this.highlightedButtonIndex].centerTileX * game.TILESIZE;
+            var worldY = this.buttons[this.highlightedButtonIndex].centerTileY * game.TILESIZE;
 
             var padding = game.STATUS_EFFECT_PADDING;
 
