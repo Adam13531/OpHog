@@ -180,6 +180,8 @@
 
         });
 
+        game.DialogManager.addDialog($settingsDialog);
+
         $lowGraphicsButton.button();
         $highGraphicsButton.button();
 
@@ -254,6 +256,7 @@
 
         $(window).resize(function() {
             game.Camera.browserSizeChanged();
+            game.DialogManager.browserSizeChanged();
         });
 
         $canvas.mousewheel(game.Camera.getMouseWheelEventHandler());

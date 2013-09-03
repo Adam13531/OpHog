@@ -18,7 +18,8 @@
 
         this.$itemDescriptionID.html(game.DEFAULT_SHOP_UI_DESCRIPTION);
 
-        $('#shop-screen').dialog({
+        var $shopDialog = $('#shop-screen');
+        $shopDialog.dialog({
             autoOpen: false,
             resizable:false,
             autoResize: true,
@@ -39,6 +40,8 @@
                 of: ('#canvas')
             },
         });
+
+        game.DialogManager.addDialog($shopDialog);
 
         // Turn this into a jQuery button so it gets themed
         $('#shopBuyButton').button();

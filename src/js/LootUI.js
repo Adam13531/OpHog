@@ -28,7 +28,8 @@
          * Sets up the entire loot UI.
          */
         setupUI: function() {
-            $('#loot-ui').dialog({
+            var $lootUI = $('#loot-ui');
+            $lootUI.dialog({
                 autoOpen: false, 
 
                 // Set a reasonable width. For now, you'll still have multi-line
@@ -57,6 +58,8 @@
                 },
     
             });
+
+            game.DialogManager.addDialog($lootUI);
         },
 
         /**
