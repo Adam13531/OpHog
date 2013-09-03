@@ -459,8 +459,12 @@
 
                 if ( extension != null ) {
                     // This buffers automatically when created
-                    var music = new Audio(game.resourcePath + '/music/new3.' + extension);
+                    var audioPath = game.resourcePath + '/music/new3.' + extension;
+                    console.log('Playing ' + audioPath);
+                    var music = new Audio(audioPath);
                     music.play();
+                } else {
+                    console.log('Neither ogg nor mp3 has a \'maybe\' rating, so not playing music.');
                 }
             }
 
