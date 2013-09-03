@@ -56,7 +56,6 @@
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
         var $showQuests = $('#showQuests');
-        var $showUnitPlacement = $('#showUnitPlacement');
         var $showShop = $('#showShop');
         var $createUnits = $('#createUnits');
         var $grantMoney = $('#grantMoney');
@@ -85,12 +84,6 @@
         $showQuests.click(function() {
             $(settingsDialog).dialog('close');
             $('#quest-ui').dialog('open');
-        });
-
-        $showUnitPlacement.button(); // Turns the button into a JQuery UI button
-        $showUnitPlacement.click(function() {
-            $settingsDialog.dialog('close');
-            $('#buyingScreenContainer').dialog('open');
         });
 
         $showShop.button();
