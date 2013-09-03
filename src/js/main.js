@@ -268,8 +268,10 @@
         game.QuestUI.setupUI();
         game.ShopUI = new game.ShopUI();
         game.ShopInventory = new game.ShopInventory();
-		// Start out with HIGH graphics settings for now.
+        // Start out with HIGH graphics settings for now.
         game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
+
+        game.AudioManager.initialize();
     }
 
     function initSettings() {
@@ -440,32 +442,7 @@
 
             // 'E' - play music
             if (evt.keyCode == game.Key.DOM_VK_E) {
-                var canPlayOgg = (new Audio()).canPlayType("audio/ogg");
-                var canPlayMp3 = (new Audio()).canPlayType("audio/mp3");
-
-                var extension = null;
-
-                // It's ideal to go in order of size here since the quality is
-                // probably about the same.
-                if ( canPlayOgg == 'probably' ) {
-                    extension = 'ogg';
-                } else if ( canPlayMp3 == 'probably' ) {
-                    extension = 'mp3';
-                } else if ( canPlayOgg == 'maybe' ) {
-                    extension = 'ogg';
-                } else if ( canPlayMp3 == 'maybe' ) {
-                    extension = 'mp3';
-                }
-
-                if ( extension != null ) {
-                    // This buffers automatically when created
-                    var audioPath = game.resourcePath + '/music/new3.' + extension;
-                    console.log('Playing ' + audioPath);
-                    var music = new Audio(audioPath);
-                    music.play();
-                } else {
-                    console.log('Neither ogg nor mp3 has a \'maybe\' rating, so not playing music.');
-                }
+                game.AudioManager.playAudio(game.Audio.NEW_3);
             }
 
             // 'Escape' - exit USE mode or close a JQuery UI dialog.

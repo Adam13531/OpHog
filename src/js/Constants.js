@@ -12,13 +12,33 @@
 
     /**
      * The relative path from Javascript files to the resource folder.
+     *
+     * WARNING: this can only be used from files in the 'src' folder, not
+     * something like 'src/child', but in production we will minify and condense
+     * all code into a single file.
+     *
+     * WARNING #2: all paths are case-sensitive for us.
+     * @type {String}
      */
     window.game.resourcePath = "../res";
 
     /**
      * The relative path from Javascript files to the image folder.
+     * @type {String}
      */
     window.game.imagePath = window.game.resourcePath + "/img";
+
+    /**
+     * The relative path from Javascript files to the sound folder.
+     * @type {String}
+     */
+    window.game.SOUND_PATH = window.game.resourcePath + "/sound";
+
+    /**
+     * The relative path from Javascript files to the music folder.
+     * @type {String}
+     */
+    window.game.MUSIC_PATH = window.game.resourcePath + "/music";
 
     /**
      * One thousand divided by this number is the target framerate.
@@ -76,5 +96,38 @@
      * @type {Number}
      */
     window.game.MAXIMUM_ENEMY_TYPES_IN_MINIGAME = 4;
+
+    /**
+     * Extension for OGG files (case-sensitive).
+     * @type {String}
+     */
+    window.game.OGG_EXT = 'ogg';
+
+    /**
+     * Extension for MP3 files (case-sensitive).
+     * @type {String}
+     */
+    window.game.MP3_EXT = 'mp3';
+
+    /**
+     * Extension for AAC files. I chose mp4 and not m4a because of IE10.
+     * @type {String}
+     */
+    window.game.AAC_EXT = 'mp4';
+
+    /**
+     * These are official audio responses... a browser apparently doesn't know
+     * 100% for sure if it can play a file format.
+     *
+     * http://www.w3schools.com/tags/av_met_canplaytype.asp
+     * @type {String}
+     */
+    window.game.PROBABLY = 'probably';
+
+    /**
+     * See window.game.PROBABLY.
+     * @type {String}
+     */
+    window.game.MAYBE = 'maybe';
 
 }());
