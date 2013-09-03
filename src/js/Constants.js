@@ -24,7 +24,7 @@
      * One thousand divided by this number is the target framerate.
      * @type {Number}
      */
-    window.game.msPerFrame = 16;
+    window.game.MS_PER_FRAME = 16;
 
     /**
      * The most of one stackable item that can fit in a slot. It's set to 99

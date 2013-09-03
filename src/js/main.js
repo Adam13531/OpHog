@@ -352,7 +352,7 @@
             // 'U' - shake the camera
             if (evt.keyCode == game.Key.DOM_VK_U) {
                 // Shake the camera for approximately 20 game loops
-                game.Camera.shakeTimer = 20 * 16;
+                game.Camera.shakeTimer = 20 * game.MS_PER_FRAME;
             }
 
             // 'K' - add quest
@@ -462,7 +462,7 @@
         // An example of a bug that could result from an infinite delta is unit
         // movement; they would jump so far ahead on the path that they wouldn't
         // engage in battles.
-        delta = Math.min(delta, game.msPerFrame * 2);
+        delta = Math.min(delta, game.MS_PER_FRAME * 2);
 
         // 'G' - speed up the game. This is only a debug function, so it may
         // 'cause glitches.
@@ -550,7 +550,7 @@
 
         // This will wipe out the timer (if it's non-null)
         clearInterval(gameloopId);
-        gameloopId = setInterval(gameLoop, game.msPerFrame);
+        gameloopId = setInterval(gameLoop, game.MS_PER_FRAME);
     }
 
 }());
