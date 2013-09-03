@@ -52,6 +52,8 @@
         var canvasPos = $canvas.position();
         var $lowGraphicsButton = $('#graphicsLow');
         var $highGraphicsButton = $('#graphicsHigh');
+        var $audioOffButton = $('#audioOff');
+        var $audioOnButton = $('#audioOn');
 
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
@@ -187,6 +189,18 @@
             game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
         });
 
+        $audioOffButton.button();
+        $audioOnButton.button();
+
+        $audioOffButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.AudioManager.setAudioEnabled(false);
+        });
+        $audioOnButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.AudioManager.setAudioEnabled(true);
+        });
+
         // To see what's in Hammer events, look at their wiki (currently located
         // here: https://github.com/EightMedia/hammer.js/wiki/Getting-Started).
         // 
@@ -270,6 +284,7 @@
         game.ShopInventory = new game.ShopInventory();
         // Start out with HIGH graphics settings for now.
         game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
+        game.AudioManager.setAudioEnabled(true);
 
         game.AudioManager.initialize();
     }

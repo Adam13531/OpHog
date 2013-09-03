@@ -41,6 +41,12 @@
         preferredExtension: null,
 
         /**
+         * If false, the user disabled audio.
+         * @type {Boolean}
+         */
+        audioEnabled: false,
+
+        /**
          * Initializes the AudioManager.
          */
         initialize: function() {
@@ -70,10 +76,29 @@
 
         /**
          * @return {Boolean} true if audio can be played, false if your browser
-         * sucks.
+         * sucks or you disabled sounds.
          */
         canPlayAudio: function() {
-            return this.preferredExtension != null;
+            return this.audioEnabled && this.preferredExtension != null;
+        },
+
+        /**
+         * Turns audio on or off.
+         * @param {Boolean} enabled - if true, turns it on.
+         */
+        setAudioEnabled: function(enabled) {
+            this.audioEnabled = enabled;
+
+            var $audioOffButton = $('#audioOff');
+            var $audioOnButton = $('#audioOn');
+
+            $audioOffButton.prop('checked', !this.audioEnabled);
+            $audioOnButton.prop('checked', this.audioEnabled);
+
+            // Refresh the radio buttons so that they reflect their new 'checked'
+            // state.
+            $audioOffButton.button('refresh');
+            $audioOnButton.button('refresh');
         },
 
         /**
