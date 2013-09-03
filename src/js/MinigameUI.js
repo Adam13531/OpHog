@@ -44,7 +44,8 @@
          * Sets up the entire minigame UI.
          */
         setupUI: function() {
-            $('#minigame-ui').dialog({
+            var $minigameUI = $('#minigame-ui');
+            $minigameUI.dialog({
                 autoOpen: false, 
 
                 // Prevent the user from closing this by pressing escape.
@@ -82,6 +83,8 @@
                 },
                 
             });
+
+            game.DialogManager.addDialog($minigameUI);
         },
 
         /**

@@ -288,7 +288,8 @@
 				'margin-right' : rightMargin
 			});
 
-			$('#buyingScreenContainer').dialog({
+            $unitPlacementDialog = $('#buyingScreenContainer');
+			$unitPlacementDialog.dialog({
                 autoOpen: false,
                 resizable:false,
                 autoResize: true,
@@ -308,6 +309,8 @@
                     of: ('#canvas')
                 },
             });
+
+            game.DialogManager.addDialog($unitPlacementDialog);
 
             // Sets the default page
             this.setPage(game.PlaceableUnitType.ARCHER);

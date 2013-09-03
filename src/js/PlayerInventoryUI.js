@@ -84,7 +84,8 @@
         }(this));
 
         // For more thorough comments, look at the settings dialog.
-        $('#inventory-screen').dialog({
+        var $inventoryDialog = $('#inventory-screen');
+        $inventoryDialog.dialog({
             // This is just for debugging (FYI: 'true' is for debugging, but
             // I sometimes check in this code with this set to 'false' but
             // with this comment still)
@@ -114,6 +115,8 @@
             },
 
         });
+
+        game.DialogManager.addDialog($inventoryDialog);
 	};
 
 	window.game.PlayerInventoryUI.prototype = new game.InventoryUI;
@@ -127,6 +130,9 @@
             this.show();
         }
         this.usingItem = null;
+        
+        // See the other call to this where 'false' is specified.
+        game.DialogManager.setCloseOnEscape(true);
     };
 
     /**
@@ -395,6 +401,10 @@
         if ( !this.canUseItem() ) {
             return;
         }
+
+        // Disable the "escape closes a dialog" functionality so that you can
+        // exit USE mode without closing dialogs.
+        game.DialogManager.setCloseOnEscape(false);
 
         var item = this.selectedSlotUI.getItem();
         this.usingItem = item;

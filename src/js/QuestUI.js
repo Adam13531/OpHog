@@ -9,7 +9,8 @@
          * Sets up the entire quest UI.
          */
         setupUI: function() {
-            $('#quest-ui').dialog({
+            var $questDialog = $('#quest-ui');
+            $questDialog.dialog({
                 autoOpen: false, 
 
                 // Set a reasonable width
@@ -35,6 +36,8 @@
                 },
     
             });
+            
+            game.DialogManager.addDialog($questDialog);
 
             // Set up each quest div
             for (var i = 0; i < game.MAX_QUESTS; i++) {

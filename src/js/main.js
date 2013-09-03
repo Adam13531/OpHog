@@ -61,7 +61,6 @@
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
         var $showQuests = $('#showQuests');
-        var $showUnitPlacement = $('#showUnitPlacement');
         var $showShop = $('#showShop');
         var $createUnits = $('#createUnits');
         var $grantMoney = $('#grantMoney');
@@ -90,12 +89,6 @@
         $showQuests.click(function() {
             $(settingsDialog).dialog('close');
             $('#quest-ui').dialog('open');
-        });
-
-        $showUnitPlacement.button(); // Turns the button into a JQuery UI button
-        $showUnitPlacement.click(function() {
-            $settingsDialog.dialog('close');
-            $('#buyingScreenContainer').dialog('open');
         });
 
         $showShop.button();
@@ -185,6 +178,8 @@
 
         });
 
+        game.DialogManager.addDialog($settingsDialog);
+
         $lowGraphicsButton.button();
         $highGraphicsButton.button();
 
@@ -259,6 +254,7 @@
 
         $(window).resize(function() {
             game.Camera.browserSizeChanged();
+            game.DialogManager.browserSizeChanged();
         });
 
         $canvas.mousewheel(game.Camera.getMouseWheelEventHandler());
@@ -362,7 +358,7 @@
             // 'U' - shake the camera
             if (evt.keyCode == game.Key.DOM_VK_U) {
                 // Shake the camera for approximately 20 game loops
-                game.Camera.shakeTimer = 20 * 16;
+                game.Camera.shakeTimer = 20 * game.MS_PER_FRAME;
             }
 
             // 'K' - add quest
@@ -428,7 +424,7 @@
                 game.GameStateManager.enterLoseState();
             }
 
-            // Pressing 'i' will toggle the inventory screen
+            // 'I' - toggle the inventory screen
             if (evt.keyCode == game.Key.DOM_VK_I) {
                 var $invScreen = $('#inventory-screen');
                 if ( $invScreen.is(":visible") ) {
@@ -438,13 +434,20 @@
                 }
             }
 
-            // Pressing 'q' will toggle the quest UI
+            // 'Q' - toggle the quest UI
             if (evt.keyCode == game.Key.DOM_VK_Q) {
                 var $questUI = $('#quest-ui');
                 if ( $questUI.is(":visible") ) {
                     $('#quest-ui').dialog('close');
                 } else {
                     $('#quest-ui').dialog('open');
+                }
+            }
+
+            // 'Escape' - exit USE mode or close a JQuery UI dialog.
+            if (evt.keyCode == game.Key.DOM_VK_ESCAPE) {
+                if ( game.playerInventoryUI.isInUseMode() ) {
+                    game.playerInventoryUI.exitUseMode();
                 }
             }
 
@@ -465,7 +468,7 @@
         // An example of a bug that could result from an infinite delta is unit
         // movement; they would jump so far ahead on the path that they wouldn't
         // engage in battles.
-        delta = Math.min(delta, game.msPerFrame * 2);
+        delta = Math.min(delta, game.MS_PER_FRAME * 2);
 
         // 'G' - speed up the game. This is only a debug function, so it may
         // 'cause glitches.
@@ -554,7 +557,7 @@
 
         // This will wipe out the timer (if it's non-null)
         clearInterval(gameloopId);
-        gameloopId = setInterval(gameLoop, game.msPerFrame);
+        gameloopId = setInterval(gameLoop, game.MS_PER_FRAME);
     }
 
 }());
