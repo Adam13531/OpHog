@@ -379,7 +379,7 @@
                 game.Player.inventory.addItem(new game.Item(itemID));
             }
 
-            // 'M' - if not positive, bring to 1000. Otherwise, double it.
+            // 'M' - if not positive, bring money to 1000. Otherwise, double it.
             if (evt.keyCode == game.Key.DOM_VK_M) {
                 var coins = game.Player.coins;
                 coins = coins <= 0 ? (-coins + 1000) : coins;
@@ -435,6 +435,32 @@
                     $('#quest-ui').dialog('close');
                 } else {
                     $('#quest-ui').dialog('open');
+                }
+            }
+
+            // 'E' - play music
+            if (evt.keyCode == game.Key.DOM_VK_E) {
+                var canPlayOgg = (new Audio()).canPlayType("audio/ogg");
+                var canPlayMp3 = (new Audio()).canPlayType("audio/mp3");
+
+                var extension = null;
+
+                // It's ideal to go in order of size here since the quality is
+                // probably about the same.
+                if ( canPlayOgg == 'probably' ) {
+                    extension = 'ogg';
+                } else if ( canPlayMp3 == 'probably' ) {
+                    extension = 'mp3';
+                } else if ( canPlayOgg == 'maybe' ) {
+                    extension = 'ogg';
+                } else if ( canPlayMp3 == 'maybe' ) {
+                    extension = 'mp3';
+                }
+
+                if ( extension != null ) {
+                    // This buffers automatically when created
+                    var music = new Audio(game.resourcePath + '/music/new3.' + extension);
+                    music.play();
                 }
             }
 
