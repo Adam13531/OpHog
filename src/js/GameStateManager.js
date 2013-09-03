@@ -423,6 +423,7 @@
                 this.commonWinLoseFunctions();
                 game.Player.modifyCoins(-1000);
                 this.showTransitionButtons(true, true);
+                game.AudioManager.playAudio(game.Audio.EXPLODE_2);
             }
 
             // Normal state --> win
@@ -436,6 +437,7 @@
 
                 game.MinigameUI.populateUI();
                 game.MinigameUI.show();
+                game.AudioManager.playAudio(game.Audio.POWERUP_2);
             }
 
             // Minigame gameplay --> minigame lose
@@ -444,6 +446,7 @@
                 var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'You lost the minigame', true, '#f00', false);
                 game.TextManager.addTextObj(textObj);
                 this.showTransitionButtons(false, true);
+                game.AudioManager.playAudio(game.Audio.EXPLODE_2);
             }
 
             // Minigame gameplay --> minigame win
@@ -452,6 +455,7 @@
                 var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'You won the minigame', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
                 this.showTransitionButtons(false, true);
+                game.AudioManager.playAudio(game.Audio.POWERUP_2);
             }
 
             // Minigame lose --> overworld map

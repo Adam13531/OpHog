@@ -161,6 +161,7 @@
                 game.GameStateManager.enterLoseState();
             } else if ( amount < 0 ) {
                 game.castleFlashScreenTimer = 255;
+                game.AudioManager.playAudio(game.Audio.EXPLODE_1);
             }
         },
 

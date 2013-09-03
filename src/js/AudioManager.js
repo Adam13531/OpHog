@@ -6,6 +6,13 @@
      */
     window.game.Audio = {
         NEW_3: new game.AudioDescriptor(game.MUSIC_PATH,'new3',false,true,false),
+        HIT_1: new game.AudioDescriptor(game.SOUND_PATH,'hit1',true,true,true),
+        EXPLODE_1: new game.AudioDescriptor(game.SOUND_PATH,'explode1',true,true,true),
+        EXPLODE_2: new game.AudioDescriptor(game.SOUND_PATH,'explode2',true,true,true),
+        PICKUP_1: new game.AudioDescriptor(game.SOUND_PATH,'pickup1',true,true,true),
+        BLIP_1: new game.AudioDescriptor(game.SOUND_PATH,'blip1',true,true,true),
+        POWERUP_1: new game.AudioDescriptor(game.SOUND_PATH,'powerup1',true,true,true),
+        POWERUP_2: new game.AudioDescriptor(game.SOUND_PATH,'powerup2',true,true,true),
     };
 
     /**
@@ -139,6 +146,7 @@
 
             // Play the audio
             var fullPath = audioDescriptor.getFullPath(extensionToUse);
+            // console.log('playing ' + fullPath)
             var audio = new Audio(fullPath);
             audio.play();
         }

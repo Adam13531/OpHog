@@ -252,12 +252,14 @@
             if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !game.currentMap.isFoggy(tileX, tileY)) {
                 game.overworldMap.tileOfLastMap = tile;
                 game.GameStateManager.transitionToNormalMap();
+                game.AudioManager.playAudio(game.Audio.BLIP_1);
                 return;
             }
 
             // Check to see if the user tapped a spawner
             if (game.UnitPlacementUI.canSpawnUnits() && tileIsSpawnPoint) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
+                game.AudioManager.playAudio(game.Audio.BLIP_1);
             }
         });
 
