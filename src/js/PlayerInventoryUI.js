@@ -130,6 +130,9 @@
             this.show();
         }
         this.usingItem = null;
+        
+        // See the other call to this where 'false' is specified.
+        game.DialogManager.setCloseOnEscape(true);
     };
 
     /**
@@ -398,6 +401,10 @@
         if ( !this.canUseItem() ) {
             return;
         }
+
+        // Disable the "escape closes a dialog" functionality so that you can
+        // exit USE mode without closing dialogs.
+        game.DialogManager.setCloseOnEscape(false);
 
         var item = this.selectedSlotUI.getItem();
         this.usingItem = item;

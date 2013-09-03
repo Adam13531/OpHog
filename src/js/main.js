@@ -425,7 +425,7 @@
                 game.GameStateManager.enterLoseState();
             }
 
-            // Pressing 'i' will toggle the inventory screen
+            // 'I' - toggle the inventory screen
             if (evt.keyCode == game.Key.DOM_VK_I) {
                 var $invScreen = $('#inventory-screen');
                 if ( $invScreen.is(":visible") ) {
@@ -435,13 +435,20 @@
                 }
             }
 
-            // Pressing 'q' will toggle the quest UI
+            // 'Q' - toggle the quest UI
             if (evt.keyCode == game.Key.DOM_VK_Q) {
                 var $questUI = $('#quest-ui');
                 if ( $questUI.is(":visible") ) {
                     $('#quest-ui').dialog('close');
                 } else {
                     $('#quest-ui').dialog('open');
+                }
+            }
+
+            // 'Escape' - exit USE mode or close a JQuery UI dialog.
+            if (evt.keyCode == game.Key.DOM_VK_ESCAPE) {
+                if ( game.playerInventoryUI.isInUseMode() ) {
+                    game.playerInventoryUI.exitUseMode();
                 }
             }
 

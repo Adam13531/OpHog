@@ -48,6 +48,22 @@
         },
 
         /**
+         * Set the 'closeOnEscape' property of all dialogs. We do this so that
+         * 'escape' can be used for other functions without closing dialogs,
+         * e.g. exiting USE mode.
+         * @param {Boolean} enabled - 'closeOnEscape' is set to whatever this
+         * is.
+         */
+        setCloseOnEscape: function(enabled) {
+            for (var i = 0; i < this.$dialogs.length; i++) {
+                this.$dialogs[i].dialog('option', 'closeOnEscape', enabled);
+            };
+
+            // The minigame UI shouldn't ever be closeable.
+            $('#minigame-ui').dialog('option', 'closeOnEscape', false);
+        },
+
+        /**
          * When the browser size changes, call this function. It will make sure
          * that all dialogs are still on-screen.
          */
