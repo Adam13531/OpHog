@@ -98,6 +98,7 @@
      * particle system.
      */
     window.game.Projectile.prototype.projectileMetTarget = function() {
+        game.AudioManager.playAudio(game.Audio.HIT_1);
         var particleSystem = new game.ParticleSystem(this.x, this.y);
         game.ParticleManager.addSystem(particleSystem);
     };

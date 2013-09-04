@@ -137,6 +137,17 @@
             startingQuantity:3,
             cssClass:'item-sprite redrectangle-png'
         },
+        REVIVE_POTION: {
+            id: 9,
+            itemLevel:1,
+            name:'Necromancer\'s Knowledge',
+            htmlDescription:'<font color="#a3a3cc"><b>Brings the dead back to life.<b/></font>',
+            usable:true,
+            useTarget: game.UseTarget.DEAD_PLAYER_UNIT,
+            stackable:true,
+            startingQuantity:3,
+            cssClass:'item-sprite gold-potion-png'
+        },
     };
 
     // This is debug code to put the item name in the item's description. It's
@@ -288,6 +299,9 @@
                 unit.addStatusEffect(statusEffect);
                 break;
             case game.ItemType.POTION.id:
+                unit.restoreLife();
+                break;
+            case game.ItemType.REVIVE_POTION.id:
                 unit.restoreLife();
                 break;
             default:

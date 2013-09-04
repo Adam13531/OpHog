@@ -60,7 +60,6 @@
     /**
      * Updates the collectible.
      * @param  {Number} delta - time elapsed in ms since last call
-     * @return {null}
      */
     window.game.Collectible.prototype.update = function(delta) {
         var deltaAsSec = delta / 1000;
@@ -80,7 +79,6 @@
     /**
      * This is called when a unit collects this item.
      * @param  {Unit} unit - the collector
-     * @return {null}
      */
     window.game.Collectible.prototype.collectedBy = function(unit) {
         switch(this.type) {
@@ -89,6 +87,7 @@
             case game.CollectibleType.GREAT_LOOT:
                 // Randomly grant an item
                 game.Player.inventory.addItem(game.GenerateRandomItem());
+                game.AudioManager.playAudio(game.Audio.PICKUP_1);
                 break;
             case game.CollectibleType.BAD_POWERUP:
             case game.CollectibleType.GOOD_POWERUP:
@@ -96,8 +95,10 @@
                 // Give a buff
                 var statusEffect = new game.StatusEffect(unit, game.EffectType.STAT_BOOST);
                 unit.addStatusEffect(statusEffect);
+                game.AudioManager.playAudio(game.Audio.POWERUP_1);
                 break;
             }
+            
         var particleSystem = new game.ParticleSystem(unit.getCenterX(), unit.getCenterY());
         game.ParticleManager.addSystem(particleSystem);
     };
@@ -105,7 +106,6 @@
     /**
      * Draws this collectible.
      * @param  {Object} ctx - canvas context
-     * @return {null}
      */
     window.game.Collectible.prototype.draw = function(ctx) {
         // Only draw if the camera can see this

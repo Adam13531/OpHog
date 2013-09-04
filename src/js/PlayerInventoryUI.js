@@ -279,8 +279,12 @@
 
         // Check to see if you're targeting a unit
         if ( useTarget == game.UseTarget.LIVING_PLAYER_UNIT || 
-            useTarget == game.UseTarget.LIVING_PLAYER_AND_ENEMY_UNIT 
-            || useTarget == game.UseTarget.LIVING_ENEMY_UNIT ) {
+            useTarget == game.UseTarget.LIVING_PLAYER_AND_ENEMY_UNIT || 
+            useTarget == game.UseTarget.LIVING_ENEMY_UNIT ||
+            useTarget == game.UseTarget.DEAD_PLAYER_UNIT ||
+            useTarget == game.UseTarget.DEAD_PLAYER_AND_ENEMY_UNIT ||
+            useTarget == game.UseTarget.DEAD_ENEMY_UNIT
+            ) {
 
             // Get all units at that point; we want to use the item on the
             // first VALID unit that we find, not just the first unit.

@@ -57,6 +57,8 @@
         var canvasPos = $canvas.position();
         var $lowGraphicsButton = $('#graphicsLow');
         var $highGraphicsButton = $('#graphicsHigh');
+        var $audioOffButton = $('#audioOff');
+        var $audioOnButton = $('#audioOn');
 
         var $settingsButton = $('#settingsButton');
         var $showInventory = $('#showInventory');
@@ -192,6 +194,18 @@
             game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
         });
 
+        $audioOffButton.button();
+        $audioOnButton.button();
+
+        $audioOffButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.AudioManager.setAudioEnabled(false);
+        });
+        $audioOnButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.AudioManager.setAudioEnabled(true);
+        });
+
         // To see what's in Hammer events, look at their wiki (currently located
         // here: https://github.com/EightMedia/hammer.js/wiki/Getting-Started).
         // 
@@ -243,12 +257,14 @@
             if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !game.currentMap.isFoggy(tileX, tileY)) {
                 game.overworldMap.tileOfLastMap = tile;
                 game.GameStateManager.transitionToNormalMap();
+                game.AudioManager.playAudio(game.Audio.BLIP_1);
                 return;
             }
 
             // Check to see if the user tapped a spawner
             if (game.UnitPlacementUI.canSpawnUnits() && tileIsSpawnPoint) {
                 game.UnitPlacementUI.setSpawnPoint(tileX, tileY);
+                game.AudioManager.playAudio(game.Audio.BLIP_1);
             }
         });
 
@@ -273,8 +289,11 @@
         game.QuestUI.setupUI();
         game.ShopUI = new game.ShopUI();
         game.ShopInventory = new game.ShopInventory();
-		// Start out with HIGH graphics settings for now.
+        // Start out with HIGH graphics settings for now.
         game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
+        game.AudioManager.setAudioEnabled(true);
+
+        game.AudioManager.initialize();
     }
 
     function initSettings() {
@@ -385,7 +404,7 @@
                 game.Player.inventory.addItem(new game.Item(itemID));
             }
 
-            // 'M' - if not positive, bring to 1000. Otherwise, double it.
+            // 'M' - if not positive, bring money to 1000. Otherwise, double it.
             if (evt.keyCode == game.Key.DOM_VK_M) {
                 var coins = game.Player.coins;
                 coins = coins <= 0 ? (-coins + 1000) : coins;
@@ -442,6 +461,11 @@
                 } else {
                     $('#quest-ui').dialog('open');
                 }
+            }
+
+            // 'E' - play music
+            if (evt.keyCode == game.Key.DOM_VK_E) {
+                game.AudioManager.playAudio(game.Audio.NEW_3);
             }
 
             // 'Escape' - exit USE mode or close a JQuery UI dialog.
