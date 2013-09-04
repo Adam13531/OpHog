@@ -21,7 +21,5 @@
 
         this.centerX = this.x + this.w / 2;
         this.centerY = this.y + this.h / 2;
-        this.centerTileX = Math.floor(this.centerX / game.TILESIZE);
-        this.centerTileY = Math.floor(this.centerY / game.TILESIZE);
     };
 }());

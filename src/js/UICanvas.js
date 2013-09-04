@@ -124,6 +124,7 @@
                 for (var i = game.UICanvas.buttons.length - 1; i >=0; i--) {
                     var button = game.UICanvas.buttons[i];
                     if ( offsetX >= button.x && offsetX <= button.right && offsetY >= button.y && offsetY <= button.bottom ) {
+                        game.UICanvas.highlightedButtonIndex = i;
                         button.callback();
                         break;
                     }
@@ -199,18 +200,19 @@
                 if ( !game.UnitPlacementUI.buyNewUnit(unitType) ) {
                     return;
                 }
-                
+
                 // Find out if one of the buy buttons is highlighted. If it is, 
                 // update the index because a unit was just bought, and we want 
                 // to make sure that the same button is still highlighted
+                
                 var onBuyButton = (game.UICanvas.highlightedButtonIndex >= game.UICanvas.buttons.length - game.UICanvas.buyButtonUnitTypes.length);
-
                 var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
                 // However, DON'T update the index if the player just bought the 
                 // last possible unit of a class. This is because that button 
                 // to buy more units of that class will disappear, so the buttons 
                 // array will stay the same length.
-                if ( numUnits != game.MAX_UNITS_PER_CLASS ) {
+                if ( numUnits != game.MAX_UNITS_PER_CLASS &&
+                     onBuyButton ) {
                     game.UICanvas.highlightedButtonIndex++;
                 }
             };
@@ -499,16 +501,21 @@
 
             this.uictx.save();
 
-            var worldX = this.buttons[this.highlightedButtonIndex].centerTileX * game.TILESIZE;
-            var worldY = this.buttons[this.highlightedButtonIndex].centerTileY * game.TILESIZE;
+            var worldX = this.buttons[this.highlightedButtonIndex].centerX;
+            var worldY = this.buttons[this.highlightedButtonIndex].centerY;
 
             var padding = game.STATUS_EFFECT_PADDING;
 
             r = 255;
             g = 255;
+
+            var xPosition = worldX - padding * 4;
+            var yPosition = worldY - (game.TILESIZE - padding);
+            var width = game.TILESIZE + padding * 2;
+            var height = width;
             this.uictx.lineWidth = padding;
             this.uictx.strokeStyle = 'rgba(' + r + ', ' + g + ',0,1)';
-            this.uictx.strokeRect(worldX - padding * 4, worldY + 2, game.TILESIZE + padding * 2, game.TILESIZE + padding * 2);
+            this.uictx.strokeRect(xPosition, yPosition, width, height);
             this.uictx.restore();
         }
     };
