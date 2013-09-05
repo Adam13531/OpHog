@@ -356,6 +356,11 @@
                 game.UICanvas.highlightNewUnit(game.DirectionFlags.DOWN);
             }
 
+            // Spacebar
+            if ( evt.keyCode == game.Key.DOM_VK_SPACE ) {
+                game.UICanvas.buyCurrentUnit();
+            }
+
             // Pressing 'L' will toggle life bars between the following:
             // * Display for player
             // * Display for enemy

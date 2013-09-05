@@ -583,6 +583,14 @@
                     this.highlightedButtonIndex--;
                 }
             }
+        },
+
+        /**
+         * Buys the unit that is currently selected (indicated by the highlight 
+         * rectangle).
+         */
+        buyCurrentUnit: function() {
+            this.buttons[this.highlightedButtonIndex].callback();
         }
     };
 }()); 
