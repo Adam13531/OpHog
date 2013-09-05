@@ -228,8 +228,6 @@
             this.uictx.beginPath();
             this.uictx.rect(0, 0, this.getPortraitAreaWidth(), this.height);
             this.uictx.clip();
-            // Start drawing the first one a little bit to the right
-            this.drawX = game.TILESIZE;
 
             // Draw all of the units you've already purchased
             for (var i = 0; i < this.units.length; i++) {
