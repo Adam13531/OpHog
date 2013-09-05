@@ -336,6 +336,26 @@
                 game.keyPressedToDisplayLifeBars = false;
             }
 
+            // 'Right arrow key'
+            if ( evt.keyCode == game.Key.DOM_VK_RIGHT ) {
+                game.UICanvas.highlightNewUnit(game.DirectionFlags.RIGHT);
+            }
+
+            // 'Left' arrow key
+            if ( evt.keyCode == game.Key.DOM_VK_LEFT ) {
+                game.UICanvas.highlightNewUnit(game.DirectionFlags.LEFT);
+            }
+
+            // 'Up' arrow key
+            if ( evt.keyCode == game.Key.DOM_VK_UP ) {
+                game.UICanvas.highlightNewUnit(game.DirectionFlags.UP);
+            }            
+
+            // 'Down' arrow key
+            if ( evt.keyCode == game.Key.DOM_VK_DOWN ) {
+                game.UICanvas.highlightNewUnit(game.DirectionFlags.DOWN);
+            }
+
             // Pressing 'L' will toggle life bars between the following:
             // * Display for player
             // * Display for enemy

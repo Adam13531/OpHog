@@ -494,6 +494,10 @@
 
         },
 
+        /**
+         * Highlights (draws a rectangle) around a unit
+         * @param  {Boolean} playerUsedKeyboard - True if player used their keyboard
+         */
         highlightCurrentUnit: function(playerUsedKeyboard) {
             if ( !playerUsedKeyboard ) {
                 return;
@@ -517,6 +521,68 @@
             this.uictx.strokeStyle = 'rgba(' + r + ', ' + g + ',0,1)';
             this.uictx.strokeRect(xPosition, yPosition, width, height);
             this.uictx.restore();
+        },
+
+        /**
+         * Updates the position of the highlight rectangle
+         * @param  {game.DirectionFlags} directionToMoveRectangle - The direction
+         * to move the highlight rectangle
+         */
+        highlightNewUnit: function(directionToMoveRectangle) {
+            
+            // If the user pressed the up or down arrow keys, move the rectangle 
+            // to the right or left respectively.
+            var amountToMove = 3;
+            if ( directionToMoveRectangle == game.DirectionFlags.UP ) {
+                // True if the rectangle needs to wrap around
+                if ( this.highlightedButtonIndex + amountToMove > ( this.buttons.length - 1 ) ) {
+                    for (var i = 0; i < amountToMove; i++) {
+                        this.moveHighlightRectangle( game.DirectionFlags.RIGHT );
+                    };
+                } else {
+                    this.highlightedButtonIndex += amountToMove;
+                }
+            } else if ( directionToMoveRectangle == game.DirectionFlags.DOWN ) {
+                // True if the rectangle needs to wrap around
+                if ( this.highlightedButtonIndex - amountToMove < 0 ) {
+                    for (var i = 0; i < amountToMove; i++) {
+                        this.moveHighlightRectangle( game.DirectionFlags.LEFT );
+                    };
+                } else {
+                    this.highlightedButtonIndex -= amountToMove;
+                }
+            }
+            // Just move to the left to the right but not as much as when the user 
+            // presses the up or down arrow keys.
+            else {
+                this.moveHighlightRectangle( directionToMoveRectangle );
+            }
+        },
+
+        /**
+         * Moves the highlight rectangle to the right or to the left. If either 
+         * end of the array is reached, the index will wrap around.
+         * @param  {game.DirectionFlags} directionToMove - Direction to traverse
+         *  the array in. The only valid directions are:
+         *     * game.DirectionFlags.RIGHT
+         *     * game.DirectionFlags.LEFT
+         */
+        moveHighlightRectangle: function(directionToMove) {
+            if ( directionToMove == game.DirectionFlags.RIGHT ) {
+                if ( this.highlightedButtonIndex == ( this.buttons.length - 1 ) ) {
+                    this.highlightedButtonIndex = 0;
+                } else {
+                    this.highlightedButtonIndex++;
+                }
+            }
+
+            if ( directionToMove == game.DirectionFlags.LEFT ) {
+                if ( this.highlightedButtonIndex == 0 ) {
+                    this.highlightedButtonIndex = this.buttons.length - 1;
+                } else {
+                    this.highlightedButtonIndex--;
+                }
+            }
         }
     };
 }()); 
