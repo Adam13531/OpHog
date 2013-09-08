@@ -21,6 +21,18 @@
     // has used their keyboard.
     var playerUsedKeyboard = false;
 
+    /**
+     * The number of spritesheets that have been loaded so far.
+     * @type {Number}
+     */
+    var numSpritesheetsLoaded = 0;
+
+    /**
+     * The number of spritesheets that the game has to load.
+     * @type {Number}
+     */
+    var NUM_SPRITESHEETS_TO_LOAD = 3;
+
     $(document).ready(function() {
         init();
     });
@@ -31,11 +43,21 @@
     function init() {
         initSettings();
 
-        envSheet = new game.SpriteSheet(game.imagePath + '/env_32.png', game.TILESIZE, function() {
-            objSheet = new game.SpriteSheet(game.imagePath + '/obj_32.png', game.TILESIZE, function() {
-                charSheet = new game.SpriteSheet(game.imagePath + '/char_32.png', game.TILESIZE, doneLoadingEverything);
-            });
-        });
+        envSheet = new game.SpriteSheet(game.imagePath + '/env_32.png', game.TILESIZE, loadedSpritesheet);
+        objSheet = new game.SpriteSheet(game.imagePath + '/obj_32.png', game.TILESIZE, loadedSpritesheet);
+        charSheet = new game.SpriteSheet(game.imagePath + '/char_32.png', game.TILESIZE, loadedSpritesheet);
+    }
+
+    /**
+     * When you're finished loading a spritesheet, call this. When all
+     * spritesheets are done loading, this will call the next function in the
+     * setup chain.
+     */
+    function loadedSpritesheet() {
+        numSpritesheetsLoaded++;
+        if ( numSpritesheetsLoaded >= NUM_SPRITESHEETS_TO_LOAD ) {
+            doneLoadingEverything();
+        }
     }
 
     /**
