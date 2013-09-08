@@ -559,6 +559,7 @@
         game.UnitManager.update(delta);
         game.ParticleManager.update(delta);
         game.TextManager.update(delta);
+        game.AudioManager.update(delta);
         game.ShopInventory.update(deltaAsSec);
 
         ctx.save();

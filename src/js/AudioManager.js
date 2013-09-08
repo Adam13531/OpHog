@@ -16,6 +16,29 @@
     };
 
     /**
+     * An audio file can't play if it was already played this many times within
+     * game.FRAMES_BEFORE_AUDIO_SKIP_DISABLED frames.
+     *
+     * For example, if this is set to 5 and
+     * game.FRAMES_BEFORE_AUDIO_SKIP_DISABLED is set to 10, you can only play a
+     * specific audio file 5 times in any given 10-frame period. This is to
+     * prevent "sound spam", e.g. when a million projectiles cause explosions.
+     *
+     * Increasing this number will decrease audio skips.
+     * @type {Number}
+     */
+    window.game.NUM_AUDIO_PLAYS_BEFORE_SKIP = 2;
+
+    /**
+     * See game.NUM_AUDIO_PLAYS_BEFORE_SKIP.
+     *
+     * Increasing this number will increase audio skips.
+     * @type {Number}
+     */
+    window.game.FRAMES_BEFORE_AUDIO_SKIP_DISABLED = 3;
+
+
+    /**
      * The audio manager is in charge of playing sound/music.
      */
     window.game.AudioManager = {
@@ -52,6 +75,33 @@
          * @type {Boolean}
          */
         audioEnabled: false,
+
+        /**
+         * This is a dictionary whose keys are AudioDescriptors and whose values
+         * are arrays of Numbers representing how many frames before the entry
+         * in the array is removed (it's like a TTL).
+         *
+         * When audio is played, an entry is added to this dictionary with the
+         * descriptor. Every game loop, each entry in the arrays is decremented.
+         * You can't play an audio file when there are too many entries in the
+         * array corresponding to the audio's descriptor.
+         *
+         * For more information, see game.NUM_AUDIO_PLAYS_BEFORE_SKIP.
+         * @type {Object}
+         */
+        playHistory: {},
+
+        /**
+         * Every time audio is skipped, this number is incremented.
+         *
+         * This is simply for metrics. The user doesn't care about this, but we
+         * would want to know whether the sound-skipping is actually helping at
+         * all.
+         *
+         * For more information, see 'playHistory'.
+         * @type {Number}
+         */
+        numberOfSkippedAudios: 0,
 
         /**
          * Initializes the AudioManager.
@@ -109,6 +159,33 @@
         },
 
         /**
+         * Updates the audio manager's playback history so that audio can be
+         * correctly skipped when appropriate.
+         * @param  {Number} delta - time since last update (in ms). This isn't
+         * used right now, which actually means that there could be a slight bug
+         * in the future where you play some audio, pause the game, then later
+         * unpause and try to play more audio. Because we're counting frames,
+         * this may be disallowed despite that the new audio wouldn't be
+         * "spamming" you.
+         */
+        update: function(delta) {
+            // Go through each play history and decrement the counters
+            for ( key in this.playHistory ) {
+                var plays = this.playHistory[key];
+                for (var i = 0; i < plays.length; i++) {
+                    if ( plays[i]-- <= 0 ) {
+                        plays.splice(i,1);
+                        i--;
+                    }
+                };
+
+                if ( plays.length == 0 ) {
+                    delete this.playHistory[key];
+                }
+            }
+        },
+
+        /**
          * Attempts to play audio.
          * @param  {AudioDescriptor} audioDescriptor - the audio to play
          */
@@ -122,6 +199,22 @@
                 console.log('You passed in an undefined audioDescriptor');
                 return;
             }
+
+            // Add an entry to the history if it isn't already there.
+            if ( this.playHistory[audioDescriptor] === undefined ) {
+                this.playHistory[audioDescriptor] = [];
+            }
+
+            // Make sure you haven't recently played this sound too many times.
+            var audioPlayHistory = this.playHistory[audioDescriptor];
+            if ( audioPlayHistory.length >= game.NUM_AUDIO_PLAYS_BEFORE_SKIP ) {
+                this.numberOfSkippedAudios++;
+                return;
+            }
+
+            // The entry we add represents a frame count. After that many
+            // frames, we'll remove the entry.
+            audioPlayHistory.push(game.FRAMES_BEFORE_AUDIO_SKIP_DISABLED);
 
             var extensionToUse = null;
 
