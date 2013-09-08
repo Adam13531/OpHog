@@ -88,99 +88,6 @@
             <div id="shopui-item-description" class="equip-slot" style="position:absolute;top:120px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
         </div>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
-        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.3.min.js"><\/script>')</script>
-		<script src="js/vendor/jquery.mousewheel.js"></script>
-		<script src="js/vendor/ui/jquery-ui-1.10.2.custom.js"></script>
-        <!-- This needs to be defined after jquery-ui -->
-        <!-- Touch punch allows various jquery UI components to work with touch. -->
-        <script src="js/vendor/jquery.ui.touch-punch.js"></script>
-        <script src="js/vendor/ui/jquery.hammer.js"></script>
-        <script src="js/plugins.js"></script>
-
-        <!-- Constants.js should come first since it defines window.game and window.game.util -->
-        <script src="js/Constants.js"></script>
-        <script src="js/HammerHelper.js"></script>
-        <script src="js/JSONDecycle.js"></script>
-        <script src="js/Util.js"></script>
-        <script src="js/GraphicsUtil.js"></script>
-        <script src="js/KeyEventConstants.js"></script>
-        <script src="js/Camera.js"></script>
-        <script src="js/GameStateManager.js"></script>
-        <script src="js/SpriteSheet.js"></script>
-        <script src="js/Particle.js"></script>
-        <script src="js/ParticleSystem.js"></script>
-        <script src="js/ParticleManager.js"></script>
-        <script src="js/InventoryUI.js"></script>
-        <script src="js/PlayerInventoryUI.js"></script>
-        <script src="js/Slot.js"></script>
-        <script src="js/PlayerSlot.js"></script>
-        <script src="js/ShopSlot.js"></script>
-        <script src="js/Inventory.js"></script>
-        <script src="js/PlayerInventory.js"></script>
-        <script src="js/ShopInventory.js"></script>
-        <script src="js/Player.js"></script>
-        <script src="js/item/ItemMod.js"></script>
-        <script src="js/item/mod/LifeLeech.js"></script>
-        <script src="js/item/mod/Thorns.js"></script>
-        <script src="js/item/mod/ReduceDamage.js"></script>
-        <script src="js/item/mod/MultipleProjectiles.js"></script>
-        <script src="js/Item.js"></script>
-        <script src="js/PuzzlePiece.js"></script>
-        <script src="js/Tileset.js"></script>
-        <script src="js/TilesetManager.js"></script>
-        <script src="js/Doodad.js"></script>
-        <script src="js/MapGenerator.js"></script>
-        <script src="js/data/LootTableEntry.js"></script>
-        <script src="js/data/UnitData.js"></script>
-        <script src="js/OverworldMap.js"></script><!--Must come after UnitData.js-->
-        <script src="js/PossibleEnemy.js"></script>
-        <script src="js/SlotUI.js"></script>
-        <script src="js/PlayerSlotUI.js"></script>
-        <script src="js/ShopSlotUI.js"></script>
-        <script src="js/Unit.js"></script>
-        <script src="js/UnitManager.js"></script>
-        <script src="js/UnitPlacementUI.js"></script>
-        <script src="js/ShopUI.js"></script>
-        <script src="js/LootObject.js"></script>
-        <script src="js/LootUI.js"></script>
-        <script src="js/Quest.js"></script>
-        <script src="js/quest/CollectItem.js"></script>
-        <script src="js/quest/KillEnemyParty.js"></script>
-        <script src="js/quest/PlaceUnit.js"></script>
-        <script src="js/QuestManager.js"></script>
-        <script src="js/QuestUI.js"></script>
-        <script src="js/MinigameData.js"></script>
-        <script src="js/MinigameUI.js"></script>
-        <script src="js/scrollable.js"></script>
-        <script src="js/Battle.js"></script>
-        <script src="js/BattleManager.js"></script>
-        <script src="js/TextObj.js"></script>
-        <script src="js/TextManager.js"></script>
-        <script src="js/Projectile.js"></script>
-        <script src="js/Generator.js"></script>
-        <script src="js/GeneratorManager.js"></script>
-        <script src="js/StatusEffect.js"></script>
-        <script src="js/Tile.js"></script>
-        <script src="js/Collectible.js"></script>
-        <script src="js/CollectibleManager.js"></script>
-        <script src="js/Map.js"></script>
-        <script src="js/GameDataManager.js"></script>
-        <script src="js/DialogManager.js"></script>
-        <script src="js/AudioDescriptor.js"></script>
-        <script src="js/AudioManager.js"></script>
-        <script src="js/PortraitUIButton.js"></script>
-        <script src="js/UICanvas.js"></script>
-        <script src="js/main.js"></script>
-        
-        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
-        <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
-        </script>
-
         <div id="loot-ui" title="Loot"></div>
         <div id="quest-ui" title="Quests"></div>
         <div id="minigame-ui" title="Minigame"></div>
@@ -205,8 +112,8 @@
             <button style="width:25px;" id='settingsButton'></button>
         </span>
 
-        <!-- These are the contents of the settings UI -->
-        <div style="border:1px solid gray;background-color:#373737;" id="settingsDialog" title="Settings">
+        <!-- These are the contents of the settings UI. display:none is given so that there's no vertical scrollbar on the page as it's loading. When you open the settings dialog, that property will be removed automatically by JQuery UI.  -->
+        <div style="border:1px solid gray;background-color:#373737;display:none" id="settingsDialog" title="Settings">
             <button style="margin-top:5px;" id='showInventory'>Show inventory</button><br/>
             <button style="margin-top:5px;" id='showQuests'>View quests</button><br/>
             <button style="margin-top:5px;" id='showShop'>Shop</button><br/>
@@ -223,6 +130,115 @@
         </div>
 
         <div id='useItemInstructions' style="background-color:#22a050;color:white;text-align:center;"></div>
+
+        <!-- Make sure this shows above everything else -->
+        <div class="le-frog" id="loadingDiv" style="z-index:99999; left:0; top:0; width:100%; height:100%; position:absolute; background-color:#373737">
+
+            <!-- Add some padding so that this is in the middle of the page -->
+            <div style="height:45%"></div>
+            <div id="loadProgress" style="height:100px;display:none" ><div id="progressLabel" class="progress-label">Loading: 0%</div></div>
+            <!-- <div style="text-align:center;vertical-align:middle;background-color:#555;height:10%" id="loadProgress"><div id="progressLabel" style="font-size:4em;font-weight:bold; color:#fff;text-shadow: 1px 1px 0 #bbb;" >Loading: 0%</div></div> -->
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+        <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.8.3.min.js"><\/script>')</script>
+        <script src="js/vendor/jquery.mousewheel.js"></script>
+        <script src="js/vendor/ui/jquery-ui-1.10.2.custom.js"></script>
+        <script src="js/LoadingManager.js"></script>
+        <!-- This needs to be defined after jquery-ui -->
+        <!-- Touch punch allows various jquery UI components to work with touch. -->
+        <script src="js/vendor/jquery.ui.touch-punch.js"></script>
+        <script src="js/vendor/ui/jquery.hammer.js"></script>
+        <script src="js/plugins.js"></script>
+
+        <!-- Constants.js should come first since it defines window.game and window.game.util -->
+        <script src="js/AddLoadProgress.js"></script>
+        <script src="js/Constants.js"></script>
+        <script src="js/HammerHelper.js"></script>
+        <script src="js/JSONDecycle.js"></script>
+        <script src="js/Util.js"></script>
+        <script src="js/GraphicsUtil.js"></script>
+        <script src="js/KeyEventConstants.js"></script>
+        <script src="js/Camera.js"></script>
+        <script src="js/GameStateManager.js"></script>
+        <script src="js/SpriteSheet.js"></script>
+        <script src="js/Particle.js"></script>
+        <script src="js/ParticleSystem.js"></script>
+        <script src="js/ParticleManager.js"></script>
+        <script src="js/InventoryUI.js"></script>
+        <script src="js/PlayerInventoryUI.js"></script>
+        <script src="js/Slot.js"></script>
+        <script src="js/AddLoadProgress.js"></script>
+        <script src="js/PlayerSlot.js"></script>
+        <script src="js/ShopSlot.js"></script>
+        <script src="js/Inventory.js"></script>
+        <script src="js/PlayerInventory.js"></script>
+        <script src="js/ShopInventory.js"></script>
+        <script src="js/Player.js"></script>
+        <script src="js/item/ItemMod.js"></script>
+        <script src="js/item/mod/LifeLeech.js"></script>
+        <script src="js/item/mod/Thorns.js"></script>
+        <script src="js/item/mod/ReduceDamage.js"></script>
+        <script src="js/item/mod/MultipleProjectiles.js"></script>
+        <script src="js/Item.js"></script>
+        <script src="js/PuzzlePiece.js"></script>
+        <script src="js/Tileset.js"></script>
+        <script src="js/TilesetManager.js"></script>
+        <script src="js/AddLoadProgress.js"></script>
+        <script src="js/Doodad.js"></script>
+        <script src="js/MapGenerator.js"></script>
+        <script src="js/data/LootTableEntry.js"></script>
+        <script src="js/data/UnitData.js"></script>
+        <script src="js/OverworldMap.js"></script><!--Must come after UnitData.js-->
+        <script src="js/PossibleEnemy.js"></script>
+        <script src="js/SlotUI.js"></script>
+        <script src="js/PlayerSlotUI.js"></script>
+        <script src="js/ShopSlotUI.js"></script>
+        <script src="js/Unit.js"></script>
+        <script src="js/UnitManager.js"></script>
+        <script src="js/UnitPlacementUI.js"></script>
+        <script src="js/ShopUI.js"></script>
+        <script src="js/LootObject.js"></script>
+        <script src="js/LootUI.js"></script>
+        <script src="js/Quest.js"></script>
+        <script src="js/AddLoadProgress.js"></script>
+        <script src="js/quest/CollectItem.js"></script>
+        <script src="js/quest/KillEnemyParty.js"></script>
+        <script src="js/quest/PlaceUnit.js"></script>
+        <script src="js/QuestManager.js"></script>
+        <script src="js/QuestUI.js"></script>
+        <script src="js/MinigameData.js"></script>
+        <script src="js/MinigameUI.js"></script>
+        <script src="js/scrollable.js"></script>
+        <script src="js/Battle.js"></script>
+        <script src="js/BattleManager.js"></script>
+        <script src="js/TextObj.js"></script>
+        <script src="js/TextManager.js"></script>
+        <script src="js/Projectile.js"></script>
+        <script src="js/Generator.js"></script>
+        <script src="js/GeneratorManager.js"></script>
+        <script src="js/AddLoadProgress.js"></script>
+        <script src="js/StatusEffect.js"></script>
+        <script src="js/Tile.js"></script>
+        <script src="js/Collectible.js"></script>
+        <script src="js/CollectibleManager.js"></script>
+        <script src="js/Map.js"></script>
+        <script src="js/GameDataManager.js"></script>
+        <script src="js/DialogManager.js"></script>
+        <script src="js/AudioDescriptor.js"></script>
+        <script src="js/AudioManager.js"></script>
+        <script src="js/PortraitUIButton.js"></script>
+        <script src="js/UICanvas.js"></script>
+        <script src="js/AddLoadProgress.js"></script>
+        <script src="js/main.js"></script>
+        
+        <!-- Google Analytics: change UA-XXXXX-X to be your site's ID. -->
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+        </script>
 
     </body>
 </html>

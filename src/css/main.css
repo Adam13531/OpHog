@@ -252,6 +252,17 @@ was drawn to begin with, but they're offset slightly*/
         2px 2px 0 black;
 }
 
+.ui-progressbar {
+    position: relative;
+}
+.progress-label {
+    position: absolute;
+    left: 35%;
+    top: 4px;
+    font-weight: bold;
+    font-size: 4em;
+    text-shadow: 2px 2px 0 #444;
+}
 
 
 

@@ -58,6 +58,8 @@
         if ( numSpritesheetsLoaded >= NUM_SPRITESHEETS_TO_LOAD ) {
             doneLoadingEverything();
         }
+
+        LoadingManager.addProgress();
     }
 
     /**
@@ -619,6 +621,12 @@
 
         game.UICanvas.draw();
         game.UICanvas.highlightCurrentUnit(playerUsedKeyboard);
+
+        // The final addProgress is called after we've rendered everything once
+        // already. That way we don't see a white screen flash due to the
+        // canvases being unfilled. Note that this will be called every game
+        // loop, but it's harmless unless we end up reusing the LoadingManager.
+        LoadingManager.addProgress();
     }
 
     function doneLoadingEverything() {

@@ -112,8 +112,8 @@
         initialize: function() {
             // See the comment for initializedBrowserSize.
             if ( !this.initializedBrowserSize ) {
-                this.initializedBrowserSize = true;
                 game.Camera.browserSizeChanged();
+                this.initializedBrowserSize = true;
             }
 
             this.zoomChanged();
