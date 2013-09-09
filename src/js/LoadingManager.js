@@ -12,8 +12,20 @@
          * Turn the progress bar into an actual progress bar.
          */
         initialize: function() {
+            var browserWidth = $(window).width();
             var $progressBar = $('#loadProgress');
             var $progressLabel = $('#progressLabel');
+
+            // On small browsers, we need to shrink the progress bar.
+            if ( browserWidth < 750 ) {
+                $progressLabel.css({
+                    'font-size': '1em'
+                });
+                $progressBar.css({
+                    'height': '50px'
+                });
+            }
+
             $progressBar.progressbar({
                 value: false,
                 change: function() {
