@@ -416,8 +416,8 @@
          * @param  {Object} ctx - the canvas context
          */
         concealOutOfBoundsAreas: function(ctx) {
-            var heightDifference = this.viewHeight - game.currentMap.heightInPixels;
-            var widthDifference = this.viewWidth - game.currentMap.widthInPixels;
+            var heightDifference = game.canvasHeight - game.currentMap.heightInPixels * this.curZoom;
+            var widthDifference = game.canvasWidth - game.currentMap.widthInPixels * this.curZoom;
 
             ctx.save();
             ctx.fillStyle = '#373737';
