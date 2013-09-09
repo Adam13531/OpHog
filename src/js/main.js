@@ -315,7 +315,7 @@
         game.ShopInventory = new game.ShopInventory();
         // Start out with HIGH graphics settings for now.
         game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
-        game.AudioManager.setAudioEnabled(true);
+        game.AudioManager.setAudioEnabled(false);
 
         game.AudioManager.initialize();
     }
@@ -618,6 +618,8 @@
         game.Player.drawCastleLife(ctx);
 
         ctx.restore();
+
+        game.Camera.concealOutOfBoundsAreas(ctx);
 
         game.UICanvas.draw();
         game.UICanvas.highlightCurrentUnit(playerUsedKeyboard);
