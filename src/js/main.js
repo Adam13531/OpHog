@@ -352,6 +352,16 @@
                 evt.preventDefault();
             }
 
+            // '+' - zoom in
+            if ( evt.keyCode == game.Key.DOM_VK_ADD || evt.keyCode == game.Key.DOM_VK_EQUALS || evt.keyCode == game.Key.DOM_VK_EQUALS2 ) {
+                game.Camera.modifyZoomBy(1);
+            }
+            
+            // '-' - zoom out
+            if ( evt.keyCode == game.Key.DOM_VK_SUBTRACT || evt.keyCode == game.Key.DOM_VK_SUBTRACT2 || evt.keyCode == game.Key.DOM_VK_SUBTRACT3 ) {
+                game.Camera.modifyZoomBy(-1);
+            }
+
         });
 
         $(document).keyup(function(evt) {

@@ -44,6 +44,7 @@
         DOM_VK_9: 57,
         DOM_VK_SEMICOLON: 59,
         DOM_VK_EQUALS: 61,
+        DOM_VK_EQUALS2: 187, // Chrome and IE use this
         DOM_VK_A: 65,
         DOM_VK_B: 66,
         DOM_VK_C: 67,
@@ -85,6 +86,8 @@
         DOM_VK_ADD: 107,
         DOM_VK_SEPARATOR: 108,
         DOM_VK_SUBTRACT: 109,
+        DOM_VK_SUBTRACT2: 189, // Chrome and IE use this
+        DOM_VK_SUBTRACT3: 173, // Firefox uses this
         DOM_VK_DECIMAL: 110,
         DOM_VK_DIVIDE: 111,
         DOM_VK_F1: 112,

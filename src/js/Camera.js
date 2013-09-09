@@ -470,6 +470,58 @@
         },
 
         /**
+         * Changes the zoom by the specified value.
+         * @param  {Number} deltaZoom - the amount to change the zoom by
+         * (negative is zooming out).
+         */
+        modifyZoomBy: function(deltaZoom) {
+            // NONE OF THESE LESS-THAN-ONE VALUES ARE SUPPORTED WITHOUT HAVING
+            // GRAPHICAL GLITCHES
+            var zoomValuesLessThanOne = [this.minZoom, .5, .75];
+
+            // If zooming would push you below 1...
+            if ( this.curZoom + deltaZoom < 1 ) {
+                // Jump right from whatever you're at to the highest zoom value
+                // that's less than one.
+                if ( this.curZoom >= 1 ) {
+                    this.curZoom = zoomValuesLessThanOne[zoomValuesLessThanOne.length - 1];
+                } else {
+                    for (var i = 0; i < zoomValuesLessThanOne.length; i++) {
+                        if ( this.curZoom == zoomValuesLessThanOne[i] ) {
+                            this.curZoom = zoomValuesLessThanOne[Math.max(0, i-1)];
+                            break;
+                        }
+                    };
+                }
+            } else {
+                // If you're zoomed out beneath 1, then go back up the
+                // incremental array.
+                if ( this.curZoom < 1 ) {
+                    for (var i = 0; i < zoomValuesLessThanOne.length; i++) {
+                        if ( this.curZoom == zoomValuesLessThanOne[i] ) {
+                            if ( i == zoomValuesLessThanOne.length - 1 ) {
+                                this.curZoom = 1;
+                            } else {
+                                this.curZoom = zoomValuesLessThanOne[i+1];
+                            }
+                            break;
+                        }
+                    };
+                } else {
+                    this.curZoom += deltaZoom;
+                }
+            }
+
+            this.zoomChanged();
+
+            // This is CLOSE to the final formula for zooming at where your
+            // scroll wheel is, but it's not perfect, so I'm leaving it
+            // commented out for now. The magic numbers are map sizes.
+            // camera.curPanX = ((event.offsetX) / (800)) * (camera.maxPanX);
+            // camera.curPanY = ((event.offsetY) / (605)) * (camera.maxPanY);
+        },
+
+        /**
          * Returns a function that will zoom in/out.
          */
         getMouseWheelEventHandler: function() {
@@ -477,55 +529,8 @@
             var camera = this;
 
             return function(event, delta) {
-                var zoomSpeed = 1;
-                if ( delta < 0 ) {
-                    zoomSpeed *= -1;
-                }
-
-                // NONE OF THESE LESS-THAN-ONE VALUES ARE SUPPORTED WITHOUT
-                // HAVING GRAPHICAL GLITCHES
-                var zoomValuesLessThanOne = [camera.minZoom, .5, .75];
-
-                // If zooming would push you below 1...
-                if ( camera.curZoom + zoomSpeed < 1 ) {
-                    // Jump right from whatever you're at to the highest zoom
-                    // value that's less than one.
-                    if ( camera.curZoom >= 1 ) {
-                        camera.curZoom = zoomValuesLessThanOne[zoomValuesLessThanOne.length - 1];
-                    } else {
-                        for (var i = 0; i < zoomValuesLessThanOne.length; i++) {
-                            if ( camera.curZoom == zoomValuesLessThanOne[i] ) {
-                                camera.curZoom = zoomValuesLessThanOne[Math.max(0, i-1)];
-                                break;
-                            }
-                        };
-                    }
-                } else {
-                    // If you're zoomed out beneath 1, then go back up the
-                    // incremental array.
-                    if ( camera.curZoom < 1 ) {
-                        for (var i = 0; i < zoomValuesLessThanOne.length; i++) {
-                            if ( camera.curZoom == zoomValuesLessThanOne[i] ) {
-                                if ( i == zoomValuesLessThanOne.length - 1 ) {
-                                    camera.curZoom = 1;
-                                } else {
-                                    camera.curZoom = zoomValuesLessThanOne[i+1];
-                                }
-                                break;
-                            }
-                        };
-                    } else {
-                        camera.curZoom += zoomSpeed;
-                    }
-                }
-
-                camera.zoomChanged();
-
-                // This is CLOSE to the final formula for zooming at where your
-                // scroll wheel is, but it's not perfect, so I'm leaving it
-                // commented out for now. The magic numbers are map sizes.
-                // camera.curPanX = ((event.offsetX) / (800)) * (camera.maxPanX);
-                // camera.curPanY = ((event.offsetY) / (605)) * (camera.maxPanY);
+                var zoomSpeed = (delta < 0) ? -1 : 1;
+                camera.modifyZoomBy(zoomSpeed);
                 event.originalEvent.preventDefault();
             };
         },
