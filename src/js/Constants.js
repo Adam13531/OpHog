@@ -129,5 +129,11 @@
      * @type {String}
      */
     window.game.MAYBE = 'maybe';
+    
+    /**
+     * Tells us whether or not the user has ever pressed a key on their keyboard
+     * @type {Boolean}
+     */
+    window.game.playerUsedKeyboard = false;
 
 }());

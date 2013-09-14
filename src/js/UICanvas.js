@@ -490,34 +490,24 @@
 
             this.drawScrollBarIfNecessary();
 
+            this.highlightCurrentUnit();
         },
 
         /**
-         * Highlights (draws a rectangle) around a unit
-         * @param  {Boolean} playerUsedKeyboard - True if player used their keyboard
+         * Highlights a unit by drawing a rectangle around it
          */
-        highlightCurrentUnit: function(playerUsedKeyboard) {
-            if ( !playerUsedKeyboard ) {
+        highlightCurrentUnit: function() {
+            if ( !game.playerUsedKeyboard ) {
                 return;
             }
 
             this.uictx.save();
-
-            var worldX = this.buttons[this.highlightedButtonIndex].centerX;
-            var worldY = this.buttons[this.highlightedButtonIndex].centerY;
-
+            var button = this.buttons[this.highlightedButtonIndex];
             var padding = game.STATUS_EFFECT_PADDING;
-
-            r = 255;
-            g = 255;
-
-            var xPosition = worldX - padding * 4;
-            var yPosition = worldY - (game.TILESIZE - padding);
-            var width = game.TILESIZE + padding * 2;
-            var height = width;
+            var squareSize = button.w + padding * 2;
             this.uictx.lineWidth = padding;
-            this.uictx.strokeStyle = 'rgba(' + r + ', ' + g + ',0,1)';
-            this.uictx.strokeRect(xPosition, yPosition, width, height);
+            this.uictx.strokeStyle = 'rgba(255,255,0,1)';
+            this.uictx.strokeRect(button.x - padding + 1, button.y + padding / 2, squareSize, squareSize);
             this.uictx.restore();
         },
 
@@ -527,60 +517,28 @@
          * to move the highlight rectangle
          */
         highlightNewUnit: function(directionToMoveRectangle) {
-            
-            // If the user pressed the up or down arrow keys, move the rectangle 
-            // to the right or left respectively.
-            var amountToMove = 3;
-            if ( directionToMoveRectangle == game.DirectionFlags.UP ) {
-                // True if the rectangle needs to wrap around
-                if ( this.highlightedButtonIndex + amountToMove > ( this.buttons.length - 1 ) ) {
-                    for (var i = 0; i < amountToMove; i++) {
-                        this.moveHighlightRectangle( game.DirectionFlags.RIGHT );
-                    };
-                } else {
-                    this.highlightedButtonIndex += amountToMove;
-                }
-            } else if ( directionToMoveRectangle == game.DirectionFlags.DOWN ) {
-                // True if the rectangle needs to wrap around
-                if ( this.highlightedButtonIndex - amountToMove < 0 ) {
-                    for (var i = 0; i < amountToMove; i++) {
-                        this.moveHighlightRectangle( game.DirectionFlags.LEFT );
-                    };
-                } else {
-                    this.highlightedButtonIndex -= amountToMove;
-                }
-            }
-            // Just move to the left to the right but not as much as when the user 
-            // presses the up or down arrow keys.
-            else {
-                this.moveHighlightRectangle( directionToMoveRectangle );
+            if ( directionToMoveRectangle == game.DirectionFlags.UP || directionToMoveRectangle == game.DirectionFlags.DOWN ) {
+                var direction = (directionToMoveRectangle == game.DirectionFlags.UP);
+                var amountToMove = 3;
+                for (var i = 0; i < amountToMove; i++) {
+                    this.moveHighlightRectangle( direction );
+                };
+            } else {
+                this.moveHighlightRectangle(directionToMoveRectangle == game.DirectionFlags.RIGHT);
             }
         },
 
         /**
          * Moves the highlight rectangle to the right or to the left. If either 
          * end of the array is reached, the index will wrap around.
-         * @param  {game.DirectionFlags} directionToMove - Direction to traverse
-         *  the array in. The only valid directions are:
-         *     * game.DirectionFlags.RIGHT
-         *     * game.DirectionFlags.LEFT
+         * @param  {Boolean} movingRight - True if the highlight rectangle needs 
+         * to move to the right.
          */
-        moveHighlightRectangle: function(directionToMove) {
-            if ( directionToMove == game.DirectionFlags.RIGHT ) {
-                if ( this.highlightedButtonIndex == ( this.buttons.length - 1 ) ) {
-                    this.highlightedButtonIndex = 0;
-                } else {
-                    this.highlightedButtonIndex++;
-                }
-            }
-
-            if ( directionToMove == game.DirectionFlags.LEFT ) {
-                if ( this.highlightedButtonIndex == 0 ) {
-                    this.highlightedButtonIndex = this.buttons.length - 1;
-                } else {
-                    this.highlightedButtonIndex--;
-                }
-            }
+        moveHighlightRectangle: function(movingRight) {
+            this.highlightedButtonIndex += movingRight ? 1 : -1;
+            var lastIndex = this.buttons.length;
+            if ( this.highlightedButtonIndex == -1 ) this.highlightedButtonIndex = lastIndex - 1;
+            if ( this.highlightedButtonIndex == lastIndex ) this.highlightedButtonIndex = 0; 
         },
 
         /**
