@@ -7,7 +7,7 @@
          * This is the set of all possible puzzle pieces.
          * @type {Array:PuzzlePiece}
          */
-    	puzzlePieces: [],
+        puzzlePieces: [],
 
         /**
          * The tiles that form this map. These are indexed as follows:
@@ -82,7 +82,7 @@
         /**
          * Initialization function. Creates the puzzle pieces
          */
-    	init: function() {
+        init: function() {
 
             // Wipe out all of the arrays
             this.mapArray = [];
@@ -151,7 +151,7 @@
                                  1,1,1,0,0,
                                  0,0,0,0,0,
                                  0,0,0,0,0,], game.PuzzlePieceType.RIGHT);
-    	},
+        },
 
         /**
          * Adds a puzzle piece to the list of puzzle pieces
@@ -226,7 +226,8 @@
         /**
          * Gets all the possible puzzle pieces that will fit at the index that's
          * passed in.
-         * @param  {Number} index Index in the map array in tiles.
+         * @param  {Number} index Index of the puzzle piece from which to get
+         * the possible ones.
          * @return {List}       List of possible puzzle pieces
          */
         getPossiblePuzzlePieces: function(index) {
@@ -272,6 +273,35 @@
                 // If we're in the middle, we can't connect to a blank piece on
                 // the left if we have a left opening.
                 if ( flags == game.PuzzlePieceType.MIDDLE && !leftPiece.hasRightOpening && puzzlePiece.hasLeftOpening ) {
+                    continue;
+                }
+
+                // If we're in the top row and the left piece doesn't have a
+                // right-opening, then this piece MUST be blank, otherwise we
+                // could end up with a piece that looks like this:
+                // 00000
+                // 00000
+                // 00111
+                // 00100
+                // 
+                // This is bad because it might connect with a piece below it
+                // that looks like this:
+                // 00100
+                // 00100
+                // 00111
+                // 00000
+                // 00000
+                // 
+                // That would form a section of the path that would necessitate
+                // backtracking.
+                if ( flags == game.PuzzlePieceType.MIDDLE && !leftPiece.hasRightOpening && upPiece == null && !puzzlePiece.isBlank ) {
+                    continue;
+                }
+
+                // Similar to the above... if we're not in the top row, then
+                // there must be an explicit connection between this piece and
+                // the one above it.
+                if ( flags == game.PuzzlePieceType.MIDDLE && !leftPiece.hasRightOpening && upPiece != null && !upPiece.hasBottomOpening && !puzzlePiece.isBlank ) {
                     continue;
                 }
 
@@ -341,7 +371,7 @@
                 }
 
                 if (!validColumn) {
-                    this.columns.splice(columnIndex, this.heightInPuzzlePieces);
+                    this.columns.splice(columnIndex * this.heightInPuzzlePieces, this.heightInPuzzlePieces);
                     this.complexityMultiplier++;
                 }
             }
@@ -537,7 +567,7 @@
          * @param  {Object} nodeOfMap - an object from game.OverworldMapData.overworldMapNodes
          * @return {game.Map}          New auto-generated map, or null if there was an error.
          */
-    	generateRandomMap: function(width, height, nodeOfMap) {
+        generateRandomMap: function(width, height, nodeOfMap) {
             // Make sure we can use whole puzzle pieces
             if (width * height % game.PUZZLE_PIECE_SIZE != 0) {
                 game.util.debugDisplayText('Fatal map generation error: map size is not a multiple of puzzle piece size', 'map size');
@@ -608,7 +638,7 @@
             delete this.puzzlePieces;
 
             return map;
-    	}
+        }
     };
 
 }());
