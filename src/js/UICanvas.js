@@ -505,9 +505,9 @@
             var button = this.buttons[this.highlightedButtonIndex];
             var padding = game.STATUS_EFFECT_PADDING;
             var squareSize = button.w + padding * 2;
-            this.uictx.lineWidth = padding;
+            this.uictx.lineWidth = 2;
             this.uictx.strokeStyle = 'rgba(255,255,0,1)';
-            this.uictx.strokeRect(button.x - padding + 1, button.y + padding / 2, squareSize, squareSize);
+            this.uictx.strokeRect(button.x - padding, (button.y + padding / 2) - 1, squareSize, squareSize + 2);
             this.uictx.restore();
         },
 
