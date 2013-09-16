@@ -104,11 +104,14 @@
                                  0,0,0,0,0,
                                  0,0,0,0,0,], game.PuzzlePieceType.LEFT);
 
-            this.addPuzzlePiece([0,0,0,0,0,
-                                 0,0,0,0,0,
-                                 1,1,1,1,1,
-                                 0,0,0,0,0,
-                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+            // Put three of these in so that they're picked more frequently
+            for (var i = 0; i < 3; i ++ ) {
+                this.addPuzzlePiece([0,0,0,0,0,
+                                     0,0,0,0,0,
+                                     1,1,1,1,1,
+                                     0,0,0,0,0,
+                                     0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+            }
 
             this.addPuzzlePiece([0,0,0,0,0,
                                  0,0,0,0,0,
@@ -118,14 +121,62 @@
 
             this.addPuzzlePiece([0,0,1,0,0,
                                  0,0,1,0,0,
+                                 1,1,1,1,1,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,1,0,0,
+                                 0,1,0,0,0,
+                                 1,0,0,0,0,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,0,0,0,0,
+                                 0,0,1,1,1,
+                                 0,0,1,0,0,
+                                 0,0,1,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,1,0,0,
+                                 0,0,1,0,0,
                                  0,0,1,1,1,
                                  0,0,0,0,0,
                                  0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
 
             this.addPuzzlePiece([0,0,1,0,0,
                                  0,0,1,0,0,
+                                 0,0,1,1,1,
+                                 0,0,1,0,0,
+                                 0,0,1,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,1,0,0,
+                                 0,0,1,0,0,
                                  1,1,1,1,1,
                                  0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,0,0,0,0,
+                                 1,1,1,1,1,
+                                 0,0,1,0,0,
+                                 0,0,1,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,1,1,1,0,
+                                 1,1,0,1,1,
+                                 0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,1,1,1,0,
+                                 1,1,0,1,1,
+                                 0,1,1,1,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,0,0,0,0,
+                                 1,1,0,1,1,
+                                 0,1,1,1,0,
                                  0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
 
             this.addPuzzlePiece([0,1,1,1,0,
