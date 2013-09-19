@@ -97,6 +97,19 @@
         highlightedButtonIndex: 0,
 
         /**
+         * The alpha value to use when showing the selection rectangle.
+         * @type {Number}
+         */
+        highlightAlpha: .4,
+
+        /**
+         * The direction in which the alpha is changing. This is only positive
+         * or negative 1.
+         * @type {Number}
+         */
+        highlightAlphaChange: 1,
+
+        /**
          * Initialize the UI.
          */
         initialize: function() {
@@ -505,8 +518,28 @@
             var button = this.buttons[this.highlightedButtonIndex];
             var padding = game.STATUS_EFFECT_PADDING;
             var squareSize = button.w + padding * 2;
+
+            // The lowest alpha to use
+            var lowerBound = .3;
+
+            // The highest alpha to use
+            var upperBound = .9;
+
+            // The speed at which to cycle through the alphas
+            var speed = .0125;
+            this.highlightAlpha += this.highlightAlphaChange * speed;
+
+            // Cap at the bounds
+            if ( this.highlightAlpha >= upperBound ) {
+                this.highlightAlpha = upperBound - .00001;
+                this.highlightAlphaChange *= -1;
+            } else if ( this.highlightAlpha <= lowerBound ) {
+                this.highlightAlpha = lowerBound + .00001;
+                this.highlightAlphaChange *= -1;
+            }
+
             this.uictx.lineWidth = 2;
-            this.uictx.strokeStyle = 'rgba(255,255,0,1)';
+            this.uictx.strokeStyle = 'rgba(255,255,0,' + this.highlightAlpha + ')';
             this.uictx.strokeRect(button.x - padding, (button.y + padding / 2) - 1, squareSize, squareSize + 2);
             this.uictx.restore();
         },
