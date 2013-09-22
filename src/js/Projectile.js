@@ -28,20 +28,9 @@
 
         this.diesIfTargetIsDead = true;
 
-        // 0 == arrow
+        // 0 == projectile to attack with
         if ( type == 0 ) {
-            // Simplify to just left and right for now. We can polish this later
-            // to base it on which way the arrow is traveling at any instant in
-            // time (we could rotate sprites too if we want)
-
-            if ( this.owner.isPlayer() ) {
-                // 92 == right
-                this.graphicIndex = 92;
-            } else {
-                // 88 == left
-                this.graphicIndex = 88;
-            }
-
+            this.graphicIndex = this.owner.projectileIndexes;
         }
 
         // Revive

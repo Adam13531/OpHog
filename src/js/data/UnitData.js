@@ -91,6 +91,10 @@
                 minGrowth: 5,
                 maxGrowth: 10
             },
+
+            projectile: {
+                graphicIndexes:[16]
+            },
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -114,6 +118,10 @@
                 start: 50,
                 minGrowth: 5,
                 maxGrowth: 10
+            },
+
+            projectile: {
+                graphicIndexes:[103]
             },
             
             chanceToDropItem: .1,
@@ -139,6 +147,10 @@
                 minGrowth: 5,
                 maxGrowth: 10
             },
+
+            projectile: {
+                graphicIndexes:[210]
+            },
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -162,6 +174,10 @@
                 start: 50,
                 minGrowth: 5,
                 maxGrowth: 10
+            },
+
+            projectile: {
+                graphicIndexes:[218]
             },
             
             chanceToDropItem: .1,
@@ -190,6 +206,10 @@
                 minGrowth: 100,
                 maxGrowth: 200
             },
+
+            projectile: {
+                graphicIndexes:[250]
+            },
             
             chanceToDropItem: .1,
             itemsDropped: equalChanceAllLoot
@@ -214,6 +234,10 @@
                 minGrowth: 5,
                 maxGrowth: 10
             },
+
+            projectile: {
+                graphicIndexes:[110]
+            },
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -237,6 +261,10 @@
                 start: 50,
                 minGrowth: 5,
                 maxGrowth: 10
+            },
+
+            projectile: {
+                graphicIndexes:[105]
             },
             
             chanceToDropItem: .1,
@@ -263,6 +291,10 @@
                 minGrowth: 5,
                 maxGrowth: 15
             },
+
+            projectile: {
+                graphicIndexes:[92]
+            },
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -287,6 +319,10 @@
                 start: 100,
                 minGrowth: 5,
                 maxGrowth: 15
+            },
+
+            projectile: {
+                graphicIndexes:[53]
             },
             
             chanceToDropItem: 0,
@@ -313,6 +349,10 @@
                 minGrowth: 5,
                 maxGrowth: 15
             },
+
+            projectile: {
+                graphicIndexes:[176]
+            },
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -337,6 +377,10 @@
                 start: 100,
                 minGrowth: 5,
                 maxGrowth: 15
+            },
+
+            projectile: {
+                graphicIndexes:[128]
             },
             
             chanceToDropItem: 0,

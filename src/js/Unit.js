@@ -151,6 +151,8 @@
         this.chanceToDropItem = unitData.chanceToDropItem;
         this.itemsDropped = unitData.itemsDropped;
 
+        this.projectileIndexes = unitData.projectile.graphicIndexes;
+
         this.restoreLife();
 
         this.width = game.TILESIZE * this.widthInTiles;
