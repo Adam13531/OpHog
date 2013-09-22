@@ -559,6 +559,7 @@
             } else {
                 this.moveHighlightRectangle(directionToMoveRectangle == game.DirectionFlags.RIGHT);
             }
+            this.scrollToPortrait();
         },
 
         /**
@@ -580,6 +581,36 @@
          */
         buyCurrentUnit: function() {
             this.buttons[this.highlightedButtonIndex].callback();
+        },
+
+        /**
+         * Scrolls the currently highlighted portrait into view
+         */
+        scrollToPortrait: function() {
+            var firstBuyButtonIndex = this.buttons.length - this.buyButtonUnitTypes.length;
+            var onBuyButton = this.highlightedButtonIndex >= firstBuyButtonIndex ? true : false;
+            if ( onBuyButton ) {
+                return;
+            }
+            
+            var currentButton = this.buttons[this.highlightedButtonIndex];
+            // When the player is moving to the right
+            if ( currentButton.x + game.TILESIZE > this.getPortraitAreaWidth() ) {
+                
+                var difference = this.getPortraitAreaWidth() - currentButton.x - game.TILESIZE - this.xPadding;
+                this.scrollX -= difference;
+
+            } else if ( currentButton.x < 0 ) { // When the player is moving to the left
+                
+                // Make the current button be the first to appear at the left 
+                // side of the canvas. There could still be others off the 
+                // screen to the left, but that's fine because they aren't 
+                // the current buttons.
+                // 
+                // Addition works here to scroll to the left because the 
+                // current button's x position will always be negative here.
+                this.scrollX += currentButton.x;
+            }
         }
     };
 }()); 
