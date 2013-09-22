@@ -473,6 +473,14 @@
             this.uictx.fillRect(0, 0, this.width, this.height);
             this.uictx.restore();
 
+            // First, get the portrait into view that will be highlighted. This
+            // code is here to make sure the highlighter doesn't appear first
+            // before the scrolling happens. That happens when this code is at
+            // the beginning of the highlight function and if this function is
+            // called right before calling the highlight function. It works to
+            // keep the call here towards the beginning of this draw function.
+            this.scrollToPortrait();
+
             // All of the unit types. If we already have all of the units of a
             // given type, then we will filter it out below.
             var types = [game.PlaceableUnitType.ARCHER, game.PlaceableUnitType.WARRIOR, game.PlaceableUnitType.WIZARD];
@@ -559,7 +567,6 @@
             } else {
                 this.moveHighlightRectangle(directionToMoveRectangle == game.DirectionFlags.RIGHT);
             }
-            this.scrollToPortrait();
         },
 
         /**
@@ -601,7 +608,7 @@
                 this.scrollX -= difference;
 
             } else if ( currentButton.x < 0 ) { // When the player is moving to the left
-                
+
                 // Make the current button be the first to appear at the left 
                 // side of the canvas. There could still be others off the 
                 // screen to the left, but that's fine because they aren't 
