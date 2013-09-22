@@ -121,6 +121,16 @@
             // 'usingItem' from InventoryUI.
             game.playerInventoryUI.exitUseMode(true);
 
+            // Default the highlighted button to zero. This will help us avoid
+            // the following scenario: The player saves the game with no units
+            // bought. This means there are only the number of portraits on the
+            // screen that the player can buy. The player then buys 8 units and
+            // puts the highlighter on the last one they bought. The player then
+            // loads the game but NEVER saved the game. That index where the
+            // highlighter was is now gone. Therefore, make life easy and just
+            // set it to 0 when loading the game.
+            game.UICanvas.highlightedButtonIndex = 0;
+
             var curTime = new Date();
             console.log('Loading a save (version ' + savedVersion + ') from ' + localStorage.saveTime);
 
