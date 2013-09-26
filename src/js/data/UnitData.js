@@ -46,6 +46,21 @@
         }
     }());
 
+    /**
+     * Abilities for the units
+     * @type {Object}
+     */
+    window.game.Ability = {
+        ATTACK: {
+            id: 0,
+            graphicIndexes: 88, // this should be the arrow graphic
+            // actionOnHit: ActionOnHit.DO_DAMAGE,
+            // chanceToCrit: .1,
+            // damageFormula: game.DamageFormula.ATK_MINUS_DEF,
+            // allowedTarget: game.RandomUnitFlags.ENEMY_UNIT | game.RandomUnitFlags.ALIVE
+        }
+    };
+
     var DEFAULT_UNIT_WIDTH = 1;
     var DEFAULT_UNIT_HEIGHT = 1;
 
@@ -71,6 +86,8 @@
     //  life - see atk
     //  chanceToDropItem - Number - the chance to drop any item
     //  itemsDropped - Array:LootTableEntry
+    //  abilities - game.Ability - abilities that this unit will have. Abilites that
+    //  are defined in game.Ability can be overridden
     window.game.UnitType = {
         ORC: {
             id:0,
@@ -92,9 +109,9 @@
                 maxGrowth: 10
             },
 
-            projectile: {
-                graphicIndexes:[16]
-            },
+            // projectile: {
+            //     graphicIndexes:[16]
+            // },
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -120,9 +137,9 @@
                 maxGrowth: 10
             },
 
-            projectile: {
-                graphicIndexes:[103]
-            },
+            // projectile: {
+            //     graphicIndexes:[103]
+            // },
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -148,9 +165,9 @@
                 maxGrowth: 10
             },
 
-            projectile: {
-                graphicIndexes:[210]
-            },
+            // projectile: {
+            //     graphicIndexes:[210]
+            // },
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -176,9 +193,9 @@
                 maxGrowth: 10
             },
 
-            projectile: {
-                graphicIndexes:[218]
-            },
+            // projectile: {
+            //     graphicIndexes:[218]
+            // },
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -207,9 +224,9 @@
                 maxGrowth: 200
             },
 
-            projectile: {
-                graphicIndexes:[250]
-            },
+            // projectile: {
+            //     graphicIndexes:[250]
+            // },
             
             chanceToDropItem: .1,
             itemsDropped: equalChanceAllLoot
@@ -235,9 +252,9 @@
                 maxGrowth: 10
             },
 
-            projectile: {
-                graphicIndexes:[110]
-            },
+            // projectile: {
+            //     graphicIndexes:[110]
+            // },
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -263,9 +280,9 @@
                 maxGrowth: 10
             },
 
-            projectile: {
-                graphicIndexes:[105]
-            },
+            // projectile: {
+            //     graphicIndexes:[105]
+            // },
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -292,9 +309,14 @@
                 maxGrowth: 15
             },
 
-            projectile: {
-                graphicIndexes:[92]
-            },
+            abilities: [
+                {
+                    id: game.Ability.ATTACK.id,
+                    graphicIndexes: 60,
+                    graphicOnCrit: 61,
+                    relativeWeight: 5
+                }
+            ],
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -321,9 +343,9 @@
                 maxGrowth: 15
             },
 
-            projectile: {
-                graphicIndexes:[53]
-            },
+            // projectile: {
+            //     graphicIndexes:[53]
+            // },
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -350,9 +372,9 @@
                 maxGrowth: 15
             },
 
-            projectile: {
-                graphicIndexes:[176]
-            },
+            // projectile: {
+            //     graphicIndexes:[176]
+            // },
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -379,9 +401,9 @@
                 maxGrowth: 15
             },
 
-            projectile: {
-                graphicIndexes:[128]
-            },
+            // projectile: {
+            //     graphicIndexes:[128]
+            // },
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -477,6 +499,10 @@
                 }
             }
 
+            if ( unitType.abilities === undefined ) {
+                unitType.abilities = [game.Ability.ATTACK];                
+            }
+
             game.util.useDefaultIfUndefined(unitType, 'width', DEFAULT_UNIT_WIDTH);
             game.util.useDefaultIfUndefined(unitType, 'height', DEFAULT_UNIT_HEIGHT);
 
@@ -488,7 +514,6 @@
                     '). Duplicates: ' + first.name + ' and ' + unitType.name);
 
                 game.util.debugDisplayText('Check console log - duplicate unit ID detected.', 'unit');
-                debugger;
             }
 
             unitIDs.push(id);

@@ -30,7 +30,9 @@
 
         // 0 == projectile to attack with
         if ( type == 0 ) {
-            this.graphicIndex = this.owner.projectileIndexes;
+            // this.graphicIndex = this.owner.projectileIndexes;
+            // TODO: I think the id should be passed in and then used in this array
+            this.graphicIndex = this.owner.abilities[0].graphicIndexes;
         }
 
         // Revive
