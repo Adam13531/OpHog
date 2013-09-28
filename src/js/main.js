@@ -11,15 +11,10 @@
     var ctx = null;
 
     // Prevent these keys from doing their default action.
-    var browserKeysToStop = new Array(game.Key.DOM_VK_PAGE_UP, game.Key.DOM_VK_PAGE_DOWN, game.Key.DOM_VK_END, game.Key.DOM_VK_HOME, game.Key.DOM_VK_LEFT, game.Key.DOM_VK_UP, game.Key.DOM_VK_RIGHT, game.Key.DOM_VK_DOWN);
+    var browserKeysToStop = new Array(game.Key.DOM_VK_PAGE_UP, game.Key.DOM_VK_PAGE_DOWN, game.Key.DOM_VK_END, game.Key.DOM_VK_HOME, game.Key.DOM_VK_LEFT, game.Key.DOM_VK_UP, game.Key.DOM_VK_RIGHT, game.Key.DOM_VK_DOWN, game.Key.DOM_VK_SPACE);
 
     // This is a dictionary of keycode --> boolean representing whether it is held.
     var keysDown = {};
-
-    // Tells us if the user has used a keyboard or not. We want to keep track 
-    // this because we can do certain things or not do them based on if the user 
-    // has used their keyboard.
-    var playerUsedKeyboard = false;
 
     /**
      * The number of spritesheets that have been loaded so far.
@@ -336,7 +331,7 @@
         // Pixels/second
         speed = 150;
         $(document).keydown(function(evt) {
-            playerUsedKeyboard = true;
+            game.playerUsedKeyboard = true;
             keysDown[evt.keyCode] = true;
 
             if ($.inArray(evt.keyCode, browserKeysToStop) > -1) {
@@ -362,14 +357,6 @@
                 game.Camera.modifyZoomBy(-1);
             }
 
-        });
-
-        $(document).keyup(function(evt) {
-
-            if ( evt.keyCode == game.Key.DOM_VK_ALT ) {
-                game.keyPressedToDisplayLifeBars = false;
-            }
-
             // 'Right arrow key'
             if ( evt.keyCode == game.Key.DOM_VK_RIGHT ) {
                 game.UICanvas.highlightNewUnit(game.DirectionFlags.RIGHT);
@@ -388,6 +375,14 @@
             // 'Down' arrow key
             if ( evt.keyCode == game.Key.DOM_VK_DOWN ) {
                 game.UICanvas.highlightNewUnit(game.DirectionFlags.DOWN);
+            }
+
+        });
+
+        $(document).keyup(function(evt) {
+
+            if ( evt.keyCode == game.Key.DOM_VK_ALT ) {
+                game.keyPressedToDisplayLifeBars = false;
             }
 
             // Spacebar
@@ -632,7 +627,6 @@
         game.Camera.concealOutOfBoundsAreas(ctx);
 
         game.UICanvas.draw();
-        game.UICanvas.highlightCurrentUnit(playerUsedKeyboard);
 
         // The final addProgress is called after we've rendered everything once
         // already. That way we don't see a white screen flash due to the

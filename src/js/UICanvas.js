@@ -97,6 +97,19 @@
         highlightedButtonIndex: 0,
 
         /**
+         * The alpha value to use when showing the selection rectangle.
+         * @type {Number}
+         */
+        highlightAlpha: .4,
+
+        /**
+         * The direction in which the alpha is changing. This is only positive
+         * or negative 1.
+         * @type {Number}
+         */
+        highlightAlphaChange: 1,
+
+        /**
          * Initialize the UI.
          */
         initialize: function() {
@@ -460,6 +473,14 @@
             this.uictx.fillRect(0, 0, this.width, this.height);
             this.uictx.restore();
 
+            // First, get the portrait into view that will be highlighted. This
+            // code is here to make sure the highlighter doesn't appear first
+            // before the scrolling happens. That happens when this code is at
+            // the beginning of the highlight function and if this function is
+            // called right before calling the highlight function. It works to
+            // keep the call here towards the beginning of this draw function.
+            this.scrollToPortrait();
+
             // All of the unit types. If we already have all of the units of a
             // given type, then we will filter it out below.
             var types = [game.PlaceableUnitType.ARCHER, game.PlaceableUnitType.WARRIOR, game.PlaceableUnitType.WIZARD];
@@ -490,34 +511,44 @@
 
             this.drawScrollBarIfNecessary();
 
+            this.highlightCurrentUnit();
         },
 
         /**
-         * Highlights (draws a rectangle) around a unit
-         * @param  {Boolean} playerUsedKeyboard - True if player used their keyboard
+         * Highlights a unit by drawing a rectangle around it
          */
-        highlightCurrentUnit: function(playerUsedKeyboard) {
-            if ( !playerUsedKeyboard ) {
+        highlightCurrentUnit: function() {
+            if ( !game.playerUsedKeyboard ) {
                 return;
             }
 
             this.uictx.save();
-
-            var worldX = this.buttons[this.highlightedButtonIndex].centerX;
-            var worldY = this.buttons[this.highlightedButtonIndex].centerY;
-
+            var button = this.buttons[this.highlightedButtonIndex];
             var padding = game.STATUS_EFFECT_PADDING;
+            var squareSize = button.w + padding * 2;
 
-            r = 255;
-            g = 255;
+            // The lowest alpha to use
+            var lowerBound = .3;
 
-            var xPosition = worldX - padding * 4;
-            var yPosition = worldY - (game.TILESIZE - padding);
-            var width = game.TILESIZE + padding * 2;
-            var height = width;
-            this.uictx.lineWidth = padding;
-            this.uictx.strokeStyle = 'rgba(' + r + ', ' + g + ',0,1)';
-            this.uictx.strokeRect(xPosition, yPosition, width, height);
+            // The highest alpha to use
+            var upperBound = .9;
+
+            // The speed at which to cycle through the alphas
+            var speed = .0125;
+            this.highlightAlpha += this.highlightAlphaChange * speed;
+
+            // Cap at the bounds
+            if ( this.highlightAlpha >= upperBound ) {
+                this.highlightAlpha = upperBound - .00001;
+                this.highlightAlphaChange *= -1;
+            } else if ( this.highlightAlpha <= lowerBound ) {
+                this.highlightAlpha = lowerBound + .00001;
+                this.highlightAlphaChange *= -1;
+            }
+
+            this.uictx.lineWidth = 2;
+            this.uictx.strokeStyle = 'rgba(255,255,0,' + this.highlightAlpha + ')';
+            this.uictx.strokeRect(button.x - padding, (button.y + padding / 2) - 1, squareSize, squareSize + 2);
             this.uictx.restore();
         },
 
@@ -527,60 +558,28 @@
          * to move the highlight rectangle
          */
         highlightNewUnit: function(directionToMoveRectangle) {
-            
-            // If the user pressed the up or down arrow keys, move the rectangle 
-            // to the right or left respectively.
-            var amountToMove = 3;
-            if ( directionToMoveRectangle == game.DirectionFlags.UP ) {
-                // True if the rectangle needs to wrap around
-                if ( this.highlightedButtonIndex + amountToMove > ( this.buttons.length - 1 ) ) {
-                    for (var i = 0; i < amountToMove; i++) {
-                        this.moveHighlightRectangle( game.DirectionFlags.RIGHT );
-                    };
-                } else {
-                    this.highlightedButtonIndex += amountToMove;
-                }
-            } else if ( directionToMoveRectangle == game.DirectionFlags.DOWN ) {
-                // True if the rectangle needs to wrap around
-                if ( this.highlightedButtonIndex - amountToMove < 0 ) {
-                    for (var i = 0; i < amountToMove; i++) {
-                        this.moveHighlightRectangle( game.DirectionFlags.LEFT );
-                    };
-                } else {
-                    this.highlightedButtonIndex -= amountToMove;
-                }
-            }
-            // Just move to the left to the right but not as much as when the user 
-            // presses the up or down arrow keys.
-            else {
-                this.moveHighlightRectangle( directionToMoveRectangle );
+            if ( directionToMoveRectangle == game.DirectionFlags.UP || directionToMoveRectangle == game.DirectionFlags.DOWN ) {
+                var direction = (directionToMoveRectangle == game.DirectionFlags.UP);
+                var amountToMove = 3;
+                for (var i = 0; i < amountToMove; i++) {
+                    this.moveHighlightRectangle( direction );
+                };
+            } else {
+                this.moveHighlightRectangle(directionToMoveRectangle == game.DirectionFlags.RIGHT);
             }
         },
 
         /**
          * Moves the highlight rectangle to the right or to the left. If either 
          * end of the array is reached, the index will wrap around.
-         * @param  {game.DirectionFlags} directionToMove - Direction to traverse
-         *  the array in. The only valid directions are:
-         *     * game.DirectionFlags.RIGHT
-         *     * game.DirectionFlags.LEFT
+         * @param  {Boolean} movingRight - True if the highlight rectangle needs 
+         * to move to the right.
          */
-        moveHighlightRectangle: function(directionToMove) {
-            if ( directionToMove == game.DirectionFlags.RIGHT ) {
-                if ( this.highlightedButtonIndex == ( this.buttons.length - 1 ) ) {
-                    this.highlightedButtonIndex = 0;
-                } else {
-                    this.highlightedButtonIndex++;
-                }
-            }
-
-            if ( directionToMove == game.DirectionFlags.LEFT ) {
-                if ( this.highlightedButtonIndex == 0 ) {
-                    this.highlightedButtonIndex = this.buttons.length - 1;
-                } else {
-                    this.highlightedButtonIndex--;
-                }
-            }
+        moveHighlightRectangle: function(movingRight) {
+            this.highlightedButtonIndex += movingRight ? 1 : -1;
+            var lastIndex = this.buttons.length;
+            if ( this.highlightedButtonIndex == -1 ) this.highlightedButtonIndex = lastIndex - 1;
+            if ( this.highlightedButtonIndex == lastIndex ) this.highlightedButtonIndex = 0; 
         },
 
         /**
@@ -589,6 +588,36 @@
          */
         buyCurrentUnit: function() {
             this.buttons[this.highlightedButtonIndex].callback();
+        },
+
+        /**
+         * Scrolls the currently highlighted portrait into view
+         */
+        scrollToPortrait: function() {
+            var firstBuyButtonIndex = this.buttons.length - this.buyButtonUnitTypes.length;
+            var onBuyButton = this.highlightedButtonIndex >= firstBuyButtonIndex ? true : false;
+            if ( onBuyButton ) {
+                return;
+            }
+            
+            var currentButton = this.buttons[this.highlightedButtonIndex];
+            // When the player is moving to the right
+            if ( currentButton.x + game.TILESIZE > this.getPortraitAreaWidth() ) {
+                
+                var difference = this.getPortraitAreaWidth() - currentButton.x - game.TILESIZE - this.xPadding;
+                this.scrollX -= difference;
+
+            } else if ( currentButton.x < 0 ) { // When the player is moving to the left
+
+                // Make the current button be the first to appear at the left 
+                // side of the canvas. There could still be others off the 
+                // screen to the left, but that's fine because they aren't 
+                // the current buttons.
+                // 
+                // Addition works here to scroll to the left because the 
+                // current button's x position will always be negative here.
+                this.scrollX += currentButton.x;
+            }
         }
     };
 }()); 

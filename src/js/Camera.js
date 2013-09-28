@@ -179,16 +179,16 @@
         handleInput: function(keysDown, delta) {
             var deltaAsSec = delta / 1000;
             var panSpeed = 250 * deltaAsSec;
-            if (keysDown[game.Key.DOM_VK_RIGHT] || keysDown[game.Key.DOM_VK_D]) {
+            if (keysDown[game.Key.DOM_VK_D]) {
                 this.curPanX += panSpeed;
             }
-            if (keysDown[game.Key.DOM_VK_LEFT] || keysDown[game.Key.DOM_VK_A]) {
+            if (keysDown[game.Key.DOM_VK_A]) {
                 this.curPanX -= panSpeed;
             }
-            if (keysDown[game.Key.DOM_VK_DOWN] || keysDown[game.Key.DOM_VK_S]) {
+            if (keysDown[game.Key.DOM_VK_S]) {
                 this.curPanY += panSpeed;
             }
-            if (keysDown[game.Key.DOM_VK_UP] || keysDown[game.Key.DOM_VK_W]) {
+            if (keysDown[game.Key.DOM_VK_W]) {
                 this.curPanY -= panSpeed;
             }
 
