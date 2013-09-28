@@ -44,37 +44,10 @@
     window.game.AudioManager = {
 
         /**
-         * This is either 'probably', 'maybe', or '' depending on what the
-         * browser says with regards to playing OGG files.
-         * @type {String}
-         */
-        canPlayOgg: null,
-
-        /**
-         * See canPlayOgg.
-         * @type {String}
-         */
-        canPlayMp3: null,
-
-        /**
-         * See canPlayOgg.
-         * @type {String}
-         */
-        canPlayAac: null,
-
-        /**
-         * This is the extension that should be the smallest and play the most
-         * accurately according to the browser. It's a case-sensitive string
-         * like "ogg" or "mp3" (no periods).
-         * @type {String}
-         */
-        preferredExtension: null,
-
-        /**
          * If false, the user disabled audio.
          * @type {Boolean}
          */
-        audioEnabled: false,
+        audioEnabled: true,
 
         /**
          * This is a dictionary whose keys are AudioDescriptors and whose values
@@ -82,9 +55,10 @@
          * in the array is removed (it's like a TTL).
          *
          * When audio is played, an entry is added to this dictionary with the
-         * descriptor. Every game loop, each entry in the arrays is decremented.
-         * You can't play an audio file when there are too many entries in the
-         * array corresponding to the audio's descriptor.
+         * ID of the sound that SoundManager assigned. Every game loop, each
+         * entry in the arrays is decremented. You can't play an audio file when
+         * there are too many entries in the array corresponding to the audio's
+         * descriptor.
          *
          * For more information, see game.NUM_AUDIO_PLAYS_BEFORE_SKIP.
          * @type {Object}
@@ -104,39 +78,51 @@
         numberOfSkippedAudios: 0,
 
         /**
-         * Initializes the AudioManager.
+         * Initialize SoundManager2.
          */
         initialize: function() {
-            this.canPlayOgg = (new Audio()).canPlayType("audio/ogg");
-            this.canPlayMp3 = (new Audio()).canPlayType("audio/mp3");
-            this.canPlayAac = (new Audio()).canPlayType("audio/mpeg");
+            soundManager.setup({
+                url: game.resourcePath + '/soundmanager2_swf/',
+                flashVersion: 9, // optional: shiny features (default = 8)
+                debugMode: false, // don't print to console
 
-            // It's ideal to go in order of size here since the quality is
-            // probably about the same. OGG and AAC seem to be about the same
-            // size, then MP3 seems to be higher, so we choose MP3 last.
-            this.preferredExtension = null;
+                // optional: ignore Flash where possible, use 100% HTML5 mode
+                // preferFlash: false,
+                onready: function() {
+                // Ready to use; soundManager.createSound() etc. can now be called.
+                // 
+                    game.AudioManager.loadSounds();
+                }
+            });
+        },
 
-            if ( this.canPlayOgg == game.PROBABLY ) {
-                this.preferredExtension = game.OGG_EXT;
-            } else if ( this.canPlayAac == game.PROBABLY ) {
-                this.preferredExtension = game.AAC_EXT;
-            } else if ( this.canPlayMp3 == game.PROBABLY ) {
-                this.preferredExtension = game.MP3_EXT;
-            } else if ( this.canPlayOgg == game.MAYBE ) {
-                this.preferredExtension = game.OGG_EXT;
-            } else if ( this.canPlayAac == game.MAYBE ) {
-                this.preferredExtension = game.AAC_EXT;
-            } else if ( this.canPlayMp3 == game.MAYBE ) {
-                this.preferredExtension = game.MP3_EXT;
+        /**
+         * Load the sounds into SoundManager2.
+         */
+        loadSounds: function() {
+            for(key in game.Audio) {
+                var audioDescriptor = game.Audio[key];
+
+                // We don't specify an ID, so SoundManager will automatically
+                // create one.
+                var sound = soundManager.createSound({
+                     url: audioDescriptor.getFullPath(game.MP3_EXT),
+                     autoLoad: true,
+                     autoPlay: false,
+                });
+
+                // Get the ID that SoundManager created and associate it to our
+                // descriptor.
+                audioDescriptor.soundManagerID = sound.id;
             }
         },
 
         /**
-         * @return {Boolean} true if audio can be played, false if your browser
-         * sucks or you disabled sounds.
+         * @return {Boolean} true if audio can be played, false if you disabled
+         * sounds.
          */
         canPlayAudio: function() {
-            return this.audioEnabled && this.preferredExtension != null;
+            return this.audioEnabled;
         },
 
         /**
@@ -200,15 +186,19 @@
                 return;
             }
 
+            var soundManagerID = audioDescriptor.soundManagerID;
+
             // Add an entry to the history if it isn't already there.
-            if ( this.playHistory[audioDescriptor] === undefined ) {
-                this.playHistory[audioDescriptor] = [];
+            if ( this.playHistory[soundManagerID] === undefined ) {
+                this.playHistory[soundManagerID] = [];
             }
+            console.log('Audio descriptor: ' + soundManagerID);
 
             // Make sure you haven't recently played this sound too many times.
-            var audioPlayHistory = this.playHistory[audioDescriptor];
+            var audioPlayHistory = this.playHistory[soundManagerID];
             if ( audioPlayHistory.length >= game.NUM_AUDIO_PLAYS_BEFORE_SKIP ) {
                 this.numberOfSkippedAudios++;
+                console.log('Skipped audio: ' + this.numberOfSkippedAudios + ' ' + soundManagerID);
                 return;
             }
 
@@ -216,32 +206,8 @@
             // frames, we'll remove the entry.
             audioPlayHistory.push(game.FRAMES_BEFORE_AUDIO_SKIP_DISABLED);
 
-            var extensionToUse = null;
-
-            if ( audioDescriptor.oneExtension != null ) {
-                // If we only have one type of file for the audio, play that.
-                extensionToUse = audioDescriptor.oneExtension;
-            } else if ( audioDescriptor.hasExtension(this.preferredExtension) ){
-                // If our preferred extension exists, play that.
-                extensionToUse = this.preferredExtension;
-            } else {
-                // Fall back to just picking SOMETHING we can play.
-                if ( this.canPlayOgg && audioDescriptor.hasExtension(game.OGG_EXT) ) {
-                    extensionToUse = game.OGG_EXT;
-                } else if ( this.canPlayMp3 && audioDescriptor.hasExtension(game.MP3_EXT) ) {
-                    extensionToUse = game.MP3_EXT;
-                } else if ( this.canPlayAac && audioDescriptor.hasExtension(game.AAC_EXT) ) {
-                    extensionToUse = game.AAC_EXT;
-                } else {
-                    console.log('Fatal audio error: no extension match found for ' + audioDescriptor.fileName);
-                }
-            }
-
-            // Play the audio
-            var fullPath = audioDescriptor.getFullPath(extensionToUse);
-            // console.log('playing ' + fullPath)
-            var audio = new Audio(fullPath);
-            audio.play();
+            // Set the volume to 50 for now so that it doesn't deafen us.
+            soundManager.play(soundManagerID, {volume:50});
         }
 
     };

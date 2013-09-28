@@ -315,7 +315,7 @@
         game.ShopInventory = new game.ShopInventory();
         // Start out with HIGH graphics settings for now.
         game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
-        game.AudioManager.setAudioEnabled(false);
+        game.AudioManager.setAudioEnabled(game.AudioManager.audioEnabled);
 
         game.AudioManager.initialize();
     }
