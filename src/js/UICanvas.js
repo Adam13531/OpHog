@@ -595,7 +595,7 @@
          */
         scrollToPortrait: function() {
             var firstBuyButtonIndex = this.buttons.length - this.buyButtonUnitTypes.length;
-            var onBuyButton = this.highlightedButtonIndex >= firstBuyButtonIndex ? true : false;
+            var onBuyButton = (this.highlightedButtonIndex >= firstBuyButtonIndex);
             if ( onBuyButton ) {
                 return;
             }
