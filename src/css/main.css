@@ -120,7 +120,25 @@ textarea {
 .use-slot{background-color:#880015;color:white;text-align:center;font-size:80%;}
 .test3{background-color:white;color:black;}
 
+/*Prevent the user from selecting text*/
+.no-text-select{
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
+/*Explicitly allow the user to select text*/
+.text-select{
+    -webkit-touch-callout: text;
+    -webkit-user-select: text;
+    -khtml-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
 
 /*Using a sprite creator might be nice (we could also make our own): http://draeton.github.com/stitches/*/
 /*I'm not sure how to prevent having to hard-code the image path*/

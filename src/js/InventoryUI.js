@@ -108,10 +108,15 @@
             desc = item.htmlDescription;
         }
 
+        // Just remove the classes we might set below, that way we don't wipe
+        // out any other existing classes.
+        this.$itemDescriptionID.removeClass('equip-slot');
+        this.$itemDescriptionID.removeClass('use-slot');
+
         if (slot.isEquipSlot()) {
-            this.$itemDescriptionID.attr('class', 'equip-slot');
+            this.$itemDescriptionID.addClass('equip-slot');
         } else if (slot.isUsableSlot()) {
-            this.$itemDescriptionID.attr('class', 'use-slot');
+            this.$itemDescriptionID.addClass('use-slot');
         }
 
         this.$itemDescriptionID.html(desc);

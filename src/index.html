@@ -51,7 +51,7 @@
             <button style="display:none;z-index:0" id='goToOverworldButton'></button>
         </span>
 	    
-	    <div id="inventory-screen" title="Inventory">
+	    <div id="inventory-screen" title="Inventory" class="no-text-select">
 
             <!-- Top part -->
             <div id="top_part_with_characters_and_items" style="position:absolute;top:0px;left:0px;width:100%;margin-top:5px">
@@ -69,10 +69,10 @@
             </div>
 
             <!-- Bottom part -->
-			<div id="item-description" class="equip-slot" style="position:absolute;top:150px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
+			<div id="item-description" class="equip-slot text-select" style="position:absolute;top:150px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
 	    </div>
 
-        <div id="shop-screen" title="Shop">
+        <div id="shop-screen" title="Shop" class="no-text-select">
             <div id="shop_div_without_item_description_in_it" style="position:absolute;top:0px;left:0px;width:100%;margin-top:5px">
                 <div id="shop_div_buy_button_and_timer" style="width: 340px;margin: 0px auto;">
                     <button id="shopBuyButton" style="margin-bottom:5px; font-size:.75em">Buy</button>
@@ -85,12 +85,12 @@
             </div>
 
             <!-- Description text of the selected item -->
-            <div id="shopui-item-description" class="equip-slot" style="position:absolute;top:120px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
+            <div id="shopui-item-description" class="equip-slot text-select" style="position:absolute;top:120px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
         </div>
 
         <div id="loot-ui" title="Loot"></div>
         <div id="quest-ui" title="Quests"></div>
-        <div id="minigame-ui" title="Minigame"></div>
+        <div id="minigame-ui" title="Minigame" class="no-text-select"></div>
 
         <!-- This is used for styling the loot UI -->
         <span style="opacity:.95" class="le-frog" id="lootUIDialogThemeSpan"></span>
