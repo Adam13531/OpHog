@@ -385,14 +385,14 @@
                 game.UICanvas.highlightNewUnit(game.DirectionFlags.LEFT);
             }
 
-            // 'Up' arrow key
+            // 'Up' arrow key - select previous spawner
             if ( evt.keyCode == game.Key.DOM_VK_UP ) {
-                game.UICanvas.highlightNewUnit(game.DirectionFlags.UP);
+                game.UnitPlacementUI.selectSpawner(false);
             }            
 
-            // 'Down' arrow key
+            // 'Down' arrow key - select next spawner
             if ( evt.keyCode == game.Key.DOM_VK_DOWN ) {
-                game.UICanvas.highlightNewUnit(game.DirectionFlags.DOWN);
+                game.UnitPlacementUI.selectSpawner(true);
             }
 
         });
