@@ -310,7 +310,7 @@
         game.ShopInventory = new game.ShopInventory();
         // Start out with HIGH graphics settings for now.
         game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
-        game.AudioManager.setAudioEnabled(false);
+        game.AudioManager.setAudioEnabled(game.AudioManager.audioEnabled);
 
         game.AudioManager.initialize();
     }
@@ -625,6 +625,7 @@
         ctx.restore();
 
         game.Camera.concealOutOfBoundsAreas(ctx);
+        game.Minimap.draw(ctx);
 
         game.UICanvas.draw();
 
