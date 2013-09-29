@@ -245,6 +245,8 @@
             this.curZoom = Math.max(this.minZoom, this.curZoom);
 
             this.computeScrollBoundaries();
+
+            game.Minimap.zoomChanged();
         },
 
         /**
@@ -449,6 +451,8 @@
 
             this.curPanX = Math.min(Math.max(0, this.curPanX), this.maxPanX);
             this.curPanY = Math.min(Math.max(0, this.curPanY), this.maxPanY);
+
+            game.Minimap.panChanged();
         },
 
         /**

@@ -110,6 +110,12 @@
         highlightAlphaChange: 1,
 
         /**
+         * Flag that tells us if a unit was just bought
+         * @type {Boolean}
+         */
+        unitWasJustBought: false,
+
+        /**
          * Initialize the UI.
          */
         initialize: function() {
@@ -218,7 +224,7 @@
                 // update the index because a unit was just bought, and we want 
                 // to make sure that the same button is still highlighted
                 
-                var onBuyButton = (game.UICanvas.highlightedButtonIndex >= game.UICanvas.buttons.length - game.UICanvas.buyButtonUnitTypes.length);
+                var onBuyButton = game.UICanvas.onBuyButton();
                 var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
                 // However, DON'T update the index if the player just bought the 
                 // last possible unit of a class. This is because that button 
@@ -473,14 +479,6 @@
             this.uictx.fillRect(0, 0, this.width, this.height);
             this.uictx.restore();
 
-            // First, get the portrait into view that will be highlighted. This
-            // code is here to make sure the highlighter doesn't appear first
-            // before the scrolling happens. That happens when this code is at
-            // the beginning of the highlight function and if this function is
-            // called right before calling the highlight function. It works to
-            // keep the call here towards the beginning of this draw function.
-            this.scrollToPortrait();
-
             // All of the unit types. If we already have all of the units of a
             // given type, then we will filter it out below.
             var types = [game.PlaceableUnitType.ARCHER, game.PlaceableUnitType.WARRIOR, game.PlaceableUnitType.WIZARD];
@@ -511,6 +509,12 @@
 
             this.drawScrollBarIfNecessary();
 
+            // Make sure that a newly bought unit is in view to the user
+            if ( this.unitWasJustBought ) {
+                this.scrollToPortrait();
+                this.unitWasJustBought = false;
+            }
+
             this.highlightCurrentUnit();
         },
 
@@ -522,10 +526,19 @@
                 return;
             }
 
-            this.uictx.save();
             var button = this.buttons[this.highlightedButtonIndex];
             var padding = game.STATUS_EFFECT_PADDING;
             var squareSize = button.w + padding * 2;
+
+            this.uictx.save();
+
+            // Make sure to not draw on top on the buy buttons if a non buy
+            // button is highlighted. This could happen if a non buy button is
+            // highlighted and the user scrolls.
+            if ( !this.onBuyButton() ) {
+                this.uictx.rect(0, 0, this.getPortraitAreaWidth(), this.height);
+                this.uictx.clip();
+            }
 
             // The lowest alpha to use
             var lowerBound = .3;
@@ -567,6 +580,7 @@
             } else {
                 this.moveHighlightRectangle(directionToMoveRectangle == game.DirectionFlags.RIGHT);
             }
+            this.scrollToPortrait();
         },
 
         /**
@@ -588,15 +602,15 @@
          */
         buyCurrentUnit: function() {
             this.buttons[this.highlightedButtonIndex].callback();
+            this.unitWasJustBought = true;
         },
 
         /**
          * Scrolls the currently highlighted portrait into view
          */
         scrollToPortrait: function() {
-            var firstBuyButtonIndex = this.buttons.length - this.buyButtonUnitTypes.length;
-            var onBuyButton = this.highlightedButtonIndex >= firstBuyButtonIndex ? true : false;
-            if ( onBuyButton ) {
+            
+            if ( this.onBuyButton() ) {
                 return;
             }
             
@@ -618,6 +632,15 @@
                 // current button's x position will always be negative here.
                 this.scrollX += currentButton.x;
             }
+        },
+
+        /**
+         * Tells us if the highlighted button is a buy button or not
+         * @return {Boolean} True if the highlighted button is a buy button
+         */
+        onBuyButton: function() {
+            var firstBuyButtonIndex = this.buttons.length - this.buyButtonUnitTypes.length;
+            return (this.highlightedButtonIndex >= firstBuyButtonIndex);
         }
     };
 }()); 

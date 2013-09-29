@@ -625,6 +625,7 @@
         ctx.restore();
 
         game.Camera.concealOutOfBoundsAreas(ctx);
+        game.Minimap.draw(ctx);
 
         game.UICanvas.draw();
 

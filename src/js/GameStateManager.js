@@ -237,6 +237,7 @@
 
             game.currentMap = game.overworldMap;
 
+            game.Minimap.initialize();
             game.Camera.initialize();
 
             // Place all of your units at the last map node you clicked.
@@ -271,6 +272,7 @@
             game.currentMap = game.MapGenerator.generateRandomMap(50, 25, nodeOfMap);
             game.UnitPlacementUI.initializeSpawnPoint();
 
+            game.Minimap.initialize();
             // Initialize the camera so that the zoom and pan values aren't out
             // of bounds.
             game.Camera.initialize();
