@@ -617,14 +617,11 @@
         ctx.restore();
         game.TextManager.draw(ctx);
         game.GameStateManager.draw(ctx);
-        ctx.save();
 
-        game.Player.drawCoinTotal(ctx);
         game.Player.drawCastleLife(ctx);
 
-        ctx.restore();
-
         game.Camera.concealOutOfBoundsAreas(ctx);
+        game.Player.drawCoinTotal(ctx);
         game.Minimap.draw(ctx);
 
         game.UICanvas.draw();
