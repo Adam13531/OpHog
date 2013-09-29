@@ -110,7 +110,13 @@
         highlightAlphaChange: 1,
 
         /**
-         * Flag that tells us if a unit was just bought
+         * Flag that tells us if a unit was just bought. It is used to let us
+         * know that we need to scroll that unit into view. This value is
+         * checked in the next game loop after the unit has been bought. It
+         * needs to be checked in the next game loop because things need to be
+         * updated first before the new unit should be scrolled into view, like
+         * the list of available unit types that can still be bought and the new
+         * positions where the units will be drawn.
          * @type {Boolean}
          */
         unitWasJustBought: false,

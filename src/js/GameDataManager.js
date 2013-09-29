@@ -130,6 +130,7 @@
             // highlighter was is now gone. Therefore, make life easy and just
             // set it to 0 when loading the game.
             game.UICanvas.highlightedButtonIndex = 0;
+            game.UICanvas.scrollToPortrait();
 
             var curTime = new Date();
             console.log('Loading a save (version ' + savedVersion + ') from ' + localStorage.saveTime);
