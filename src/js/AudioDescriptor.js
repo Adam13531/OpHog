@@ -22,6 +22,9 @@
         this.mp3Exists = mp3Exists;
         this.aacExists = aacExists;
 
+        // This is the ID assigned to this descriptor by SoundManager2.
+        this.soundManagerID = null;
+
         /**
          * This is null if you specified that this audio has more than one
          * extension, e.g. both ogg and mp3. If you only have one though, then
@@ -66,7 +69,8 @@
     };
 
     /**
-     * @param  {String} extension - an extension with no period, e.g. "ogg"
+     * @param  {String} extension - an extension with no period, e.g. "ogg". See
+     * game.OGG_EXT, game.MP3_EXT, etc.
      * @return {String} - the full path to the audio file, e.g.
      * "../res/music/song.mp3".
      */
