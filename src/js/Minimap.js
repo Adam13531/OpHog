@@ -76,6 +76,12 @@
         dragStartPos: {},
 
         /**
+         * Indicates whether the minimap is visible.
+         * @type {Boolean}
+         */
+        visible: true,
+
+        /**
          * When you switch to a new map, you should call this function. It will
          * set up the canvas so that it reflects what the map is looking at.
          */
@@ -94,6 +100,32 @@
 
             this.zoomChanged();
             this.panChanged();
+        },
+
+        /**
+         * Toggle the visibility of the minimap.
+         */
+        toggleVisibility: function() {
+            this.setVisible(!this.visible);
+        },
+
+        /**
+         * Set the visibility of the minimap. This also modifies the position
+         * and icon of the minimize/restore button.
+         * @param {Boolean} visibility - if true, show the minimap.
+         */
+        setVisible: function(visibility) {
+            var $toggleMinimapVisibility = $('#toggleMinimapVisibility');
+            this.visible = visibility;
+
+            // Change the icon and positioning
+            var icon = this.visible ? 'ui-icon-minus' : 'ui-icon-arrow-4-diag';
+            var leftPosition = this.visible ? this.width + 4 : 0;
+            $toggleMinimapVisibility.button( 'option', 'icons', { primary: icon } );
+
+            $toggleMinimapVisibility.css({
+                left: leftPosition + 'px'
+            });
         },
 
         /**
@@ -240,6 +272,8 @@
          * @param  {Object} ctx - the canvas context
          */
         draw: function(ctx) {
+            if ( !this.visible ) return;
+
             ctx.save();
 
             // Draw the minimap data, which acts as our background

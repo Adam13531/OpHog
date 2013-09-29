@@ -73,13 +73,13 @@
         game.MinigameUI.setupUI();
 
         var $canvas = $('#canvas');
-        var canvasPos = $canvas.position();
         var $lowGraphicsButton = $('#graphicsLow');
         var $highGraphicsButton = $('#graphicsHigh');
         var $audioOffButton = $('#audioOff');
         var $audioOnButton = $('#audioOn');
 
         var $settingsButton = $('#settingsButton');
+        var $toggleMinimapVisibility = $('#toggleMinimapVisibility');
         var $showInventory = $('#showInventory');
         var $showQuests = $('#showQuests');
         var $showShop = $('#showShop');
@@ -97,6 +97,19 @@
             $settingsDialog.dialog('open');
             $settingsButton.hide();
         });
+
+        $toggleMinimapVisibility.button({
+            icons: {
+                primary: 'ui-icon-minus'
+            },
+            text: false
+        });
+        $toggleMinimapVisibility.click(function() {
+            game.Minimap.toggleVisibility();
+        });
+
+        // Set it to whatever we coded the minimap to be.
+        game.Minimap.setVisible(game.Minimap.visible);
 
         game.GameStateManager.setupTransitionButtons();
 
