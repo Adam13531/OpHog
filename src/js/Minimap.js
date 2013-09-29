@@ -67,6 +67,15 @@
         initializedCanvas: false,
 
         /**
+         * This is used by the drag event handler to keep track of where the
+         * mouse was when you started dragging. It contains two numbers: origX
+         * and origY, which are offsets from the minimap's upper-left (which
+         * means it already took the minimap's coordinates into account).
+         * @type {Object}
+         */
+        dragStartPos: {},
+
+        /**
          * When you switch to a new map, you should call this function. It will
          * set up the canvas so that it reflects what the map is looking at.
          */
@@ -100,15 +109,18 @@
             tileWidth = Math.ceil(tileWidth);
             tileHeight = Math.ceil(tileHeight);
 
+            // Clear the context first
+            this.minimapCtx.clearRect(0, 0, this.width, this.height);
+
             for (var y = 0; y < game.currentMap.numRows; y++) {
                 for (var x = 0; x < game.currentMap.numCols; x++) {
                     index = y * game.currentMap.numCols + x;
                     tile = game.currentMap.mapTiles[index];
 
                     if ( tile.isWalkable() ) {
-                        this.minimapCtx.fillStyle = 'rgba(0,255,0,1)';
+                        this.minimapCtx.fillStyle = 'rgba(0,255,0,.55)';
                     } else {
-                        this.minimapCtx.fillStyle = 'rgba(37,37,37,1)';
+                        this.minimapCtx.fillStyle = 'rgba(37,37,37,.55)';
                     }
 
                     var drawX = Math.round(x * tileWidth);
@@ -117,6 +129,73 @@
                     this.minimapCtx.fillRect(drawX, drawY, tileWidth, tileHeight);
                 }
             }
+        },
+
+        /**
+         * @param  {Number} x - X, in screen coordinates
+         * @param  {Number} y - Y, in screen coordinates
+         * @return {Boolean} - true if the specified point is in the minimap
+         * boundaries.
+         */
+        pointInMinimap: function(x, y) {
+            return game.util.pointInRect(x, y, this.x, this.y, this.width, this.height);
+        },
+
+        /**
+         * Centers the minimap on the specified coordinates.
+         * @param  {Number} x - X, in screen coordinates
+         * @param  {Number} y - Y, in screen coordinates
+         */
+        centerMinimapOn: function(x, y) {
+            // Convert to minimap coordinates
+            x -= this.x;
+            y -= this.y;
+
+            // Convert to world coordinates
+            var worldX = (x / this.width) * game.currentMap.widthInPixels;
+            var worldY = (y / this.height) * game.currentMap.heightInPixels;
+
+            // Scroll to the world coordinates
+            game.Camera.panInstantlyTo(worldX, worldY, true);
+        },
+
+        /**
+         * Handles what happens when a drag event starts over the minimap.
+         * @param  {Object} event - the drag event
+         */
+        handleDragStart: function(event) {
+
+            // Simply set the starting position.
+            this.dragStartPos = {
+                origX: event.gesture.center.pageX - this.x,
+                origY: event.gesture.center.pageY - this.y
+            };
+        },
+
+        /**
+         * Handles what happens when you continuously drag over the minimap.
+         *
+         * For this to be triggered, a drag must be started over the minimap, so
+         * if you start dragging on another canvas or a DOM element and move the
+         * mouse over the minimap, this will not be triggered.
+         * @param  {Object} event - the drag event
+         */
+        handleDragEvent: function(event) {
+            // Shorthand
+            var deltaX = event.gesture.deltaX;
+            var deltaY = event.gesture.deltaY;
+
+            // Get the original drag positions (which are already in minimap
+            // coordinates).
+            var origX = this.dragStartPos.origX;
+            var origY = this.dragStartPos.origY;
+
+            // Convert to world coordinates
+            var finalX = Math.max(0, (origX + deltaX)) / this.width * game.currentMap.widthInPixels;
+            var finalY = Math.max(0, (origY + deltaY)) / this.height * game.currentMap.heightInPixels;
+
+            // Scroll to those coordinates
+            game.Camera.panInstantlyTo(finalX, finalY, true);
         },
 
         /**
@@ -163,16 +242,12 @@
         draw: function(ctx) {
             ctx.save();
 
-            // Draw the PANEL rectangle
-            ctx.fillStyle = 'rgba(0,0,0,1)';
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-
-            // Draw the minimap data
+            // Draw the minimap data, which acts as our background
             ctx.drawImage(this.minimapCanvas, this.x, this.y);
 
             // Draw the VIEW rectangle
             ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
             ctx.strokeRect(this.x + this.viewX, this.y + this.viewY, this.viewW, this.viewH);
 
             // Draw a foreground rectangle around the whole minimap

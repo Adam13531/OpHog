@@ -252,6 +252,11 @@
             var tileX = Math.floor(worldX / game.TILESIZE);
             var tileY = Math.floor(worldY / game.TILESIZE);
 
+            if ( game.Minimap.pointInMinimap(offsetX, offsetY) ) {
+                game.Minimap.centerMinimapOn(offsetX, offsetY);
+                return;
+            }
+
             // Make sure the tile is in-bounds
             if ( tileX < 0 || tileX >= game.currentMap.numCols || tileY < 0 || tileY >= game.currentMap.numRows ) {
                 return;

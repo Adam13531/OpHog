@@ -107,6 +107,15 @@
         initializedBrowserSize:false,
 
         /**
+         * The camera is responsible for handling what happens when you drag the
+         * main canvas, but the minimap shows up over the main canvas too, and
+         * we don't want both components to handle any drag events. When this is
+         * set to true, all drag events will be routed to the minimap.
+         * @type {Boolean}
+         */
+        draggingMinimap: false,
+
+        /**
          * Sets the view so that zoom and pan values are within valid ranges.
          */
         initialize: function() {
@@ -549,10 +558,20 @@
 
             return function(event) {
                 game.HammerHelper.hammerDragging = true;
-                camera.dragStartPos = {
-                    origPanX: camera.curPanX,
-                    origPanY: camera.curPanY
-                };
+
+                // Figure out if you started dragging over the minimap.
+                camera.draggingMinimap = game.Minimap.pointInMinimap(event.gesture.center.pageX, event.gesture.center.pageY);
+
+                // Route the event to the minimap if necessary.
+                if ( camera.draggingMinimap ) {
+                    game.Minimap.handleDragStart(event);
+                } else {
+                    camera.dragStartPos = {
+                        origPanX: camera.curPanX,
+                        origPanY: camera.curPanY
+                    };
+                }
+
             };
         },
 
@@ -564,8 +583,12 @@
             var camera = this;
 
             return function(event) {
-                camera.curPanX = camera.dragStartPos.origPanX - event.gesture.deltaX / camera.curZoom;
-                camera.curPanY = camera.dragStartPos.origPanY - event.gesture.deltaY / camera.curZoom;
+                if ( camera.draggingMinimap ) {
+                    game.Minimap.handleDragEvent(event);
+                } else {
+                    camera.curPanX = camera.dragStartPos.origPanX - event.gesture.deltaX / camera.curZoom;
+                    camera.curPanY = camera.dragStartPos.origPanY - event.gesture.deltaY / camera.curZoom;
+                }
             };
         },
 
