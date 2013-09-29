@@ -192,13 +192,12 @@
             if ( this.playHistory[soundManagerID] === undefined ) {
                 this.playHistory[soundManagerID] = [];
             }
-            console.log('Audio descriptor: ' + soundManagerID);
 
             // Make sure you haven't recently played this sound too many times.
             var audioPlayHistory = this.playHistory[soundManagerID];
             if ( audioPlayHistory.length >= game.NUM_AUDIO_PLAYS_BEFORE_SKIP ) {
                 this.numberOfSkippedAudios++;
-                console.log('Skipped audio: ' + this.numberOfSkippedAudios + ' ' + soundManagerID);
+                // console.log('Skipped audio: ' + this.numberOfSkippedAudios + ' ' + soundManagerID);
                 return;
             }
 
