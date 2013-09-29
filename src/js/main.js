@@ -634,11 +634,14 @@
         // commands.
         ctx.restore();
         game.TextManager.draw(ctx);
-        game.GameStateManager.draw(ctx);
 
         game.Player.drawCastleLife(ctx);
 
         game.Camera.concealOutOfBoundsAreas(ctx);
+
+        // The stuff that is drawn now will show up even over the "concealed"
+        // areas.
+        game.GameStateManager.draw(ctx);
         game.Player.drawCoinTotal(ctx);
         game.Minimap.draw(ctx);
 
