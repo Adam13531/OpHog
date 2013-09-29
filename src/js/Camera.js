@@ -188,6 +188,12 @@
         handleInput: function(keysDown, delta) {
             var deltaAsSec = delta / 1000;
             var panSpeed = 250 * deltaAsSec;
+
+            // While holding shift, speed up the scrolling.
+            if (keysDown[game.Key.DOM_VK_SHIFT]) {
+                panSpeed *= 3;
+            }
+
             if (keysDown[game.Key.DOM_VK_D]) {
                 this.curPanX += panSpeed;
             }
