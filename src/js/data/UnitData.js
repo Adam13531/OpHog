@@ -53,12 +53,63 @@
     window.game.Ability = {
         ATTACK: {
             id: 0,
-            graphicIndexes: 88, // this should be the arrow graphic
+            graphicIndex: 88 // this should be the arrow graphic
             // actionOnHit: ActionOnHit.DO_DAMAGE,
             // chanceToCrit: .1,
             // damageFormula: game.DamageFormula.ATK_MINUS_DEF,
             // allowedTarget: game.RandomUnitFlags.ENEMY_UNIT | game.RandomUnitFlags.ALIVE
+        },
+
+        SKULL_THROW: {
+            id: 1,
+            graphicIndex: 16
+        },
+
+        SPIT_WEB: {
+            id: 2,
+            graphicIndex: 103
+        },
+
+        SCORPION_STING: {
+            id: 3,
+            graphicIndex: 210
+        },
+
+        SNAKE_VENOM: {
+            id: 4,
+            graphicIndex: 218
+        },
+
+        BRANCH_WHIP: {
+            id: 5,
+            graphicIndex: 250
+        },
+
+        BOULDER_DROP: {
+            id: 6,
+            graphicIndex: 110
+        },
+
+        FLAME_THROWER: {
+            id: 7,
+            graphicIndex: 105
+        },
+
+        THROWING_KNIVES: {
+            id: 8,
+            graphicIndex: 53
+        },
+
+        FIREBALL: {
+            id: 9,
+            graphicIndex: 176
+        },
+
+        BEARD_THROW: {
+            id: 10,
+            graphicIndex: 128
         }
+
     };
 
     var DEFAULT_UNIT_WIDTH = 1;
@@ -109,9 +160,11 @@
                 maxGrowth: 10
             },
 
-            // projectile: {
-            //     graphicIndexes:[16]
-            // },
+            abilities: [
+                {
+                    id: game.Ability.SKULL_THROW.id
+                }
+            ],
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -137,9 +190,11 @@
                 maxGrowth: 10
             },
 
-            // projectile: {
-            //     graphicIndexes:[103]
-            // },
+            abilities: [
+                {
+                    id: game.Ability.SPIT_WEB.id
+                }
+            ],
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -165,9 +220,11 @@
                 maxGrowth: 10
             },
 
-            // projectile: {
-            //     graphicIndexes:[210]
-            // },
+            abilities: [
+                {
+                    id: game.Ability.SCORPION_STING.id
+                }
+            ],
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -193,9 +250,11 @@
                 maxGrowth: 10
             },
 
-            // projectile: {
-            //     graphicIndexes:[218]
-            // },
+            abilities: [
+                {
+                    id: game.Ability.SNAKE_VENOM.id
+                }
+            ],
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -224,9 +283,11 @@
                 maxGrowth: 200
             },
 
-            // projectile: {
-            //     graphicIndexes:[250]
-            // },
+            abilities: [
+                {
+                    id: game.Ability.BRANCH_WHIP.id
+                }
+            ],
             
             chanceToDropItem: .1,
             itemsDropped: equalChanceAllLoot
@@ -252,9 +313,11 @@
                 maxGrowth: 10
             },
 
-            // projectile: {
-            //     graphicIndexes:[110]
-            // },
+            abilities: [
+                {
+                    id: game.Ability.BOULDER_DROP.id
+                }
+            ],
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -280,9 +343,11 @@
                 maxGrowth: 10
             },
 
-            // projectile: {
-            //     graphicIndexes:[105]
-            // },
+            abilities: [
+                {
+                    id: game.Ability.FLAME_THROWER.id
+                }
+            ],
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -312,7 +377,7 @@
             abilities: [
                 {
                     id: game.Ability.ATTACK.id,
-                    graphicIndexes: 60,
+                    graphicIndex: 60,
                     graphicOnCrit: 61,
                     relativeWeight: 5
                 }
@@ -343,9 +408,11 @@
                 maxGrowth: 15
             },
 
-            // projectile: {
-            //     graphicIndexes:[53]
-            // },
+            abilities: [
+                {
+                    id: game.Ability.THROWING_KNIVES.id,
+                }
+            ],
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -372,9 +439,11 @@
                 maxGrowth: 15
             },
 
-            // projectile: {
-            //     graphicIndexes:[176]
-            // },
+            abilities: [
+                {
+                    id: game.Ability.FIREBALL.id
+                }
+            ],
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -400,10 +469,6 @@
                 minGrowth: 5,
                 maxGrowth: 15
             },
-
-            // projectile: {
-            //     graphicIndexes:[128]
-            // },
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -458,6 +523,16 @@
 
                 unitData.level = level;
 
+                // Fill in all the missing attributes for each ability that this 
+                // unit has. For example, if all we did was specify that we want 
+                // an ability by giving it an ID, then this will fill in the default 
+                // projectile graphic index, etc for that ability
+                for ( var i = 0; i < unitData.abilities.length; i++ ) {
+                    var unitAbility = unitData.abilities[i];
+                    var abilityData = game.GetAbilityDataFromID(unitAbility.id);
+                    game.util.useDefaultIfUndefined(unitData.abilities[i], 'graphicIndex', abilityData.graphicIndex);
+                }
+
                 break;
             }
         }
@@ -474,6 +549,25 @@
         return unitData;
     };
 
+    window.game.GetAbilityDataFromID = function(abilityID) {
+        var abilityData = null;
+        for ( var key in game.Ability ) {
+            var abilityDataTemplate = game.Ability[key];
+            if ( abilityDataTemplate.id == abilityID ) {
+                abilityData = abilityDataTemplate;
+            }
+        }
+        if ( abilityData == null ) {
+            console.log('Error - ' + abilityID + ' is not a valid ability ID.');
+            if ( typeof(abilityID) !== 'number' ) {
+                // If you hit this, it's likely that you passed in the entire
+                // abilityData instead of just the ID.
+                console.log('The above error happened because abilityID isn\'t even a number.');
+            }
+        }
+        return abilityData;
+    };
+
     /**
      * This function ensures you didn't define an unit ID twice, and it will
      * insert default values where necessary. It is called immediately after it
@@ -481,6 +575,8 @@
      */
     ( function verifyAllUnitData() {
         var unitIDs = [];
+        var DEFAULT_ATTACK_PROJECTILE_INDEX = 88;
+        
         for ( var key in game.UnitType ) {
             var unitType = game.UnitType[key];
 
@@ -499,8 +595,10 @@
                 }
             }
 
+            // If absolutely no abilities are defined, give them the complete 
+            // default ones here
             if ( unitType.abilities === undefined ) {
-                unitType.abilities = [game.Ability.ATTACK];                
+                unitType.abilities = [ {id:game.Ability.ATTACK.id} ];
             }
 
             game.util.useDefaultIfUndefined(unitType, 'width', DEFAULT_UNIT_WIDTH);
@@ -510,7 +608,7 @@
             if ( unitIDs.indexOf(id) != -1 ) {
                 // Get the first unit with that ID
                 var first = game.GetUnitDataFromID(id, 1);
-                console.log('Fatal error! You duplicated an unit id (' + id + 
+                console.log('Fatal error! You duplicated a unit id (' + id + 
                     '). Duplicates: ' + first.name + ' and ' + unitType.name);
 
                 game.util.debugDisplayText('Check console log - duplicate unit ID detected.', 'unit');
