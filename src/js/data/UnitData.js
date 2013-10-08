@@ -46,6 +46,13 @@
         }
     }());
 
+    window.game.AbilityAI = {
+        USE_ABILITY_0_WHENEVER_POSSIBLE: 'use ability 0 whenever possible',
+        RANDOM: 'random',
+        RANDOM_ATTACK: 'random attack',
+        USE_HEAL_IF_POSSIBLE: 'use heal if possible'
+    };
+
     /**
      * Abilities for the units
      * @type {Object}
@@ -108,6 +115,11 @@
         BEARD_THROW: {
             id: 10,
             graphicIndex: 128
+        },
+
+        HEAL: {
+            id: 11,
+            graphicIndex: 127
         }
 
     };
@@ -442,8 +454,13 @@
             abilities: [
                 {
                     id: game.Ability.FIREBALL.id
+                },
+                {
+                    id: game.Ability.HEAL.id
                 }
             ],
+
+            abilityAI: game.AbilityAI.USE_HEAL_IF_POSSIBLE,
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -595,10 +612,22 @@
                 }
             }
 
-            // If absolutely no abilities are defined, give them the complete 
-            // default ones here
+            // If absolutely no abilities are defined, give this unit a default 
+            // one here
             if ( unitType.abilities === undefined ) {
                 unitType.abilities = [ {id:game.Ability.ATTACK.id} ];
+            }
+
+            // Makes sure that each unit type can attack. If the basic attack ability 
+            // isn't present, add it to the ability list.
+            if ( $.inArray(game.Ability.ATTACK.id, unitType.abilities) ) {
+                unitType.abilities.push( {id:game.Ability.ATTACK.id} );
+            }
+
+            // if absolutely no ability AI is defined, give this unit a default 
+            // one here.
+            if ( unitType.abilityAI === undefined ) {
+                unitType.abilityAI = game.AbilityAI.USE_ABILITY_0_WHENEVER_POSSIBLE;
             }
 
             game.util.useDefaultIfUndefined(unitType, 'width', DEFAULT_UNIT_WIDTH);

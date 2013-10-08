@@ -24,21 +24,23 @@
         // functionality here.
         this.isMelee = false;
 
-        this.graphicIndex = 0;
+        // this.graphicIndex = 0;
 
         this.diesIfTargetIsDead = true;
+
+        this.graphicIndex = this.owner.currentAbility.graphicIndex;
 
         // 0 == projectile to attack with
         if ( type == 0 ) {
             // this.graphicIndex = this.owner.projectileIndexes;
             // TODO: I think the id should be passed in and then used in this array
-            this.graphicIndex = this.owner.abilities[0].graphicIndex;
+            // this.graphicIndex = this.owner.abilities[0].graphicIndex;
         }
 
         // Revive
         if ( this.type == 1 ) {
             this.speed = 50;
-            this.graphicIndex = 127;
+            // this.graphicIndex = 127;
             this.diesIfTargetIsDead = false;
         }
 

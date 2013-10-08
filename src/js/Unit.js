@@ -152,6 +152,9 @@
         this.itemsDropped = unitData.itemsDropped;
 
         this.abilities = unitData.abilities;
+        // Set a default ability for now
+        this.currentAbility = this.abilities[0];
+        this.abilityAI = unitData.abilityAI;
 
         this.restoreLife();
 
@@ -730,16 +733,29 @@
 
     };
 
-    /**
-     * Attack, cast a spell, etc.
-     */
-    window.game.Unit.prototype.takeBattleTurn = function() {
-        // Short hand
+    // Gets the ability from the id that this unit has.
+    window.game.Unit.prototype.getAbility = function(abilityID) {
+        var abilityData = null;
+        for ( var i = 0; i < this.abilities.length; i++ ) {
+            if ( this.abilities[i].id == abilityID ) {
+                abilityData = this.abilities[i];
+            }
+        }
+
+        if ( abilityData == null ) {
+            console.log('Error - Unit with type: ' + this.unitType + ' doesn\'t contain an ability with ID: ' + abilityID + '.');
+            if ( typeof(abilityID) !== 'number' ) {
+                // If you hit this, it's likely that you passed in the entire
+                // abilityData instead of just the ID.
+                console.log('The above error happened because abilityID isn\'t even a number.');
+            }
+        }
+        return abilityData;
+    };
+
+    window.game.Unit.prototype.getUnitToHeal = function() {
         var battle = this.battleData.battle;
-
-        // Revive
-        if ( (this.id % 15) == 0 && !this.isBoss() ) {
-
+        if ( !this.isBoss() ) {
             // There needs to be a dead unit for this to work.
             var flags = game.RandomUnitFlags.DEAD;
             if ( this.isPlayer() ) {
@@ -750,51 +766,166 @@
 
             var targetUnit = battle.getRandomUnitMatchingFlags(flags);
             if ( targetUnit != null ) {
-                var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),1,this,targetUnit);
-                battle.addProjectile(newProjectile);
-                return;
+                return targetUnit;
             }
         }
 
-        // Summon
-        if ( !this.isPlayer() && !this.isBoss() && (this.id % 16) == 0 ) {
-            var newUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.SUMMON | game.PlayerFlags.ENEMY,1);
-            newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
-            game.UnitManager.addUnit(newUnit);
+        // There was no dead unit, so return null
+        return null;
+    };
 
-            // Force the unit to join this battle. We pass coordinates so that
-            // the unit can go back to the summoner's original position when the
-            // battle ends.
-            battle.summonedUnit(this, newUnit);
+// TODO: I should probably pass in the entire ability in order to use all of 
+// its attributes
+    window.game.Unit.prototype.getUnitToAttack = function() {
+        var battle = this.battleData.battle;
 
-            return;
+        // First, acquire a living target of the opposite team
+        var flags = game.RandomUnitFlags.ALIVE;
+        if ( this.isPlayer() ) {
+            flags |= game.RandomUnitFlags.ENEMY_UNIT;
+        } else {
+            flags |= game.RandomUnitFlags.PLAYER_UNIT;
         }
 
-        // There's only a single attack modifier allowed, and we'll check for
-        // that here.
-        var modifiedAttack = false;
-        for (var i = 0; i < this.mods.length; i++) {
-            if ( this.mods[i].onBattleTurn(this) ) {
-                modifiedAttack = true;
+        var targetUnit = battle.getRandomUnitMatchingFlags(flags);
+        if ( targetUnit != null ) {
+            return targetUnit;
+        }
+
+        return null;
+    };
+
+    window.game.Unit.prototype.getTargetFromAbility = function(ability) {
+        switch (ability) {
+            case game.Ability.HEAL:
+                return this.getUnitToHeal();
                 break;
-            }
-        };
 
-        // If we didn't modify the attack, then we attack normally.
-        if ( !modifiedAttack ) {
-            // First, acquire a living target of the opposite team
-            var flags = game.RandomUnitFlags.ALIVE;
-            if ( this.isPlayer() ) {
-                flags |= game.RandomUnitFlags.ENEMY_UNIT;
-            } else {
-                flags |= game.RandomUnitFlags.PLAYER_UNIT;
-            }
-
-            var targetUnit = battle.getRandomUnitMatchingFlags(flags);
-
-            var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),0,this,targetUnit);
-            battle.addProjectile(newProjectile);
+            case game.Ability.ATTACK:
+            case game.Ability.SKULL_THROW:
+            case game.Ability.SPIT_WEB:
+            case game.Ability.SCORPION_STING:
+            case game.Ability.SNAKE_VENOM:
+            case game.Ability.BRANCH_WHIP:
+            case game.Ability.BOULDER_DROP:
+            case game.Ability.FLAME_THROWER:
+            case game.Ability.THROWING_KNIVES:
+            case game.Ability.FIREBALL:
+            case game.Ability.BEARD_THROW:
+            default:
+                return this.getUnitToAttack();
+                break;
         }
+    };
+
+    /**
+     * Attack, cast a spell, etc.
+     */
+    window.game.Unit.prototype.takeBattleTurn = function() {
+        // Short hand
+        var battle = this.battleData.battle;
+
+        var targetUnit = null;
+        switch ( this.abilityAI ) {
+            case game.AbilityAI.RANDOM:
+                while ( targetUnit == null ) {
+                    var randomAbility = game.util.randomArrayElement(this.abilities);
+                    targetUnit = this.getTargetFromAbility(randomAbility);
+                }
+                this.currentAbility = randomAbility;
+                break;
+
+            case game.AbilityAI.USE_HEAL_IF_POSSIBLE:
+                targetUnit = this.getUnitToHeal();
+                if ( targetUnit != null) {
+                    this.currentAbility = this.getAbility(game.Ability.HEAL.id);
+                } else {
+                    targetUnit = this.getUnitToAttack();
+                    this.currentAbility = this.getAbility(game.Ability.ATTACK.id);
+                }
+                break;
+            case game.AbilityAI.USE_ABILITY_0_WHENEVER_POSSIBLE:
+            default:
+                var ability = this.abilities[0];
+                targetUnit = this.getTargetFromAbility(ability);
+                // If that ability doesn't work, choose a random one
+                while ( targetUnit == null ) {
+                    ability = game.util.randomArrayElement(this.abilities);
+                    targetUnit = this.getTargetFromAbility(ability);
+                }
+                this.currentAbility = ability;
+                break;
+                // TODO: probably don't follow the comments below
+                // check to see if it's heal. if it is, make sure healing is possible
+                // otherwise, find the attack ability and use that.
+        }
+
+        // TODO: Make this code not stupid
+        var spellType = 0;
+        if ( this.currentAbility.id == game.Ability.HEAL.id ) {
+            spellType = 1;
+        }
+        var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),spellType,this,targetUnit);
+        battle.addProjectile(newProjectile);
+
+        //Revive
+        // if ( (this.id % 15) == 0 && !this.isBoss() ) {
+
+        //     // There needs to be a dead unit for this to work.
+        //     var flags = game.RandomUnitFlags.DEAD;
+        //     if ( this.isPlayer() ) {
+        //         flags |= game.RandomUnitFlags.PLAYER_UNIT;
+        //     } else {
+        //         flags |= game.RandomUnitFlags.ENEMY_UNIT;
+        //     }
+
+        //     var targetUnit = battle.getRandomUnitMatchingFlags(flags);
+        //     if ( targetUnit != null ) {
+        //         var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),1,this,targetUnit);
+        //         battle.addProjectile(newProjectile);
+        //         return;
+        //     }
+        // }
+
+        // // // Summon
+        // if ( !this.isPlayer() && !this.isBoss() && (this.id % 16) == 0 ) {
+        //     var newUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.SUMMON | game.PlayerFlags.ENEMY,1);
+        //     newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
+        //     game.UnitManager.addUnit(newUnit);
+
+        //     // Force the unit to join this battle. We pass coordinates so that
+        //     // the unit can go back to the summoner's original position when the
+        //     // battle ends.
+        //     battle.summonedUnit(this, newUnit);
+
+        //     return;
+        // }
+
+        // // There's only a single attack modifier allowed, and we'll check for
+        // // that here.
+        // var modifiedAttack = false;
+        // for (var i = 0; i < this.mods.length; i++) {
+        //     if ( this.mods[i].onBattleTurn(this) ) {
+        //         modifiedAttack = true;
+        //         break;
+        //     }
+        // };
+
+        // // If we didn't modify the attack, then we attack normally.
+        // if ( !modifiedAttack ) {
+            // // First, acquire a living target of the opposite team
+            // var flags = game.RandomUnitFlags.ALIVE;
+            // if ( this.isPlayer() ) {
+            //     flags |= game.RandomUnitFlags.ENEMY_UNIT;
+            // } else {
+            //     flags |= game.RandomUnitFlags.PLAYER_UNIT;
+            // }
+
+            // var targetUnit = battle.getRandomUnitMatchingFlags(flags);
+
+            // var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),0,this,targetUnit);
+            // battle.addProjectile(newProjectile);
+        // }
 
     };
 
