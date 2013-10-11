@@ -14,13 +14,16 @@
      * 'directory'
      * @param {Boolean} aacExists - true if you have "fileName.mp4" (or whatever
      * the AAC extension is that we're using) in 'directory'
+     * @param {Boolean} isMusic - true if this audio is meant to be music, not
+     * sound. This will affect playback 
      */
-    window.game.AudioDescriptor = function AudioDescriptor(directory, fileName, oggExists, mp3Exists, aacExists) {
+    window.game.AudioDescriptor = function AudioDescriptor(directory, fileName, oggExists, mp3Exists, aacExists, isMusic) {
         this.directory = directory;
         this.fileName = fileName;
         this.oggExists = oggExists;
         this.mp3Exists = mp3Exists;
         this.aacExists = aacExists;
+        this.isMusic = isMusic;
 
         // This is the ID assigned to this descriptor by SoundManager2.
         this.soundManagerID = null;

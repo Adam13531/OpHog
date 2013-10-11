@@ -77,6 +77,8 @@
         var $highGraphicsButton = $('#graphicsHigh');
         var $audioOffButton = $('#audioOff');
         var $audioOnButton = $('#audioOn');
+        var $soundSlider = $('#soundSlider');
+        var $musicSlider = $('#musicSlider');
         var $minimapUpLeftButton = $('#minimapUpLeft');
         var $minimapUpRightButton = $('#minimapUpRight');
         var $minimapDownLeftButton = $('#minimapDownLeft');
@@ -286,6 +288,41 @@
             game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.RIGHT);
         });
 
+        // Set up the audio volume sliders
+        $.each([$soundSlider, $musicSlider], function(index, value) {
+            value.slider({
+                min:0,
+                max:100,
+                value:50,
+                range:'max',
+                slide: function( event, ui ) {
+                    var sliderValue = ui.value;
+                    var max = value.slider('option', 'max');
+                    var percent = sliderValue / max;
+                    var green = Math.round((percent) * 255);
+                    green = Math.min(255, Math.max(0, green));
+                    value.css({
+                        'background': '#00' + green.toString(16) + '00'
+                    });
+
+                    // We're in a $.each here, so make sure we're modifying the
+                    // correct audio volume.
+                    if ( value === $soundSlider ) {
+                        game.AudioManager.soundVolume = sliderValue;
+                    } else {
+                        game.AudioManager.musicVolume = sliderValue;
+                    }
+                }
+            });
+        });
+
+        $('#soundSlider > .ui-slider-range').css({
+            'background': '#000'
+        });
+
+        $('#musicSlider > .ui-slider-range').css({
+            'background': '#000'
+        });
 
         // To see what's in Hammer events, look at their wiki (currently located
         // here: https://github.com/EightMedia/hammer.js/wiki/Getting-Started).

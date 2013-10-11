@@ -5,14 +5,14 @@
      * @type {Object}
      */
     window.game.Audio = {
-        NEW_3: new game.AudioDescriptor(game.MUSIC_PATH,'new3',false,true,false),
-        HIT_1: new game.AudioDescriptor(game.SOUND_PATH,'hit1',true,true,true),
-        EXPLODE_1: new game.AudioDescriptor(game.SOUND_PATH,'explode1',true,true,true),
-        EXPLODE_2: new game.AudioDescriptor(game.SOUND_PATH,'explode2',true,true,true),
-        PICKUP_1: new game.AudioDescriptor(game.SOUND_PATH,'pickup1',true,true,true),
-        BLIP_1: new game.AudioDescriptor(game.SOUND_PATH,'blip1',true,true,true),
-        POWERUP_1: new game.AudioDescriptor(game.SOUND_PATH,'powerup1',true,true,true),
-        POWERUP_2: new game.AudioDescriptor(game.SOUND_PATH,'powerup2',true,true,true),
+        NEW_3: new game.AudioDescriptor(game.MUSIC_PATH,'new3',false,true,false,true),
+        HIT_1: new game.AudioDescriptor(game.SOUND_PATH,'hit1',true,true,true,false),
+        EXPLODE_1: new game.AudioDescriptor(game.SOUND_PATH,'explode1',true,true,true,false),
+        EXPLODE_2: new game.AudioDescriptor(game.SOUND_PATH,'explode2',true,true,true,false),
+        PICKUP_1: new game.AudioDescriptor(game.SOUND_PATH,'pickup1',true,true,true,false),
+        BLIP_1: new game.AudioDescriptor(game.SOUND_PATH,'blip1',true,true,true,false),
+        POWERUP_1: new game.AudioDescriptor(game.SOUND_PATH,'powerup1',true,true,true,false),
+        POWERUP_2: new game.AudioDescriptor(game.SOUND_PATH,'powerup2',true,true,true,false),
     };
 
     /**
@@ -76,6 +76,18 @@
          * @type {Number}
          */
         numberOfSkippedAudios: 0,
+
+        /**
+         * The volume of sounds that play (range: [0,100]);
+         * @type {Number}
+         */
+        soundVolume: 50,
+
+        /**
+         * The volume of music that plays (range: [0,100]);
+         * @type {Number}
+         */
+        musicVolume: 50,
 
         /**
          * Initialize SoundManager2.
@@ -205,8 +217,8 @@
             // frames, we'll remove the entry.
             audioPlayHistory.push(game.FRAMES_BEFORE_AUDIO_SKIP_DISABLED);
 
-            // Set the volume to 50 for now so that it doesn't deafen us.
-            soundManager.play(soundManagerID, {volume:50});
+            var playVolume = audioDescriptor.isMusic ? this.musicVolume : this.soundVolume;
+            soundManager.play(soundManagerID, {volume:playVolume});
         }
 
     };
