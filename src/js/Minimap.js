@@ -192,9 +192,20 @@
             var leftPosition = this.visible ? this.width + 2 : 0;
             $toggleMinimapVisibility.button( 'option', 'icons', { primary: icon } );
 
+            // Default position for the minimize/restore button is to the right of the minimap.
+            var top = this.y - 5;
+            var left = this.x + leftPosition;
+
+            // Always set the minimize/restore button to be in a corner of the
+            // screen when the minimap is hidden.
+            if ( !this.visible ) {
+                if ( (this.position & game.DirectionFlags.RIGHT) != 0 ) left += this.width;
+                if ( (this.position & game.DirectionFlags.DOWN) != 0 ) top += this.height - $toggleMinimapVisibility.height();
+            }
+
             $toggleMinimapVisibility.css({
-                top: (this.y - 5) + 'px',
-                left: this.x + leftPosition + 'px'
+                top: top + 'px',
+                left: left + 'px'
             });
         },
 
