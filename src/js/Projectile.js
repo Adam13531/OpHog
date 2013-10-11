@@ -112,7 +112,15 @@
 
         if ( !game.Camera.canSeeRect(this.x, this.y, game.TILESIZE, game.TILESIZE) ) return;
 
-        objSheet.drawSprite(ctx, this.graphicIndex, this.x, this.y);
+        // All enemy units need to have their projectiles facing the opposite
+        // direction
+        if ( this.owner.isEnemy() ) {
+            objSheet.drawSprite(ctx, this.graphicIndex, this.x, this.y, true);
+        } else {
+            objSheet.drawSprite(ctx, this.graphicIndex, this.x, this.y);
+        }
+
+
     };
 
 }());

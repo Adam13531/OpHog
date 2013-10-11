@@ -106,6 +106,7 @@
     /**
      * See getSpriteData.
      * @param  {Number} graphicIndex - a single graphic index
+     * @param {Boolean} hFlip - if true, horizontally flip the sprite
      */
     window.game.SpriteSheet.prototype.getSpriteDataFromSingleIndex = function(graphicIndex, hFlip) {
         return this.getSpriteData([graphicIndex], 1, 1, hFlip);
