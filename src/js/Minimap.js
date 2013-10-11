@@ -47,6 +47,13 @@
         viewH: 5,
 
         /**
+         * The position of the minimap panel. This should always be a corner
+         * (e.g. LEFT | UP, RIGHT | DOWN, etc.).
+         * @type {game.DirectionFlags}
+         */
+        position: game.DirectionFlags.RIGHT | game.DirectionFlags.UP,
+
+        /**
          * We draw the entire map ONCE to a canvas so that the performance is
          * good.
          * @type {Object}
@@ -84,6 +91,8 @@
         /**
          * When you switch to a new map, you should call this function. It will
          * set up the canvas so that it reflects what the map is looking at.
+         *
+         * This should be called after the Camera is initialized.
          */
         initialize: function() {
             if ( !this.initializedCanvas ) {
@@ -94,12 +103,67 @@
                 this.minimapCanvas.height = this.height;
 
                 this.minimapCtx = this.minimapCanvas.getContext("2d");
+
+                // Set the initial minimap position
+                this.setPanelPosition(this.position);
             }
 
             this.drawMapToMinimapCanvas();
 
             this.zoomChanged();
             this.panChanged();
+        },
+
+        /**
+         * When the browser size changes, call this function. It will adjust the
+         * position of the minimap so that it isn't offscreen.
+         */
+        browserSizeChanged: function() {
+            this.setPanelPosition(this.position);
+        },
+
+        /**
+         * Positions the panel according to the direction passed in.
+         *
+         * The Camera needs to have been initialized before this can be called.
+         * @param {game.DirectionFlags} directionFlags - OR'd directions.
+         */
+        setPanelPosition: function(directionFlags) {
+            var PADDING = 5;
+            var APPROXIMATE_BUTTON_WIDTH = 25;
+
+            // If we don't set anything below, then these will be the final
+            // coordinates.
+            var x = PADDING;
+            var y = PADDING;
+
+            this.position = directionFlags;
+
+            var rightFlagSet = (directionFlags & game.DirectionFlags.RIGHT) != 0;
+            var downFlagSet = (directionFlags & game.DirectionFlags.DOWN) != 0;
+            var upFlagSet = (directionFlags & game.DirectionFlags.UP) != 0;
+
+            if ( rightFlagSet ) x = game.canvasWidth - this.width - PADDING - APPROXIMATE_BUTTON_WIDTH;
+            if ( downFlagSet ) y = game.canvasHeight - this.height - PADDING;
+
+            // If it's at the upper right, then we have to make sure the minimap
+            // doesn't cover the settings button.
+            if ( rightFlagSet && upFlagSet ) x -= PADDING + APPROXIMATE_BUTTON_WIDTH;
+
+            this.setPanelPositionViaCoords(x, y);
+        },
+
+        /**
+         * Position the minimap panel to the specified screen coordinates.
+         * @param {Number} x - X, in screen coordinates
+         * @param {Number} y - Y, in screen coordinates
+         */
+        setPanelPositionViaCoords: function(x,y) {
+            this.x = x;
+            this.y = y;
+
+            // Update the location of the restore button.
+            this.setVisible(this.visible);
         },
 
         /**
@@ -120,11 +184,12 @@
 
             // Change the icon and positioning
             var icon = this.visible ? 'ui-icon-minus' : 'ui-icon-arrow-4-diag';
-            var leftPosition = this.visible ? this.width + 4 : 0;
+            var leftPosition = this.visible ? this.width + 2 : 0;
             $toggleMinimapVisibility.button( 'option', 'icons', { primary: icon } );
 
             $toggleMinimapVisibility.css({
-                left: leftPosition + 'px'
+                top: (this.y - 5) + 'px',
+                left: this.x + leftPosition + 'px'
             });
         },
 

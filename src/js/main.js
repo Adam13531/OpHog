@@ -77,6 +77,10 @@
         var $highGraphicsButton = $('#graphicsHigh');
         var $audioOffButton = $('#audioOff');
         var $audioOnButton = $('#audioOn');
+        var $minimapUpLeftButton = $('#minimapUpLeft');
+        var $minimapUpRightButton = $('#minimapUpRight');
+        var $minimapDownLeftButton = $('#minimapDownLeft');
+        var $minimapDownRightButton = $('#minimapDownRight');
 
         var $settingsButton = $('#settingsButton');
         var $toggleMinimapVisibility = $('#toggleMinimapVisibility');
@@ -186,6 +190,8 @@
                 duration: game.DIALOG_HIDE_MS
             },
 
+            maxHeight: 470,
+
             // Wrap the dialog in a span so that it gets themed correctly.
             // 
             // An alternative to this would be to make a 'create' event with:
@@ -237,6 +243,49 @@
             $settingsDialog.dialog('close');
             game.AudioManager.setAudioEnabled(true);
         });
+
+        $minimapUpLeftButton.button({
+            icons: {
+            primary: 'ui-icon-arrow-1-nw'
+            },
+            text: false
+        });
+        $minimapUpRightButton.button({
+            icons: {
+                primary: 'ui-icon-arrow-1-ne'
+            },
+            text: false
+        });
+        $minimapDownLeftButton.button({
+            icons: {
+                primary: 'ui-icon-arrow-1-sw'
+            },
+            text: false
+        });
+        $minimapDownRightButton.button({
+            icons: {
+                primary: 'ui-icon-arrow-1-se'
+            },
+            text: false
+        });
+
+        $minimapUpLeftButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.Minimap.setPanelPosition(game.DirectionFlags.UP | game.DirectionFlags.LEFT);
+        });
+        $minimapUpRightButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.Minimap.setPanelPosition(game.DirectionFlags.UP | game.DirectionFlags.RIGHT);
+        });
+        $minimapDownLeftButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.LEFT);
+        });
+        $minimapDownRightButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.RIGHT);
+        });
+
 
         // To see what's in Hammer events, look at their wiki (currently located
         // here: https://github.com/EightMedia/hammer.js/wiki/Getting-Started).
@@ -308,6 +357,7 @@
         $(window).resize(function() {
             game.Camera.browserSizeChanged();
             game.DialogManager.browserSizeChanged();
+            game.Minimap.browserSizeChanged();
         });
 
         $canvas.mousewheel(game.Camera.getMouseWheelEventHandler());

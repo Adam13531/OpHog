@@ -237,8 +237,8 @@
 
             game.currentMap = game.overworldMap;
 
-            game.Minimap.initialize();
             game.Camera.initialize();
+            game.Minimap.initialize();
 
             // Place all of your units at the last map node you clicked.
             var tileOfLastMap = game.currentMap.getTileOfLastMap();
