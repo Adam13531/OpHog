@@ -273,19 +273,19 @@
 
         $minimapUpLeftButton.click(function() {
             $settingsDialog.dialog('close');
-            game.Minimap.setPanelPosition(game.DirectionFlags.UP | game.DirectionFlags.LEFT);
+            game.Minimap.setPanelPosition(game.DirectionFlags.UP | game.DirectionFlags.LEFT, true);
         });
         $minimapUpRightButton.click(function() {
             $settingsDialog.dialog('close');
-            game.Minimap.setPanelPosition(game.DirectionFlags.UP | game.DirectionFlags.RIGHT);
+            game.Minimap.setPanelPosition(game.DirectionFlags.UP | game.DirectionFlags.RIGHT, true);
         });
         $minimapDownLeftButton.click(function() {
             $settingsDialog.dialog('close');
-            game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.LEFT);
+            game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.LEFT, true);
         });
         $minimapDownRightButton.click(function() {
             $settingsDialog.dialog('close');
-            game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.RIGHT);
+            game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.RIGHT, true);
         });
 
         // Set up the audio volume sliders

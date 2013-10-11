@@ -119,7 +119,7 @@
          * position of the minimap so that it isn't offscreen.
          */
         browserSizeChanged: function() {
-            this.setPanelPosition(this.position);
+            this.setPanelPosition(this.position, false);
         },
 
         /**
@@ -127,8 +127,11 @@
          *
          * The Camera needs to have been initialized before this can be called.
          * @param {game.DirectionFlags} directionFlags - OR'd directions.
+         * @param {Boolean} restoreIfHidden - if true, this will make the
+         * minimap visible. That way, when you move the minimap, it
+         * auto-restores so that you realize what you just did.
          */
-        setPanelPosition: function(directionFlags) {
+        setPanelPosition: function(directionFlags, restoreIfHidden) {
             var PADDING = 5;
             var APPROXIMATE_BUTTON_WIDTH = 25;
 
@@ -149,6 +152,8 @@
             // If it's at the upper right, then we have to make sure the minimap
             // doesn't cover the settings button.
             if ( rightFlagSet && upFlagSet ) x -= PADDING + APPROXIMATE_BUTTON_WIDTH;
+
+            if ( restoreIfHidden ) this.visible = true;
 
             this.setPanelPositionViaCoords(x, y);
         },
