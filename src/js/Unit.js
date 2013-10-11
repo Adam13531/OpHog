@@ -829,7 +829,7 @@
         switch ( this.abilityAI ) {
             case game.AbilityAI.RANDOM:
                 while ( targetUnit == null ) {
-                    var randomAbility = game.util.randomArrayElement(this.abilities);
+                    var randomAbility = game.util.randomFromWeights(this.abilities);
                     targetUnit = this.getTargetFromAbility(randomAbility);
                 }
                 this.currentAbility = randomAbility;
@@ -850,7 +850,7 @@
                 targetUnit = this.getTargetFromAbility(ability);
                 // If that ability doesn't work, choose a random one
                 while ( targetUnit == null ) {
-                    ability = game.util.randomArrayElement(this.abilities);
+                    ability = game.util.randomFromWeights(this.abilities);
                     targetUnit = this.getTargetFromAbility(ability);
                 }
                 this.currentAbility = ability;

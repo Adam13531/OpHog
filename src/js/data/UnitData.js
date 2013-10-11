@@ -60,7 +60,8 @@
     window.game.Ability = {
         ATTACK: {
             id: 0,
-            graphicIndex: 88 // this should be the arrow graphic
+            graphicIndex: 92,
+            relativeWeight: 1000,
             // actionOnHit: ActionOnHit.DO_DAMAGE,
             // chanceToCrit: .1,
             // damageFormula: game.DamageFormula.ATK_MINUS_DEF,
@@ -69,57 +70,68 @@
 
         SKULL_THROW: {
             id: 1,
-            graphicIndex: 16
+            graphicIndex: 16,
+            relativeWeight: 1000
         },
 
         SPIT_WEB: {
             id: 2,
-            graphicIndex: 103
+            graphicIndex: 103,
+            relativeWeight: 1000
         },
 
         SCORPION_STING: {
             id: 3,
-            graphicIndex: 210
+            graphicIndex: 210,
+            relativeWeight: 1000
         },
 
         SNAKE_VENOM: {
             id: 4,
-            graphicIndex: 218
+            graphicIndex: 218,
+            relativeWeight: 1000
         },
 
         BRANCH_WHIP: {
             id: 5,
-            graphicIndex: 250
+            graphicIndex: 250,
+            relativeWeight: 1000
         },
 
         BOULDER_DROP: {
             id: 6,
-            graphicIndex: 110
+            graphicIndex: 110,
+            relativeWeight: 1000
         },
 
         FLAME_THROWER: {
             id: 7,
-            graphicIndex: 105
+            graphicIndex: 105,
+            relativeWeight: 1000
         },
 
         THROWING_KNIVES: {
             id: 8,
-            graphicIndex: 53
+            graphicIndex: 53,
+            relativeWeight: 1000
         },
 
         FIREBALL: {
             id: 9,
-            graphicIndex: 176
+            graphicIndex: 176,
+            relativeWeight: 1000
         },
 
         BEARD_THROW: {
             id: 10,
-            graphicIndex: 128
+            graphicIndex: 128,
+            relativeWeight: 1000
         },
 
         HEAL: {
             id: 11,
-            graphicIndex: 127
+            graphicIndex: 127,
+            relativeWeight: 1000
         }
 
     };
@@ -425,6 +437,8 @@
                     id: game.Ability.THROWING_KNIVES.id,
                 }
             ],
+
+            abilityAI: game.AbilityAI.RANDOM,
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -548,6 +562,7 @@
                     var unitAbility = unitData.abilities[i];
                     var abilityData = game.GetAbilityDataFromID(unitAbility.id);
                     game.util.useDefaultIfUndefined(unitData.abilities[i], 'graphicIndex', abilityData.graphicIndex);
+                    game.util.useDefaultIfUndefined(unitData.abilities[i], 'relativeWeight', abilityData.relativeWeight);
                 }
 
                 break;
@@ -592,7 +607,6 @@
      */
     ( function verifyAllUnitData() {
         var unitIDs = [];
-        var DEFAULT_ATTACK_PROJECTILE_INDEX = 88;
         
         for ( var key in game.UnitType ) {
             var unitType = game.UnitType[key];
@@ -612,10 +626,10 @@
                 }
             }
 
-            // If absolutely no abilities are defined, give this unit a default 
-            // one here
+            // If absolutely no abilities are defined, give this unit an empty
+            // array for abilities.
             if ( unitType.abilities === undefined ) {
-                unitType.abilities = [ {id:game.Ability.ATTACK.id} ];
+                unitType.abilities = [];
             }
 
             // Makes sure that each unit type can attack. If the basic attack ability 
