@@ -753,7 +753,7 @@
         return abilityData;
     };
 
-    window.game.Unit.prototype.getUnitToHeal = function() {
+    window.game.Unit.prototype.getUnitToRevive = function() {
         var battle = this.battleData.battle;
         if ( !this.isBoss() ) {
             // There needs to be a dead unit for this to work.
@@ -797,8 +797,8 @@
 
     window.game.Unit.prototype.getTargetFromAbility = function(ability) {
         switch (ability) {
-            case game.Ability.HEAL:
-                return this.getUnitToHeal();
+            case game.Ability.REVIVE:
+                return this.getUnitToRevive();
                 break;
 
             case game.Ability.ATTACK:
@@ -835,10 +835,10 @@
                 this.currentAbility = randomAbility;
                 break;
 
-            case game.AbilityAI.USE_HEAL_IF_POSSIBLE:
-                targetUnit = this.getUnitToHeal();
+            case game.AbilityAI.USE_REVIVE_IF_POSSIBLE:
+                targetUnit = this.getUnitToRevive();
                 if ( targetUnit != null) {
-                    this.currentAbility = this.getAbility(game.Ability.HEAL.id);
+                    this.currentAbility = this.getAbility(game.Ability.REVIVE.id);
                 } else {
                     targetUnit = this.getUnitToAttack();
                     this.currentAbility = this.getAbility(game.Ability.ATTACK.id);
@@ -856,13 +856,13 @@
                 this.currentAbility = ability;
                 break;
                 // TODO: probably don't follow the comments below
-                // check to see if it's heal. if it is, make sure healing is possible
+                // check to see if it's revive. if it is, make sure reviving is possible
                 // otherwise, find the attack ability and use that.
         }
 
         // TODO: Make this code not stupid
         var spellType = 0;
-        if ( this.currentAbility.id == game.Ability.HEAL.id ) {
+        if ( this.currentAbility.id == game.Ability.REVIVE.id ) {
             spellType = 1;
         }
         var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),spellType,this,targetUnit);

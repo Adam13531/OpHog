@@ -1,20 +1,6 @@
 ( function() {
 
     /**
-     * When obtaining a random unit, you pass a combination of these flags.
-     *
-     * For example, if you only want living ally units, pass
-     * RandomUnitFlags.ALLY | RandomUnitFlags.ALIVE.
-     */
-    window.game.RandomUnitFlags = {
-        ALLY: 1,
-        FOE: 2,
-        ALIVE: 4,
-        DEAD: 8,
-        BOSS: 16
-    };
-
-    /**
      * This is used to indicate who won the battle. It's pretty straightforward.
      *
      * If both teams die, it counts as a win for the player.

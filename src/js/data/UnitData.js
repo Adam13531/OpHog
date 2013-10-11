@@ -46,11 +46,25 @@
         }
     }());
 
+    /**
+     * When obtaining a random unit, you pass a combination of these flags.
+     *
+     * For example, if you only want living ally units, pass
+     * RandomUnitFlags.ALLY | RandomUnitFlags.ALIVE.
+     */
+    window.game.RandomUnitFlags = {
+        ALLY: 1,
+        FOE: 2,
+        ALIVE: 4,
+        DEAD: 8,
+        BOSS: 16
+    };
+
     window.game.AbilityAI = {
         USE_ABILITY_0_WHENEVER_POSSIBLE: 'use ability 0 whenever possible',
         RANDOM: 'random',
         RANDOM_ATTACK: 'random attack',
-        USE_HEAL_IF_POSSIBLE: 'use heal if possible'
+        USE_REVIVE_IF_POSSIBLE: 'use revive if possible'
     };
 
     /**
@@ -62,76 +76,87 @@
             id: 0,
             graphicIndex: 92,
             relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
             // actionOnHit: ActionOnHit.DO_DAMAGE,
             // chanceToCrit: .1,
             // damageFormula: game.DamageFormula.ATK_MINUS_DEF,
-            // allowedTarget: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         SKULL_THROW: {
             id: 1,
             graphicIndex: 16,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         SPIT_WEB: {
             id: 2,
             graphicIndex: 103,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         SCORPION_STING: {
             id: 3,
             graphicIndex: 210,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         SNAKE_VENOM: {
             id: 4,
             graphicIndex: 218,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         BRANCH_WHIP: {
             id: 5,
             graphicIndex: 250,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         BOULDER_DROP: {
             id: 6,
             graphicIndex: 110,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         FLAME_THROWER: {
             id: 7,
             graphicIndex: 105,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         THROWING_KNIVES: {
             id: 8,
             graphicIndex: 53,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         FIREBALL: {
             id: 9,
             graphicIndex: 176,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         BEARD_THROW: {
             id: 10,
             graphicIndex: 128,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
-        HEAL: {
+        REVIVE: {
             id: 11,
             graphicIndex: 127,
-            relativeWeight: 1000
+            relativeWeight: 1000,
+            allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.DEAD
         }
 
     };
@@ -470,11 +495,11 @@
                     id: game.Ability.FIREBALL.id
                 },
                 {
-                    id: game.Ability.HEAL.id
+                    id: game.Ability.REVIVE.id
                 }
             ],
 
-            abilityAI: game.AbilityAI.USE_HEAL_IF_POSSIBLE,
+            abilityAI: game.AbilityAI.USE_REVIVE_IF_POSSIBLE,
             
             chanceToDropItem: 0,
             itemsDropped: noItems
@@ -563,6 +588,9 @@
                     var abilityData = game.GetAbilityDataFromID(unitAbility.id);
                     game.util.useDefaultIfUndefined(unitData.abilities[i], 'graphicIndex', abilityData.graphicIndex);
                     game.util.useDefaultIfUndefined(unitData.abilities[i], 'relativeWeight', abilityData.relativeWeight);
+                    if ( unitData.abilities[i].allowedTargets === undefined ) {
+                        console.log('ERROR: Ability with id: ' + unitData.abilities[i].id  + ' is undefined.');
+                    }                    
                 }
 
                 break;
