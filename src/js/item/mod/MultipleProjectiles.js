@@ -18,9 +18,9 @@
 
         var flags = game.RandomUnitFlags.ALIVE;
         if ( attacker.isPlayer() ) {
-            flags |= game.RandomUnitFlags.ENEMY_UNIT;
+            flags |= game.RandomUnitFlags.FOE;
         } else {
-            flags |= game.RandomUnitFlags.PLAYER_UNIT;
+            flags |= game.RandomUnitFlags.ALLY;
         }
 
         var possibleTargets = battle.getUnitsMatchingFlags(flags);

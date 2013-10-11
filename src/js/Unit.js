@@ -759,9 +759,9 @@
             // There needs to be a dead unit for this to work.
             var flags = game.RandomUnitFlags.DEAD;
             if ( this.isPlayer() ) {
-                flags |= game.RandomUnitFlags.PLAYER_UNIT;
+                flags |= game.RandomUnitFlags.ALLY;
             } else {
-                flags |= game.RandomUnitFlags.ENEMY_UNIT;
+                flags |= game.RandomUnitFlags.FOE;
             }
 
             var targetUnit = battle.getRandomUnitMatchingFlags(flags);
@@ -782,9 +782,9 @@
         // First, acquire a living target of the opposite team
         var flags = game.RandomUnitFlags.ALIVE;
         if ( this.isPlayer() ) {
-            flags |= game.RandomUnitFlags.ENEMY_UNIT;
+            flags |= game.RandomUnitFlags.FOE;
         } else {
-            flags |= game.RandomUnitFlags.PLAYER_UNIT;
+            flags |= game.RandomUnitFlags.ALLY;
         }
 
         var targetUnit = battle.getRandomUnitMatchingFlags(flags);
@@ -874,9 +874,9 @@
         //     // There needs to be a dead unit for this to work.
         //     var flags = game.RandomUnitFlags.DEAD;
         //     if ( this.isPlayer() ) {
-        //         flags |= game.RandomUnitFlags.PLAYER_UNIT;
+        //         flags |= game.RandomUnitFlags.ALLY;
         //     } else {
-        //         flags |= game.RandomUnitFlags.ENEMY_UNIT;
+        //         flags |= game.RandomUnitFlags.FOE;
         //     }
 
         //     var targetUnit = battle.getRandomUnitMatchingFlags(flags);
@@ -916,9 +916,9 @@
             // // First, acquire a living target of the opposite team
             // var flags = game.RandomUnitFlags.ALIVE;
             // if ( this.isPlayer() ) {
-            //     flags |= game.RandomUnitFlags.ENEMY_UNIT;
+            //     flags |= game.RandomUnitFlags.FOE;
             // } else {
-            //     flags |= game.RandomUnitFlags.PLAYER_UNIT;
+            //     flags |= game.RandomUnitFlags.ALLY;
             // }
 
             // var targetUnit = battle.getRandomUnitMatchingFlags(flags);

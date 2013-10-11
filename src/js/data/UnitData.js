@@ -65,7 +65,7 @@
             // actionOnHit: ActionOnHit.DO_DAMAGE,
             // chanceToCrit: .1,
             // damageFormula: game.DamageFormula.ATK_MINUS_DEF,
-            // allowedTarget: game.RandomUnitFlags.ENEMY_UNIT | game.RandomUnitFlags.ALIVE
+            // allowedTarget: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         },
 
         SKULL_THROW: {

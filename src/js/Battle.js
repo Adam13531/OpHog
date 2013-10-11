@@ -3,14 +3,15 @@
     /**
      * When obtaining a random unit, you pass a combination of these flags.
      *
-     * For example, if you only want living player units, pass
-     * RandomUnitFlags.PLAYER_UNIT | RandomUnitFlags.ALIVE.
+     * For example, if you only want living ally units, pass
+     * RandomUnitFlags.ALLY | RandomUnitFlags.ALIVE.
      */
     window.game.RandomUnitFlags = {
-        PLAYER_UNIT: 1,
-        ENEMY_UNIT: 2,
+        ALLY: 1,
+        FOE: 2,
         ALIVE: 4,
-        DEAD: 8
+        DEAD: 8,
+        BOSS: 16
     };
 
     /**
@@ -168,11 +169,11 @@
     window.game.Battle.prototype.getUnitsMatchingFlags = function(flags) {
         var unitsToChooseFrom = new Array();
 
-        if (flags & game.RandomUnitFlags.PLAYER_UNIT) {
+        if (flags & game.RandomUnitFlags.ALLY) {
             unitsToChooseFrom = unitsToChooseFrom.concat(this.playerUnits);
         }
 
-        if (flags & game.RandomUnitFlags.ENEMY_UNIT) {
+        if (flags & game.RandomUnitFlags.FOE) {
             unitsToChooseFrom = unitsToChooseFrom.concat(this.enemyUnits);
         }
 
