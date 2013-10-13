@@ -147,20 +147,29 @@
 
     /**
      * Gets a random unit from either the player's team or the enemy's team.
+     * @param {Boolean} isPlayerUnit - True if the unit is a player unit.
      * @param {RandomUnitFlags} flags A bitwise-or'd set of flags representing
      * the units you're interested in choosing from.
      * @return {Array:Unit} All units matching the flags (or an empty array if
      * there are none).
      */
-    window.game.Battle.prototype.getUnitsMatchingFlags = function(flags) {
+    window.game.Battle.prototype.getUnitsMatchingFlags = function(isPlayerUnit, flags) {
         var unitsToChooseFrom = new Array();
 
-        if (flags & game.RandomUnitFlags.ALLY) {
-            unitsToChooseFrom = unitsToChooseFrom.concat(this.playerUnits);
+        if ( flags & game.RandomUnitFlags.ALLY ) {
+            if ( isPlayerUnit ) {
+                unitsToChooseFrom = unitsToChooseFrom.concat(this.playerUnits);
+            } else {
+                unitsToChooseFrom = unitsToChooseFrom.concat(this.enemyUnits);
+            }
         }
 
-        if (flags & game.RandomUnitFlags.FOE) {
-            unitsToChooseFrom = unitsToChooseFrom.concat(this.enemyUnits);
+        if ( flags & game.RandomUnitFlags.FOE ) {
+            if ( isPlayerUnit ) {
+                unitsToChooseFrom = unitsToChooseFrom.concat(this.enemyUnits);
+            } else {
+                unitsToChooseFrom = unitsToChooseFrom.concat(this.playerUnits);
+            }
         }
 
         var allowLivingUnits = ((flags & game.RandomUnitFlags.ALIVE) != 0);
@@ -185,8 +194,8 @@
      * Note: this can also return null if there is no such unit (e.g. no
      * living enemies).
      */
-    window.game.Battle.prototype.getRandomUnitMatchingFlags = function(flags) {
-        var unitsToChooseFrom = this.getUnitsMatchingFlags(flags);
+    window.game.Battle.prototype.getRandomUnitMatchingFlags = function(isPlayerUnit, flags) {
+        var unitsToChooseFrom = this.getUnitsMatchingFlags(isPlayerUnit, flags);
 
         return game.util.randomArrayElement(unitsToChooseFrom);
     };

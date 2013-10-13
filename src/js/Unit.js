@@ -753,111 +753,43 @@
         return abilityData;
     };
 
-    window.game.Unit.prototype.getUnitToRevive = function() {
-        var battle = this.battleData.battle;
-        if ( !this.isBoss() ) {
-            // There needs to be a dead unit for this to work.
-            var flags = game.RandomUnitFlags.DEAD;
-            if ( this.isPlayer() ) {
-                flags |= game.RandomUnitFlags.ALLY;
-            } else {
-                flags |= game.RandomUnitFlags.FOE;
-            }
-
-            var targetUnit = battle.getRandomUnitMatchingFlags(flags);
-            if ( targetUnit != null ) {
-                return targetUnit;
-            }
-        }
-
-        // There was no dead unit, so return null
-        return null;
-    };
-
-// TODO: I should probably pass in the entire ability in order to use all of 
-// its attributes
-    window.game.Unit.prototype.getUnitToAttack = function() {
-        var battle = this.battleData.battle;
-
-        // First, acquire a living target of the opposite team
-        var flags = game.RandomUnitFlags.ALIVE;
-        if ( this.isPlayer() ) {
-            flags |= game.RandomUnitFlags.FOE;
-        } else {
-            flags |= game.RandomUnitFlags.ALLY;
-        }
-
-        var targetUnit = battle.getRandomUnitMatchingFlags(flags);
-        if ( targetUnit != null ) {
-            return targetUnit;
-        }
-
-        return null;
-    };
-
-    window.game.Unit.prototype.getTargetFromAbility = function(ability) {
-        switch (ability) {
-            case game.Ability.REVIVE:
-                return this.getUnitToRevive();
-                break;
-
-            case game.Ability.ATTACK:
-            case game.Ability.SKULL_THROW:
-            case game.Ability.SPIT_WEB:
-            case game.Ability.SCORPION_STING:
-            case game.Ability.SNAKE_VENOM:
-            case game.Ability.BRANCH_WHIP:
-            case game.Ability.BOULDER_DROP:
-            case game.Ability.FLAME_THROWER:
-            case game.Ability.THROWING_KNIVES:
-            case game.Ability.FIREBALL:
-            case game.Ability.BEARD_THROW:
-            default:
-                return this.getUnitToAttack();
-                break;
-        }
-    };
-
     /**
      * Attack, cast a spell, etc.
      */
     window.game.Unit.prototype.takeBattleTurn = function() {
         // Short hand
         var battle = this.battleData.battle;
-
         var targetUnit = null;
         switch ( this.abilityAI ) {
             case game.AbilityAI.RANDOM:
                 while ( targetUnit == null ) {
-                    var randomAbility = game.util.randomFromWeights(this.abilities);
-                    targetUnit = this.getTargetFromAbility(randomAbility);
+                    var randomAbility = game.util.randomFromWeights(this.isPlayer(), this.abilities);
+                    targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), randomAbility.allowedTargets);
                 }
                 this.currentAbility = randomAbility;
                 break;
 
             case game.AbilityAI.USE_REVIVE_IF_POSSIBLE:
-                targetUnit = this.getUnitToRevive();
+                var healAbility = this.getAbility(game.Ability.REVIVE.id);
+                targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), healAbility.allowedTargets);
                 if ( targetUnit != null) {
                     this.currentAbility = this.getAbility(game.Ability.REVIVE.id);
                 } else {
-                    targetUnit = this.getUnitToAttack();
                     this.currentAbility = this.getAbility(game.Ability.ATTACK.id);
+                    targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.currentAbility.allowedTargets);
                 }
                 break;
             case game.AbilityAI.USE_ABILITY_0_WHENEVER_POSSIBLE:
             default:
                 var ability = this.abilities[0];
-                targetUnit = this.getTargetFromAbility(ability);
+                targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
                 // If that ability doesn't work, choose a random one
                 while ( targetUnit == null ) {
                     ability = game.util.randomFromWeights(this.abilities);
-                    targetUnit = this.getTargetFromAbility(ability);
+                    targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
                 }
                 this.currentAbility = ability;
                 break;
-                // TODO: probably don't follow the comments below
-                // check to see if it's revive. if it is, make sure reviving is possible
-                // otherwise, find the attack ability and use that.
         }
 
         // TODO: Make this code not stupid

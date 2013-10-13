@@ -591,7 +591,7 @@
                     game.util.useDefaultIfUndefined(unitData.abilities[i], 'allowedTargets', abilityData.allowedTargets);
                     if ( unitData.abilities[i].allowedTargets === undefined ) {
                         console.log('ERROR: Ability with id: ' + unitData.abilities[i].id  + ' is undefined.');
-                    }                    
+                    }
                 }
 
                 break;
