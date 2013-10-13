@@ -64,7 +64,8 @@
         USE_ABILITY_0_WHENEVER_POSSIBLE: 'use ability 0 whenever possible',
         RANDOM: 'random',
         RANDOM_ATTACK: 'random attack',
-        USE_REVIVE_IF_POSSIBLE: 'use revive if possible'
+        USE_REVIVE_IF_POSSIBLE: 'use revive if possible',
+        ALWAYS_SUMMON: 'always summon'
     };
 
     /**
@@ -157,6 +158,11 @@
             graphicIndex: 127,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.DEAD
+        },
+
+        SUMMON: {
+            id: 12,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
         }
 
     };
@@ -272,8 +278,13 @@
             abilities: [
                 {
                     id: game.Ability.SCORPION_STING.id
+                },
+                {
+                    id: game.Ability.SUMMON.id
                 }
             ],
+
+            abilityAI: game.AbilityAI.ALWAYS_SUMMON,
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems

@@ -763,7 +763,7 @@
         switch ( this.abilityAI ) {
             case game.AbilityAI.RANDOM:
                 while ( targetUnit == null ) {
-                    var randomAbility = game.util.randomFromWeights(this.isPlayer(), this.abilities);
+                    var randomAbility = game.util.randomFromWeights(this.abilities);
                     targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), randomAbility.allowedTargets);
                 }
                 this.currentAbility = randomAbility;
@@ -779,6 +779,19 @@
                     targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.currentAbility.allowedTargets);
                 }
                 break;
+
+            case game.AbilityAI.ALWAYS_SUMMON:
+                this.currentAbility = this.getAbility(game.Ability.SUMMON.id);
+                var newUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.SUMMON | game.PlayerFlags.ENEMY,1);
+                newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
+                game.UnitManager.addUnit(newUnit);
+
+                // Force the unit to join this battle. We pass coordinates so that
+                // the unit can go back to the summoner's original position when the
+                // battle ends.
+                battle.summonedUnit(this, newUnit);
+                break;
+
             case game.AbilityAI.USE_ABILITY_0_WHENEVER_POSSIBLE:
             default:
                 var ability = this.abilities[0];
@@ -791,6 +804,21 @@
                 this.currentAbility = ability;
                 break;
         }
+
+        // If a unit has been summoned, don't make projectiles or anything
+        if ( this.currentAbility.id == game.Ability.SUMMON.id ) {
+            return;
+        }
+
+        // There's only a single attack modifier allowed, and we'll check for
+        // that here.
+        var modifiedAttack = false;
+        for (var i = 0; i < this.mods.length; i++) {
+            if ( this.mods[i].onBattleTurn(this) ) {
+                modifiedAttack = true;
+                break;
+            }
+        };
 
         // TODO: Make this code not stupid
         var spellType = 0;
