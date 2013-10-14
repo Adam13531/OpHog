@@ -966,6 +966,21 @@
         return (type == game.PlaceableUnitType.ARCHER || type == game.PlaceableUnitType.WARRIOR || type == game.PlaceableUnitType.WIZARD);
     };
 
+    /**
+     * Utility function to compute damage based on a damage formula
+     * @param {game.DamageFormula} damageFormula - Damage formula used for computing damage
+     * @param {game.Unit} user - Unit that's doing the damage
+     * @param {game.Unit} target - Unit that's receiving the damage
+     * @return {Number} - Damage to be done
+     */
+    window.game.ComputeDamageFormula = function(damageFormula, user, target) {
+        switch (damageFormula) {
+            case game.DamageFormula.ATK_MINUS_DEF:
+                return user.getAtk() - target.getDef();
+                break;
+        }
+    };
+
     window.game.Unit.prototype.projectileCallback = function(projectile) {
         // Short hand
         var battle = this.battleData.battle;
@@ -976,10 +991,12 @@
                 var myAtk = this.getAtk();
                 var targetDef = targetUnit.getDef();
 
+                var damage = game.ComputeDamageFormula(this.currentAbility.damageFormula, this, targetUnit);
+
                 // Compute damage very simply
                 var bonusDamage = Math.floor(Math.random() * myAtk * .5);
 
-                var damage = myAtk + bonusDamage - targetDef;
+                damage += bonusDamage;
                 damage = Math.max(0, damage);
 
                 // Run target's mods to possibly reduce the damage toward that

@@ -82,6 +82,11 @@
         REVIVE: 'revive'
     };
 
+    window.game.DamageFormula = {
+        ATK_MINUS_DEF: 'atk minus def',
+        REVIVE: 'revive'
+    };
+
     /**
      * Abilities for the units
      * @type {Object}
@@ -92,9 +97,9 @@
             graphicIndex: 92,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
             // chanceToCrit: .1,
-            // damageFormula: game.DamageFormula.ATK_MINUS_DEF,
         },
 
         SKULL_THROW: {
@@ -102,7 +107,8 @@
             graphicIndex: 16,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 
         SPIT_WEB: {
@@ -110,14 +116,17 @@
             graphicIndex: 103,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 
         SCORPION_STING: {
             id: 3,
             graphicIndex: 210,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 
         SNAKE_VENOM: {
@@ -125,7 +134,8 @@
             graphicIndex: 218,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 
         BRANCH_WHIP: {
@@ -133,7 +143,8 @@
             graphicIndex: 250,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 
         BOULDER_DROP: {
@@ -141,7 +152,8 @@
             graphicIndex: 110,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 
         FLAME_THROWER: {
@@ -149,7 +161,8 @@
             graphicIndex: 105,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 
         THROWING_KNIVES: {
@@ -157,7 +170,8 @@
             graphicIndex: 53,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 
         FIREBALL: {
@@ -165,7 +179,8 @@
             graphicIndex: 176,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 
         BEARD_THROW: {
@@ -173,7 +188,8 @@
             graphicIndex: 128,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 
         REVIVE: {
@@ -181,13 +197,15 @@
             graphicIndex: 127,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.DEAD,
-            actionOnHit: game.ActionOnHit.REVIVE
+            actionOnHit: game.ActionOnHit.REVIVE,
+            damageFormula: game.DamageFormula.REVIVE
         },
 
         SUMMON: {
             id: 12,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-            actionOnHit: game.ActionOnHit.DO_DAMAGE
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF
         }
 
     };
@@ -665,6 +683,10 @@
             if ( abilitiesList[i].actionOnHit === undefined ) {
                 game.DisplayUndefinedAbilityError(abilitiesList[i], 'actionOnHit');
             }
+            game.util.useDefaultIfUndefined(abilitiesList[i], 'damageFormula', abilityData.damageFormula);
+            if ( abilitiesList[i].damageFormula === undefined ) {
+                game.DisplayUndefinedAbilityError(abilitiesList[i], 'damageFormula');
+            }
         }
     };
 
@@ -680,6 +702,7 @@
             newAbility.relativeWeight = originalAbility.relativeWeight;
             newAbility.allowedTargets = originalAbility.allowedTargets;
             newAbility.actionOnHit = originalAbility.actionOnHit;
+            newAbility.damageFormula = originalAbility.damageFormula;
             return newAbility;
     };
 
