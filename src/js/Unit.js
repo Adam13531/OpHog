@@ -204,6 +204,12 @@
         this.mods = [];
 
         /**
+         * Copies of abilities that come from items when that item is equipped.
+         * @type {Array:game.Ability}
+         */
+        this.abilityMods = [];
+
+        /**
          * This is only used by NPCs to indicate whether they've already given
          * out their quest.
          * @type {Boolean}
@@ -734,11 +740,11 @@
     };
 
     // Gets the ability from the id that this unit has.
-    window.game.Unit.prototype.getAbility = function(abilityID) {
+    window.game.Unit.prototype.getAbility = function(abilityID, abilityList) {
         var abilityData = null;
-        for ( var i = 0; i < this.abilities.length; i++ ) {
-            if ( this.abilities[i].id == abilityID ) {
-                abilityData = this.abilities[i];
+        for ( var i = 0; i < abilityList.length; i++ ) {
+            if ( abilityList[i].id == abilityID ) {
+                abilityData = abilityList[i];
             }
         }
 
@@ -754,34 +760,70 @@
     };
 
     /**
+     * Gets all the abilities for a unit plus the ones that are added because of 
+     * items. The abilities from items can replace abilites or go at the end of 
+     * the list.
+     * @return {Array:game.Ability} Abilities for the unit plus the ones that 
+     * are factored in based on items.
+     */
+    window.game.Unit.prototype.getAbilitiesBasedOnItems = function() {
+        var allPossibleAbilities = [];
+
+        // First, make an exact copy of all the abilities in the unit.
+        // We don't want to modify the original list
+        for (var i = 0; i < this.abilities.length; i++) {
+            var ability = {};
+            ability = game.CopyAbility(this.abilities[i]);
+            allPossibleAbilities.push(ability);
+        }
+
+        // loop through each ability that came from items
+        for (var i = 0; i < this.abilityMods.length; i++) {
+            var newAbility = {};
+            newAbility = game.CopyAbility(this.abilityMods[i]);
+            // Replace the old ability if the new one has the same ability ID as 
+            // it
+            if ( game.HasAbility(this.abilityMods[i].id, allPossibleAbilities) ) {
+                allPossibleAbilities.splice(i, 1, newAbility);
+            // Otherwise, append the ability to the list because it's not in there
+            } else {
+                allPossibleAbilities.push(newAbility);
+            }
+        };
+
+        return allPossibleAbilities;
+    };
+
+    /**
      * Attack, cast a spell, etc.
      */
     window.game.Unit.prototype.takeBattleTurn = function() {
         // Short hand
         var battle = this.battleData.battle;
+        var abilitiesList = this.getAbilitiesBasedOnItems();
         var targetUnit = null;
         switch ( this.abilityAI ) {
             case game.AbilityAI.RANDOM:
                 while ( targetUnit == null ) {
-                    var randomAbility = game.util.randomFromWeights(this.abilities);
+                    var randomAbility = game.util.randomFromWeights(abilitiesList);
                     targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), randomAbility.allowedTargets);
                 }
                 this.currentAbility = randomAbility;
                 break;
 
             case game.AbilityAI.USE_REVIVE_IF_POSSIBLE:
-                var healAbility = this.getAbility(game.Ability.REVIVE.id);
+                var healAbility = this.getAbility(game.Ability.REVIVE.id, abilitiesList);
                 targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), healAbility.allowedTargets);
                 if ( targetUnit != null) {
-                    this.currentAbility = this.getAbility(game.Ability.REVIVE.id);
+                    this.currentAbility = this.getAbility(game.Ability.REVIVE.id, abilitiesList);
                 } else {
-                    this.currentAbility = this.getAbility(game.Ability.ATTACK.id);
+                    this.currentAbility = this.getAbility(game.Ability.ATTACK.id, abilitiesList);
                     targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.currentAbility.allowedTargets);
                 }
                 break;
 
             case game.AbilityAI.ALWAYS_SUMMON:
-                this.currentAbility = this.getAbility(game.Ability.SUMMON.id);
+                this.currentAbility = this.getAbility(game.Ability.SUMMON.id, abilitiesList);
                 var newUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.SUMMON | game.PlayerFlags.ENEMY,1);
                 newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
                 game.UnitManager.addUnit(newUnit);
@@ -794,11 +836,11 @@
 
             case game.AbilityAI.USE_ABILITY_0_WHENEVER_POSSIBLE:
             default:
-                var ability = this.abilities[0];
+                var ability = abilitiesList[0];
                 targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
                 // If that ability doesn't work, choose a random one
                 while ( targetUnit == null ) {
-                    ability = game.util.randomFromWeights(this.abilities);
+                    ability = game.util.randomFromWeights(abilitiesList);
                     targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
                 }
                 this.currentAbility = ability;
@@ -894,6 +936,7 @@
      */
     window.game.Unit.prototype.populateMods = function() {
         this.mods = [];
+        this.abilityMods = [];
 
         // Go through each equipped items and add its mods to this unit's mods.
         var equippedItems = game.Player.inventory.getClassEquippedItems(this.unitType);
@@ -901,6 +944,11 @@
             var equippedItem = equippedItems[i];
             for (var j = 0; j < equippedItem.mods.length; j++) {
                 this.mods.push(equippedItem.mods[j]);
+            };
+
+            // Add the abilities for this unit to use that this item adds (if any)
+            for (var j = 0; j < equippedItem.abilities.length; j++) {  
+                this.abilityMods.push(equippedItem.abilities[j]);
             };
         }; 
     };

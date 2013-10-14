@@ -590,20 +590,7 @@
 
                 unitData.level = level;
 
-                // Fill in all the missing attributes for each ability that this 
-                // unit has. For example, if all we did was specify that we want 
-                // an ability by giving it an ID, then this will fill in the default 
-                // projectile graphic index, etc for that ability
-                for ( var i = 0; i < unitData.abilities.length; i++ ) {
-                    var unitAbility = unitData.abilities[i];
-                    var abilityData = game.GetAbilityDataFromID(unitAbility.id);
-                    game.util.useDefaultIfUndefined(unitData.abilities[i], 'graphicIndex', abilityData.graphicIndex);
-                    game.util.useDefaultIfUndefined(unitData.abilities[i], 'relativeWeight', abilityData.relativeWeight);
-                    game.util.useDefaultIfUndefined(unitData.abilities[i], 'allowedTargets', abilityData.allowedTargets);
-                    if ( unitData.abilities[i].allowedTargets === undefined ) {
-                        console.log('ERROR: Ability with id: ' + unitData.abilities[i].id  + ' is undefined.');
-                    }
-                }
+                game.SetDefaultAbilityAttrIfUndefined(unitData.abilities);
 
                 break;
             }
@@ -621,6 +608,45 @@
         return unitData;
     };
 
+    /**
+     * Fills in all the missing attributes for each ability. For example, if
+     * all we did was specify that we want an ability by giving it an ID, then
+     * this will fill in the default projectile graphic index, etc for that
+     * ability
+     * @param {Array:game.Ability} abilitiesList List of abilities to check
+     */
+    window.game.SetDefaultAbilityAttrIfUndefined = function(abilitiesList) {
+        for ( var i = 0; i < abilitiesList.length; i++ ) {
+            var unitAbility = abilitiesList[i];
+            var abilityData = game.GetAbilityDataFromID(unitAbility.id);
+            game.util.useDefaultIfUndefined(abilitiesList[i], 'graphicIndex', abilityData.graphicIndex);
+            game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', abilityData.relativeWeight);
+            game.util.useDefaultIfUndefined(abilitiesList[i], 'allowedTargets', abilityData.allowedTargets);
+            if ( abilitiesList[i].allowedTargets === undefined ) {
+                console.log('ERROR: Ability with id: ' + abilitiesList.abilities[i].id  + ' is undefined.');
+            }
+        }
+    };
+
+    /**
+     * Makes a copy of an ability.
+     * @param {game.Ability} originalAbility - ability that will be copied
+     * @return {game.Ability} New copy of the ability
+     */
+    window.game.CopyAbility = function(originalAbility) {
+            var newAbility = {};
+            newAbility.id =  originalAbility.id;
+            newAbility.graphicIndex = originalAbility.graphicIndex;
+            newAbility.relativeWeight = originalAbility.relativeWeight;
+            newAbility.allowedTargets = originalAbility.allowedTargets;
+            return newAbility;
+    };
+
+    /**
+     * Gets the default ability template based on an ID that was passed in
+     * @param {game.Ability.id} abilityID - ID of the ability to get the data for
+     * @return {game.Ability} Default ability template for the ID that was passed in.
+     */
     window.game.GetAbilityDataFromID = function(abilityID) {
         var abilityData = null;
         for ( var key in game.Ability ) {
@@ -638,6 +664,23 @@
             }
         }
         return abilityData;
+    };
+
+    /**
+     * Checks to see if the ability list contains the passed in ability ID. If 
+     * it does, that means this ability exists inside the ability list that is 
+     * passed in.
+     * @param {game.Ability.id} abilityID - ID of the ability to look for
+     * @param {Array:game.Ability} abilityList - Ability list to search through
+     * @return {Boolean} True if the passed ID is found in the passed in ability list
+     */
+    window.game.HasAbility = function(abilityID, abilityList) {
+        for (var i = 0; i < abilityList.length; i++) {
+            if ( abilityList[i].id == abilityID ) {
+                return true;
+            }
+        };
+        return false;
     };
 
     /**
@@ -674,7 +717,7 @@
 
             // Makes sure that each unit type can attack. If the basic attack ability 
             // isn't present, add it to the ability list.
-            if ( $.inArray(game.Ability.ATTACK.id, unitType.abilities) ) {
+            if ( !game.HasAbility(game.Ability.ATTACK.id, unitType.abilities) ) {
                 unitType.abilities.push( {id:game.Ability.ATTACK.id} );
             }
 

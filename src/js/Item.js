@@ -58,6 +58,12 @@
             name:'Grugtham\'s Shield',
             htmlDescription:'<font color="#660000"><b>500000 Dragon Kill Points<b/></font>',
             equippableBy: game.EquippableBy.ALL,
+            addsAbilities: [
+                {
+                    id: game.Ability.BOULDER_DROP.id,
+                    relativeWeight: 9000
+                }
+            ],
             cssClass:'item-sprite shield32-png',
             mods: [new game.Thorns(5), new game.ReduceDamage(5)]
         },
@@ -67,6 +73,14 @@
             name:'Skull Stab',
             htmlDescription:'<font color="#660000"><b>This sword can actually only pierce hearts.<b/></font>',
             equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
+            addsAbilities: [
+                {
+                    id: game.Ability.ATTACK.id,
+                    graphicIndex: 105,
+                    allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+                    relativeWeight: 9000
+                }
+            ],
             cssClass:'item-sprite sword32-png',
             mods: [new game.LifeLeech(.5, .5), new game.MultipleProjectiles(2)],
             placementCost: 10
@@ -184,6 +198,11 @@
         for ( var key in game.ItemType ) {
             var item = game.ItemType[key];
             if ( item.id == itemID ) {
+                if ( item.addsAbilities !== undefined ) {
+                    // If this items adds abilities, make sure that all the 
+                    // fields for the ability are defined.
+                    game.SetDefaultAbilityAttrIfUndefined(item.addsAbilities);
+                }
                 return item;
             }
         }
@@ -269,6 +288,18 @@
 
         this.cssClass = itemData.cssClass;
         this.htmlDescription = itemData.htmlDescription;
+
+        // Array of abilities that can be added to a unit from this particular item
+        this.abilities = [];
+
+        // Do a deep copy of the abilities to make sure the originals aren't modified
+        if ( itemData.addsAbilities !== undefined ) {
+            for (var i = 0; i < itemData.addsAbilities.length; i++) {
+                var ability = {};
+                ability = game.CopyAbility(itemData.addsAbilities[i]);
+                this.abilities.push(ability);
+            };
+        }
     };
 
 
