@@ -40,9 +40,22 @@
     window.game.GameDataManager = {
 
         /**
+         * Indicates whether the game is currently being loaded. When this is
+         * true, the game will not be save-able so that you don't save an
+         * unfinished state.
+         * @type {Boolean}
+         */
+        loadingGame: false,
+
+        /**
          * Saves everything in the game.
          */
         saveGame: function() {
+            // You can't save while you're currently loading.
+            if ( this.loadingGame ) {
+                return;
+            }
+
             var curTime = new Date();
             var version = game.SAVE_DATA_VERSION;
             console.log('Saving the game (version ' + version + ') at ' + curTime);
@@ -92,16 +105,34 @@
         },
 
         /**
-         * Loads everything in the game.
+         * @return {Boolean} true if you have a saved game of the correct
+         * version.
          */
-        loadGame: function() {
+        hasSavedGame: function() {
             var savedVersion = localStorage.saveVersion;
             var expectedVersion = game.SAVE_DATA_VERSION;
 
-            if ( !this.verifyVersion(expectedVersion, savedVersion, 'game') ) {
+            if ( expectedVersion == savedVersion ) {
+                return true;
+            }
+
+            // If you have a save file but it's the incorrect version, then
+            // print when you saved it.
+            if ( localStorage.saveTime !== undefined ) {
                 console.log('Note: your save file is from ' + localStorage.saveTime);
+            }
+            return false;
+        },
+
+        /**
+         * Loads everything in the game.
+         */
+        loadGame: function() {
+            if ( !this.hasSavedGame() ) {
                 return;
             }
+
+            this.loadingGame = true;
 
             // Get rid of all existing text objects
             game.TextManager.textObjs = [];
@@ -132,7 +163,7 @@
             game.UICanvas.highlightedButtonIndex = 0;
 
             var curTime = new Date();
-            console.log('Loading a save (version ' + savedVersion + ') from ' + localStorage.saveTime);
+            console.log('Loading a save (version ' + localStorage.saveVersion + ') from ' + localStorage.saveTime);
 
             // Some of this ordering is important. For example, the map should
             // be loaded before basically anything else.
@@ -169,32 +200,8 @@
             // then you loaded a game where you didn't have enough coins, this
             // would cover the state-change that would disable the "buy" button.
             game.UnitPlacementUI.playerCoinsChanged();
-        },
 
-        /**
-         * Verifies that the version obtained from the loaded data is the
-         * version that we expect, otherwise it prints a message.
-         * @param  {String} expectedVersion
-         * @param  {String} actualVersion
-         * @param  {String} objectBeingVerified - a simple descripton of the
-         * object you're verifying
-         * @return {Boolean}                     - true if the versions match
-         */
-        verifyVersion: function(expectedVersion, actualVersion, objectBeingVerified) {
-            if ( actualVersion === undefined ) {
-                console.log('You haven\'t ever saved "' + objectBeingVerified + 
-                    '", so you can\'t load it. Expected version: ' + expectedVersion);
-                return false;
-            }
-
-            if ( actualVersion != expectedVersion ) {
-                console.log('Expected ' + objectBeingVerified + ' version ' + 
-                    expectedVersion + ', got ' + actualVersion + 
-                    '. Not going to load "' + objectBeingVerified + '".');
-                return false;
-            }
-
-            return true;
+            this.loadingGame = false;
         },
 
         /**
@@ -585,6 +592,10 @@
 
                 game.Camera[k] = v;
             });
+
+            // Our save file basically contains the old browser size, so call
+            // this function to fix it.
+            game.Camera.browserSizeChanged();
         },
 
         /**

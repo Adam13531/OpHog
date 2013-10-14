@@ -231,8 +231,15 @@
 
             game.TilesetManager.init();
 
+            // If true, we will save the game at the end of this function.
+            var saveTheGame = true;
             if ( game.overworldMap == null ) {
                 game.OverworldMapData.initializeOverworldMap();
+
+                // We're just initializing the game (the overworldMap was null),
+                // so we don't want to save the game or we'll overwrite
+                // everything.
+                saveTheGame = false;
             }
 
             game.currentMap = game.overworldMap;
@@ -250,6 +257,10 @@
             
             // Give them the movement AI that will make them wander
             game.UnitManager.placeAllPlayerUnits(tileOfLastMap.x, tileOfLastMap.y, game.MovementAI.WANDER_UNFOGGY_WALKABLE);
+
+            if ( saveTheGame ) {
+                game.GameDataManager.saveGame();
+            }
         },
 
         /**
