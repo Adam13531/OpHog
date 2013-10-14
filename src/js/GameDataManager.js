@@ -48,6 +48,29 @@
         loadingGame: false,
 
         /**
+         * This is mostly for debugging. If true, this will log all messsages
+         * sent to the 'log' function.
+         * @type {Boolean}
+         */
+        verboseLogging: false,
+
+        /**
+         * Logs text to the console.
+         * @param  {String} text    - the text to log
+         * @param  {Boolean} verbose - if true or undefined, this message is
+         * considered verbose and will not be printed unless verboseLogging is
+         * enabled. I.e. if you have a message that should always print, call
+         * this function with verbose==false.
+         */
+        log: function(text, verbose) {
+            if ( (verbose === undefined || verbose == true) && !this.verboseLogging ) {
+                return;
+            }
+
+            console.log(text);
+        },
+
+        /**
          * Saves everything in the game.
          */
         saveGame: function() {
@@ -58,7 +81,7 @@
 
             var curTime = new Date();
             var version = game.SAVE_DATA_VERSION;
-            console.log('Saving the game (version ' + version + ') at ' + curTime);
+            this.log('Saving the game (version ' + version + ') at ' + curTime);
 
             localStorage.saveVersion = version;
             localStorage.saveTime = curTime;
@@ -75,25 +98,25 @@
                 delete game.currentMap.mapTiles[i].rightList;
             };
 
-            console.log('Saving the map');
+            this.log('Saving the map');
             this.saveMap();
-            console.log('Saving generators');
+            this.log('Saving generators');
             this.saveGenerators();
-            console.log('Saving quests');
+            this.log('Saving quests');
             this.saveQuests();
-            console.log('Saving the camera');
+            this.log('Saving the camera');
             this.saveCamera();
-            console.log('Saving battles');
+            this.log('Saving battles');
             this.saveBattles();
-            console.log('Saving units');
+            this.log('Saving units');
             this.saveUnits();
-            console.log('Saving collectibles');
+            this.log('Saving collectibles');
             this.saveCollectibles();
-            console.log('Saving the inventory');
+            this.log('Saving the inventory');
             this.saveInventory();
-            console.log('Saving the player');
+            this.log('Saving the player');
             this.savePlayer();
-            console.log('Saving game state');
+            this.log('Saving game state');
             this.saveGameState();
 
             // Restore leftList and rightList so that our current game still
@@ -119,7 +142,11 @@
             // If you have a save file but it's the incorrect version, then
             // print when you saved it.
             if ( localStorage.saveTime !== undefined ) {
-                console.log('Note: your save file is from ' + localStorage.saveTime);
+                this.log('Your save file\'s version (' + savedVersion + 
+                    ') does not match the expected version (' + expectedVersion + 
+                    '). Your save file will be deleted (in the future, ' +
+                    'we will autoupdate to the latest version). It was saved on ' + 
+                    localStorage.saveTime + '.', false);
             }
             return false;
         },
@@ -128,7 +155,7 @@
          * Deletes the saved game by removing everything from localStorage.
          */
         deleteSavedGame: function() {
-            console.log('Wiping out localStorage (deleteSavedGame was called).');
+            this.log('Wiping out localStorage (deleteSavedGame was called).', false);
             localStorage.clear();
         },
 
@@ -171,37 +198,37 @@
             game.UICanvas.highlightedButtonIndex = 0;
 
             var curTime = new Date();
-            console.log('Loading a save (version ' + localStorage.saveVersion + ') from ' + localStorage.saveTime);
+            this.log('Loading a save (version ' + localStorage.saveVersion + ') from ' + localStorage.saveTime);
 
             // Some of this ordering is important. For example, the map should
             // be loaded before basically anything else.
-            console.log('Loading the game state');
+            this.log('Loading the game state');
             this.loadGameState();
-            console.log('Loading the map');
+            this.log('Loading the map');
             this.loadMap();
-            console.log('Loading generators');
+            this.log('Loading generators');
             this.loadGenerators();
-            console.log('Loading quests');
+            this.log('Loading quests');
             this.loadQuests();
-            console.log('Loading the camera');
+            this.log('Loading the camera');
             this.loadCamera();
-            console.log('Loading battles');
+            this.log('Loading battles');
             this.loadBattles();
-            console.log('Loading units');
+            this.log('Loading units');
             this.loadUnits();
-            console.log('Loading projectiles');
+            this.log('Loading projectiles');
             this.loadProjectiles();
-            console.log('Loading collectibles');
+            this.log('Loading collectibles');
             this.loadCollectibles();
 
             // Load the inventory after units have been loaded. No code depends
             // on this at the time of writing, but that assumption may
             // eventually change, and I don't want to have to track down a bug
             // having to do with mis-ordering.
-            console.log('Loading the inventory');
+            this.log('Loading the inventory');
             this.loadInventory();
 
-            console.log('Loading the player');
+            this.log('Loading the player');
             this.loadPlayer();
 
             // If you had enough coins in your current game to buy a new slot,
