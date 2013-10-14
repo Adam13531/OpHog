@@ -60,12 +60,26 @@
         BOSS: 16
     };
 
+    /**
+     * Describes how the unit is going to use its abilities
+     * @type {Object}
+     */
     window.game.AbilityAI = {
         USE_ABILITY_0_WHENEVER_POSSIBLE: 'use ability 0 whenever possible',
         RANDOM: 'random',
         RANDOM_ATTACK: 'random attack',
         USE_REVIVE_IF_POSSIBLE: 'use revive if possible',
         ALWAYS_SUMMON: 'always summon'
+    };
+
+    /**
+     * Instructions on what to do when a unit gets hit
+     * @type {Object}
+     */
+    window.game.ActionOnHit = {
+        DO_DAMAGE: 'do damage',
+        HEAL: 'heal',
+        REVIVE: 'revive'
     };
 
     /**
@@ -77,8 +91,8 @@
             id: 0,
             graphicIndex: 92,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
-            // actionOnHit: ActionOnHit.DO_DAMAGE,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
             // chanceToCrit: .1,
             // damageFormula: game.DamageFormula.ATK_MINUS_DEF,
         },
@@ -87,14 +101,16 @@
             id: 1,
             graphicIndex: 16,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
         },
 
         SPIT_WEB: {
             id: 2,
             graphicIndex: 103,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
         },
 
         SCORPION_STING: {
@@ -108,61 +124,70 @@
             id: 4,
             graphicIndex: 218,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
         },
 
         BRANCH_WHIP: {
             id: 5,
             graphicIndex: 250,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
         },
 
         BOULDER_DROP: {
             id: 6,
             graphicIndex: 110,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
         },
 
         FLAME_THROWER: {
             id: 7,
             graphicIndex: 105,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
         },
 
         THROWING_KNIVES: {
             id: 8,
             graphicIndex: 53,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
         },
 
         FIREBALL: {
             id: 9,
             graphicIndex: 176,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
         },
 
         BEARD_THROW: {
             id: 10,
             graphicIndex: 128,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
         },
 
         REVIVE: {
             id: 11,
             graphicIndex: 127,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.DEAD
+            allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.DEAD,
+            actionOnHit: game.ActionOnHit.REVIVE
         },
 
         SUMMON: {
             id: 12,
-            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE
         }
 
     };
@@ -609,6 +634,17 @@
     };
 
     /**
+     * Displays an error if a necessary ability attribute was never defined. 
+     * These are programmer errors, which means we need to go add this attribute 
+     * to ability.
+     * @param {game.Abiltiy} ability - Ability with the undefined attribute
+     * @param {String} undefinedAttribute - Name of the undefined attribute
+     */
+    window.game.DisplayUndefinedAbilityError = function(ability, undefinedAttribute) {
+        console.log('ERROR: Ability with id: ' + ability.id  + ' has ' + undefinedAttribute + ' undefined.');
+    };
+
+    /**
      * Fills in all the missing attributes for each ability. For example, if
      * all we did was specify that we want an ability by giving it an ID, then
      * this will fill in the default projectile graphic index, etc for that
@@ -623,7 +659,11 @@
             game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', abilityData.relativeWeight);
             game.util.useDefaultIfUndefined(abilitiesList[i], 'allowedTargets', abilityData.allowedTargets);
             if ( abilitiesList[i].allowedTargets === undefined ) {
-                console.log('ERROR: Ability with id: ' + abilitiesList.abilities[i].id  + ' is undefined.');
+                game.DisplayUndefinedAbilityError(abilitiesList[i], 'allowedTargets');
+            }
+            game.util.useDefaultIfUndefined(abilitiesList[i], 'actionOnHit', abilityData.actionOnHit);
+            if ( abilitiesList[i].actionOnHit === undefined ) {
+                game.DisplayUndefinedAbilityError(abilitiesList[i], 'actionOnHit');
             }
         }
     };
@@ -635,10 +675,11 @@
      */
     window.game.CopyAbility = function(originalAbility) {
             var newAbility = {};
-            newAbility.id =  originalAbility.id;
+            newAbility.id = originalAbility.id;
             newAbility.graphicIndex = originalAbility.graphicIndex;
             newAbility.relativeWeight = originalAbility.relativeWeight;
             newAbility.allowedTargets = originalAbility.allowedTargets;
+            newAbility.actionOnHit = originalAbility.actionOnHit;
             return newAbility;
     };
 

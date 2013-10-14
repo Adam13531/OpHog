@@ -6,10 +6,10 @@
     //
     // Note: "fire points" are simply where the projectile is shot. This may be
     // the end of a wizard's staff or the middle of an archer's bow.
-    window.game.Projectile = function Projectile(x,y,type, owner, target) {
+    window.game.Projectile = function Projectile(x,y,actionOnHit, owner, target) {
         this.x = x;
         this.y = y;
-        this.type = type;
+        this.actionOnHit = actionOnHit;
         this.owner = owner;
         this.target = target;
 
@@ -30,20 +30,10 @@
 
         this.graphicIndex = this.owner.currentAbility.graphicIndex;
 
-        // 0 == projectile to attack with
-        if ( type == 0 ) {
-            // this.graphicIndex = this.owner.projectileIndexes;
-            // TODO: I think the id should be passed in and then used in this array
-            // this.graphicIndex = this.owner.abilities[0].graphicIndex;
-        }
-
-        // Revive
-        if ( this.type == 1 ) {
+        if ( this.actionOnHit == game.ActionOnHit.REVIVE ) {
             this.speed = 50;
-            // this.graphicIndex = 127;
             this.diesIfTargetIsDead = false;
         }
-
 
         if ( this.isMelee ) {
             this.speed = 9999999999;
@@ -64,7 +54,7 @@
 
         // The revive projectile gets faster as it lives longer so that it can
         // catch repositioning units.
-        if ( this.type == 1 ) {
+        if ( this.actionOnHit == game.ActionOnHit.REVIVE ) {
             this.speed += .5;
         }
 

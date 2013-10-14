@@ -871,12 +871,7 @@
             }
         };
 
-        // TODO: Make this code not stupid
-        var spellType = 0;
-        if ( this.currentAbility.id == game.Ability.REVIVE.id ) {
-            spellType = 1;
-        }
-        var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),spellType,this,targetUnit);
+        var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),this.currentAbility.actionOnHit,this,targetUnit);
         battle.addProjectile(newProjectile);
 
         //Revive
@@ -976,44 +971,49 @@
         var battle = this.battleData.battle;
         var targetUnit = projectile.target;
 
-        if ( projectile.type == 0 ) {
+        switch ( projectile.actionOnHit ) {
+            case game.ActionOnHit.DO_DAMAGE:
+                var myAtk = this.getAtk();
+                var targetDef = targetUnit.getDef();
 
-            var myAtk = this.getAtk();
-            var targetDef = targetUnit.getDef();
+                // Compute damage very simply
+                var bonusDamage = Math.floor(Math.random() * myAtk * .5);
 
-            // Compute damage very simply
-            var bonusDamage = Math.floor(Math.random() * myAtk * .5);
+                var damage = myAtk + bonusDamage - targetDef;
+                damage = Math.max(0, damage);
 
-            var damage = myAtk + bonusDamage - targetDef;
-            damage = Math.max(0, damage);
+                // Run target's mods to possibly reduce the damage toward that
+                // specific target.
+                for (var i = 0; i < targetUnit.mods.length; i++) {
+                    damage = targetUnit.mods[i].beforeReceiveDamage(this, targetUnit, damage);
+                };
 
-            // Run target's mods to possibly reduce the damage toward that
-            // specific target.
-            for (var i = 0; i < targetUnit.mods.length; i++) {
-                damage = targetUnit.mods[i].beforeReceiveDamage(this, targetUnit, damage);
-            };
+                // Apply the damage
+                var actualDamage = -targetUnit.modifyLife(-damage, true, false);
 
-            // Apply the damage
-            var actualDamage = -targetUnit.modifyLife(-damage, true, false);
+                for (var i = 0; i < this.mods.length; i++) {
+                    this.mods[i].onDamageDealt(this, targetUnit, actualDamage);
+                };
 
-            for (var i = 0; i < this.mods.length; i++) {
-                this.mods[i].onDamageDealt(this, targetUnit, actualDamage);
-            };
+                for (var i = 0; i < targetUnit.mods.length; i++) {
+                    targetUnit.mods[i].onDamageReceived(this, targetUnit, actualDamage);
+                };
+                break;
 
-            for (var i = 0; i < targetUnit.mods.length; i++) {
-                targetUnit.mods[i].onDamageReceived(this, targetUnit, actualDamage);
-            };
-        } else {
-            // If the target is already alive, then we don't do anything here.
-            // This is better than just killing the projectile as soon as the
-            // target is alive so that you can account for a case where two
-            // units shoot a slot-moving revive spell at the same dead guy. The
-            // first one might hit, then the unit might die again, and that's
-            // when you'd want the second spell to be around still.
-            if( targetUnit.isLiving() ) {
-                return;
-            }
-            targetUnit.restoreLife();
+            case game.ActionOnHit.REVIVE:
+            case game.ActionOnHit.HEAL: // Isn't really implemented yet
+            default:
+                // If the target is already alive, then we don't do anything here.
+                // This is better than just killing the projectile as soon as the
+                // target is alive so that you can account for a case where two
+                // units shoot a slot-moving revive spell at the same dead guy. The
+                // first one might hit, then the unit might die again, and that's
+                // when you'd want the second spell to be around still.
+                if( targetUnit.isLiving() ) {
+                    return;
+                }
+                targetUnit.restoreLife();
+                break;
         }
     };
 
