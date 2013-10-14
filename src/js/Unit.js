@@ -821,10 +821,21 @@
                 break;
 
             case game.AbilityAI.USE_REVIVE_IF_POSSIBLE:
-                var healAbility = this.getAbility(game.Ability.REVIVE.id, abilitiesList);
-                targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), healAbility.allowedTargets);
+                var reviveAbility = this.getAbility(game.Ability.REVIVE.id, abilitiesList);
+                targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), reviveAbility.allowedTargets);
                 if ( targetUnit != null) {
                     this.currentAbility = this.getAbility(game.Ability.REVIVE.id, abilitiesList);
+                } else {
+                    this.currentAbility = this.getAbility(game.Ability.ATTACK.id, abilitiesList);
+                    targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.currentAbility.allowedTargets);
+                }
+                break;
+
+            case game.AbilityAI.USE_HEAL_IF_POSSIBLE:
+                var healAbility = this.getAbility(game.Ability.HEAL.id, abilitiesList);
+                targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), healAbility.allowedTargets);
+                if ( targetUnit != null) {
+                    this.currentAbility = this.getAbility(game.Ability.HEAL.id, abilitiesList);
                 } else {
                     this.currentAbility = this.getAbility(game.Ability.ATTACK.id, abilitiesList);
                     targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.currentAbility.allowedTargets);
@@ -873,66 +884,6 @@
 
         var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),this.currentAbility.actionOnHit,this,targetUnit);
         battle.addProjectile(newProjectile);
-
-        //Revive
-        // if ( (this.id % 15) == 0 && !this.isBoss() ) {
-
-        //     // There needs to be a dead unit for this to work.
-        //     var flags = game.RandomUnitFlags.DEAD;
-        //     if ( this.isPlayer() ) {
-        //         flags |= game.RandomUnitFlags.ALLY;
-        //     } else {
-        //         flags |= game.RandomUnitFlags.FOE;
-        //     }
-
-        //     var targetUnit = battle.getRandomUnitMatchingFlags(flags);
-        //     if ( targetUnit != null ) {
-        //         var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),1,this,targetUnit);
-        //         battle.addProjectile(newProjectile);
-        //         return;
-        //     }
-        // }
-
-        // // // Summon
-        // if ( !this.isPlayer() && !this.isBoss() && (this.id % 16) == 0 ) {
-        //     var newUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.SUMMON | game.PlayerFlags.ENEMY,1);
-        //     newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
-        //     game.UnitManager.addUnit(newUnit);
-
-        //     // Force the unit to join this battle. We pass coordinates so that
-        //     // the unit can go back to the summoner's original position when the
-        //     // battle ends.
-        //     battle.summonedUnit(this, newUnit);
-
-        //     return;
-        // }
-
-        // // There's only a single attack modifier allowed, and we'll check for
-        // // that here.
-        // var modifiedAttack = false;
-        // for (var i = 0; i < this.mods.length; i++) {
-        //     if ( this.mods[i].onBattleTurn(this) ) {
-        //         modifiedAttack = true;
-        //         break;
-        //     }
-        // };
-
-        // // If we didn't modify the attack, then we attack normally.
-        // if ( !modifiedAttack ) {
-            // // First, acquire a living target of the opposite team
-            // var flags = game.RandomUnitFlags.ALIVE;
-            // if ( this.isPlayer() ) {
-            //     flags |= game.RandomUnitFlags.FOE;
-            // } else {
-            //     flags |= game.RandomUnitFlags.ALLY;
-            // }
-
-            // var targetUnit = battle.getRandomUnitMatchingFlags(flags);
-
-            // var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),0,this,targetUnit);
-            // battle.addProjectile(newProjectile);
-        // }
-
     };
 
     /**
@@ -978,6 +929,10 @@
             case game.DamageFormula.ATK_MINUS_DEF:
                 return user.getAtk() - target.getDef();
                 break;
+
+            case game.DamageFormula.GET_HALF_OF_MISSING_LIFE:
+                return (user.getMaxLife() - user.life) / 2;
+                break;
         }
     };
 
@@ -986,12 +941,12 @@
         var battle = this.battleData.battle;
         var targetUnit = projectile.target;
 
+        var damage = game.ComputeDamageFormula(this.currentAbility.damageFormula, this, targetUnit);
+
         switch ( projectile.actionOnHit ) {
             case game.ActionOnHit.DO_DAMAGE:
                 var myAtk = this.getAtk();
                 var targetDef = targetUnit.getDef();
-
-                var damage = game.ComputeDamageFormula(this.currentAbility.damageFormula, this, targetUnit);
 
                 // Compute damage very simply
                 var bonusDamage = Math.floor(Math.random() * myAtk * .5);
@@ -1017,8 +972,9 @@
                 };
                 break;
 
+            case game.ActionOnHit.HEAL:
+                targetUnit.modifyLife(damage, true, false);
             case game.ActionOnHit.REVIVE:
-            case game.ActionOnHit.HEAL: // Isn't really implemented yet
             default:
                 // If the target is already alive, then we don't do anything here.
                 // This is better than just killing the projectile as soon as the

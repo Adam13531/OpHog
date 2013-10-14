@@ -69,7 +69,8 @@
         RANDOM: 'random',
         RANDOM_ATTACK: 'random attack',
         USE_REVIVE_IF_POSSIBLE: 'use revive if possible',
-        ALWAYS_SUMMON: 'always summon'
+        ALWAYS_SUMMON: 'always summon',
+        USE_HEAL_IF_POSSIBLE: 'use heal if possible'
     };
 
     /**
@@ -84,7 +85,8 @@
 
     window.game.DamageFormula = {
         ATK_MINUS_DEF: 'atk minus def',
-        REVIVE: 'revive'
+        REVIVE: 'revive',
+        GET_HALF_OF_MISSING_LIFE: 'get half of missing life'
     };
 
     /**
@@ -206,7 +208,14 @@
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
-        }
+        },
+
+        HEAL: {
+            id: 13,
+            allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.HEAL,
+            damageFormula: game.DamageFormula.GET_HALF_OF_MISSING_LIFE
+        },
 
     };
 
@@ -549,11 +558,11 @@
                     id: game.Ability.FIREBALL.id
                 },
                 {
-                    id: game.Ability.REVIVE.id
+                    id: game.Ability.HEAL.id
                 }
             ],
 
-            abilityAI: game.AbilityAI.USE_REVIVE_IF_POSSIBLE,
+            abilityAI: game.AbilityAI.USE_HEAL_IF_POSSIBLE,
             
             chanceToDropItem: 0,
             itemsDropped: noItems
