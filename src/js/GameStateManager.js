@@ -270,6 +270,9 @@
 
             if ( saveTheGame ) {
                 game.GameDataManager.saveGame();
+                
+                // Reset the autosave timer since we just saved
+                this.autoSaveOnOverworldCountdown = game.SAVE_GAME_ON_OVERWORLD_INTERVAL;
             }
         },
 
