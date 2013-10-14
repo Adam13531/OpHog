@@ -157,6 +157,66 @@
         },
 
         /**
+         * Selects the "next" spawner from your current one, which should be the
+         * logical next spawner in terms of left-to-right, top-to-bottom order.
+         * @param  {Boolean} selectNext - if true, this will go to the
+         * "next" one, not the previous one.
+         */
+        selectSpawner: function(selectNext) {
+            // Get all visible spawners. The way this function works internally
+            // is to iterate through all of the map tiles from
+            // [0...mapTiles.length], so this will be in the order we want
+            // already. We can't just cache this list of tiles because the
+            // UNFOGGY property could change, although for spawners it probably
+            // never will.
+            var visibleSpawners = game.currentMap.getAllTiles(game.TileFlags.SPAWNER | game.TileFlags.UNFOGGY);
+
+            // This should never happen.
+            if ( visibleSpawners.length == 0 ) {
+                game.util.debugDisplayText('No visible spawners found.', 'no vis spawners');
+                return;
+            }
+
+            // This is the index of the spawner that we will select.
+            var index = null;
+
+            // Figure out which one we currently have selected.
+            for (var i = 0; i < visibleSpawners.length; i++) {
+                if ( visibleSpawners[i].x == this.spawnPointX && visibleSpawners[i].y == this.spawnPointY ) {
+                    if ( selectNext ) {
+                        index = i + 1;
+                    } else {
+                        index = i - 1;
+                    }
+
+                    break;
+                }
+            };
+
+            // This should also never happen. This means we iterated through all
+            // of the spawners without finding the one that was currently
+            // selected.
+            //
+            // Note: this actually can currently happen on the overworld because
+            // you don't have a selected spawner there, so we'll just return
+            // here.
+            if ( index == null ) {
+                return;
+            }
+
+            // Wrap around the boundaries of the array
+            if ( index < 0 ) index = visibleSpawners.length - 1;
+            else if ( index > visibleSpawners.length - 1 ) index = 0;
+
+            // Select and pan to the next spawner
+            var nextSpawner = visibleSpawners[index];
+            this.spawnPointX = nextSpawner.x;
+            this.spawnPointY = nextSpawner.y;
+
+            game.Camera.panInstantlyTo(this.spawnPointX * game.TILESIZE, this.spawnPointY * game.TILESIZE, true);
+        },
+
+        /**
          * Calculates the cost to place the specified unit
          * @param  {Unit} unit - Unit that can be placed
          * @return {Number}    Cost to place the unit 

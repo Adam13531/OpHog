@@ -499,6 +499,15 @@
      * WANDER_UNFOGGY_WALKABLE.
      */
     window.game.Unit.prototype.acquireNewDestinationWanderWalkable = function() {
+        // If they have already had at least one destination, then we will
+        // randomly return from this function so that units with this AI don't
+        // all move in sync with one another.
+        if ( this.destX != null ) {
+            // Base the randomness on the unit's ID so that they all have
+            // different "speeds".
+            var upperBound = ((this.id % 3) + 1) * 8;
+            if (game.util.randomInteger(0,upperBound) != 1 ) return;
+        }
         var currentTile = this.getCenterTile();
 
         var possibleTiles = game.currentMap.getWalkableUnfoggyNeighbors(currentTile);

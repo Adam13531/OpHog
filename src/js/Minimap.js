@@ -47,6 +47,13 @@
         viewH: 5,
 
         /**
+         * The position of the minimap panel. This should always be a corner
+         * (e.g. LEFT | UP, RIGHT | DOWN, etc.).
+         * @type {game.DirectionFlags}
+         */
+        position: game.DirectionFlags.RIGHT | game.DirectionFlags.UP,
+
+        /**
          * We draw the entire map ONCE to a canvas so that the performance is
          * good.
          * @type {Object}
@@ -67,8 +74,25 @@
         initializedCanvas: false,
 
         /**
+         * This is used by the drag event handler to keep track of where the
+         * mouse was when you started dragging. It contains two numbers: origX
+         * and origY, which are offsets from the minimap's upper-left (which
+         * means it already took the minimap's coordinates into account).
+         * @type {Object}
+         */
+        dragStartPos: {},
+
+        /**
+         * Indicates whether the minimap is visible.
+         * @type {Boolean}
+         */
+        visible: true,
+
+        /**
          * When you switch to a new map, you should call this function. It will
          * set up the canvas so that it reflects what the map is looking at.
+         *
+         * This should be called after the Camera is initialized.
          */
         initialize: function() {
             if ( !this.initializedCanvas ) {
@@ -79,12 +103,110 @@
                 this.minimapCanvas.height = this.height;
 
                 this.minimapCtx = this.minimapCanvas.getContext("2d");
+
+                // Set the initial minimap position
+                this.setPanelPosition(this.position);
             }
 
             this.drawMapToMinimapCanvas();
 
             this.zoomChanged();
             this.panChanged();
+        },
+
+        /**
+         * When the browser size changes, call this function. It will adjust the
+         * position of the minimap so that it isn't offscreen.
+         */
+        browserSizeChanged: function() {
+            this.setPanelPosition(this.position, false);
+        },
+
+        /**
+         * Positions the panel according to the direction passed in.
+         *
+         * The Camera needs to have been initialized before this can be called.
+         * @param {game.DirectionFlags} directionFlags - OR'd directions.
+         * @param {Boolean} restoreIfHidden - if true, this will make the
+         * minimap visible. That way, when you move the minimap, it
+         * auto-restores so that you realize what you just did.
+         */
+        setPanelPosition: function(directionFlags, restoreIfHidden) {
+            var PADDING = 5;
+            var APPROXIMATE_BUTTON_WIDTH = 25;
+
+            // If we don't set anything below, then these will be the final
+            // coordinates.
+            var x = PADDING;
+            var y = PADDING;
+
+            this.position = directionFlags;
+
+            var rightFlagSet = (directionFlags & game.DirectionFlags.RIGHT) != 0;
+            var downFlagSet = (directionFlags & game.DirectionFlags.DOWN) != 0;
+            var upFlagSet = (directionFlags & game.DirectionFlags.UP) != 0;
+
+            if ( rightFlagSet ) x = game.canvasWidth - this.width - PADDING - APPROXIMATE_BUTTON_WIDTH;
+            if ( downFlagSet ) y = game.canvasHeight - this.height - PADDING;
+
+            // If it's at the upper right, then we have to make sure the minimap
+            // doesn't cover the settings button.
+            if ( rightFlagSet && upFlagSet ) x -= PADDING + APPROXIMATE_BUTTON_WIDTH;
+
+            if ( restoreIfHidden ) this.visible = true;
+
+            this.setPanelPositionViaCoords(x, y);
+        },
+
+        /**
+         * Position the minimap panel to the specified screen coordinates.
+         * @param {Number} x - X, in screen coordinates
+         * @param {Number} y - Y, in screen coordinates
+         */
+        setPanelPositionViaCoords: function(x,y) {
+            this.x = x;
+            this.y = y;
+
+            // Update the location of the restore button.
+            this.setVisible(this.visible);
+        },
+
+        /**
+         * Toggle the visibility of the minimap.
+         */
+        toggleVisibility: function() {
+            this.setVisible(!this.visible);
+        },
+
+        /**
+         * Set the visibility of the minimap. This also modifies the position
+         * and icon of the minimize/restore button.
+         * @param {Boolean} visibility - if true, show the minimap.
+         */
+        setVisible: function(visibility) {
+            var $toggleMinimapVisibility = $('#toggleMinimapVisibility');
+            this.visible = visibility;
+
+            // Change the icon and positioning
+            var icon = this.visible ? 'ui-icon-minus' : 'ui-icon-arrow-4-diag';
+            var leftPosition = this.visible ? this.width + 2 : 0;
+            $toggleMinimapVisibility.button( 'option', 'icons', { primary: icon } );
+
+            // Default position for the minimize/restore button is to the right of the minimap.
+            var top = this.y - 5;
+            var left = this.x + leftPosition;
+
+            // Always set the minimize/restore button to be in a corner of the
+            // screen when the minimap is hidden.
+            if ( !this.visible ) {
+                if ( (this.position & game.DirectionFlags.RIGHT) != 0 ) left += this.width;
+                if ( (this.position & game.DirectionFlags.DOWN) != 0 ) top += this.height - $toggleMinimapVisibility.height();
+            }
+
+            $toggleMinimapVisibility.css({
+                top: top + 'px',
+                left: left + 'px'
+            });
         },
 
         /**
@@ -100,15 +222,18 @@
             tileWidth = Math.ceil(tileWidth);
             tileHeight = Math.ceil(tileHeight);
 
+            // Clear the context first
+            this.minimapCtx.clearRect(0, 0, this.width, this.height);
+
             for (var y = 0; y < game.currentMap.numRows; y++) {
                 for (var x = 0; x < game.currentMap.numCols; x++) {
                     index = y * game.currentMap.numCols + x;
                     tile = game.currentMap.mapTiles[index];
 
                     if ( tile.isWalkable() ) {
-                        this.minimapCtx.fillStyle = 'rgba(0,255,0,1)';
+                        this.minimapCtx.fillStyle = 'rgba(0,255,0,.55)';
                     } else {
-                        this.minimapCtx.fillStyle = 'rgba(37,37,37,1)';
+                        this.minimapCtx.fillStyle = 'rgba(37,37,37,.55)';
                     }
 
                     var drawX = Math.round(x * tileWidth);
@@ -117,6 +242,73 @@
                     this.minimapCtx.fillRect(drawX, drawY, tileWidth, tileHeight);
                 }
             }
+        },
+
+        /**
+         * @param  {Number} x - X, in screen coordinates
+         * @param  {Number} y - Y, in screen coordinates
+         * @return {Boolean} - true if the specified point is in the minimap
+         * boundaries.
+         */
+        pointInMinimap: function(x, y) {
+            return game.util.pointInRect(x, y, this.x, this.y, this.width, this.height);
+        },
+
+        /**
+         * Centers the minimap on the specified coordinates.
+         * @param  {Number} x - X, in screen coordinates
+         * @param  {Number} y - Y, in screen coordinates
+         */
+        centerMinimapOn: function(x, y) {
+            // Convert to minimap coordinates
+            x -= this.x;
+            y -= this.y;
+
+            // Convert to world coordinates
+            var worldX = (x / this.width) * game.currentMap.widthInPixels;
+            var worldY = (y / this.height) * game.currentMap.heightInPixels;
+
+            // Scroll to the world coordinates
+            game.Camera.panInstantlyTo(worldX, worldY, true);
+        },
+
+        /**
+         * Handles what happens when a drag event starts over the minimap.
+         * @param  {Object} event - the drag event
+         */
+        handleDragStart: function(event) {
+
+            // Simply set the starting position.
+            this.dragStartPos = {
+                origX: event.gesture.center.pageX - this.x,
+                origY: event.gesture.center.pageY - this.y
+            };
+        },
+
+        /**
+         * Handles what happens when you continuously drag over the minimap.
+         *
+         * For this to be triggered, a drag must be started over the minimap, so
+         * if you start dragging on another canvas or a DOM element and move the
+         * mouse over the minimap, this will not be triggered.
+         * @param  {Object} event - the drag event
+         */
+        handleDragEvent: function(event) {
+            // Shorthand
+            var deltaX = event.gesture.deltaX;
+            var deltaY = event.gesture.deltaY;
+
+            // Get the original drag positions (which are already in minimap
+            // coordinates).
+            var origX = this.dragStartPos.origX;
+            var origY = this.dragStartPos.origY;
+
+            // Convert to world coordinates
+            var finalX = Math.max(0, (origX + deltaX)) / this.width * game.currentMap.widthInPixels;
+            var finalY = Math.max(0, (origY + deltaY)) / this.height * game.currentMap.heightInPixels;
+
+            // Scroll to those coordinates
+            game.Camera.panInstantlyTo(finalX, finalY, true);
         },
 
         /**
@@ -161,18 +353,16 @@
          * @param  {Object} ctx - the canvas context
          */
         draw: function(ctx) {
+            if ( !this.visible ) return;
+
             ctx.save();
 
-            // Draw the PANEL rectangle
-            ctx.fillStyle = 'rgba(0,0,0,1)';
-            ctx.fillRect(this.x, this.y, this.width, this.height);
-
-            // Draw the minimap data
+            // Draw the minimap data, which acts as our background
             ctx.drawImage(this.minimapCanvas, this.x, this.y);
 
             // Draw the VIEW rectangle
             ctx.strokeStyle = '#ffffff';
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
             ctx.strokeRect(this.x + this.viewX, this.y + this.viewY, this.viewW, this.viewH);
 
             // Draw a foreground rectangle around the whole minimap

@@ -47,7 +47,7 @@
          *         dictates what 'y' represents. Default: 'top'. There are other
          *         values, but I can't reliably compute height, so they may appear
          *         out of bounds if you use them: http://www.w3schools.com/tags/canvas_textbaseline.asp
-         *         {Boolean} clamp  - if true, this will clamp world coordinates to the world size. Defaults to true.
+         *         {Boolean} clamp  - if true, this will clamp world coordinates to the world size or screen coordinates to the screen size. Defaults to true.
          *         {Boolean} treatXAsCenter  - if true, this will center the 
          *         text at that X coordinate, otherwise it will put the text's 
          *         left side at the X. Defaults to true.
@@ -82,10 +82,7 @@
                 x -= width / 2;
             } 
 
-            // Clamp to world coordinates
-            if ( !useScreenCoordinates && clamp ) {
-                x = Math.max(0, Math.min(x, game.currentMap.widthInPixels - width));
-
+            if ( clamp ) {
                 // To figure out where the 'y' should be clamped, we need to
                 // take our baseline into account.
                 //
@@ -101,15 +98,24 @@
                 }
 
                 var bottomY = topY + height;
-                var lowestPossibleCoord = game.currentMap.heightInPixels - height;
+                var lowestPossibleYCoord;
+
+                if ( useScreenCoordinates ) {
+                    x = Math.max(0, Math.min(x, game.canvasWidth));
+                    lowestPossibleYCoord = game.canvasHeight - height;
+
+                } else {
+                    x = Math.max(0, Math.min(x, game.currentMap.widthInPixels - width));
+                    lowestPossibleYCoord = game.currentMap.heightInPixels - height;
+                }
 
                 // There should never be a case where our font is bigger than
                 // the screen, so the below can be an 'else if' and not just an
                 // 'if'.
                 if ( topY < 0 ) {
                     y -= topY;
-                } else if ( bottomY >= lowestPossibleCoord ) {
-                    y -= (bottomY - lowestPossibleCoord);
+                } else if ( bottomY >= lowestPossibleYCoord ) {
+                    y -= (bottomY - lowestPossibleYCoord);
                 }
             }
             

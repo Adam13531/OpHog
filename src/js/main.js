@@ -73,13 +73,19 @@
         game.MinigameUI.setupUI();
 
         var $canvas = $('#canvas');
-        var canvasPos = $canvas.position();
         var $lowGraphicsButton = $('#graphicsLow');
         var $highGraphicsButton = $('#graphicsHigh');
         var $audioOffButton = $('#audioOff');
         var $audioOnButton = $('#audioOn');
+        var $soundSlider = $('#soundSlider');
+        var $musicSlider = $('#musicSlider');
+        var $minimapUpLeftButton = $('#minimapUpLeft');
+        var $minimapUpRightButton = $('#minimapUpRight');
+        var $minimapDownLeftButton = $('#minimapDownLeft');
+        var $minimapDownRightButton = $('#minimapDownRight');
 
         var $settingsButton = $('#settingsButton');
+        var $toggleMinimapVisibility = $('#toggleMinimapVisibility');
         var $showInventory = $('#showInventory');
         var $showQuests = $('#showQuests');
         var $showShop = $('#showShop');
@@ -97,6 +103,19 @@
             $settingsDialog.dialog('open');
             $settingsButton.hide();
         });
+
+        $toggleMinimapVisibility.button({
+            icons: {
+                primary: 'ui-icon-minus'
+            },
+            text: false
+        });
+        $toggleMinimapVisibility.click(function() {
+            game.Minimap.toggleVisibility();
+        });
+
+        // Set it to whatever we coded the minimap to be.
+        game.Minimap.setVisible(game.Minimap.visible);
 
         game.GameStateManager.setupTransitionButtons();
 
@@ -173,6 +192,8 @@
                 duration: game.DIALOG_HIDE_MS
             },
 
+            maxHeight: 470,
+
             // Wrap the dialog in a span so that it gets themed correctly.
             // 
             // An alternative to this would be to make a 'create' event with:
@@ -225,6 +246,84 @@
             game.AudioManager.setAudioEnabled(true);
         });
 
+        $minimapUpLeftButton.button({
+            icons: {
+            primary: 'ui-icon-arrow-1-nw'
+            },
+            text: false
+        });
+        $minimapUpRightButton.button({
+            icons: {
+                primary: 'ui-icon-arrow-1-ne'
+            },
+            text: false
+        });
+        $minimapDownLeftButton.button({
+            icons: {
+                primary: 'ui-icon-arrow-1-sw'
+            },
+            text: false
+        });
+        $minimapDownRightButton.button({
+            icons: {
+                primary: 'ui-icon-arrow-1-se'
+            },
+            text: false
+        });
+
+        $minimapUpLeftButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.Minimap.setPanelPosition(game.DirectionFlags.UP | game.DirectionFlags.LEFT, true);
+        });
+        $minimapUpRightButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.Minimap.setPanelPosition(game.DirectionFlags.UP | game.DirectionFlags.RIGHT, true);
+        });
+        $minimapDownLeftButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.LEFT, true);
+        });
+        $minimapDownRightButton.click(function() {
+            $settingsDialog.dialog('close');
+            game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.RIGHT, true);
+        });
+
+        // Set up the audio volume sliders
+        $.each([$soundSlider, $musicSlider], function(index, value) {
+            value.slider({
+                min:0,
+                max:100,
+                value:50,
+                range:'max',
+                slide: function( event, ui ) {
+                    var sliderValue = ui.value;
+                    var max = value.slider('option', 'max');
+                    var percent = sliderValue / max;
+                    var green = Math.round((percent) * 255);
+                    green = Math.min(255, Math.max(0, green));
+                    value.css({
+                        'background': '#00' + green.toString(16) + '00'
+                    });
+
+                    // We're in a $.each here, so make sure we're modifying the
+                    // correct audio volume.
+                    if ( value === $soundSlider ) {
+                        game.AudioManager.soundVolume = sliderValue;
+                    } else {
+                        game.AudioManager.musicVolume = sliderValue;
+                    }
+                }
+            });
+        });
+
+        $('#soundSlider > .ui-slider-range').css({
+            'background': '#000'
+        });
+
+        $('#musicSlider > .ui-slider-range').css({
+            'background': '#000'
+        });
+
         // To see what's in Hammer events, look at their wiki (currently located
         // here: https://github.com/EightMedia/hammer.js/wiki/Getting-Started).
         // 
@@ -251,6 +350,11 @@
             var worldY = game.Camera.canvasYToWorldY(offsetY);
             var tileX = Math.floor(worldX / game.TILESIZE);
             var tileY = Math.floor(worldY / game.TILESIZE);
+
+            if ( game.Minimap.pointInMinimap(offsetX, offsetY) ) {
+                game.Minimap.centerMinimapOn(offsetX, offsetY);
+                return;
+            }
 
             // Make sure the tile is in-bounds
             if ( tileX < 0 || tileX >= game.currentMap.numCols || tileY < 0 || tileY >= game.currentMap.numRows ) {
@@ -290,6 +394,7 @@
         $(window).resize(function() {
             game.Camera.browserSizeChanged();
             game.DialogManager.browserSizeChanged();
+            game.Minimap.browserSizeChanged();
         });
 
         $canvas.mousewheel(game.Camera.getMouseWheelEventHandler());
@@ -367,14 +472,14 @@
                 game.UICanvas.highlightNewUnit(game.DirectionFlags.LEFT);
             }
 
-            // 'Up' arrow key
+            // 'Up' arrow key - select previous spawner
             if ( evt.keyCode == game.Key.DOM_VK_UP ) {
-                game.UICanvas.highlightNewUnit(game.DirectionFlags.UP);
+                game.UnitPlacementUI.selectSpawner(false);
             }            
 
-            // 'Down' arrow key
+            // 'Down' arrow key - select next spawner
             if ( evt.keyCode == game.Key.DOM_VK_DOWN ) {
-                game.UICanvas.highlightNewUnit(game.DirectionFlags.DOWN);
+                game.UnitPlacementUI.selectSpawner(true);
             }
 
         });
@@ -616,11 +721,14 @@
         // commands.
         ctx.restore();
         game.TextManager.draw(ctx);
-        game.GameStateManager.draw(ctx);
 
         game.Player.drawCastleLife(ctx);
 
         game.Camera.concealOutOfBoundsAreas(ctx);
+
+        // The stuff that is drawn now will show up even over the "concealed"
+        // areas.
+        game.GameStateManager.draw(ctx);
         game.Player.drawCoinTotal(ctx);
         game.Minimap.draw(ctx);
 

@@ -51,7 +51,7 @@
             <button style="display:none;z-index:0" id='goToOverworldButton'></button>
         </span>
 	    
-	    <div id="inventory-screen" title="Inventory">
+	    <div id="inventory-screen" title="Inventory" class="no-text-select">
 
             <!-- Top part -->
             <div id="top_part_with_characters_and_items" style="position:absolute;top:0px;left:0px;width:100%;margin-top:5px">
@@ -69,10 +69,10 @@
             </div>
 
             <!-- Bottom part -->
-			<div id="item-description" class="equip-slot" style="position:absolute;top:150px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
+			<div id="item-description" class="equip-slot text-select" style="position:absolute;top:150px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
 	    </div>
 
-        <div id="shop-screen" title="Shop">
+        <div id="shop-screen" title="Shop" class="no-text-select">
             <div id="shop_div_without_item_description_in_it" style="position:absolute;top:0px;left:0px;width:100%;margin-top:5px">
                 <div id="shop_div_buy_button_and_timer" style="width: 340px;margin: 0px auto;">
                     <button id="shopBuyButton" style="margin-bottom:5px; font-size:.75em">Buy</button>
@@ -85,12 +85,12 @@
             </div>
 
             <!-- Description text of the selected item -->
-            <div id="shopui-item-description" class="equip-slot" style="position:absolute;top:120px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
+            <div id="shopui-item-description" class="equip-slot text-select" style="position:absolute;top:120px;left:0px;border:1px solid gray;width:99%;height:132px"></div>
         </div>
 
         <div id="loot-ui" title="Loot"></div>
         <div id="quest-ui" title="Quests"></div>
-        <div id="minigame-ui" title="Minigame"></div>
+        <div id="minigame-ui" title="Minigame" class="no-text-select"></div>
 
         <!-- This is used for styling the loot UI -->
         <span style="opacity:.95" class="le-frog" id="lootUIDialogThemeSpan"></span>
@@ -112,6 +112,11 @@
             <button style="width:25px;" id='settingsButton'></button>
         </span>
 
+        <!-- The button to minimize/restore the minimap -->
+        <span class="le-frog">
+            <button style="width:25px;" id='toggleMinimapVisibility'></button>
+        </span>
+
         <!-- These are the contents of the settings UI. display:none is given so that there's no vertical scrollbar on the page as it's loading. When you open the settings dialog, that property will be removed automatically by JQuery UI.  -->
         <div style="border:1px solid gray;background-color:#373737;display:none" id="settingsDialog" title="Settings">
             <button style="margin-top:5px;" id='showInventory'>Show inventory</button><br/>
@@ -127,6 +132,15 @@
             <div style="margin-top:5px">Audio:</div>
             <input type="radio" name="audioSetting" id="audioOff"/><label for="audioOff">Off</label>
             <input type="radio" name="audioSetting" id="audioOn"/><label for="audioOn">On</label><br/>
+            <div style="margin-top:5px">Sound:</div>
+            <div id="soundSlider"></div>
+            <div style="margin-top:5px">Music:</div>
+            <div id="musicSlider"></div>
+            <div style="margin-top:5px">Minimap position:</div>
+            <input type="radio" name="minimapSetting" id="minimapUpLeft"/><label for="minimapUpLeft"></label>
+            <input type="radio" name="minimapSetting" id="minimapUpRight"/><label for="minimapUpRight"></label><br/>
+            <input type="radio" name="minimapSetting" id="minimapDownLeft"/><label for="minimapDownLeft"></label>
+            <input type="radio" name="minimapSetting" id="minimapDownRight"/><label for="minimapDownRight"></label><br/>
         </div>
 
         <div id='useItemInstructions' style="background-color:#22a050;color:white;text-align:center;"></div>
@@ -159,6 +173,7 @@
         <script src="js/GraphicsUtil.js"></script>
         <script src="js/KeyEventConstants.js"></script>
         <script src="js/Camera.js"></script>
+        <script src="js/PuzzlePiece.js"></script>
         <script src="js/Minimap.js"></script>
         <script src="js/GameStateManager.js"></script>
         <script src="js/SpriteSheet.js"></script>
@@ -180,7 +195,6 @@
         <script src="js/item/mod/Thorns.js"></script>
         <script src="js/item/mod/ReduceDamage.js"></script>
         <script src="js/item/mod/MultipleProjectiles.js"></script>
-        <script src="js/PuzzlePiece.js"></script>
         <script src="js/Tileset.js"></script>
         <script src="js/TilesetManager.js"></script>
         <script src="js/AddLoadProgress.js"></script>
