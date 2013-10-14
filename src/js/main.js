@@ -11,7 +11,10 @@
     var ctx = null;
 
     // Prevent these keys from doing their default action.
-    var browserKeysToStop = new Array(game.Key.DOM_VK_PAGE_UP, game.Key.DOM_VK_PAGE_DOWN, game.Key.DOM_VK_END, game.Key.DOM_VK_HOME, game.Key.DOM_VK_LEFT, game.Key.DOM_VK_UP, game.Key.DOM_VK_RIGHT, game.Key.DOM_VK_DOWN, game.Key.DOM_VK_SPACE);
+    var browserKeysToStop = new Array(game.Key.DOM_VK_PAGE_UP, game.Key.DOM_VK_PAGE_DOWN, 
+        game.Key.DOM_VK_END, game.Key.DOM_VK_HOME, game.Key.DOM_VK_LEFT, game.Key.DOM_VK_UP, 
+        game.Key.DOM_VK_RIGHT, game.Key.DOM_VK_DOWN, game.Key.DOM_VK_SPACE, 
+        game.Key.DOM_VK_F7/*I don't even think F7 does anything*/);
 
     // This is a dictionary of keycode --> boolean representing whether it is held.
     var keysDown = {};
@@ -62,6 +65,12 @@
      */
     function setStartingGameState() {
         game.GameStateManager.switchToOverworldMap();
+
+        // Now that the overworld map is setup, check to see if we have a saved
+        // game to load.
+        if ( game.GameDataManager.hasSavedGame() ) {
+            game.GameDataManager.loadGame();
+        }
 
         // Uncomment this if you want to jump directly to normal gameplay when
         // you first start the game.
@@ -301,8 +310,13 @@
                     var percent = sliderValue / max;
                     var green = Math.round((percent) * 255);
                     green = Math.min(255, Math.max(0, green));
+                    paddedGreenString = green.toString(16);
+
+                    // If 'green' is 10, then the string will be 'a', but it
+                    // SHOULD be '0a', so pad it here.
+                    if ( paddedGreenString.length != 2 ) paddedGreenString = '0' + paddedGreenString;
                     value.css({
-                        'background': '#00' + green.toString(16) + '00'
+                        'background': '#00' + paddedGreenString + '00'
                     });
 
                     // We're in a $.each here, so make sure we're modifying the
@@ -531,6 +545,11 @@
             // 'F' - Clears all fog from current map
             if ( evt.keyCode == game.Key.DOM_VK_F) {
                 game.currentMap.clearAllFog();
+            }
+
+            // 'F7' - delete the save file
+            if ( evt.keyCode == game.Key.DOM_VK_F7) {
+                game.GameDataManager.deleteSavedGame();
             }
 
             // 'U' - shake the camera
