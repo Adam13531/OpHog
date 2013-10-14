@@ -11,7 +11,10 @@
     var ctx = null;
 
     // Prevent these keys from doing their default action.
-    var browserKeysToStop = new Array(game.Key.DOM_VK_PAGE_UP, game.Key.DOM_VK_PAGE_DOWN, game.Key.DOM_VK_END, game.Key.DOM_VK_HOME, game.Key.DOM_VK_LEFT, game.Key.DOM_VK_UP, game.Key.DOM_VK_RIGHT, game.Key.DOM_VK_DOWN, game.Key.DOM_VK_SPACE);
+    var browserKeysToStop = new Array(game.Key.DOM_VK_PAGE_UP, game.Key.DOM_VK_PAGE_DOWN, 
+        game.Key.DOM_VK_END, game.Key.DOM_VK_HOME, game.Key.DOM_VK_LEFT, game.Key.DOM_VK_UP, 
+        game.Key.DOM_VK_RIGHT, game.Key.DOM_VK_DOWN, game.Key.DOM_VK_SPACE, 
+        game.Key.DOM_VK_F7/*I don't even think F7 does anything*/);
 
     // This is a dictionary of keycode --> boolean representing whether it is held.
     var keysDown = {};
@@ -542,6 +545,11 @@
             // 'F' - Clears all fog from current map
             if ( evt.keyCode == game.Key.DOM_VK_F) {
                 game.currentMap.clearAllFog();
+            }
+
+            // 'F7' - delete the save file
+            if ( evt.keyCode == game.Key.DOM_VK_F7) {
+                game.GameDataManager.deleteSavedGame();
             }
 
             // 'U' - shake the camera

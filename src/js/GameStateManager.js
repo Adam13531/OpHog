@@ -42,6 +42,16 @@
         previousState: null,
 
         /**
+         * This counts down when you're in the OVERWORLD state, and when it
+         * reaches zero, it will reset the timer and save the game. That way,
+         * you don't collect a ton of coins on the overworld only to have them
+         * disappear because you didn't leave the overworld and come back (to
+         * cause the game to save).
+         * @type {Number}
+         */
+        autoSaveOnOverworldCountdown: game.SAVE_GAME_ON_OVERWORLD_INTERVAL,
+
+        /**
          * These functions simply return true/false if you're in the specified
          * state.
          */
@@ -509,6 +519,12 @@
                 // The minigame UI shouldn't be closeable, but if they somehow
                 // found a way to close it, then pop it up again.
                 game.MinigameUI.showIfHidden();
+            } else if ( this.inOverworldMap() ) {
+                this.autoSaveOnOverworldCountdown -= delta;
+                if ( this.autoSaveOnOverworldCountdown <= 0 ) {
+                    this.autoSaveOnOverworldCountdown = game.SAVE_GAME_ON_OVERWORLD_INTERVAL;
+                    game.GameDataManager.saveGame();
+                }
             }
         },
 

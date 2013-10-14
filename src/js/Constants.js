@@ -136,4 +136,10 @@
      */
     window.game.playerUsedKeyboard = false;
 
+    /**
+     * The game autosaves on the overworld every X ms.
+     * @type {Number}
+     */
+    window.game.SAVE_GAME_ON_OVERWORLD_INTERVAL = 10000;
+
 }());

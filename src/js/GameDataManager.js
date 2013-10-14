@@ -125,6 +125,14 @@
         },
 
         /**
+         * Deletes the saved game by removing everything from localStorage.
+         */
+        deleteSavedGame: function() {
+            console.log('Wiping out localStorage (deleteSavedGame was called).');
+            localStorage.clear();
+        },
+
+        /**
          * Loads everything in the game.
          */
         loadGame: function() {
