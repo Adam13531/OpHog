@@ -181,6 +181,12 @@
             };
         }
 
+        if ( item.addsAbilities !== undefined ) {
+            // If this item adds abilities, make sure that all the
+            // fields for the ability are defined.
+            game.SetDefaultAbilityAttrIfUndefined(item.addsAbilities);
+        }
+
         if ( item.usable == false || item.usable === undefined ) {
             // Make sure all equippable items have a placementCost.
             game.util.useDefaultIfUndefined(item, 'placementCost', 0);
@@ -198,11 +204,6 @@
         for ( var key in game.ItemType ) {
             var item = game.ItemType[key];
             if ( item.id == itemID ) {
-                if ( item.addsAbilities !== undefined ) {
-                    // If this items adds abilities, make sure that all the 
-                    // fields for the ability are defined.
-                    game.SetDefaultAbilityAttrIfUndefined(item.addsAbilities);
-                }
                 return item;
             }
         }
@@ -289,14 +290,15 @@
         this.cssClass = itemData.cssClass;
         this.htmlDescription = itemData.htmlDescription;
 
-        // Array of abilities that can be added to a unit from this particular item
+        // Array of abilities that can be added to a unit from this particular
+        // item
         this.abilities = [];
 
-        // Do a deep copy of the abilities to make sure the originals aren't modified
+        // Do a deep copy of the abilities to make sure the originals aren't
+        // modified
         if ( itemData.addsAbilities !== undefined ) {
             for (var i = 0; i < itemData.addsAbilities.length; i++) {
-                var ability = {};
-                ability = game.CopyAbility(itemData.addsAbilities[i]);
+                var ability = game.CopyAbility(itemData.addsAbilities[i]);
                 this.abilities.push(ability);
             };
         }

@@ -23,7 +23,7 @@
             flags |= game.RandomUnitFlags.ALLY;
         }
 
-        var possibleTargets = battle.getUnitsMatchingFlags(flags);
+        var possibleTargets = battle.getUnitsMatchingFlags(attacker.isPlayer(), flags);
         var actualTargets = [];
 
         for (var i = 0; i < this.numberOfProjectiles; i++) {
@@ -43,7 +43,9 @@
         for (var i = 0; i < actualTargets.length; i++) {
             var targetUnit = actualTargets[i];
 
-            var newProjectile = new game.Projectile(attacker.getCenterX(), attacker.getCenterY(),0,attacker,targetUnit);
+            var x = attacker.getCenterX();
+            var y = attacker.getCenterY();
+            var newProjectile = new game.Projectile(x, y, attacker.currentAbility.actionOnHit, attacker, targetUnit);
             battle.addProjectile(newProjectile);
         };
 

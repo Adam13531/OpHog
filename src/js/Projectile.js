@@ -24,8 +24,6 @@
         // functionality here.
         this.isMelee = false;
 
-        // this.graphicIndex = 0;
-
         this.diesIfTargetIsDead = true;
 
         this.graphicIndex = this.owner.currentAbility.graphicIndex;

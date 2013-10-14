@@ -770,7 +770,7 @@
 
     /**
      * Gets all the abilities for a unit plus the ones that are added because of 
-     * items. The abilities from items can replace abilites or go at the end of 
+     * items. The abilities from items can replace abilities or go at the end of 
      * the list.
      * @return {Array:game.Ability} Abilities for the unit plus the ones that 
      * are factored in based on items.
@@ -811,8 +811,11 @@
         var battle = this.battleData.battle;
         var abilitiesList = this.getAbilitiesBasedOnItems();
         var targetUnit = null;
+        this.currentAbility = null;
         switch ( this.abilityAI ) {
             case game.AbilityAI.RANDOM:
+                // TODO: refactor this so that it changes abilitiesList instead
+                // of randomly picking another
                 while ( targetUnit == null ) {
                     var randomAbility = game.util.randomFromWeights(abilitiesList);
                     targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), randomAbility.allowedTargets);
@@ -824,10 +827,7 @@
                 var reviveAbility = this.getAbility(game.Ability.REVIVE.id, abilitiesList);
                 targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), reviveAbility.allowedTargets);
                 if ( targetUnit != null) {
-                    this.currentAbility = this.getAbility(game.Ability.REVIVE.id, abilitiesList);
-                } else {
-                    this.currentAbility = this.getAbility(game.Ability.ATTACK.id, abilitiesList);
-                    targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.currentAbility.allowedTargets);
+                    this.currentAbility = reviveAbility;
                 }
                 break;
 
@@ -835,16 +835,18 @@
                 var healAbility = this.getAbility(game.Ability.HEAL.id, abilitiesList);
                 targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), healAbility.allowedTargets);
                 if ( targetUnit != null) {
-                    this.currentAbility = this.getAbility(game.Ability.HEAL.id, abilitiesList);
-                } else {
-                    this.currentAbility = this.getAbility(game.Ability.ATTACK.id, abilitiesList);
-                    targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.currentAbility.allowedTargets);
+                    this.currentAbility = healAbility;
                 }
                 break;
 
             case game.AbilityAI.ALWAYS_SUMMON:
                 this.currentAbility = this.getAbility(game.Ability.SUMMON.id, abilitiesList);
-                var newUnit = new game.Unit(game.UnitType.TREE.id,game.PlayerFlags.SUMMON | game.PlayerFlags.ENEMY,1);
+                var flags = game.PlayerFlags.ENEMY;
+                if ( this.isPlayer() ) {
+                    flags = game.PlayerFlags.PLAYER;
+                }
+                flags |= game.PlayerFlags.SUMMON;
+                var newUnit = new game.Unit(game.UnitType.TREE.id, flags, 1);
                 newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
                 game.UnitManager.addUnit(newUnit);
 
@@ -867,6 +869,12 @@
                 break;
         }
 
+        // If we didn't pick an ability, then default to attack.
+        if ( this.currentAbility == null ) {
+            this.currentAbility = this.getAbility(game.Ability.ATTACK.id, abilitiesList);
+            targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.currentAbility.allowedTargets);
+        }
+
         // If a unit has been summoned, don't make projectiles or anything
         if ( this.currentAbility.id == game.Ability.SUMMON.id ) {
             return;
@@ -882,8 +890,10 @@
             }
         };
 
-        var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),this.currentAbility.actionOnHit,this,targetUnit);
-        battle.addProjectile(newProjectile);
+        if ( !modifiedAttack ) {
+            var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),this.currentAbility.actionOnHit,this,targetUnit);
+            battle.addProjectile(newProjectile);
+        }
     };
 
     /**
@@ -974,6 +984,7 @@
 
             case game.ActionOnHit.HEAL:
                 targetUnit.modifyLife(damage, true, false);
+                break;
             case game.ActionOnHit.REVIVE:
             default:
                 // If the target is already alive, then we don't do anything here.

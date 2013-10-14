@@ -67,7 +67,6 @@
     window.game.AbilityAI = {
         USE_ABILITY_0_WHENEVER_POSSIBLE: 'use ability 0 whenever possible',
         RANDOM: 'random',
-        RANDOM_ATTACK: 'random attack',
         USE_REVIVE_IF_POSSIBLE: 'use revive if possible',
         ALWAYS_SUMMON: 'always summon',
         USE_HEAL_IF_POSSIBLE: 'use heal if possible'
@@ -244,7 +243,7 @@
     //  life - see atk
     //  chanceToDropItem - Number - the chance to drop any item
     //  itemsDropped - Array:LootTableEntry
-    //  abilities - game.Ability - abilities that this unit will have. Abilites that
+    //  abilities - game.Ability - abilities that this unit will have. Abilities that
     //  are defined in game.Ability can be overridden
     window.game.UnitType = {
         ORC: {
@@ -642,8 +641,6 @@
 
                 unitData.level = level;
 
-                game.SetDefaultAbilityAttrIfUndefined(unitData.abilities);
-
                 break;
             }
         }
@@ -664,11 +661,13 @@
      * Displays an error if a necessary ability attribute was never defined. 
      * These are programmer errors, which means we need to go add this attribute 
      * to ability.
-     * @param {game.Abiltiy} ability - Ability with the undefined attribute
+     * @param {game.Ability} ability - Ability with the undefined attribute
      * @param {String} undefinedAttribute - Name of the undefined attribute
      */
     window.game.DisplayUndefinedAbilityError = function(ability, undefinedAttribute) {
-        console.log('ERROR: Ability with id: ' + ability.id  + ' has ' + undefinedAttribute + ' undefined.');
+        if ( ability[undefinedAttribute] === undefined ) {
+            console.log('ERROR: Ability with id: ' + ability.id  + ' has ' + undefinedAttribute + ' undefined.');
+        }
     };
 
     /**
@@ -682,20 +681,15 @@
         for ( var i = 0; i < abilitiesList.length; i++ ) {
             var unitAbility = abilitiesList[i];
             var abilityData = game.GetAbilityDataFromID(unitAbility.id);
+            game.DisplayUndefinedAbilityError(abilityData, 'allowedTargets');
+            game.DisplayUndefinedAbilityError(abilityData, 'actionOnHit');
+            game.DisplayUndefinedAbilityError(abilityData, 'damageFormula');
+
             game.util.useDefaultIfUndefined(abilitiesList[i], 'graphicIndex', abilityData.graphicIndex);
             game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', abilityData.relativeWeight);
             game.util.useDefaultIfUndefined(abilitiesList[i], 'allowedTargets', abilityData.allowedTargets);
-            if ( abilitiesList[i].allowedTargets === undefined ) {
-                game.DisplayUndefinedAbilityError(abilitiesList[i], 'allowedTargets');
-            }
             game.util.useDefaultIfUndefined(abilitiesList[i], 'actionOnHit', abilityData.actionOnHit);
-            if ( abilitiesList[i].actionOnHit === undefined ) {
-                game.DisplayUndefinedAbilityError(abilitiesList[i], 'actionOnHit');
-            }
             game.util.useDefaultIfUndefined(abilitiesList[i], 'damageFormula', abilityData.damageFormula);
-            if ( abilitiesList[i].damageFormula === undefined ) {
-                game.DisplayUndefinedAbilityError(abilitiesList[i], 'damageFormula');
-            }
         }
     };
 
@@ -705,14 +699,13 @@
      * @return {game.Ability} New copy of the ability
      */
     window.game.CopyAbility = function(originalAbility) {
-            var newAbility = {};
-            newAbility.id = originalAbility.id;
-            newAbility.graphicIndex = originalAbility.graphicIndex;
-            newAbility.relativeWeight = originalAbility.relativeWeight;
-            newAbility.allowedTargets = originalAbility.allowedTargets;
-            newAbility.actionOnHit = originalAbility.actionOnHit;
-            newAbility.damageFormula = originalAbility.damageFormula;
-            return newAbility;
+        var newAbility = {};
+
+        // If you ever have any non-primitive data (e.g. an array), then you
+        // need to manually copy that over. In that case, make sure to specify
+        // the name in 'propsToIgnore' in copyProps.
+        game.GameDataManager.copyProps(originalAbility, newAbility);
+        return newAbility;
     };
 
     /**
@@ -793,11 +786,15 @@
             if ( !game.HasAbility(game.Ability.ATTACK.id, unitType.abilities) ) {
                 unitType.abilities.push( {id:game.Ability.ATTACK.id} );
             }
+            
+            // Now that it at least has ATTACK, fill in any missing ability
+            // data.
+            game.SetDefaultAbilityAttrIfUndefined(unitType.abilities);
 
-            // if absolutely no ability AI is defined, give this unit a default 
+            // If absolutely no ability AI is defined, give this unit a default 
             // one here.
             if ( unitType.abilityAI === undefined ) {
-                unitType.abilityAI = game.AbilityAI.USE_ABILITY_0_WHENEVER_POSSIBLE;
+                unitType.abilityAI = game.AbilityAI.RANDOM;
             }
 
             game.util.useDefaultIfUndefined(unitType, 'width', DEFAULT_UNIT_WIDTH);
