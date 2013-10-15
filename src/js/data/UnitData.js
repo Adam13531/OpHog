@@ -704,7 +704,7 @@
         // If you ever have any non-primitive data (e.g. an array), then you
         // need to manually copy that over. In that case, make sure to specify
         // the name in 'propsToIgnore' in copyProps.
-        game.GameDataManager.copyProps(originalAbility, newAbility);
+        game.util.copyProps(originalAbility, newAbility);
         return newAbility;
     };
 

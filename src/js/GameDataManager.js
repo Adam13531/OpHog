@@ -241,24 +241,6 @@
         },
 
         /**
-         * Copies all properties from one object to another EXCEPT for
-         * propsToIgnore.
-         * @param  {Object} sourceObject  - the object from which to copy
-         * properties
-         * @param  {Object} destObject    - the object to copy properties to
-         * @param  {Array:String} propsToIgnore - an array of properties NOT to
-         * copy.
-         */
-        copyProps: function(sourceObject, destObject, propsToIgnore) {
-            if ( propsToIgnore === undefined ) propsToIgnore = [];
-            for ( var prop in sourceObject ) {
-                if ( sourceObject.hasOwnProperty(prop) && propsToIgnore.indexOf(prop) == -1 ) {
-                    destObject[prop] = sourceObject[prop];
-                }
-            }
-        },
-
-        /**
          * Saves the inventory.
          */
         saveInventory: function() {
@@ -282,7 +264,7 @@
             for (var i = 0; i < parsedInventory.slots.length; i++) {
                 var parsedSlot = parsedInventory.slots[i];
                 var finalSlot = new game.PlayerSlot(parsedSlot.slotType, parsedSlot.slotIndex);
-                this.copyProps(parsedSlot, finalSlot, []);
+                game.util.copyProps(parsedSlot, finalSlot, []);
                 finalSlots.push(finalSlot);
 
                 // The following line of code assumes that we never change the
@@ -294,7 +276,7 @@
                 var finalItem = null;
                 if ( parsedItem != null ) {
                     finalItem = new game.Item(parsedItem.itemID);
-                    this.copyProps(parsedItem, finalItem, []);
+                    game.util.copyProps(parsedItem, finalItem, []);
 
                     var finalMods = game.ItemMod.rehydrateMods(parsedItem.mods);
                     finalItem.mods = finalMods;
@@ -354,7 +336,7 @@
 
                 // battleData will be set when the unit is added to a battle.
                 // mods will be set in this function.
-                this.copyProps(parsedUnit, finalUnit, ['battleData', 'mods']);
+                game.util.copyProps(parsedUnit, finalUnit, ['battleData', 'mods']);
 
                 // Change tiles so that they point to the correct objects with
                 // leftList and rightList set (tileIndex is still valid).
@@ -369,7 +351,7 @@
 
                     // Ignore 'target' because we just set it using the
                     // constructor
-                    this.copyProps(effect, finalEffect, ['target']);
+                    game.util.copyProps(effect, finalEffect, ['target']);
                     finalUnit.statusEffects[j] = finalEffect;
                 };
 
@@ -379,7 +361,7 @@
                         var lootTableEntry = finalUnit.itemsDropped[j];
                         var finalEntry = new game.LootTableEntry(lootTableEntry.itemID, lootTableEntry.relativeWeight);
 
-                        this.copyProps(lootTableEntry, finalEntry, []);
+                        game.util.copyProps(lootTableEntry, finalEntry, []);
                         finalUnit.itemsDropped[j] = finalEntry;
                     };
                 }
@@ -401,7 +383,7 @@
                     // need to copy battleData for its members like cooldown and
                     // position, but absoluteOrder is what ensures the units
                     // line up the same way.
-                    this.copyProps(parsedUnit.battleData, finalUnit.battleData, ['battle']);
+                    game.util.copyProps(parsedUnit.battleData, finalUnit.battleData, ['battle']);
                 }
 
                 finalUnits.push(finalUnit);
@@ -431,7 +413,7 @@
             for (var i = 0; i < parsedCollectibles.length; i++) {
                 var parsedCollectible = parsedCollectibles[i];
                 var finalCollectible = new game.Collectible(parsedCollectible.tileX,parsedCollectible.tileY,parsedCollectible.type);
-                this.copyProps(parsedCollectible, finalCollectible, []);
+                game.util.copyProps(parsedCollectible, finalCollectible, []);
                 finalCollectibles.push(finalCollectible);
             };
             game.CollectibleManager.collectibles = finalCollectibles;
@@ -454,7 +436,7 @@
             for (var i = 0; i < parsedGenerators.length; i++) {
                 var parsedGenerator = parsedGenerators[i];
                 var finalGenerator = new game.Generator(parsedGenerator.tileX,parsedGenerator.tileY);
-                this.copyProps(parsedGenerator, finalGenerator, []);
+                game.util.copyProps(parsedGenerator, finalGenerator, []);
 
                 // Restore each PossibleEnemy from an Object to its original
                 // type
@@ -496,7 +478,7 @@
                     // quest, then at i==1 we would end up adding to slot number
                     // 0 still. Instead, we set the 'i'th quest directly.
                     game.QuestManager.quests[i] = game.QuestManager.constructQuest(parsedQuest.type);
-                    this.copyProps(parsedQuest, game.QuestManager.quests[i], []);
+                    game.util.copyProps(parsedQuest, game.QuestManager.quests[i], []);
                 }
 
             };
@@ -525,7 +507,7 @@
             for (var i = 0; i < parsedBattles.length; i++) {
                 var parsedBattle = parsedBattles[i];
                 var finalBattle = new game.Battle(parsedBattle.centerX, parsedBattle.centerY);
-                this.copyProps(parsedBattle, finalBattle, ['enemyUnits', 'playerUnits', 'units']);
+                game.util.copyProps(parsedBattle, finalBattle, ['enemyUnits', 'playerUnits', 'units']);
 
                 // These battles do not have units or projectiles right now;
                 // they are basically empty containers. They will be added when
