@@ -496,4 +496,22 @@
         };
     };
 
+    /**
+     * Copies all properties from one object to another EXCEPT for
+     * propsToIgnore.
+     * @param  {Object} sourceObject  - the object from which to copy
+     * properties
+     * @param  {Object} destObject    - the object to copy properties to
+     * @param  {Array:String} propsToIgnore - an array of properties NOT to
+     * copy.
+     */
+    window.game.util.copyProps = function(sourceObject, destObject, propsToIgnore) {
+        if ( propsToIgnore === undefined ) propsToIgnore = [];
+        for ( var prop in sourceObject ) {
+            if ( sourceObject.hasOwnProperty(prop) && propsToIgnore.indexOf(prop) == -1 ) {
+                destObject[prop] = sourceObject[prop];
+            }
+        }
+    };
+
 }());

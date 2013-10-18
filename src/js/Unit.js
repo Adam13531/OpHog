@@ -986,7 +986,6 @@
                 targetUnit.modifyLife(damage, true, false);
                 break;
             case game.ActionOnHit.REVIVE:
-            default:
                 // If the target is already alive, then we don't do anything here.
                 // This is better than just killing the projectile as soon as the
                 // target is alive so that you can account for a case where two
@@ -997,6 +996,9 @@
                     return;
                 }
                 targetUnit.restoreLife();
+                break;
+            default:
+                console.log('ERROR: ActionOnHit: \'' + projectile.actionOnHit + '\' has not been implemented.');
                 break;
         }
     };

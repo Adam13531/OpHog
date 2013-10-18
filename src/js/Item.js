@@ -58,7 +58,7 @@
             name:'Grugtham\'s Shield',
             htmlDescription:'<font color="#660000"><b>500000 Dragon Kill Points<b/></font>',
             equippableBy: game.EquippableBy.ALL,
-            addsAbilities: [
+            modifiesAbilities: [
                 {
                     id: game.Ability.BOULDER_DROP.id,
                     relativeWeight: 9000
@@ -73,7 +73,7 @@
             name:'Skull Stab',
             htmlDescription:'<font color="#660000"><b>This sword can actually only pierce hearts.<b/></font>',
             equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
-            addsAbilities: [
+            modifiesAbilities: [
                 {
                     id: game.Ability.ATTACK.id,
                     graphicIndex: 110, // orange/red fireball
@@ -181,10 +181,10 @@
             };
         }
 
-        if ( item.addsAbilities !== undefined ) {
+        if ( item.modifiesAbilities !== undefined ) {
             // If this item adds abilities, make sure that all the
             // fields for the ability are defined.
-            game.SetDefaultAbilityAttrIfUndefined(item.addsAbilities);
+            game.SetDefaultAbilityAttrIfUndefined(item.modifiesAbilities);
         }
 
         if ( item.usable == false || item.usable === undefined ) {
@@ -296,9 +296,9 @@
 
         // Do a deep copy of the abilities to make sure the originals aren't
         // modified
-        if ( itemData.addsAbilities !== undefined ) {
-            for (var i = 0; i < itemData.addsAbilities.length; i++) {
-                var ability = game.CopyAbility(itemData.addsAbilities[i]);
+        if ( itemData.modifiesAbilities !== undefined ) {
+            for (var i = 0; i < itemData.modifiesAbilities.length; i++) {
+                var ability = game.CopyAbility(itemData.modifiesAbilities[i]);
                 this.abilities.push(ability);
             };
         }
