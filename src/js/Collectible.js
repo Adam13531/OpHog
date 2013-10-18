@@ -40,16 +40,16 @@
         // Set graphic index based on type
         switch(this.type) {
             case game.CollectibleType.BAD_LOOT:
-                this.graphicIndex = 8; // bag
+                this.graphicIndex = 209; // barrel
                 break;
             case game.CollectibleType.GOOD_LOOT:
             case game.CollectibleType.GREAT_LOOT:
-                this.graphicIndex = 0; // treasure chest
+                this.graphicIndex = 202; // treasure chest
                 break;
             case game.CollectibleType.BAD_POWERUP:
             case game.CollectibleType.GOOD_POWERUP:
             case game.CollectibleType.GREAT_POWERUP:
-                this.graphicIndex = Math.floor(Math.random() * 4) + 60; // wand
+                this.graphicIndex = 315; // cauldron
                 break;
             default:
                 console.log('Unrecognized Collectible type: ' + type);
@@ -145,7 +145,7 @@
             ctx.fillRect(worldX, worldY, game.TILESIZE, game.TILESIZE);
         }
 
-        objSheet.drawSprite(ctx, this.graphicIndex, worldX, worldY);
+        envSheet.drawSprite(ctx, this.graphicIndex, worldX, worldY);
 
         ctx.restore();
     };

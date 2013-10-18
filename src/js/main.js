@@ -41,9 +41,9 @@
     function init() {
         initSettings();
 
-        envSheet = new game.SpriteSheet(game.imagePath + '/env_32.png', game.TILESIZE, loadedSpritesheet);
-        objSheet = new game.SpriteSheet(game.imagePath + '/obj_32.png', game.TILESIZE, loadedSpritesheet);
-        charSheet = new game.SpriteSheet(game.imagePath + '/char_32.png', game.TILESIZE, loadedSpritesheet);
+        envSheet = new game.SpriteSheet(game.imagePath + '/env_24.png', game.TILESIZE, loadedSpritesheet);
+        eff24Sheet = new game.SpriteSheet(game.imagePath + '/eff_24.png', game.TILESIZE, loadedSpritesheet);
+        charSheet = new game.SpriteSheet(game.imagePath + '/char_24.png', game.TILESIZE, loadedSpritesheet);
     }
 
     /**
@@ -568,8 +568,8 @@
                 game.CollectibleManager.addNewCollectible();
             }
 
-            // 'O' - add shield to inventory
-            // 'P' - add Oculeaf to inventory
+            // 'O' - add equippable item to inventory
+            // 'P' - add usable item to inventory
             var itemID = null;
             if (evt.keyCode == game.Key.DOM_VK_O) {
                 itemID = game.ItemType.SHIELD.id;

@@ -1300,7 +1300,9 @@
         if ( this.isInBattle() && !this.isLiving() ) {
             // Draw the tombstone at the center so that it doesn't look awkward
             // for big units.
-            objSheet.drawSprite(ctx, 19, this.getCenterX() - game.TILESIZE / 2, this.getCenterY() - game.TILESIZE / 2, !this.isPlayer());              
+            // 
+            // Also, now that it says "RIP", we never hflip it.
+            envSheet.drawSprite(ctx, 28, this.getCenterX() - game.TILESIZE / 2, this.getCenterY() - game.TILESIZE / 2, false);              
         } else {
 
             // Draw all status effects

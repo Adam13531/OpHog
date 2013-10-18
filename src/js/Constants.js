@@ -76,7 +76,14 @@
      * The size of a tile.
      * @type {Number}
      */
-    window.game.TILESIZE = 32;
+    window.game.TILESIZE = 24;
+
+    /**
+     * The size a sprite on the item spritesheet. Oryx made them 32x32 even
+     * though most of the other sprites are 24x24.
+     * @type {Number}
+     */
+    window.game.ITEM_SPRITE_SIZE = 32;
 
     /**
      * Amount of ms it takes to fade in dialogs.
@@ -141,5 +148,17 @@
      * @type {Number}
      */
     window.game.SAVE_GAME_ON_OVERWORLD_INTERVAL = 10000;
+
+    /**
+     * The graphic index of spawners.
+     * @type {Number}
+     */
+    window.game.SPAWNER_GRAPHIC_INDEX = 371;
+
+    /**
+     * Graphic index of generators.
+     * @type {Number}
+     */
+    window.game.GENERATOR_GRAPHIC_INDEX = 155;
 
 }());

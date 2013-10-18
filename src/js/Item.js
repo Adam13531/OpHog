@@ -76,7 +76,7 @@
             addsAbilities: [
                 {
                     id: game.Ability.ATTACK.id,
-                    graphicIndex: 105,
+                    graphicIndex: 110, // orange/red fireball
                     allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
                     relativeWeight: 9000
                 }
@@ -107,16 +107,16 @@
             startingQuantity:3,
             cssClass:'item-sprite potion32-png'
         },
-        LEAF: {
+        REVEALER: {
             id: 5,
             itemLevel:1,
-            name:'Oculeaf',
-            htmlDescription:'<font color="#a3a3cc"><b>Consuming this will give you visions.<b/></font>',
+            name:'Vizier\'s Vision',
+            htmlDescription:'<font color="#a3a3cc"><b>The vista makes for a great vantage point.<b/></font>',
             usable:true,
             useTarget: game.UseTarget.MAP,
             stackable:true,
             startingQuantity:3,
-            cssClass:'item-sprite leaf32-png'
+            cssClass:'item-sprite eye-necklace-32-png'
         },
         POISON_GEM: {
             id: 6,
@@ -360,7 +360,7 @@
         var tileX = Math.floor(x / game.TILESIZE);
         var tileY = Math.floor(y / game.TILESIZE);
 
-        if ( this.itemID == game.ItemType.LEAF.id ) {
+        if ( this.itemID == game.ItemType.REVEALER.id ) {
             // For now, every tile will be considered valid, so we'll always set
             // 'used' to true.
             used = true;

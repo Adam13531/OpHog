@@ -16,7 +16,7 @@
         UNFOGGY: 16,
     };
 
-    window.game.CASTLE_GRAPHIC_INDEX = 93;
+    window.game.CASTLE_GRAPHIC_INDEX = 155;
 
     /**
      * Tiles do not currently have any other functions because there is only

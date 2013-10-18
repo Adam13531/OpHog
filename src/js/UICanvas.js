@@ -274,7 +274,10 @@
         drawPortrait: function(unit) {
             this.drawUnitImage(unit);
 
-            this.drawY += unit.height;
+            // 32 used to be the heights of the units before we bought the
+            // graphics, so we used to have unit.height here, now 32 is just the
+            // size we optimized this for.
+            this.drawY += 32;
             this.drawLifeBar(unit);
             this.drawExpBar(unit);
             this.drawLevel(unit);
@@ -491,7 +494,7 @@
 
             this.buyButtonUnitTypes = [];
             this.buttons = [];
-            this.drawX = -this.scrollX;
+            this.drawX = -this.scrollX + this.xPadding / 2;
 
             // This will contain all of the units you've purchased already.
             this.units = [];

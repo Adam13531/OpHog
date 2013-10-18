@@ -95,7 +95,7 @@
     window.game.Ability = {
         ATTACK: {
             id: 0,
-            graphicIndex: 92,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -105,7 +105,7 @@
 
         SKULL_THROW: {
             id: 1,
-            graphicIndex: 16,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -114,7 +114,7 @@
 
         SPIT_WEB: {
             id: 2,
-            graphicIndex: 103,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -123,7 +123,7 @@
 
         SCORPION_STING: {
             id: 3,
-            graphicIndex: 210,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -132,7 +132,7 @@
 
         SNAKE_VENOM: {
             id: 4,
-            graphicIndex: 218,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -141,7 +141,7 @@
 
         BRANCH_WHIP: {
             id: 5,
-            graphicIndex: 250,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -150,7 +150,7 @@
 
         BOULDER_DROP: {
             id: 6,
-            graphicIndex: 110,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -159,7 +159,7 @@
 
         FLAME_THROWER: {
             id: 7,
-            graphicIndex: 105,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -168,7 +168,7 @@
 
         THROWING_KNIVES: {
             id: 8,
-            graphicIndex: 53,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -177,7 +177,7 @@
 
         FIREBALL: {
             id: 9,
-            graphicIndex: 176,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -186,7 +186,7 @@
 
         BEARD_THROW: {
             id: 10,
-            graphicIndex: 128,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -195,7 +195,7 @@
 
         REVIVE: {
             id: 11,
-            graphicIndex: 127,
+            graphicIndex: 43,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.DEAD,
             actionOnHit: game.ActionOnHit.REVIVE,
@@ -248,7 +248,7 @@
     window.game.UnitType = {
         ORC: {
             id:0,
-            graphicIndexes:[138],
+            graphicIndexes:[292],
 
             atk: {
                 start: 10,
@@ -278,7 +278,7 @@
 
         SPIDER: {
             id: 1,
-            graphicIndexes:[200],
+            graphicIndexes:[251],
 
             atk: {
                 start: 10,
@@ -308,7 +308,7 @@
 
         SCORPION: {
             id: 2,
-            graphicIndexes:[198],
+            graphicIndexes:[364],
 
             atk: {
                 start: 10,
@@ -343,7 +343,7 @@
 
         SNAKE: {
             id: 3,
-            graphicIndexes:[196],
+            graphicIndexes:[248],
 
             atk: {
                 start: 10,
@@ -373,10 +373,8 @@
 
         TREE: {
             id: 4,
-            width: 2,
-            height: 2,
             name:'Treant',
-            graphicIndexes:[302,303,318,319],
+            graphicIndexes:[201],
 
             atk: {
                 start: 10,
@@ -404,10 +402,9 @@
             itemsDropped: equalChanceAllLoot
         },
 
-        CENTAUR: {
+        WOLF: {
             id: 5,
-            height: 2,
-            graphicIndexes:[421,437],
+            graphicIndexes:[243],
             atk: {
                 start: 10,
                 minGrowth: 1,
@@ -436,8 +433,7 @@
 
         DRAGON: {
             id: 6,
-            width: 2,
-            graphicIndexes:[240,241],
+            graphicIndexes:[374],
             atk: {
                 start: 10,
                 minGrowth: 1,
@@ -467,7 +463,7 @@
         PLAYER_ARCHER: {
             id: 7,
             name:'Archer',
-            graphicIndexes:[0],
+            graphicIndexes:[15],
 
             atk: {
                 start: 30,
@@ -488,7 +484,7 @@
             abilities: [
                 {
                     id: game.Ability.ATTACK.id,
-                    graphicIndex: 60,
+                    graphicIndex: 43,
                     graphicOnCrit: 61,
                     relativeWeight: 5
                 }
@@ -501,7 +497,7 @@
         PLAYER_WARRIOR: {
             id: 8,
             name:'Warrior',
-            graphicIndexes:[1],
+            graphicIndexes:[17],
 
             atk: {
                 start: 30,
@@ -534,7 +530,7 @@
         PLAYER_WIZARD: {
             id: 9,
             name:'Wizard',
-            graphicIndexes:[2],
+            graphicIndexes:[14],
 
             atk: {
                 start: 30,
@@ -570,7 +566,7 @@
         NPC_OLD_MAN_WIZARD: {
             id: 10,
             name: 'Old Man Wizard',
-            graphicIndexes:[32],
+            graphicIndexes:[49],
 
             atk: {
                 start: 30,
@@ -600,9 +596,9 @@
      * 
      * @type {Array:(Array:Number)}
      */
-    window.game.EXTRA_ARCHER_COSTUMES = [game.UnitType.PLAYER_ARCHER.graphicIndexes, [352],[353],[354],[355]];
-    window.game.EXTRA_WARRIOR_COSTUMES = [game.UnitType.PLAYER_WARRIOR.graphicIndexes, [356],[357],[358],[359]];
-    window.game.EXTRA_WIZARD_COSTUMES = [game.UnitType.PLAYER_WIZARD.graphicIndexes, [360],[361],[362],[363]];
+    window.game.EXTRA_ARCHER_COSTUMES = [game.UnitType.PLAYER_ARCHER.graphicIndexes, [6],[121],[130],[171]];
+    window.game.EXTRA_WARRIOR_COSTUMES = [game.UnitType.PLAYER_WARRIOR.graphicIndexes, [11],[9],[8],[0]];
+    window.game.EXTRA_WIZARD_COSTUMES = [game.UnitType.PLAYER_WIZARD.graphicIndexes, [3],[12],[4],[5]];
 
     /**
      * Gets unit data based on the ID passed in. 'level' is used to level up the
