@@ -88,6 +88,15 @@
         GET_HALF_OF_MISSING_LIFE: 'get half of missing life'
     };
 
+    window.game.AbilityType = {
+        ATTACK: 'attack',
+        HEAL: 'heal',
+        REVIVE: 'revive',
+        BUFF: 'buff',
+        DEBUFF: 'debuff',
+        SUMMON: 'summon'
+    };
+
     /**
      * Abilities for the units
      * @type {Object}
@@ -95,6 +104,7 @@
     window.game.Ability = {
         ATTACK: {
             id: 0,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 92,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -105,6 +115,7 @@
 
         SKULL_THROW: {
             id: 1,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 16,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -114,6 +125,7 @@
 
         SPIT_WEB: {
             id: 2,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 103,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -123,6 +135,7 @@
 
         SCORPION_STING: {
             id: 3,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 210,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -132,6 +145,7 @@
 
         SNAKE_VENOM: {
             id: 4,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 218,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -141,6 +155,7 @@
 
         BRANCH_WHIP: {
             id: 5,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 250,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -150,6 +165,7 @@
 
         BOULDER_DROP: {
             id: 6,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 110,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -159,6 +175,7 @@
 
         FLAME_THROWER: {
             id: 7,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 105,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -168,6 +185,7 @@
 
         THROWING_KNIVES: {
             id: 8,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 53,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -177,6 +195,7 @@
 
         FIREBALL: {
             id: 9,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 176,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -186,6 +205,7 @@
 
         BEARD_THROW: {
             id: 10,
+            type: game.AbilityType.ATTACK,
             graphicIndex: 128,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -195,6 +215,7 @@
 
         REVIVE: {
             id: 11,
+            type: game.AbilityType.REVIVE,
             graphicIndex: 127,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.DEAD,
@@ -204,6 +225,7 @@
 
         SUMMON: {
             id: 12,
+            type: game.AbilityType.SUMMON,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
@@ -211,10 +233,13 @@
 
         HEAL: {
             id: 13,
+            type: game.AbilityType.HEAL,
+            graphicIndex: 127,
+            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.HEAL,
             damageFormula: game.DamageFormula.GET_HALF_OF_MISSING_LIFE
-        },
+        }
 
     };
 
@@ -681,10 +706,12 @@
         for ( var i = 0; i < abilitiesList.length; i++ ) {
             var unitAbility = abilitiesList[i];
             var abilityData = game.GetAbilityDataFromID(unitAbility.id);
+            game.DisplayUndefinedAbilityError(abilityData, 'type');
             game.DisplayUndefinedAbilityError(abilityData, 'allowedTargets');
             game.DisplayUndefinedAbilityError(abilityData, 'actionOnHit');
             game.DisplayUndefinedAbilityError(abilityData, 'damageFormula');
 
+            game.util.useDefaultIfUndefined(abilitiesList[i], 'type', abilityData.type);
             game.util.useDefaultIfUndefined(abilitiesList[i], 'graphicIndex', abilityData.graphicIndex);
             game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', abilityData.relativeWeight);
             game.util.useDefaultIfUndefined(abilitiesList[i], 'allowedTargets', abilityData.allowedTargets);
@@ -706,6 +733,16 @@
         // the name in 'propsToIgnore' in copyProps.
         game.util.copyProps(originalAbility, newAbility);
         return newAbility;
+    };
+
+    window.game.CopyAbilitiesList = function(abilitiesList) {
+        var newAbilitiesList = [];
+        for (var i = 0; i < abilitiesList.length; i++) {
+            var newAbility = game.CopyAbility(abilitiesList[i]);
+            newAbilitiesList.push(newAbility);
+            // newAbilitiesList[newAbility.id] = newAbility;
+        };
+        return newAbilitiesList;
     };
 
     /**
@@ -741,6 +778,10 @@
      * @return {Boolean} True if the passed ID is found in the passed in ability list
      */
     window.game.HasAbility = function(abilityID, abilityList) {
+        // if ( abilityList[abilityID] === undefined ) {
+        //     return false;
+        // }
+        // return true;
         for (var i = 0; i < abilityList.length; i++) {
             if ( abilityList[i].id == abilityID ) {
                 return true;
@@ -785,6 +826,7 @@
             // isn't present, add it to the ability list.
             if ( !game.HasAbility(game.Ability.ATTACK.id, unitType.abilities) ) {
                 unitType.abilities.push( {id:game.Ability.ATTACK.id} );
+                // unitType.abilities[game.Ability.ATTACK.id] = {id:game.Ability.ATTACK.id};
             }
             
             // Now that it at least has ATTACK, fill in any missing ability

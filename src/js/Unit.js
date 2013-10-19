@@ -780,6 +780,7 @@
 
         // First, make an exact copy of all the abilities in the unit.
         // We don't want to modify the original list
+        // TODO: use the copy function for this?
         for (var i = 0; i < this.abilities.length; i++) {
             var ability = {};
             ability = game.CopyAbility(this.abilities[i]);
@@ -801,6 +802,64 @@
         };
 
         return allPossibleAbilities;
+    };
+
+    window.game.Unit.prototype.getAllAbilitiesOfType = function(abilityType, abilitiesList) {
+        var newAbilitiesList = [];
+
+        for (var i = 0; i < abilitiesList.length; i++) {
+            if ( abilitiesList[i].type == abilityType) {
+                ability = game.CopyAbility(abilitiesList[i]);
+                newAbilitiesList.push(ability);
+            }
+        };
+        return newAbilitiesList;
+    };
+
+    window.game.Unit.prototype.removeAbilitiesOfType = function(abilityType, abilitiesList) {
+        for (var i = 0; i < abilitiesList.length; i++) {
+            if ( abilitiesList[i].AbilityType == abilityType ) {
+                abilitiesList.splice(i, 1);
+            }
+        };
+    };
+
+    // window.game.Unit.prototype.getAbilityAndTarget = function(abilitiesList, abilityType) {
+
+    // };
+
+    window.game.Unit.prototype.getAbilityAndTarget = function(abilitiesList, abilityTypeToStartWith) {
+        var battle = this.battleData.battle;
+        var targetUnit = null;
+        var ability = null;
+
+        if ( abilityTypeToStartWith !== undefined ) {
+            var abilitiesToStartWith = this.getAllAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
+            ability = game.util.randomFromWeights(abilitiesToStartWith);
+            targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
+            if ( targetUnit != null ) {
+                this.currentAbility = ability;
+                return targetUnit;
+            } else {
+                //remove the abilities from the list
+                this.removeAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
+            }
+        }
+
+        while ( abilitiesList.length > 0 ) {
+            ability = game.util.randomFromWeights(abilitiesList);
+            targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
+            if ( targetUnit != null ) {
+                this.currentAbility = ability;
+                return targetUnit;
+            } else {
+                //remove the abilities from the list
+                this.removeAbilitiesOfType(ability.abilityType, abilitiesList);
+            }
+        }
+        // If there is a battle, there should always be a target, so this code 
+        // shouldn't be reached
+        return null;
     };
 
     /**
@@ -832,11 +891,7 @@
                 break;
 
             case game.AbilityAI.USE_HEAL_IF_POSSIBLE:
-                var healAbility = this.getAbility(game.Ability.HEAL.id, abilitiesList);
-                targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), healAbility.allowedTargets);
-                if ( targetUnit != null) {
-                    this.currentAbility = healAbility;
-                }
+                targetUnit = this.getAbilityAndTarget(abilitiesList, game.AbilityType.HEAL);
                 break;
 
             case game.AbilityAI.ALWAYS_SUMMON:

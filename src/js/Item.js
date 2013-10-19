@@ -76,6 +76,7 @@
             modifiesAbilities: [
                 {
                     id: game.Ability.ATTACK.id,
+                    type: game.AbilityType.ATTACK,
                     graphicIndex: 105,
                     allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
                     relativeWeight: 9000
