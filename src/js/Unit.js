@@ -818,7 +818,7 @@
     };
 
     window.game.Unit.prototype.removeAbilitiesOfType = function(abilityType, abilitiesList) {
-        for (var i = 0; i < abilitiesList.length; i++) {
+        for (var i = abilitiesList.length - 1; i >= 0; i--) {
             if ( abilitiesList[i].type == abilityType ) {
                 abilitiesList.splice(i, 1);
             }
