@@ -793,8 +793,9 @@
             newAbility = game.CopyAbility(this.abilityMods[i]);
             // Replace the old ability if the new one has the same ability ID as 
             // it
-            if ( game.HasAbility(this.abilityMods[i].id, allPossibleAbilities) ) {
-                allPossibleAbilities.splice(i, 1, newAbility);
+            var abilityIndex = game.HasAbility(this.abilityMods[i].id, allPossibleAbilities);
+            if ( abilityIndex > -1) {
+                allPossibleAbilities.splice(abilityIndex, 1, newAbility);
             // Otherwise, append the ability to the list because it's not in there
             } else {
                 allPossibleAbilities.push(newAbility);
@@ -818,17 +819,13 @@
 
     window.game.Unit.prototype.removeAbilitiesOfType = function(abilityType, abilitiesList) {
         for (var i = 0; i < abilitiesList.length; i++) {
-            if ( abilitiesList[i].AbilityType == abilityType ) {
+            if ( abilitiesList[i].type == abilityType ) {
                 abilitiesList.splice(i, 1);
             }
         };
     };
 
-    // window.game.Unit.prototype.getAbilityAndTarget = function(abilitiesList, abilityType) {
-
-    // };
-
-    window.game.Unit.prototype.getAbilityAndTarget = function(abilitiesList, abilityTypeToStartWith) {
+    window.game.Unit.prototype.setAbilityAndGetTarget = function(abilitiesList, abilityTypeToStartWith) {
         var battle = this.battleData.battle;
         var targetUnit = null;
         var ability = null;
@@ -854,11 +851,12 @@
                 return targetUnit;
             } else {
                 //remove the abilities from the list
-                this.removeAbilitiesOfType(ability.abilityType, abilitiesList);
+                this.removeAbilitiesOfType(ability.type, abilitiesList);
             }
         }
         // If there is a battle, there should always be a target, so this code 
         // shouldn't be reached
+        console.log('ERROR: There is no target for this unit type: ' + this.unitType);
         return null;
     };
 
@@ -873,25 +871,15 @@
         this.currentAbility = null;
         switch ( this.abilityAI ) {
             case game.AbilityAI.RANDOM:
-                // TODO: refactor this so that it changes abilitiesList instead
-                // of randomly picking another
-                while ( targetUnit == null ) {
-                    var randomAbility = game.util.randomFromWeights(abilitiesList);
-                    targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), randomAbility.allowedTargets);
-                }
-                this.currentAbility = randomAbility;
+                targetUnit = this.setAbilityAndGetTarget(abilitiesList);
                 break;
 
             case game.AbilityAI.USE_REVIVE_IF_POSSIBLE:
-                var reviveAbility = this.getAbility(game.Ability.REVIVE.id, abilitiesList);
-                targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), reviveAbility.allowedTargets);
-                if ( targetUnit != null) {
-                    this.currentAbility = reviveAbility;
-                }
+                targetUnit = this.setAbilityAndGetTarget(abilitiesList, game.AbilityType.REVIVE);
                 break;
 
             case game.AbilityAI.USE_HEAL_IF_POSSIBLE:
-                targetUnit = this.getAbilityAndTarget(abilitiesList, game.AbilityType.HEAL);
+                targetUnit = this.setAbilityAndGetTarget(abilitiesList, game.AbilityType.HEAL);
                 break;
 
             case game.AbilityAI.ALWAYS_SUMMON:
@@ -913,21 +901,12 @@
 
             case game.AbilityAI.USE_ABILITY_0_WHENEVER_POSSIBLE:
             default:
-                var ability = abilitiesList[0];
-                targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
-                // If that ability doesn't work, choose a random one
-                while ( targetUnit == null ) {
-                    ability = game.util.randomFromWeights(abilitiesList);
-                    targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
+                targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), abilitiesList[0].allowedTargets);
+                if ( targetUnit == null ) {
+                    this.removeAbilitiesOfType(abilitiesList[0].abilityType, abilitiesList);
+                    targetUnit = this.setAbilityAndGetTarget(abilitiesList);
                 }
-                this.currentAbility = ability;
                 break;
-        }
-
-        // If we didn't pick an ability, then default to attack.
-        if ( this.currentAbility == null ) {
-            this.currentAbility = this.getAbility(game.Ability.ATTACK.id, abilitiesList);
-            targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.currentAbility.allowedTargets);
         }
 
         // If a unit has been summoned, don't make projectiles or anything

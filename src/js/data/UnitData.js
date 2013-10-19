@@ -546,7 +546,10 @@
 
             abilities: [
                 {
-                    id: game.Ability.THROWING_KNIVES.id,
+                    id: game.Ability.THROWING_KNIVES.id
+                },
+                {
+                    id: game.Ability.REVIVE.id
                 }
             ],
 
@@ -775,7 +778,8 @@
      * passed in.
      * @param {game.Ability.id} abilityID - ID of the ability to look for
      * @param {Array:game.Ability} abilityList - Ability list to search through
-     * @return {Boolean} True if the passed ID is found in the passed in ability list
+     * @return {Number} Index in the ability list where the ability is or returns 
+     * -1 if the ability doesn't exist in the ability list
      */
     window.game.HasAbility = function(abilityID, abilityList) {
         // if ( abilityList[abilityID] === undefined ) {
@@ -784,10 +788,10 @@
         // return true;
         for (var i = 0; i < abilityList.length; i++) {
             if ( abilityList[i].id == abilityID ) {
-                return true;
+                return i;
             }
         };
-        return false;
+        return -1;
     };
 
     /**
@@ -824,9 +828,9 @@
 
             // Makes sure that each unit type can attack. If the basic attack ability 
             // isn't present, add it to the ability list.
-            if ( !game.HasAbility(game.Ability.ATTACK.id, unitType.abilities) ) {
+            var abilityIndex = game.HasAbility(game.Ability.ATTACK.id, unitType.abilities);
+            if ( abilityIndex == -1 ) {
                 unitType.abilities.push( {id:game.Ability.ATTACK.id} );
-                // unitType.abilities[game.Ability.ATTACK.id] = {id:game.Ability.ATTACK.id};
             }
             
             // Now that it at least has ATTACK, fill in any missing ability
