@@ -103,9 +103,9 @@
         // All enemy units need to have their projectiles facing the opposite
         // direction
         if ( this.owner.isEnemy() ) {
-            objSheet.drawSprite(ctx, this.graphicIndex, this.x, this.y, true);
+            eff24Sheet.drawSprite(ctx, this.graphicIndex, this.x, this.y, true);
         } else {
-            objSheet.drawSprite(ctx, this.graphicIndex, this.x, this.y);
+            eff24Sheet.drawSprite(ctx, this.graphicIndex, this.x, this.y);
         }
 
 

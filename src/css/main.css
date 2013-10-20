@@ -143,57 +143,57 @@ textarea {
 /*Using a sprite creator might be nice (we could also make our own): http://draeton.github.com/stitches/*/
 /*I'm not sure how to prevent having to hard-code the image path*/
 .char-sprite {
-    width: 32px;
-    height: 32px;
-    background: url(../../res/img/char_32.png) 0 0 no-repeat;
+    width: 24px;
+    height: 24px;
+    background: url(../../res/img/char_24.png) 0 0 no-repeat;
 }
 
 .arch-alt-0-png {
-    background-position: -0px -0px;
+    background-position: -360px -0px;
 }
 .arch-alt-1-png {
-    background-position: -0px -704px;
+    background-position: -0px -24px;
 }
 .arch-alt-2-png {
-    background-position: -32px -704px;
+    background-position: -24px -48px;
 }
 .arch-alt-3-png {
-    background-position: -64px -704px;
+    background-position: -24px -24px;
 }
 .arch-alt-4-png {
-    background-position: -96px -704px;
+    background-position: -24px -24px;
 }
 
 .war-alt-0-png {
-    background-position: -32px -0px;
+    background-position: -408px -0px;
 }
 .war-alt-1-png {
-    background-position: -128px -704px;
+    background-position: -24px -48px;
 }
 .war-alt-2-png {
-    background-position: -160px -704px;
+    background-position: -240px -48px;
 }
 .war-alt-3-png {
-    background-position: -192px -704px;
+    background-position: -48px -48px;
 }
 .war-alt-4-png {
-    background-position: -224px -704px;
+    background-position: -48px -48px;
 }
 
 .wiz-alt-0-png {
-    background-position: -64px -0px;
+    background-position: -336px -0px;
 }
 .wiz-alt-1-png {
-    background-position: -256px -704px;
+    background-position: -96px -96px;
 }
 .wiz-alt-2-png {
-    background-position: -288px -704px;
+    background-position: -96px -96px;
 }
 .wiz-alt-3-png {
-    background-position: -320px -704px;
+    background-position: -96px -96px;
 }
 .wiz-alt-4-png {
-    background-position: -352px -704px;
+    background-position: -96px -96px;
 }
 
 .smallDiamond-png {
@@ -215,7 +215,7 @@ textarea {
 .item-sprite {
     width: 32px;
     height: 32px;
-    background: url(../../res/img/obj_32.png) 0 0 no-repeat;
+    background: url(../../res/img/item_32.png) 0 0 no-repeat;
 }
 
 
@@ -223,37 +223,37 @@ textarea {
     background-position: -0px -0px;
 }
 .greengem32-png {
-    background-position: -160px -0px;
+    background-position: -320px -64px;
 }
 
 /*Two concentric green rectangles*/
 .greenrectangle-png {
-    background-position: -352px -288px;
+    background-position: -512px -128px;
 }
 /*Two concentric red rectangles*/
 .redrectangle-png {
-    background-position: -352px -256px;
+    background-position: -544px -128px;
 }
 .pinkgem32-png {
-    background-position: -128px -0px;
+    background-position: -352px -64px;
 }
 .redgem32-png {
-    background-position: -96px -0px;
+    background-position: -384px -64px;
 }
 .potion32-png {
-    background-position: -384px -0px;
+    background-position: -64px -0px;
 }
 .gold-potion-png {
-    background-position: -448px -0px;
+    background-position: -320px -0px;
 }
 .shield32-png {
-    background-position: -64px -96px;
+    background-position: -224px -320px;
 }
 .sword32-png {
-    background-position: -160px -96px;
+    background-position: -352px -288px;
 }
-.leaf32-png {
-    background-position: -352px -96px;
+.eye-necklace-32-png {
+    background-position: -128px -32px;
 }
 
 /*This applies 8 black shadows with no blur, which are exact copies of whatever 

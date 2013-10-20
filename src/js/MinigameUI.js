@@ -197,7 +197,7 @@
                 var cssToSet = {
                     'border':'2px solid',
                     'border-color':'#004400',
-                    'height':'64px'
+                    'height':'48px'
                 };
 
                 cssToSet['margin-bottom'] = '2px';
@@ -215,7 +215,7 @@
 
                 // Note: the money given isn't actually granted to the player
                 // yet.
-                this.addIcon(i, objSheet.getSpriteDataFromSingleIndex(0, true), minigameData.moneyGiven);
+                this.addIcon(i, envSheet.getSpriteDataFromSingleIndex(202, true), minigameData.moneyGiven);
 
                 // CSS properties for the money image and text that shows the
                 // reward amount.
@@ -353,7 +353,7 @@
          */
         addIcon: function(minigameID, imageData, quantity) {
             var width = 64;
-            var height = 64;
+            var height = 48;
 
             // We need a way to uniquely identify these spans, so we use
             // game.domID, which always increments.
@@ -367,6 +367,7 @@
 
             $firstSpan.css({
                 'background':'url(' + imageData + ')',
+                'background-repeat':'no-repeat',
                 'display':'inline-block',
                 'width': width + 'px',
                 'height': height + 'px',
@@ -378,8 +379,8 @@
                 'font-size': '.95em',
                 'vertical-align': 'bottom',
                 'position': 'relative',
-                'left': '35px',
-                'top': '45px'
+                'left': '26px',
+                'top': '30px'
             });
 
             $secondSpan.html('<b>x' + quantity + '</b>');
