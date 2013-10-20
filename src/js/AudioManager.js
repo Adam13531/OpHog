@@ -47,7 +47,7 @@
          * If false, the user disabled audio.
          * @type {Boolean}
          */
-        audioEnabled: true,
+        audioEnabled: false,
 
         /**
          * This is a dictionary whose keys are AudioDescriptors and whose values

@@ -69,7 +69,9 @@
         // Now that the overworld map is setup, check to see if we have a saved
         // game to load.
         if ( game.GameDataManager.hasSavedGame() ) {
-            game.GameDataManager.loadGame();
+            // Commenting this out because it produces too many oddities while
+            // we're testing. This will be uncommented for production code.
+            // game.GameDataManager.loadGame();
         }
 
         // Uncomment this if you want to jump directly to normal gameplay when

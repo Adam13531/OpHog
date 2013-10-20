@@ -1260,7 +1260,7 @@
     window.game.Unit.prototype.drawLifeBar = function(ctx) {
         // Properties of the life bar rectangle
         var w = this.width;
-        var h = 10;
+        var h = 7;
         var x = this.x;
         var y = this.y + this.height - h;
         var percentLife = Math.min(1, Math.max(0, this.life / this.getMaxLife()));

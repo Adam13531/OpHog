@@ -169,7 +169,7 @@
         <script src="js/Constants.js"></script>
         <script src="js/HammerHelper.js"></script>
         <script src="js/JSONDecycle.js"></script>
-        <script src="js/AbilityManager.js"></script>
+        <script src="js/AbilityManager.js"></script><!--Needs to come before UnitData.js and Item.js so that they can both manifest abilities-->
         <script src="js/Util.js"></script>
         <script src="js/GraphicsUtil.js"></script>
         <script src="js/KeyEventConstants.js"></script>
@@ -202,9 +202,9 @@
         <script src="js/Doodad.js"></script>
         <script src="js/MapGenerator.js"></script>
         <script src="js/data/LootTableEntry.js"></script>
+        <script src="js/Item.js"></script><!--Needs to come before UnitData.js so that units can say which items they drop-->
         <script src="js/data/UnitData.js"></script>
         <script src="js/OverworldMap.js"></script><!--Must come after UnitData.js-->
-        <script src="js/Item.js"></script>
         <script src="js/PossibleEnemy.js"></script>
         <script src="js/SlotUI.js"></script>
         <script src="js/PlayerSlotUI.js"></script>
