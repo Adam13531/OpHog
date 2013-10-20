@@ -73,7 +73,7 @@
                     var castleTile = castleTiles[i];
                     
                     var w = game.TILESIZE;
-                    var h = 10;
+                    var h = 7;
                     var x = castleTile.x * game.TILESIZE;
                     var y = (castleTile.y * game.TILESIZE) + game.TILESIZE - h;
                     var percentLife = Math.min(1, Math.max(0, game.Player.castleLife / game.FULL_CASTLE_LIFE));

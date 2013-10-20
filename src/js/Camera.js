@@ -8,7 +8,7 @@
          * etc.
          * @type {Number}
          */
-        curZoom: 1,
+        curZoom: 2,
 
         /**
          * Minimum zoom value. The code doesn't handle this going below 1 very

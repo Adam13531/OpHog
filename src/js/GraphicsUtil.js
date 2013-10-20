@@ -58,12 +58,12 @@
         ctx.strokeRect(x,y,w, h);
 
         // Draw the percentage
-        ctx.font = '12px Futura, Helvetica, sans-serif';
+        ctx.font = '10px Futura, Helvetica, sans-serif';
         var width = ctx.measureText(text).width;
 
         ctx.textBaseline = 'top';
         ctx.fillStyle = '#fff';
-        ctx.fillText(text, x + w / 2 - width / 2, y - 2);
+        ctx.fillText(text, x + w / 2 - width / 2, y - 3);
 
         ctx.restore();
     };
@@ -110,7 +110,7 @@
 
                 // Set min zoom to something bigger so that less things need to
                 // be drawn.
-                game.Camera.setMinZoom(2);
+                game.Camera.setMinZoom(3);
 
                 // Make dialogs show up instantaneously.
                 instantaneousDialogs = true;
