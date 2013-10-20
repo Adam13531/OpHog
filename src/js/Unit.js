@@ -756,19 +756,14 @@
      * are factored in based on items.
      */
     window.game.Unit.prototype.getAbilitiesBasedOnItems = function() {
-        var allPossibleAbilities = [];
 
         // First, make an exact copy of all the abilities in the unit.
         // We don't want to modify the original list
-        // TODO: use the copy function for this?
-        for (var i = 0; i < this.abilities.length; i++) {
-            var ability = {};
-            ability = game.AbilityManager.copyAbility(this.abilities[i]);
-            allPossibleAbilities.push(ability);
-        }
+        var allPossibleAbilities = game.AbilityManager.copyAbilitiesList(this.abilities);
 
         // loop through each ability that came from items
         for (var i = 0; i < this.abilityMods.length; i++) {
+
             var newAbility = {};
             newAbility = game.AbilityManager.copyAbility(this.abilityMods[i]);
             // Replace the old ability if the new one has the same ability ID as 
