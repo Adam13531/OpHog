@@ -863,7 +863,7 @@
                 break;
 
             case game.AbilityAI.ALWAYS_SUMMON:
-                this.currentAbility = this.AbilityManager.getAbility(game.Ability.SUMMON.id, abilitiesList);
+                this.currentAbility = game.AbilityManager.getAbility(game.Ability.SUMMON.id, abilitiesList);
                 var flags = game.PlayerFlags.ENEMY;
                 if ( this.isPlayer() ) {
                     flags = game.PlayerFlags.PLAYER;
