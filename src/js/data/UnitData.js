@@ -82,12 +82,21 @@
         REVIVE: 'revive'
     };
 
+    /**
+     * Instructions on how to calculate damage or heal amounts that will be done 
+     * to a target
+     * @type {Object}
+     */
     window.game.DamageFormula = {
         ATK_MINUS_DEF: 'atk minus def',
         REVIVE: 'revive',
         GET_HALF_OF_MISSING_LIFE: 'get half of missing life'
     };
 
+    /**
+     * Types of abilities
+     * @type {Object}
+     */
     window.game.AbilityType = {
         ATTACK: 'attack',
         HEAL: 'heal',

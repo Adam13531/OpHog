@@ -748,7 +748,13 @@
 
     };
 
-    // Gets the ability from the id that this unit has.
+    /**
+     * Gets the ability from the id that is passed in as a parameter
+     * @param  {Number} abilityID - ID of the ability to get. An example is 
+     * game.Ability.ATTACK.id.
+     * @param  {Array:Ability} abilityList - Ability list to search through
+     * @return {game.Ability} - Ability that was found
+     */
     window.game.Unit.prototype.getAbility = function(abilityID, abilityList) {
         var abilityData = null;
         for ( var i = 0; i < abilityList.length; i++ ) {
@@ -805,6 +811,16 @@
         return allPossibleAbilities;
     };
 
+    /**
+     * Gets all the abilities of the ability type that's passed in. This returns 
+     * a new array, so the original abilities can't be modified at all
+     * @param  {game.AbilityType} abilityType - Specifies the type of abilities 
+     * that need to be retrieved
+     * @param  {Array:game.Ability} abilitiesList - List of abilities to search 
+     * through
+     * @return {Array:game.Ability} New list of the abilities that were found. 
+     * They are all the same type as the ability type that was passed in.
+     */
     window.game.Unit.prototype.getAllAbilitiesOfType = function(abilityType, abilitiesList) {
         var newAbilitiesList = [];
 
@@ -817,6 +833,14 @@
         return newAbilitiesList;
     };
 
+    /**
+     * Removes all abilities of the ability type that's passed in. This will 
+     * modify the contents of the list that's passed in.
+     * @param  {game.AbilityType} abilityType - Specifies the type of abilities 
+     * that need to be removed from the list.
+     * @param  {Array:game.Ability} abilitiesList - List of the abilities to 
+     * remove the abilities from
+     */
     window.game.Unit.prototype.removeAbilitiesOfType = function(abilityType, abilitiesList) {
         for (var i = abilitiesList.length - 1; i >= 0; i--) {
             if ( abilitiesList[i].type == abilityType ) {
@@ -825,11 +849,29 @@
         };
     };
 
+    /**
+     * Randomly finds an ability from the ability list that's passed in. The
+     * abilityTypeToStartWith parameter is optional, and if it is supplied, then 
+     * the list is searched for that type of ability first. When an ability is 
+     * chosen that won't work, all abilities of that type are removed, and this 
+     * function keeps searching for an ability that will work. Once it does, this
+     * units ability is set and a target unit is returned. This will modify the 
+     * contents of the list that's passed in.
+     * 
+     * @param {Array:game.Ability} abilitiesList - List of abilities to look through. 
+     * This list WILL be modified when abilities aren't found because those all 
+     * abilities of that type will be removed.
+     * @param {game.AbilityType} abilityTypeToStartWith - Optional argument. If 
+     * provided, the list will be search for this type of ability first
+     * @return {game.Unit} target unit
+     */
     window.game.Unit.prototype.setAbilityAndGetTarget = function(abilitiesList, abilityTypeToStartWith) {
         var battle = this.battleData.battle;
         var targetUnit = null;
         var ability = null;
 
+        // If this parameter was specified, see if a random ability of the
+        // specified ability type will work.
         if ( abilityTypeToStartWith !== undefined ) {
             var abilitiesToStartWith = this.getAllAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
             ability = game.util.randomFromWeights(abilitiesToStartWith);
@@ -843,14 +885,16 @@
             }
         }
 
+        // Loop through all the abilities until one is found
         while ( abilitiesList.length > 0 ) {
             ability = game.util.randomFromWeights(abilitiesList);
             targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
+            // When a target unit is found...
             if ( targetUnit != null ) {
                 this.currentAbility = ability;
                 return targetUnit;
-            } else {
-                //remove the abilities from the list
+            } else {// When a target unit isn't found
+                //remove the abilities from the list that won't work
                 this.removeAbilitiesOfType(ability.type, abilitiesList);
             }
         }
