@@ -695,115 +695,6 @@
     };
 
     /**
-     * Displays an error if a necessary ability attribute was never defined. 
-     * These are programmer errors, which means we need to go add this attribute 
-     * to ability.
-     * @param {game.Ability} ability - Ability with the undefined attribute
-     * @param {String} undefinedAttribute - Name of the undefined attribute
-     */
-    window.game.DisplayUndefinedAbilityError = function(ability, undefinedAttribute) {
-        if ( ability[undefinedAttribute] === undefined ) {
-            console.log('ERROR: Ability with id: ' + ability.id  + ' has ' + undefinedAttribute + ' undefined.');
-        }
-    };
-
-    /**
-     * Fills in all the missing attributes for each ability. For example, if
-     * all we did was specify that we want an ability by giving it an ID, then
-     * this will fill in the default projectile graphic index, etc for that
-     * ability
-     * @param {Array:game.Ability} abilitiesList List of abilities to check
-     */
-    window.game.SetDefaultAbilityAttrIfUndefined = function(abilitiesList) {
-        for ( var i = 0; i < abilitiesList.length; i++ ) {
-            var unitAbility = abilitiesList[i];
-            var abilityData = game.GetAbilityDataFromID(unitAbility.id);
-            game.DisplayUndefinedAbilityError(abilityData, 'type');
-            game.DisplayUndefinedAbilityError(abilityData, 'allowedTargets');
-            game.DisplayUndefinedAbilityError(abilityData, 'actionOnHit');
-            game.DisplayUndefinedAbilityError(abilityData, 'damageFormula');
-
-            game.util.useDefaultIfUndefined(abilitiesList[i], 'type', abilityData.type);
-            game.util.useDefaultIfUndefined(abilitiesList[i], 'graphicIndex', abilityData.graphicIndex);
-            game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', abilityData.relativeWeight);
-            game.util.useDefaultIfUndefined(abilitiesList[i], 'allowedTargets', abilityData.allowedTargets);
-            game.util.useDefaultIfUndefined(abilitiesList[i], 'actionOnHit', abilityData.actionOnHit);
-            game.util.useDefaultIfUndefined(abilitiesList[i], 'damageFormula', abilityData.damageFormula);
-        }
-    };
-
-    /**
-     * Makes a copy of an ability.
-     * @param {game.Ability} originalAbility - ability that will be copied
-     * @return {game.Ability} New copy of the ability
-     */
-    window.game.CopyAbility = function(originalAbility) {
-        var newAbility = {};
-
-        // If you ever have any non-primitive data (e.g. an array), then you
-        // need to manually copy that over. In that case, make sure to specify
-        // the name in 'propsToIgnore' in copyProps.
-        game.util.copyProps(originalAbility, newAbility);
-        return newAbility;
-    };
-
-    window.game.CopyAbilitiesList = function(abilitiesList) {
-        var newAbilitiesList = [];
-        for (var i = 0; i < abilitiesList.length; i++) {
-            var newAbility = game.CopyAbility(abilitiesList[i]);
-            newAbilitiesList.push(newAbility);
-            // newAbilitiesList[newAbility.id] = newAbility;
-        };
-        return newAbilitiesList;
-    };
-
-    /**
-     * Gets the default ability template based on an ID that was passed in
-     * @param {game.Ability.id} abilityID - ID of the ability to get the data for
-     * @return {game.Ability} Default ability template for the ID that was passed in.
-     */
-    window.game.GetAbilityDataFromID = function(abilityID) {
-        var abilityData = null;
-        for ( var key in game.Ability ) {
-            var abilityDataTemplate = game.Ability[key];
-            if ( abilityDataTemplate.id == abilityID ) {
-                abilityData = abilityDataTemplate;
-            }
-        }
-        if ( abilityData == null ) {
-            console.log('Error - ' + abilityID + ' is not a valid ability ID.');
-            if ( typeof(abilityID) !== 'number' ) {
-                // If you hit this, it's likely that you passed in the entire
-                // abilityData instead of just the ID.
-                console.log('The above error happened because abilityID isn\'t even a number.');
-            }
-        }
-        return abilityData;
-    };
-
-    /**
-     * Checks to see if the ability list contains the passed in ability ID. If 
-     * it does, that means this ability exists inside the ability list that is 
-     * passed in.
-     * @param {game.Ability.id} abilityID - ID of the ability to look for
-     * @param {Array:game.Ability} abilityList - Ability list to search through
-     * @return {Number} Index in the ability list where the ability is or returns 
-     * -1 if the ability doesn't exist in the ability list
-     */
-    window.game.HasAbility = function(abilityID, abilityList) {
-        // if ( abilityList[abilityID] === undefined ) {
-        //     return false;
-        // }
-        // return true;
-        for (var i = 0; i < abilityList.length; i++) {
-            if ( abilityList[i].id == abilityID ) {
-                return i;
-            }
-        };
-        return -1;
-    };
-
-    /**
      * This function ensures you didn't define an unit ID twice, and it will
      * insert default values where necessary. It is called immediately after it
      * is defined (it's an IIFE).
@@ -837,14 +728,14 @@
 
             // Makes sure that each unit type can attack. If the basic attack ability 
             // isn't present, add it to the ability list.
-            var abilityIndex = game.HasAbility(game.Ability.ATTACK.id, unitType.abilities);
+            var abilityIndex = game.AbilityManager.hasAbility(game.Ability.ATTACK.id, unitType.abilities);
             if ( abilityIndex == -1 ) {
                 unitType.abilities.push( {id:game.Ability.ATTACK.id} );
             }
             
             // Now that it at least has ATTACK, fill in any missing ability
             // data.
-            game.SetDefaultAbilityAttrIfUndefined(unitType.abilities);
+            game.AbilityManager.setDefaultAbilityAttrIfUndefined(unitType.abilities);
 
             // If absolutely no ability AI is defined, give this unit a default 
             // one here.

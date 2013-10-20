@@ -749,32 +749,6 @@
     };
 
     /**
-     * Gets the ability from the id that is passed in as a parameter
-     * @param  {Number} abilityID - ID of the ability to get. An example is 
-     * game.Ability.ATTACK.id.
-     * @param  {Array:Ability} abilityList - Ability list to search through
-     * @return {game.Ability} - Ability that was found
-     */
-    window.game.Unit.prototype.getAbility = function(abilityID, abilityList) {
-        var abilityData = null;
-        for ( var i = 0; i < abilityList.length; i++ ) {
-            if ( abilityList[i].id == abilityID ) {
-                abilityData = abilityList[i];
-            }
-        }
-
-        if ( abilityData == null ) {
-            console.log('Error - Unit with type: ' + this.unitType + ' doesn\'t contain an ability with ID: ' + abilityID + '.');
-            if ( typeof(abilityID) !== 'number' ) {
-                // If you hit this, it's likely that you passed in the entire
-                // abilityData instead of just the ID.
-                console.log('The above error happened because abilityID isn\'t even a number.');
-            }
-        }
-        return abilityData;
-    };
-
-    /**
      * Gets all the abilities for a unit plus the ones that are added because of 
      * items. The abilities from items can replace abilities or go at the end of 
      * the list.
@@ -789,17 +763,17 @@
         // TODO: use the copy function for this?
         for (var i = 0; i < this.abilities.length; i++) {
             var ability = {};
-            ability = game.CopyAbility(this.abilities[i]);
+            ability = game.AbilityManager.copyAbility(this.abilities[i]);
             allPossibleAbilities.push(ability);
         }
 
         // loop through each ability that came from items
         for (var i = 0; i < this.abilityMods.length; i++) {
             var newAbility = {};
-            newAbility = game.CopyAbility(this.abilityMods[i]);
+            newAbility = game.AbilityManager.copyAbility(this.abilityMods[i]);
             // Replace the old ability if the new one has the same ability ID as 
             // it
-            var abilityIndex = game.HasAbility(this.abilityMods[i].id, allPossibleAbilities);
+            var abilityIndex = game.AbilityManager.hasAbility(this.abilityMods[i].id, allPossibleAbilities);
             if ( abilityIndex > -1) {
                 allPossibleAbilities.splice(abilityIndex, 1, newAbility);
             // Otherwise, append the ability to the list because it's not in there
@@ -809,44 +783,6 @@
         };
 
         return allPossibleAbilities;
-    };
-
-    /**
-     * Gets all the abilities of the ability type that's passed in. This returns 
-     * a new array, so the original abilities can't be modified at all
-     * @param  {game.AbilityType} abilityType - Specifies the type of abilities 
-     * that need to be retrieved
-     * @param  {Array:game.Ability} abilitiesList - List of abilities to search 
-     * through
-     * @return {Array:game.Ability} New list of the abilities that were found. 
-     * They are all the same type as the ability type that was passed in.
-     */
-    window.game.Unit.prototype.getAllAbilitiesOfType = function(abilityType, abilitiesList) {
-        var newAbilitiesList = [];
-
-        for (var i = 0; i < abilitiesList.length; i++) {
-            if ( abilitiesList[i].type == abilityType) {
-                ability = game.CopyAbility(abilitiesList[i]);
-                newAbilitiesList.push(ability);
-            }
-        };
-        return newAbilitiesList;
-    };
-
-    /**
-     * Removes all abilities of the ability type that's passed in. This will 
-     * modify the contents of the list that's passed in.
-     * @param  {game.AbilityType} abilityType - Specifies the type of abilities 
-     * that need to be removed from the list.
-     * @param  {Array:game.Ability} abilitiesList - List of the abilities to 
-     * remove the abilities from
-     */
-    window.game.Unit.prototype.removeAbilitiesOfType = function(abilityType, abilitiesList) {
-        for (var i = abilitiesList.length - 1; i >= 0; i--) {
-            if ( abilitiesList[i].type == abilityType ) {
-                abilitiesList.splice(i, 1);
-            }
-        };
     };
 
     /**
@@ -873,7 +809,7 @@
         // If this parameter was specified, see if a random ability of the
         // specified ability type will work.
         if ( abilityTypeToStartWith !== undefined ) {
-            var abilitiesToStartWith = this.getAllAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
+            var abilitiesToStartWith = game.AbilityManager.getAllAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
             ability = game.util.randomFromWeights(abilitiesToStartWith);
             targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
             if ( targetUnit != null ) {
@@ -881,7 +817,7 @@
                 return targetUnit;
             } else {
                 //remove the abilities from the list
-                this.removeAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
+                game.AbilityManager.removeAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
             }
         }
 
@@ -895,7 +831,7 @@
                 return targetUnit;
             } else {// When a target unit isn't found
                 //remove the abilities from the list that won't work
-                this.removeAbilitiesOfType(ability.type, abilitiesList);
+                game.AbilityManager.removeAbilitiesOfType(ability.type, abilitiesList);
             }
         }
         // If there is a battle, there should always be a target, so this code 
@@ -927,7 +863,7 @@
                 break;
 
             case game.AbilityAI.ALWAYS_SUMMON:
-                this.currentAbility = this.getAbility(game.Ability.SUMMON.id, abilitiesList);
+                this.currentAbility = this.AbilityManager.getAbility(game.Ability.SUMMON.id, abilitiesList);
                 var flags = game.PlayerFlags.ENEMY;
                 if ( this.isPlayer() ) {
                     flags = game.PlayerFlags.PLAYER;
@@ -947,7 +883,7 @@
             default:
                 targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), abilitiesList[0].allowedTargets);
                 if ( targetUnit == null ) {
-                    this.removeAbilitiesOfType(abilitiesList[0].abilityType, abilitiesList);
+                    game.AbilityManager.removeAbilitiesOfType(abilitiesList[0].abilityType, abilitiesList);
                     targetUnit = this.setAbilityAndGetTarget(abilitiesList);
                 }
                 break;

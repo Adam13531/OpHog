@@ -185,7 +185,7 @@
         if ( item.modifiesAbilities !== undefined ) {
             // If this item adds abilities, make sure that all the
             // fields for the ability are defined.
-            game.SetDefaultAbilityAttrIfUndefined(item.modifiesAbilities);
+            game.AbilityManager.setDefaultAbilityAttrIfUndefined(item.modifiesAbilities);
         }
 
         if ( item.usable == false || item.usable === undefined ) {
@@ -299,7 +299,7 @@
         // modified
         if ( itemData.modifiesAbilities !== undefined ) {
             for (var i = 0; i < itemData.modifiesAbilities.length; i++) {
-                var ability = game.CopyAbility(itemData.modifiesAbilities[i]);
+                var ability = game.AbilityManager.copyAbility(itemData.modifiesAbilities[i]);
                 this.abilities.push(ability);
             };
         }
