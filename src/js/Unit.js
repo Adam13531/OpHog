@@ -782,18 +782,18 @@
 
     /**
      * Randomly finds an ability from the ability list that's passed in. The
-     * abilityTypeToStartWith parameter is optional, and if it is supplied, then 
-     * the list is searched for that type of ability first. When an ability is 
-     * chosen that won't work, all abilities of that type are removed, and this 
-     * function keeps searching for an ability that will work. Once it does, this
-     * units ability is set and a target unit is returned. This will modify the 
-     * contents of the list that's passed in.
+     * abilityTypeToStartWith parameter is optional, and if it is supplied, then
+     * the list is searched for that type of ability first. When an ability is
+     * chosen that won't work, all abilities of that type are removed, and this
+     * function keeps searching for an ability that will work. Once it does,
+     * this unit's ability is set and a target unit is returned. This will
+     * modify the contents of the list that's passed in.
      * 
-     * @param {Array:game.Ability} abilitiesList - List of abilities to look through. 
-     * This list WILL be modified when abilities aren't found because those all 
-     * abilities of that type will be removed.
-     * @param {game.AbilityType} abilityTypeToStartWith - Optional argument. If 
-     * provided, the list will be search for this type of ability first
+     * @param {Array:game.Ability} abilitiesList - List of abilities to look
+     * through. This list WILL be modified when abilities aren't found because
+     * those are all abilities of that type will be removed.
+     * @param {game.AbilityType} abilityTypeToStartWith - Optional argument. If
+     * provided, the list will be searched for this type of ability first
      * @return {game.Unit} target unit
      */
     window.game.Unit.prototype.setAbilityAndGetTarget = function(abilitiesList, abilityTypeToStartWith) {
