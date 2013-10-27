@@ -814,7 +814,7 @@
         // If this parameter was specified, see if a random ability of the
         // specified ability type will work.
         if ( abilityTypeToStartWith !== undefined ) {
-            var abilitiesToStartWith = game.AbilityManager.getAllAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
+            var abilitiesToStartWith = game.AbilityManager.getAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
             ability = game.util.randomFromWeights(abilitiesToStartWith);
             targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
             if ( targetUnit != null ) {
