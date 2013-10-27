@@ -197,7 +197,7 @@
         HEAL: {
             id: 13,
             type: game.AbilityType.HEAL,
-            graphicIndex: 127,
+            graphicIndex: 120,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.HEAL,

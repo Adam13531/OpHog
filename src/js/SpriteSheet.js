@@ -63,6 +63,14 @@
         // return dataURL.replace(/^data:image\/(png|jpg);base64,/, "");
     }
 
+    /**
+     * @return {Number} - the number of sprites in a given row of this
+     * spritesheet.
+     */
+    window.game.SpriteSheet.prototype.getNumSpritesPerRow = function() {
+        return this.image.width / this.tileSize;
+    };
+
     // If I defined this in the constructor, then it would add every argument to
     // the closure's scope, which we don't want in case there are any circular
     // references. Also, even if circular references never showed up, it's just

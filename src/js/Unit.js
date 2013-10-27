@@ -113,6 +113,13 @@
         this.movementAI = game.MovementAI.FOLLOW_PATH;
 
         /**
+         * The number of milliseconds that this unit has been on the map for. We
+         * use this for animation (check out the draw code).
+         * @type {Number}
+         */
+        this.animationTimer = 0;
+
+        /**
          * StatusEffects affecting this unit.
          * @type {Array:StatusEffect}
          */
@@ -320,6 +327,7 @@
         this.previousTile = null;
         this.destX = null;
         this.destY = null;
+        this.animationTimer = 0;
 
         // Remove battle data just in case. There was a bug where you would join
         // a battle, win the map, then place this unit again, and it would think
@@ -608,6 +616,8 @@
             speed = 300;
         }
         var change = speed * deltaAsSec;
+
+        this.animationTimer += delta;
 
         // All movement should be based on center coordinates so that two
         // differently sized units can have the same destination values and not
@@ -1327,6 +1337,23 @@
                 effect.draw(ctx);
             }
 
+            // All of the graphics in 'charSheet' are arranged like this:
+            // CHAR_A_FRAME_1    CHAR_B_FRAME_1    CHAR_C_FRAME_1
+            // CHAR_A_FRAME_2    CHAR_B_FRAME_2    CHAR_C_FRAME_2
+            // CHAR_D_FRAME_1    CHAR_E_FRAME_1    CHAR_F_FRAME_1
+            // CHAR_D_FRAME_2    CHAR_E_FRAME_2    CHAR_F_FRAME_2
+            // 
+            // So to get the second frame of any unit, we can simply add the
+            // number of sprites in a row on 'charSheet'.
+            // 
+            // We switch frames in this fashion twice a second (hence the 1000
+            // and 500 numbers... 1000 is number of milliseconds, and there are
+            // two frames per second).
+            var graphicIndexAnimationOffset = 0;
+            if ( (this.animationTimer % 1000) >= 500 ) {
+                graphicIndexAnimationOffset = charSheet.getNumSpritesPerRow();
+            }
+
             // The index in this.graphicIndexes to draw.
             var index = 0;
             for (var j = 0; j < this.heightInTiles; j++) {
@@ -1345,7 +1372,7 @@
                         if ( index == 3 ) indexToUse = 2;
                     }
 
-                    charSheet.drawSprite(ctx, this.graphicIndexes[indexToUse], this.x + i * game.TILESIZE, this.y + j * game.TILESIZE, !this.isPlayer());
+                    charSheet.drawSprite(ctx, this.graphicIndexes[indexToUse] + graphicIndexAnimationOffset, this.x + i * game.TILESIZE, this.y + j * game.TILESIZE, !this.isPlayer());
 
                     index++;
                 };
