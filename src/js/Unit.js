@@ -214,7 +214,7 @@
          * Copies of abilities that come from items when that item is equipped.
          * @type {Array:game.Ability}
          */
-        this.abilityMods = [];
+        this.abilitiesFromItems = [];
 
         /**
          * This is only used by NPCs to indicate whether they've already given
@@ -772,13 +772,13 @@
         var allPossibleAbilities = game.AbilityManager.copyAbilitiesList(this.abilities);
 
         // loop through each ability that came from items
-        for (var i = 0; i < this.abilityMods.length; i++) {
+        for (var i = 0; i < this.abilitiesFromItems.length; i++) {
 
             var newAbility = {};
-            newAbility = game.AbilityManager.copyAbility(this.abilityMods[i]);
+            newAbility = game.AbilityManager.copyAbility(this.abilitiesFromItems[i]);
             // Replace the old ability if the new one has the same ability ID as 
             // it
-            var abilityIndex = game.AbilityManager.hasAbility(this.abilityMods[i].id, allPossibleAbilities);
+            var abilityIndex = game.AbilityManager.hasAbility(this.abilitiesFromItems[i].id, allPossibleAbilities);
             if ( abilityIndex > -1) {
                 allPossibleAbilities.splice(abilityIndex, 1, newAbility);
             // Otherwise, append the ability to the list because it's not in there
@@ -920,7 +920,7 @@
      */
     window.game.Unit.prototype.populateMods = function() {
         this.mods = [];
-        this.abilityMods = [];
+        this.abilitiesFromItems = [];
 
         // Go through each equipped items and add its mods to this unit's mods.
         var equippedItems = game.Player.inventory.getClassEquippedItems(this.unitType);
@@ -932,7 +932,7 @@
 
             // Add the abilities for this unit to use that this item adds (if any)
             for (var j = 0; j < equippedItem.abilities.length; j++) {  
-                this.abilityMods.push(equippedItem.abilities[j]);
+                this.abilitiesFromItems.push(equippedItem.abilities[j]);
             };
         }; 
     };
