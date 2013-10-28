@@ -214,7 +214,7 @@
          * Copies of abilities that come from items when that item is equipped.
          * @type {Array:game.Ability}
          */
-        this.abilityMods = [];
+        this.abilitiesFromItems = [];
 
         /**
          * This is only used by NPCs to indicate whether they've already given
@@ -766,24 +766,19 @@
      * are factored in based on items.
      */
     window.game.Unit.prototype.getAbilitiesBasedOnItems = function() {
-        var allPossibleAbilities = [];
 
         // First, make an exact copy of all the abilities in the unit.
         // We don't want to modify the original list
-        // TODO: use the copy function for this?
-        for (var i = 0; i < this.abilities.length; i++) {
-            var ability = {};
-            ability = game.AbilityManager.copyAbility(this.abilities[i]);
-            allPossibleAbilities.push(ability);
-        }
+        var allPossibleAbilities = game.AbilityManager.copyAbilitiesList(this.abilities);
 
         // loop through each ability that came from items
-        for (var i = 0; i < this.abilityMods.length; i++) {
+        for (var i = 0; i < this.abilitiesFromItems.length; i++) {
+
             var newAbility = {};
-            newAbility = game.AbilityManager.copyAbility(this.abilityMods[i]);
+            newAbility = game.AbilityManager.copyAbility(this.abilitiesFromItems[i]);
             // Replace the old ability if the new one has the same ability ID as 
             // it
-            var abilityIndex = game.AbilityManager.hasAbility(this.abilityMods[i].id, allPossibleAbilities);
+            var abilityIndex = game.AbilityManager.hasAbility(this.abilitiesFromItems[i].id, allPossibleAbilities);
             if ( abilityIndex > -1) {
                 allPossibleAbilities.splice(abilityIndex, 1, newAbility);
             // Otherwise, append the ability to the list because it's not in there
@@ -797,18 +792,18 @@
 
     /**
      * Randomly finds an ability from the ability list that's passed in. The
-     * abilityTypeToStartWith parameter is optional, and if it is supplied, then 
-     * the list is searched for that type of ability first. When an ability is 
-     * chosen that won't work, all abilities of that type are removed, and this 
-     * function keeps searching for an ability that will work. Once it does, this
-     * units ability is set and a target unit is returned. This will modify the 
-     * contents of the list that's passed in.
+     * abilityTypeToStartWith parameter is optional, and if it is supplied, then
+     * the list is searched for that type of ability first. When an ability is
+     * chosen that won't work, all abilities of that type are removed, and this
+     * function keeps searching for an ability that will work. Once it does,
+     * this unit's ability is set and a target unit is returned. This will
+     * modify the contents of the list that's passed in.
      * 
-     * @param {Array:game.Ability} abilitiesList - List of abilities to look through. 
-     * This list WILL be modified when abilities aren't found because those all 
-     * abilities of that type will be removed.
-     * @param {game.AbilityType} abilityTypeToStartWith - Optional argument. If 
-     * provided, the list will be search for this type of ability first
+     * @param {Array:game.Ability} abilitiesList - List of abilities to look
+     * through. This list WILL be modified when abilities aren't found because
+     * those are all abilities of that type will be removed.
+     * @param {game.AbilityType} abilityTypeToStartWith - Optional argument. If
+     * provided, the list will be searched for this type of ability first
      * @return {game.Unit} target unit
      */
     window.game.Unit.prototype.setAbilityAndGetTarget = function(abilitiesList, abilityTypeToStartWith) {
@@ -819,7 +814,7 @@
         // If this parameter was specified, see if a random ability of the
         // specified ability type will work.
         if ( abilityTypeToStartWith !== undefined ) {
-            var abilitiesToStartWith = game.AbilityManager.getAllAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
+            var abilitiesToStartWith = game.AbilityManager.getAbilitiesOfType(abilityTypeToStartWith, abilitiesList);
             ability = game.util.randomFromWeights(abilitiesToStartWith);
             targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
             if ( targetUnit != null ) {
@@ -925,7 +920,7 @@
      */
     window.game.Unit.prototype.populateMods = function() {
         this.mods = [];
-        this.abilityMods = [];
+        this.abilitiesFromItems = [];
 
         // Go through each equipped items and add its mods to this unit's mods.
         var equippedItems = game.Player.inventory.getClassEquippedItems(this.unitType);
@@ -937,7 +932,7 @@
 
             // Add the abilities for this unit to use that this item adds (if any)
             for (var j = 0; j < equippedItem.abilities.length; j++) {  
-                this.abilityMods.push(equippedItem.abilities[j]);
+                this.abilitiesFromItems.push(equippedItem.abilities[j]);
             };
         }; 
     };

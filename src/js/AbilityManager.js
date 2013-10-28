@@ -376,7 +376,7 @@
 	     * @return {Array:game.Ability} New list of the abilities that were found. 
 	     * They are all the same type as the ability type that was passed in.
 	     */
-	    getAllAbilitiesOfType: function(abilityType, abilitiesList) {
+	    getAbilitiesOfType: function(abilityType, abilitiesList) {
 	        var newAbilitiesList = [];
 
 	        for (var i = 0; i < abilitiesList.length; i++) {
