@@ -54,6 +54,13 @@
      * do this, although they're all allowed to TRY (e.g. if you have three mods
      * and each one has a chance to modify it, then they can all attempt that
      * chance).
+     *
+     * This function is called after attacker.currentAbility is set, so when
+     * you're implementing this function, you need to only modify the attack if
+     * it's the type you expect. For example, a MultipleProjectiles mod would
+     * not override a HEAL spell and try to shoot 3 HEAL projectiles, so it
+     * should return false if the attacker's currentAbility is anything other
+     * than an attack.
      * 
      * @param  {Unit} attacker - the attacker
      * @return {Boolean}          true if the attack was modified.

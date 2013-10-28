@@ -14,6 +14,12 @@
     window.game.MultipleProjectiles.prototype = new game.ItemMod;
 
     window.game.MultipleProjectiles.prototype.onBattleTurn = function(attacker) {
+        // You can only modify ATTACK-type abilities to shoot multiple
+        // projectiles.
+        if ( attacker.currentAbility.type != game.AbilityType.ATTACK ) {
+            return false;
+        }
+
         var battle = attacker.battleData.battle;
 
         var flags = game.RandomUnitFlags.ALIVE;
