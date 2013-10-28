@@ -149,16 +149,4 @@
      */
     window.game.SAVE_GAME_ON_OVERWORLD_INTERVAL = 10000;
 
-    /**
-     * The graphic index of spawners.
-     * @type {Number}
-     */
-    window.game.SPAWNER_GRAPHIC_INDEX = 371;
-
-    /**
-     * Graphic index of generators.
-     * @type {Number}
-     */
-    window.game.GENERATOR_GRAPHIC_INDEX = 155;
-
 }());

@@ -56,39 +56,27 @@
 
         constructDesertTileset: function() {
             // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
-            var tileset = new game.Tileset(this.DESERT_TILESET_ID, game.SPAWNER_GRAPHIC_INDEX, 713, 1340);
-
-            var cactus = 162;
-            var cactus2 = 163;
-            var cactus3 = 164;
-            var grayStone = 105;
-            var pond = 108;
-            var smallPond = 109;
-            var bones = 31;
-            var animalSkull = 497;
+            var tileset = new game.Tileset(this.DESERT_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.DESERT_SAND, game.Graphic.DARK_MUD_PATH_FULL_TEXTURE);
 
             // Single-tile doodads
-            tileset.addDoodad(new game.Doodad([grayStone], 1, 2));
-            tileset.addDoodad(new game.Doodad([cactus], 1, 1));
-            tileset.addDoodad(new game.Doodad([cactus2], 1, 1));
-            tileset.addDoodad(new game.Doodad([cactus3], 1, 1));
-            tileset.addDoodad(new game.Doodad([pond], 1, 50));
-            tileset.addDoodad(new game.Doodad([smallPond], 1, 50));
-            tileset.addDoodad(new game.Doodad([bones], 1, 5));
-            tileset.addDoodad(new game.Doodad([animalSkull], 1, 20));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BIG_GRAY_STONE], 1, 2));
+            tileset.addDoodad(new game.Doodad([game.Graphic.CACTUS_1], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.CACTUS_2], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.CACTUS_3], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BIG_BLUE_POND], 1, 50));
+            tileset.addDoodad(new game.Doodad([game.Graphic.SMALL_BLUE_POND], 1, 50));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES], 1, 5));
+            tileset.addDoodad(new game.Doodad([game.Graphic.ANIMAL_SKULL], 1, 20));
 
             this.tilesets.push(tileset);
         },
 
         constructLavaTileset: function() {
-            // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
-            var tileset = new game.Tileset(this.LAVA_TILESET_ID, game.SPAWNER_GRAPHIC_INDEX, 1720, 801);
+            var lava1 = game.Graphic.RED_WATER_1;
+            var lava2 = game.Graphic.RED_WATER_2;
 
-            var lava1 = 1720;
-            var lava2 = 1777;
-            var crackedRedBlock = 1263;
-            var bones = 31;
-            var fire = 38;
+            // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
+            var tileset = new game.Tileset(this.LAVA_TILESET_ID, game.Graphic.SPAWNER, lava1, game.Graphic.DARK_COBBLESTONE);
 
             // A big pond
             tileset.addDoodad(new game.Doodad(
@@ -118,18 +106,18 @@
                 ));
 
             // Single-tile doodads
-            tileset.addDoodad(new game.Doodad([crackedRedBlock], 1, 5));
-            tileset.addDoodad(new game.Doodad([bones], 1, 5));
-            tileset.addDoodad(new game.Doodad([fire], 1, 5));
-            tileset.addDoodad(new game.Doodad([1254], 1, 1));
-            tileset.addDoodad(new game.Doodad([1255], 1, 1));
-            tileset.addDoodad(new game.Doodad([1256], 1, 1));
-            tileset.addDoodad(new game.Doodad([1257], 1, 1));
-            tileset.addDoodad(new game.Doodad([1258], 1, 1));
-            tileset.addDoodad(new game.Doodad([1259], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.CRACKED_RED_BLOCK], 1, 5));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES], 1, 5));
+            tileset.addDoodad(new game.Doodad([game.Graphic.FIRE_1], 1, 5));
+            tileset.addDoodad(new game.Doodad([game.Graphic.RED_STONE_PATH_1], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.RED_STONE_PATH_2], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.RED_STONE_PATH_3], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.RED_STONE_PATH_4], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.RED_STONE_PATH_5], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.RED_STONE_PATH_6], 1, 1));
 
             // Rock structures
-            tileset.addDoodad(new game.Doodad([1264,1265,1266], 3, 20));
+            tileset.addDoodad(new game.Doodad([game.Graphic.CRACKED_RED_BLOCK_HORIZ_RIDGE_1,game.Graphic.CRACKED_RED_BLOCK_HORIZ_RIDGE_2,game.Graphic.CRACKED_RED_BLOCK_HORIZ_RIDGE_3], 3, 20));
             
 
             this.tilesets.push(tileset);
@@ -137,17 +125,10 @@
 
         constructMarshTileset: function() {
             // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
-            var tileset = new game.Tileset(this.MARSH_TILESET_ID, game.SPAWNER_GRAPHIC_INDEX, 769, 715);
+            var tileset = new game.Tileset(this.MARSH_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.LIGHT_GREEN_BRUSH, game.Graphic.DIRT_PATH);
 
-            var water1 = 1714;
-            var water2 = 1771;
-            var greenTree = 214;
-            var fullGreenTree = 215;
-            var greenBush1 = 43;
-            var greenBush2 = 44;
-            var smallGrayRock = 161;
-            var twoFlowers = 101;
-            var flowers = 100;
+            var water1 = game.Graphic.BLUE_WATER_1;
+            var water2 = game.Graphic.BLUE_WATER_2;
 
             // A big pond
             tileset.addDoodad(new game.Doodad(
@@ -177,13 +158,13 @@
                 ));
 
             // Single-tile doodads
-            tileset.addDoodad(new game.Doodad([greenTree], 1, 1));
-            tileset.addDoodad(new game.Doodad([fullGreenTree], 1, 5));
-            tileset.addDoodad(new game.Doodad([greenBush1], 1, 1));
-            tileset.addDoodad(new game.Doodad([greenBush2], 1, 1));
-            tileset.addDoodad(new game.Doodad([smallGrayRock], 1, 1));
-            tileset.addDoodad(new game.Doodad([twoFlowers], 1, 1));
-            tileset.addDoodad(new game.Doodad([flowers], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.GREEN_TREE], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.GREEN_TREE_WITH_FRUIT], 1, 5));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BIG_GREEN_BUSH], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.MEDIUM_GREEN_BUSH], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.SMALL_GRAY_ROCKS], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.TWO_FLOWERS], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.THREE_FLOWERS], 1, 1));
 
             this.tilesets.push(tileset);
         }

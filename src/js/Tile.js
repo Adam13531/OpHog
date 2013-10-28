@@ -16,8 +16,6 @@
         UNFOGGY: 16,
     };
 
-    window.game.CASTLE_GRAPHIC_INDEX = 155;
-
     /**
      * Tiles do not currently have any other functions because there is only
      * data in this class and everything is essentially constant. This will
@@ -43,7 +41,7 @@
             this.tileFlags |= game.TileFlags.WALKABLE;
         }
 
-        if (this.graphicIndex == game.CASTLE_GRAPHIC_INDEX) {
+        if (this.graphicIndex == game.Graphic.GENERATOR) {
             this.tileFlags |= game.TileFlags.CASTLE;
         }
 
@@ -190,7 +188,7 @@
                         this.tileIndex);
             return;
         }
-        this.graphicIndex = game.CASTLE_GRAPHIC_INDEX;
+        this.graphicIndex = game.Graphic.GENERATOR;
         this.tileFlags |= game.TileFlags.CASTLE;
     };
 

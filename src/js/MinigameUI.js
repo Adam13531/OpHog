@@ -215,7 +215,7 @@
 
                 // Note: the money given isn't actually granted to the player
                 // yet.
-                this.addIcon(i, envSheet.getSpriteDataFromSingleIndex(202, true), minigameData.moneyGiven);
+                this.addIcon(i, envSheet.getSpriteDataFromSingleIndex(game.Graphic.TREASURE_CHEST, true), minigameData.moneyGiven);
 
                 // CSS properties for the money image and text that shows the
                 // reward amount.

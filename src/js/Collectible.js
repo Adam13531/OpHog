@@ -40,16 +40,16 @@
         // Set graphic index based on type
         switch(this.type) {
             case game.CollectibleType.BAD_LOOT:
-                this.graphicIndex = 209; // barrel
+                this.graphicIndex = game.Graphic.BARREL;
                 break;
             case game.CollectibleType.GOOD_LOOT:
             case game.CollectibleType.GREAT_LOOT:
-                this.graphicIndex = 202; // treasure chest
+                this.graphicIndex = game.Graphic.TREASURE_CHEST;
                 break;
             case game.CollectibleType.BAD_POWERUP:
             case game.CollectibleType.GOOD_POWERUP:
             case game.CollectibleType.GREAT_POWERUP:
-                this.graphicIndex = 315; // cauldron
+                this.graphicIndex = game.Graphic.CAULDRON;
                 break;
             default:
                 console.log('Unrecognized Collectible type: ' + type);

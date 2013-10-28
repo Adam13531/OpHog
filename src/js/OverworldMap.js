@@ -415,7 +415,7 @@
                 var index = node.y * this.overworldMapWidth + node.x;
 
                 // Make them look like spawners
-                mapTileIndices[index] = game.SPAWNER_GRAPHIC_INDEX;
+                mapTileIndices[index] = game.Graphic.SPAWNER;
             };
 
             var doodadIndices = new Array(mapTileIndices.length);
