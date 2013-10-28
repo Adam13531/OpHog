@@ -158,9 +158,10 @@
         this.chanceToDropItem = unitData.chanceToDropItem;
         this.itemsDropped = unitData.itemsDropped;
 
-        this.abilities = unitData.abilities;
+        // this.abilities = unitData.abilities;
+        this.unitDefinedAbilities = unitData.abilities;
         // Set a default ability for now
-        this.currentAbility = this.abilities[0];
+        this.currentAbility = this.unitDefinedAbilities[0];
         this.abilityAI = unitData.abilityAI;
 
         this.restoreLife();
@@ -769,7 +770,7 @@
 
         // First, make an exact copy of all the abilities in the unit.
         // We don't want to modify the original list
-        var allPossibleAbilities = game.AbilityManager.copyAbilitiesList(this.abilities);
+        var allPossibleAbilities = game.AbilityManager.copyAbilitiesList(this.unitDefinedAbilities);
 
         // loop through each ability that came from items
         for (var i = 0; i < this.abilitiesFromItems.length; i++) {
