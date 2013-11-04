@@ -128,7 +128,7 @@
 
         BOULDER_DROP: {
             id: 6,
-            graphicIndex: 43,
+            graphicIndex: 46,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -148,7 +148,7 @@
 
         THROWING_KNIVES: {
             id: 8,
-            graphicIndex: 43,
+            graphicIndex: 44,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -178,7 +178,7 @@
 
         REVIVE: {
             id: 11,
-            graphicIndex: 43,
+            graphicIndex: 108,
             type: game.AbilityType.REVIVE,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.DEAD,
@@ -366,6 +366,20 @@
 	        };
 	    },
 
+        /**
+         * Removes a specified ability type from the list
+         * @param  {game.AbilityType} abilityType - Ability type to remove
+         * @param  {Array:game.AbilityType} abilityTypeList List of ability types
+         */
+        removeAbilityType: function(abilityType, abilityTypeList) {
+            for (var i = 0; i < abilityTypeList.length; i++) {
+                if ( abilityTypeList[i] == abilityType ) {
+                    abilityTypeList.splice(i, 1);
+                    break;
+                }
+            };
+        },
+
 	    /**
 	     * Gets all the abilities of the ability type that's passed in. This returns 
 	     * a new array, so the original abilities can't be modified at all
@@ -387,5 +401,17 @@
 	        };
 	        return newAbilitiesList;
 	    },
+
+        /**
+         * Gets all ability types
+         * @return {Array:game.AbilityType} List of all the ability types
+         */
+        getAbilityTypes: function() {
+            var abilityTypeList = [];
+            for (var abilityType in game.AbilityType) {
+                abilityTypeList.push(game.AbilityType[abilityType]);
+            }
+            return abilityTypeList;
+        },
 	};
 }());
