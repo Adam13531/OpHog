@@ -22,7 +22,6 @@
         USE_ABILITY_0_WHENEVER_POSSIBLE: 'use ability 0 whenever possible',
         RANDOM: 'random',
         USE_REVIVE_IF_POSSIBLE: 'use revive if possible',
-        ALWAYS_SUMMON: 'always summon',
         USE_HEAL_IF_POSSIBLE: 'use heal if possible'
     };
 
@@ -58,6 +57,18 @@
         BUFF: 'buff',
         DEBUFF: 'debuff',
         SUMMON: 'summon'
+    };
+
+    /**
+     * This is intended to have the following specialized use. It must contain the sum of all 
+     * the relative weights for the ability type that it holds.
+     * @param {game.AbilityType} type - Type of Ability
+     * @param {Number} relativeWeight - This is the sum of ALL the
+     * abilities that are of "type" (The other property).
+     */
+    window.game.UseableAbilityType = function UseableAbilityType(type, relativeWeight) {
+        this.type = type;
+        this.relativeWeight = relativeWeight;
     };
 
     /**
@@ -188,7 +199,9 @@
 
         SUMMON: {
             id: 12,
+            graphicIndex: 1, // Blank graphic
             type: game.AbilityType.SUMMON,
+            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
@@ -197,7 +210,7 @@
         HEAL: {
             id: 13,
             type: game.AbilityType.HEAL,
-            graphicIndex: 120,
+            graphicIndex: 70,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.HEAL,
@@ -350,6 +363,23 @@
 	        return -1;
 	    },
 
+        /**
+         * Returns true if the usable ability type list contains the ability type
+         * @param  {game.AbilityType}  abilityType - Ability type to search for
+         * @param  {Array:game.UseableAbilityType}  useableAbilityTypeList List of 
+         * useable ability types to look through
+         * @return {Boolean} Returns true if the list contains the ability type 
+         * that was passed in
+         */
+        hasAbilityType: function(abilityType, useableAbilityTypeList) {
+            for (var i = 0; i < useableAbilityTypeList.length; i++) {
+                if ( useableAbilityTypeList[i].type == abilityType ) {
+                    return true;
+                }
+            };
+            return false;
+        },
+
 	    /**
 	     * Removes all abilities of the ability type that's passed in. This will 
 	     * modify the contents of the list that's passed in.
@@ -401,6 +431,24 @@
 	        };
 	        return newAbilitiesList;
 	    },
+
+        /**
+         * Returns the useable ability type from the list that is the same type
+         * as the one that's passed in.
+         * @param  {game.AbilityType} abilityType - type of ability to look for
+         * @param  {Array:game.UseableAbilityType} useableAbilityTypeList - List of useable
+         * ability types to search through
+         * @return {game.UseableAbilityType} Useable ability type that was found.
+         * Will return null if a useable ability type isn't found
+         */ 
+        getAbilityType: function(abilityType, useableAbilityTypeList) {
+            for (var i = 0; i < useableAbilityTypeList.length; i++) {
+                if ( useableAbilityTypeList[i].type == abilityType ) {
+                    return useableAbilityTypeList[i];
+                }
+            };
+            return null;
+        },
 
         /**
          * Gets all ability types

@@ -224,6 +224,12 @@
         this.allAbilities = [];
 
         /**
+         * List of ability types that this unit can use
+         * @type {Array:game.UseableAbilityType}
+         */
+        this.usableAbilityTypes = [];
+
+        /**
          * This is only used by NPCs to indicate whether they've already given
          * out their quest.
          * @type {Boolean}
@@ -775,6 +781,7 @@
     window.game.Unit.prototype.populateAbilitiesBasedOnItems = function() {
 
         this.allAbilities = [];
+        this.usableAbilityTypes = [];
 
         // First, make an exact copy of all the abilities in the unit.
         // We don't want to modify the original list
@@ -793,6 +800,23 @@
             // Otherwise, append the ability to the list because it's not in there
             } else {
                 this.allAbilities.push(newAbility);
+            }
+
+        };
+
+        // At this point, all the abilities should be set. Let's now loop through
+        // all of them and add up all the relative weights for each ability type.
+        // Each individual ability type will be put into a list.
+        for (var i = 0; i < this.allAbilities.length; i++) {
+            var ability = this.allAbilities[i];
+
+            // Add the ability type to the useable ability type list if it's not already in there
+            if ( !game.AbilityManager.hasAbilityType(ability.type, this.usableAbilityTypes) ) {
+                this.usableAbilityTypes.push(new game.UseableAbilityType(ability.type, ability.relativeWeight)); 
+            } else {// Otherwise, add this abilities relative weight to the sum of all this
+                    // ability type's relative weights.
+                var abilityType = game.AbilityManager.getAbilityType(ability.type, this.usableAbilityTypes);
+                abilityType.relativeWeight += ability.relativeWeight;
             }
         };
     };
@@ -814,7 +838,14 @@
         var targetUnit = null;
         var ability = null;
 
-        var abilityTypeList = game.AbilityManager.getAbilityTypes();
+        // Make a copy of the list of the useable ability types.
+        var abilityTypeListCopy = [];
+        for (var i = 0; i < this.usableAbilityTypes.length; i++) {
+            var typeCopy = {};
+            typeCopy.type = this.usableAbilityTypes[i].type;
+            typeCopy.relativeWeight = this.usableAbilityTypes[i].relativeWeight;
+            abilityTypeListCopy.push(typeCopy);
+        };
 
         // If this parameter was specified, see if a random ability of the
         // specified ability type will work.
@@ -827,18 +858,21 @@
                 return targetUnit;
             } else {
                 //remove the abilities from the list
-                game.AbilityManager.removeAbilityType(abilityTypeToStartWith, abilityTypeList);
+                game.AbilityManager.removeAbilityType(abilityTypeToStartWith, abilityTypeListCopy);
             }
         }
 
-        for (var i = abilityTypeList.length - 1; i >= 0; i--) {
-            var abilityType = abilityTypeList[i];
+        // Find an ability that will work. First, get a random ability type based on
+        // relative weights. Then, get a list of abilities that are of that type. 
+        // Finally, get a random ability of the chosen type based on relative weights 
+        // and see if there is a target for that ability. If there is, set the current 
+        // ability and return the target unit. If not, remove that ability type from the list 
+        // and try again.
+        for (var i = abilityTypeListCopy.length - 1; i >= 0; i--) {
+            var abilityTypeObjects = game.util.randomFromWeights(abilityTypeListCopy);
+            var abilityType = abilityTypeObjects.type;
             var abilititesOfSameType = game.AbilityManager.getAbilitiesOfType(abilityType, this.allAbilities);
-            // If there are no abilities of this type, move on
-            if ( abilititesOfSameType.length == 0 ) {
-                game.AbilityManager.removeAbilityType(abilityType, abilityTypeList);
-                continue;
-            }
+            
             ability = game.util.randomFromWeights(abilititesOfSameType);
             targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
             if ( targetUnit != null ) {
@@ -846,7 +880,7 @@
                 return targetUnit;
             } else {
                 //remove the abilities from the list
-                game.AbilityManager.removeAbilityType(abilityType, abilityTypeList);
+                game.AbilityManager.removeAbilityType(abilityType, abilityTypeListCopy);
             }
         };
 
@@ -877,23 +911,6 @@
                 targetUnit = this.setAbilityAndGetTarget(game.AbilityType.HEAL);
                 break;
 
-            case game.AbilityAI.ALWAYS_SUMMON:
-                this.currentAbility = game.AbilityManager.getAbility(game.Ability.SUMMON.id, this.allAbilities);
-                var flags = game.PlayerFlags.ENEMY;
-                if ( this.isPlayer() ) {
-                    flags = game.PlayerFlags.PLAYER;
-                }
-                flags |= game.PlayerFlags.SUMMON;
-                var newUnit = new game.Unit(game.UnitType.TREE.id, flags, 1);
-                newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
-                game.UnitManager.addUnit(newUnit);
-
-                // Force the unit to join this battle. We pass coordinates so that
-                // the unit can go back to the summoner's original position when the
-                // battle ends.
-                battle.summonedUnit(this, newUnit);
-                break;
-
             case game.AbilityAI.USE_ABILITY_0_WHENEVER_POSSIBLE:
             default:
                 targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.allAbilities[0].allowedTargets);
@@ -904,8 +921,23 @@
                 break;
         }
 
-        // If a unit has been summoned, don't make projectiles or anything
-        if ( this.currentAbility.id == game.Ability.SUMMON.id ) {
+        // Handle the case for summoning. For now, after a unit is summoned,
+        // this code returns in order to not create a projectile. In the future,
+        // we might want to create projectiles.
+        if ( this.currentAbility.type == game.AbilityType.SUMMON ) {
+            var flags = game.PlayerFlags.ENEMY;
+            if ( this.isPlayer() ) {
+                flags = game.PlayerFlags.PLAYER;
+            }
+            flags |= game.PlayerFlags.SUMMON;
+            var newUnit = new game.Unit(game.UnitType.TREE.id, flags, 1);
+            newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
+            game.UnitManager.addUnit(newUnit);
+
+            // Force the unit to join this battle. We pass coordinates so that
+            // the unit can go back to the summoner's original position when the
+            // battle ends.
+            battle.summonedUnit(this, newUnit);
             return;
         }
 

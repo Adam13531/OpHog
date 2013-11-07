@@ -315,6 +315,9 @@
                     graphicIndex: 43,
                     graphicOnCrit: 61,
                     relativeWeight: 5
+                },
+                {
+                    id: game.Ability.SUMMON.id
                 }
             ],
             

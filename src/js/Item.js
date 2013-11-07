@@ -37,7 +37,10 @@
      * Optional properties:
      * stackable (if this is provided, then startingQuantity can also be provided, otherwise the default is 1)
      * mods - an Array:ItemMod. If this is provided, these mods will be applied to units who equip the items.
-     *
+     * modifiesAbilities - an Array:game.Ability. If this is provided, the abilities
+     * with the ids provided will be updated. id: game.Ability.<ability>.id is mandatory
+     * for each ability.
+     * 
      * Note: the htmlDescription will have '[name]<br/>' prepended to it.
      */
     window.game.ItemType = {
