@@ -225,7 +225,7 @@
 
         /**
          * List of ability types that this unit can use
-         * @type {Array:game.UseableAbilityType}
+         * @type {Array:game.UsableAbilityType}
          */
         this.usableAbilityTypes = [];
 
@@ -810,9 +810,9 @@
         for (var i = 0; i < this.allAbilities.length; i++) {
             var ability = this.allAbilities[i];
 
-            // Add the ability type to the useable ability type list if it's not already in there
+            // Add the ability type to the usable ability type list if it's not already in there
             if ( !game.AbilityManager.hasAbilityType(ability.type, this.usableAbilityTypes) ) {
-                this.usableAbilityTypes.push(new game.UseableAbilityType(ability.type, ability.relativeWeight)); 
+                this.usableAbilityTypes.push(new game.UsableAbilityType(ability.type, ability.relativeWeight)); 
             } else {// Otherwise, add this abilities relative weight to the sum of all this
                     // ability type's relative weights.
                 var abilityType = game.AbilityManager.getAbilityType(ability.type, this.usableAbilityTypes);
@@ -838,7 +838,7 @@
         var targetUnit = null;
         var ability = null;
 
-        // Make a copy of the list of the useable ability types.
+        // Make a copy of the list of the usable ability types.
         var abilityTypeListCopy = [];
         for (var i = 0; i < this.usableAbilityTypes.length; i++) {
             var typeCopy = {};

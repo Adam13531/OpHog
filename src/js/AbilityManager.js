@@ -66,14 +66,14 @@
      * @param {Number} relativeWeight - This is the sum of ALL the
      * abilities that are of "type" (The other property).
      */
-    window.game.UseableAbilityType = function UseableAbilityType(type, relativeWeight) {
+    window.game.UsableAbilityType = function UsableAbilityType(type, relativeWeight) {
         this.type = type;
         this.relativeWeight = relativeWeight;
     };
 
     /**
      * Abilities for the units
-     * @type {Object}
+     * @type {Object} //TODO: Fill this out and don't for got to mention that replacesAbility doesn't need to be specified and will default to false
      */
     window.game.Ability = {
         ATTACK: {
@@ -366,14 +366,14 @@
         /**
          * Returns true if the usable ability type list contains the ability type
          * @param  {game.AbilityType}  abilityType - Ability type to search for
-         * @param  {Array:game.UseableAbilityType}  useableAbilityTypeList List of 
-         * useable ability types to look through
+         * @param  {Array:game.UsableAbilityType}  usableAbilityTypeList List of 
+         * usable ability types to look through
          * @return {Boolean} Returns true if the list contains the ability type 
          * that was passed in
          */
-        hasAbilityType: function(abilityType, useableAbilityTypeList) {
-            for (var i = 0; i < useableAbilityTypeList.length; i++) {
-                if ( useableAbilityTypeList[i].type == abilityType ) {
+        hasAbilityType: function(abilityType, usableAbilityTypeList) {
+            for (var i = 0; i < usableAbilityTypeList.length; i++) {
+                if ( usableAbilityTypeList[i].type == abilityType ) {
                     return true;
                 }
             };
@@ -433,18 +433,18 @@
 	    },
 
         /**
-         * Returns the useable ability type from the list that is the same type
+         * Returns the usable ability type from the list that is the same type
          * as the one that's passed in.
          * @param  {game.AbilityType} abilityType - type of ability to look for
-         * @param  {Array:game.UseableAbilityType} useableAbilityTypeList - List of useable
+         * @param  {Array:game.UsableAbilityType} usableAbilityTypeList - List of usable
          * ability types to search through
-         * @return {game.UseableAbilityType} Useable ability type that was found.
-         * Will return null if a useable ability type isn't found
+         * @return {game.UsableAbilityType} Usable ability type that was found.
+         * Will return null if a usable ability type isn't found
          */ 
-        getAbilityType: function(abilityType, useableAbilityTypeList) {
-            for (var i = 0; i < useableAbilityTypeList.length; i++) {
-                if ( useableAbilityTypeList[i].type == abilityType ) {
-                    return useableAbilityTypeList[i];
+        getAbilityType: function(abilityType, usableAbilityTypeList) {
+            for (var i = 0; i < usableAbilityTypeList.length; i++) {
+                if ( usableAbilityTypeList[i].type == abilityType ) {
+                    return usableAbilityTypeList[i];
                 }
             };
             return null;
