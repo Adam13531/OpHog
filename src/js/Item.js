@@ -40,7 +40,9 @@
      * modifiesAbilities - an Array:game.Ability. If this is provided, the abilities
      * with the ids provided will be updated. id: game.Ability.<ability>.id is mandatory
      * for each ability.
-     * 
+     * An attribute called "replacesAbility" can also be provided to replace an ability
+     * completely.If an ability doesn't exist that replacesAbility says it's going to replace, then
+     * it will be appended to the list
      * Note: the htmlDescription will have '[name]<br/>' prepended to it.
      */
     window.game.ItemType = {
@@ -64,7 +66,8 @@
             modifiesAbilities: [
                 {
                     id: game.Ability.BOULDER_DROP.id,
-                    relativeWeight: 9000
+                    relativeWeight: 9000,
+                    replacesAbility: game.Ability.ATTACK.id
                 }
             ],
             cssClass:'item-sprite shield32-png',
@@ -182,12 +185,6 @@
             for (var i = 0; i < item.mods.length; i++) {
                 item.htmlDescription += '<br/>' + item.mods[i].getDescription();
             };
-        }
-
-        if ( item.modifiesAbilities !== undefined ) {
-            // If this item adds abilities, make sure that all the
-            // fields for the ability are defined.
-            game.AbilityManager.setDefaultAbilityAttrIfUndefined(item.modifiesAbilities);
         }
 
         if ( item.usable == false || item.usable === undefined ) {

@@ -792,17 +792,68 @@
 
             var newAbility = {};
             newAbility = game.AbilityManager.copyAbility(this.abilitiesFromItems[i]);
-            // Replace the old ability if the new one has the same ability ID as 
-            // it
             var abilityIndex = game.AbilityManager.hasAbility(this.abilitiesFromItems[i].id, this.allAbilities);
-            if ( abilityIndex > -1) {
-                this.allAbilities.splice(abilityIndex, 1, newAbility);
-            // Otherwise, append the ability to the list because it's not in there
-            } else {
+            
+            // If an ability needs to be replaced
+            if ( newAbility.replacesAbility > -1) {
+
+                abilityIndexToReplace = game.AbilityManager.hasAbility(newAbility.replacesAbility, this.allAbilities);
+                // Replace the ability completely
+                if ( abilityIndexToReplace > -1 ) {
+                    debugger;
+                    this.allAbilities.splice(abilityIndexToReplace, 1, newAbility);
+                } else if ( abilityIndex > -1 ){
+                    // Update the ability only with the fields that the new ability
+                    // has.
+                    game.util.copyProps(newAbility, this.allAbilities[abilityIndex]);
+                } else {
+                    // Add the ability in case the one it needs to replace doesn't exist
+                    // and if this one doesn't exist.
+                    this.allAbilities.push(newAbility);
+                }
+                continue;
+            }
+
+            // if the ability exists but isn't going to be replaced, update it only
+            // with the fields that are filled in from the new ability
+            if ( abilityIndex > -1 ) {
+                game.util.copyProps(newAbility, this.allAbilities[abilityIndex]);
+            } else { // Otherwise, append the ability to the list because it's not in there
                 this.allAbilities.push(newAbility);
             }
 
         };
+
+        // Make one final runthrough to make sure abilities are actually gone
+        // when they're supposed to be. Here is a scenario to demonstrate why
+        // this is  important:  
+        // 
+        // Let's say an item that adds a revive ability is
+        // supposed to replace a heal ability. The unit doesn't have a heal
+        // ability by default, however it will also be added from a different item.
+        // So while we're adding abilities from items, the revive ability gets
+        // added first. The code above checks to see if the heal ability exists,
+        // and it currently doesn't. Therefore, we append the revive ability
+        // because the unit should still have it. Then, in the next iteration of
+        // the loop, the heal ability does get added. The heal ability would
+        // stay because the revive ability already tried to replace it, but it
+        // wasn't in the ability list yet. Therefore, now we'll make our final
+        // run through and make sure the heal ability is gone.
+        var index = this.allAbilities.length
+        while (index--) {
+            var ability = this.allAbilities[index];
+            if ( ability.replacesAbility > -1 ) {
+                var abilityIndex = game.AbilityManager.hasAbility(ability.replacesAbility, this.allAbilities);
+                if ( abilityIndex > -1 ) {
+                    this.allAbilities.splice(abilityIndex, 1);
+                }
+            }
+        };
+
+        // Make sure that all ability attributes are filled in. It's possible that 
+        // an ability from an item replaced an ability and didn't define all the 
+        // attributes, so this will ensure they get filled in.
+        game.AbilityManager.setDefaultAbilityAttrIfUndefined(this.allAbilities);
 
         // At this point, all the abilities should be set. Let's now loop through
         // all of them and add up all the relative weights for each ability type.
@@ -813,8 +864,9 @@
             // Add the ability type to the usable ability type list if it's not already in there
             if ( !game.AbilityManager.hasAbilityType(ability.type, this.usableAbilityTypes) ) {
                 this.usableAbilityTypes.push(new game.UsableAbilityType(ability.type, ability.relativeWeight)); 
-            } else {// Otherwise, add this abilities relative weight to the sum of all this
-                    // ability type's relative weights.
+            } else {
+                // Otherwise, add this abilities relative weight to the sum of all this
+                // ability type's relative weights.
                 var abilityType = game.AbilityManager.getAbilityType(ability.type, this.usableAbilityTypes);
                 abilityType.relativeWeight += ability.relativeWeight;
             }

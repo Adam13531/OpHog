@@ -73,7 +73,7 @@
 
     /**
      * Abilities for the units
-     * @type {Object} //TODO: Fill this out and don't for got to mention that replacesAbility doesn't need to be specified and will default to false
+     * @type {Object}
      */
     window.game.Ability = {
         ATTACK: {
@@ -261,6 +261,7 @@
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'allowedTargets', abilityData.allowedTargets);
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'actionOnHit', abilityData.actionOnHit);
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'damageFormula', abilityData.damageFormula);
+                game.util.useDefaultIfUndefined(abilitiesList[i], 'replacesAbility', -1);
 	        }
 	    },
 
