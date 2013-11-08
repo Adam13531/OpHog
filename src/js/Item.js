@@ -41,7 +41,7 @@
      * with the ids provided will be updated. id: game.Ability.<ability>.id is mandatory
      * for each ability.
      * An attribute called "replacesAbility" can also be provided to replace an ability
-     * completely.If an ability doesn't exist that replacesAbility says it's going to replace, then
+     * completely. If an ability doesn't exist that replacesAbility says it's going to replace, then
      * it will be appended to the list
      * Note: the htmlDescription will have '[name]<br/>' prepended to it.
      */

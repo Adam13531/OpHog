@@ -73,6 +73,20 @@
 
     /**
      * Abilities for the units
+     * Required properties:
+     * id: Number - Unique identifier for the ability.
+     * graphicIndex: Number - Index of the graphic that will be shown when this 
+     *                        ability is used
+     * type: game.AbilityType - Type of ability it is
+     * allowedTargets: game.RandomUnitFlags - Valid targets of the ability
+     * actionOnHit: game.ActionOnHit - Instructions on what to do if a target gets
+     *                                 hit by this ability
+     * damageformula: game.DamageFormula - Instructions on how to calculate damage 
+     *                                     or heal amounts that will be done 
+     * Optional properties:
+     * relativeWeight: Number - Used to calculate the probability of using the ability
+     * replacesAbility: game.Ability.id - Id of the ability that this ability will replace
+     * 
      * @type {Object}
      */
     window.game.Ability = {
@@ -84,7 +98,6 @@
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
-            // chanceToCrit: .1,
         },
 
         SKULL_THROW: {
@@ -250,14 +263,15 @@
 	        for ( var i = 0; i < abilitiesList.length; i++ ) {
 	            var unitAbility = abilitiesList[i];
 	            var abilityData = this.getAbilityDataFromID(unitAbility.id);
-	            this.displayUndefinedAbilityError(abilityData, 'type');
+                this.displayUndefinedAbilityError(abilityData, 'type');
+                this.displayUndefinedAbilityError(abilityData, 'graphicIndex');
 	            this.displayUndefinedAbilityError(abilityData, 'allowedTargets');
 	            this.displayUndefinedAbilityError(abilityData, 'actionOnHit');
 	            this.displayUndefinedAbilityError(abilityData, 'damageFormula');
 
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'type', abilityData.type);
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'graphicIndex', abilityData.graphicIndex);
-	            game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', abilityData.relativeWeight);
+	            game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', 1000);
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'allowedTargets', abilityData.allowedTargets);
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'actionOnHit', abilityData.actionOnHit);
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'damageFormula', abilityData.damageFormula);
