@@ -291,6 +291,7 @@
 	        for ( var i = 0; i < abilityList.length; i++ ) {
 	            if ( abilityList[i].id == abilityID ) {
 	                abilityData = abilityList[i];
+                    break;
 	            }
 	        }
 
