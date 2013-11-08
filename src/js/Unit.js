@@ -775,8 +775,8 @@
 
     /**
      * Populates all the abilities for a unit plus the ones that are added because of 
-     * items. The abilities from items can replace abilities or go at the end of 
-     * the list.
+     * items. The abilities from items can replace abilities, modify certain fields of them,
+     * or go at the end of the list.
      */
     window.game.Unit.prototype.populateAbilitiesBasedOnItems = function() {
 
