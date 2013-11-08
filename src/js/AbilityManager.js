@@ -390,9 +390,10 @@
 	     * remove the abilities from
 	     */
 	    removeAbilitiesOfType: function(abilityType, abilitiesList) {
-	        for (var i = abilitiesList.length - 1; i >= 0; i--) {
-	            if ( abilitiesList[i].type == abilityType ) {
-	                abilitiesList.splice(i, 1);
+	        var index = abilitiesList.length;
+            while (index--) {
+	            if ( abilitiesList[index].type == abilityType ) {
+	                abilitiesList.splice(index, 1);
 	            }
 	        };
 	    },

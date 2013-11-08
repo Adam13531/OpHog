@@ -839,7 +839,7 @@
         // stay because the revive ability already tried to replace it, but it
         // wasn't in the ability list yet. Therefore, now we'll make our final
         // run through and make sure the heal ability is gone.
-        var index = this.allAbilities.length
+        var index = this.allAbilities.length;
         while (index--) {
             var ability = this.allAbilities[index];
             if ( ability.replacesAbility > -1 ) {
@@ -920,7 +920,8 @@
         // and see if there is a target for that ability. If there is, set the current 
         // ability and return the target unit. If not, remove that ability type from the list 
         // and try again.
-        for (var i = abilityTypeListCopy.length - 1; i >= 0; i--) {
+        var index = abilityTypeListCopy.length;
+        while (index--) {
             var abilityTypeObjects = game.util.randomFromWeights(abilityTypeListCopy);
             var abilityType = abilityTypeObjects.type;
             var abilititesOfSameType = game.AbilityManager.getAbilitiesOfType(abilityType, this.allAbilities);
