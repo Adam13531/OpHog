@@ -232,6 +232,33 @@
 
     };
 
+    /**
+     * This function ensures certain aspects of the abilities that were just
+     * defined, e.g. that you didn't duplicate IDs. It is called immediately
+     * after it is defined (it's an IIFE).
+     */
+    ( function verifyAllAbilityData() {
+        var abilityIDs = [];
+        
+        for ( var key in game.Ability ) {
+            var ability = game.Ability[key];
+            var id = ability.id;
+
+            // ID is necessary
+            if ( id === undefined ) {
+                game.util.debugDisplayText('Fatal error: there is an ability missing an ID!', 'abil id missing');
+            }
+
+            if ( abilityIDs.indexOf(id) != -1 ) {
+                // Get the first ability with that ID
+                console.log('Fatal error! You duplicated ability id #' + id);
+                game.util.debugDisplayText('Check console log - duplicate ability ID detected.', 'abil dupe');
+            }
+
+            abilityIDs.push(id);
+        }
+    }());
+
 	/**
 	 * Ability manager. Basically, this object contains a lot of utility functions 
 	 * for abilities.
