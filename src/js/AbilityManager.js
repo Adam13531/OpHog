@@ -60,18 +60,6 @@
     };
 
     /**
-     * This is intended to have the following specialized use. It must contain the sum of all 
-     * the relative weights for the ability type that it holds.
-     * @param {game.AbilityType} type - Type of Ability
-     * @param {Number} relativeWeight - This is the sum of ALL the
-     * abilities that are of "type" (The other property).
-     */
-    window.game.UsableAbilityType = function UsableAbilityType(type, relativeWeight) {
-        this.type = type;
-        this.relativeWeight = relativeWeight;
-    };
-
-    /**
      * Abilities for the units
      * Required properties:
      * id: Number - Unique identifier for the ability.
@@ -307,33 +295,6 @@
 	    },
 
 	    /**
-	     * Gets the ability from the id that is passed in as a parameter
-	     * @param  {Number} abilityID - ID of the ability to get. An example is 
-	     * game.Ability.ATTACK.id.
-	     * @param  {Array:Ability} abilityList - Ability list to search through
-	     * @return {game.Ability} - Ability that was found
-	     */
-		getAbility: function(abilityID, abilityList) {
-	        var abilityData = null;
-	        for ( var i = 0; i < abilityList.length; i++ ) {
-	            if ( abilityList[i].id == abilityID ) {
-	                abilityData = abilityList[i];
-                    break;
-	            }
-	        }
-
-	        if ( abilityData == null ) {
-	            console.log('Error - Unit with type: ' + this.unitType + ' doesn\'t contain an ability with ID: ' + abilityID + '.');
-	            if ( typeof(abilityID) !== 'number' ) {
-	                // If you hit this, it's likely that you passed in the entire
-	                // abilityData instead of just the ID.
-	                console.log('The above error happened because abilityID isn\'t even a number.');
-	            }
-	        }
-	        return abilityData;
-	    },
-
-	    /**
 	     * Makes a copy of an ability.
 	     * @param {game.Ability} originalAbility - ability that will be copied
 	     * @return {game.Ability} New copy of the ability
@@ -406,23 +367,6 @@
 	        return -1;
 	    },
 
-        /**
-         * Returns true if the usable ability type list contains the ability type
-         * @param  {game.AbilityType}  abilityType - Ability type to search for
-         * @param  {Array:game.UsableAbilityType}  usableAbilityTypeList List of 
-         * usable ability types to look through
-         * @return {Boolean} Returns true if the list contains the ability type 
-         * that was passed in
-         */
-        hasAbilityType: function(abilityType, usableAbilityTypeList) {
-            for (var i = 0; i < usableAbilityTypeList.length; i++) {
-                if ( usableAbilityTypeList[i].type == abilityType ) {
-                    return true;
-                }
-            };
-            return false;
-        },
-
 	    /**
 	     * Removes all abilities of the ability type that's passed in. This will 
 	     * modify the contents of the list that's passed in.
@@ -432,12 +376,12 @@
 	     * remove the abilities from
 	     */
 	    removeAbilitiesOfType: function(abilityType, abilitiesList) {
-	        var index = abilitiesList.length;
-            while (index--) {
-	            if ( abilitiesList[index].type == abilityType ) {
-	                abilitiesList.splice(index, 1);
-	            }
-	        };
+            for (var i = 0; i < abilitiesList.length; i++) {
+                if ( abilitiesList[i].type == abilityType ) {
+                    abilitiesList.splice(i, 1);
+                    i--;
+                }
+            };
 	    },
 
         /**
@@ -475,35 +419,5 @@
 	        };
 	        return newAbilitiesList;
 	    },
-
-        /**
-         * Returns the usable ability type from the list that is the same type
-         * as the one that's passed in.
-         * @param  {game.AbilityType} abilityType - type of ability to look for
-         * @param  {Array:game.UsableAbilityType} usableAbilityTypeList - List of usable
-         * ability types to search through
-         * @return {game.UsableAbilityType} Usable ability type that was found.
-         * Will return null if a usable ability type isn't found
-         */ 
-        getAbilityType: function(abilityType, usableAbilityTypeList) {
-            for (var i = 0; i < usableAbilityTypeList.length; i++) {
-                if ( usableAbilityTypeList[i].type == abilityType ) {
-                    return usableAbilityTypeList[i];
-                }
-            };
-            return null;
-        },
-
-        /**
-         * Gets all ability types
-         * @return {Array:game.AbilityType} List of all the ability types
-         */
-        getAbilityTypes: function() {
-            var abilityTypeList = [];
-            for (var abilityType in game.AbilityType) {
-                abilityTypeList.push(game.AbilityType[abilityType]);
-            }
-            return abilityTypeList;
-        },
 	};
 }());

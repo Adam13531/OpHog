@@ -224,10 +224,17 @@
         this.allAbilities = [];
 
         /**
-         * List of ability types that this unit can use
-         * @type {Array:game.UsableAbilityType}
+         * A dictionary whose keys are game.AbilityType and whose values are
+         * numbers representing the combined relative weights of abilities of
+         * those types.
+         *
+         * It exists to make picking abilities in battles easier. If an ability
+         * of type X fails to find a target, then ALL abilities of that type
+         * will fail, so this allows us to stop considering all abilities of
+         * that type at once.
+         * @type {Object}
          */
-        this.usableAbilityTypes = [];
+        this.usableAbilityTypes = {};
 
         /**
          * This is only used by NPCs to indicate whether they've already given
@@ -781,7 +788,7 @@
     window.game.Unit.prototype.populateAbilitiesBasedOnItems = function() {
 
         this.allAbilities = [];
-        this.usableAbilityTypes = [];
+        this.usableAbilityTypes = {};
 
         // First, make an exact copy of all the abilities in the unit.
         // We don't want to modify the original list
@@ -800,7 +807,6 @@
                 abilityIndexToReplace = game.AbilityManager.hasAbility(newAbility.replacesAbility, this.allAbilities);
                 // Replace the ability completely
                 if ( abilityIndexToReplace > -1 ) {
-                    debugger;
                     this.allAbilities.splice(abilityIndexToReplace, 1, newAbility);
                 } else if ( abilityIndex > -1 ){
                     // Update the ability only with the fields that the new ability
@@ -826,7 +832,7 @@
 
         // Make one final runthrough to make sure abilities are actually gone
         // when they're supposed to be. Here is a scenario to demonstrate why
-        // this is  important:  
+        // this is important:  
         // 
         // Let's say an item that adds a revive ability is
         // supposed to replace a heal ability. The unit doesn't have a heal
@@ -850,26 +856,23 @@
             }
         };
 
-        // Make sure that all ability attributes are filled in. It's possible that 
-        // an ability from an item replaced an ability and didn't define all the 
-        // attributes, so this will ensure they get filled in.
+        // Make sure that all ability attributes are filled in. It's possible
+        // that an ability from an item replaced an ability and didn't define
+        // all the attributes, so this will ensure they get filled in.
         game.AbilityManager.setDefaultAbilityAttrIfUndefined(this.allAbilities);
 
-        // At this point, all the abilities should be set. Let's now loop through
-        // all of them and add up all the relative weights for each ability type.
-        // Each individual ability type will be put into a list.
+        // At this point, all the abilities should be set. Let's now loop
+        // through all of them and add up all the relative weights for each
+        // ability type.
         for (var i = 0; i < this.allAbilities.length; i++) {
             var ability = this.allAbilities[i];
 
-            // Add the ability type to the usable ability type list if it's not already in there
-            if ( !game.AbilityManager.hasAbilityType(ability.type, this.usableAbilityTypes) ) {
-                this.usableAbilityTypes.push(new game.UsableAbilityType(ability.type, ability.relativeWeight)); 
-            } else {
-                // Otherwise, add this abilities relative weight to the sum of all this
-                // ability type's relative weights.
-                var abilityType = game.AbilityManager.getAbilityType(ability.type, this.usableAbilityTypes);
-                abilityType.relativeWeight += ability.relativeWeight;
-            }
+            if ( this.usableAbilityTypes[ability.type] === undefined ) {
+                this.usableAbilityTypes[ability.type] = 0;
+            } 
+
+            // Now that it exists, add to the sum.
+            this.usableAbilityTypes[ability.type] += ability.relativeWeight;
         };
     };
 
@@ -889,41 +892,30 @@
         var battle = this.battleData.battle;
         var targetUnit = null;
         var ability = null;
+        var startingPair = null;
 
-        // Make a copy of the list of the usable ability types.
-        var abilityTypeListCopy = [];
-        for (var i = 0; i < this.usableAbilityTypes.length; i++) {
-            var typeCopy = {};
-            typeCopy.type = this.usableAbilityTypes[i].type;
-            typeCopy.relativeWeight = this.usableAbilityTypes[i].relativeWeight;
-            abilityTypeListCopy.push(typeCopy);
-        };
-
-        // If this parameter was specified, see if a random ability of the
-        // specified ability type will work.
-        if ( abilityTypeToStartWith !== undefined ) {
-            var abilitiesToStartWith = game.AbilityManager.getAbilitiesOfType(abilityTypeToStartWith, this.allAbilities);
-            ability = game.util.randomFromWeights(abilitiesToStartWith);
-            targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
-            if ( targetUnit != null ) {
-                this.currentAbility = ability;
-                return targetUnit;
-            } else {
-                //remove the abilities from the list
-                game.AbilityManager.removeAbilityType(abilityTypeToStartWith, abilityTypeListCopy);
+        // Turn the dictionary into an array of objects with relative weights so
+        // that it can be used by randomFromWeights.
+        var abilityTypesList = [];
+        for ( key in this.usableAbilityTypes ) {
+            var pair = {type: key, relativeWeight: this.usableAbilityTypes[key]};
+            if ( key === abilityTypeToStartWith ) {
+                startingPair = pair;
             }
+            abilityTypesList.push(pair);
         }
+        
+        // We can only try for as many ability types as we have.
+        var numTries = abilityTypesList.length;
+        while ( numTries > 0 ) {
+            // If we already have a starting type, go with that. Otherwise,
+            // randomly choose a type.
+            var abilityTypeAndRelativeWeight = (startingPair === null) ? game.util.randomFromWeights(abilityTypesList) : startingPair;
 
-        // Find an ability that will work. First, get a random ability type based on
-        // relative weights. Then, get a list of abilities that are of that type. 
-        // Finally, get a random ability of the chosen type based on relative weights 
-        // and see if there is a target for that ability. If there is, set the current 
-        // ability and return the target unit. If not, remove that ability type from the list 
-        // and try again.
-        var index = abilityTypeListCopy.length;
-        while (index--) {
-            var abilityTypeObjects = game.util.randomFromWeights(abilityTypeListCopy);
-            var abilityType = abilityTypeObjects.type;
+            // Set the startingPair to null so that we don't keep picking it.
+            startingPair = null;
+
+            var abilityType = abilityTypeAndRelativeWeight.type;
             var abilititesOfSameType = game.AbilityManager.getAbilitiesOfType(abilityType, this.allAbilities);
             
             ability = game.util.randomFromWeights(abilititesOfSameType);
@@ -931,10 +923,11 @@
             if ( targetUnit != null ) {
                 this.currentAbility = ability;
                 return targetUnit;
-            } else {
-                //remove the abilities from the list
-                game.AbilityManager.removeAbilityType(abilityType, abilityTypeListCopy);
             }
+
+            // Set the relative weight to 0 so that this can't be chosen again.
+            abilityTypeAndRelativeWeight.relativeWeight = 0;
+            numTries--;
         };
 
         // If there is a battle, there should always be a target, so this code 
@@ -969,7 +962,9 @@
                 targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.allAbilities[0].allowedTargets);
                 if ( targetUnit == null ) {
                     game.AbilityManager.removeAbilitiesOfType(this.allAbilities[0].abilityType, this.allAbilities);
-                    targetUnit = this.setAbilityAndGetTarget(this.allAbilities);
+
+                    // Fall back to randomly choosing an ability
+                    targetUnit = this.setAbilityAndGetTarget();
                 }
                 break;
         }
