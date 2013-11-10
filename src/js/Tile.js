@@ -154,7 +154,6 @@
                 'because it wouldn\'t be in any of the map\'s paths. Tile index: ' + this.tileIndex);
             return;
         }
-        this.graphicIndex = this.tileset.spawnTileGraphic;
         this.tileFlags |= game.TileFlags.SPAWNER;
     };
 
@@ -188,7 +187,6 @@
                         this.tileIndex);
             return;
         }
-        this.graphicIndex = game.Graphic.GENERATOR;
         this.tileFlags |= game.TileFlags.CASTLE;
     };
 
