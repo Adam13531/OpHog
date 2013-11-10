@@ -800,7 +800,6 @@
                 abilityIndexToReplace = game.AbilityManager.hasAbility(newAbility.replacesAbility, this.allAbilities);
                 // Replace the ability completely
                 if ( abilityIndexToReplace > -1 ) {
-                    debugger;
                     this.allAbilities.splice(abilityIndexToReplace, 1, newAbility);
                 } else if ( abilityIndex > -1 ){
                     // Update the ability only with the fields that the new ability

@@ -39,7 +39,7 @@
         RED_STONE_PATH_1: 1254, // stones at the NE, SE, and SW corners
         RED_STONE_PATH_2: 1255, // big stone at bottom, stones at NW and NE
         RED_STONE_PATH_3: 1256, // stones at all four corners
-        RED_STONE_PATH_4: 1257, // big stone at top, small stones on bottome
+        RED_STONE_PATH_4: 1257, // big stone at top, small stones on bottom
         RED_STONE_PATH_5: 1258, // big stones in NE SE SW, small stones in NW
         RED_STONE_PATH_6: 1259, // 180° rotation of RED_STONE_PATH_5
         CRACKED_RED_BLOCK: 1263, // a cracked red stoney block. There's a gap at the upper left.
