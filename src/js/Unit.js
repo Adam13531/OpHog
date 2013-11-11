@@ -212,12 +212,6 @@
         this.mods = [];
 
         /**
-         * Copies of abilities that come from items when that item is equipped.
-         * @type {Array:game.Ability}
-         */
-        this.abilitiesFromItems = [];
-
-        /**
          * Includes all the abilities from the unit's unit data and from items.
          * @type {Array}
          */
@@ -349,6 +343,10 @@
         this.destY = null;
         this.animationTimer = 0;
 
+        // Make an exact copy of all the abilities in the unit. We don't want to
+        // modify the original list.
+        this.allAbilities = game.AbilityManager.copyAbilitiesList(this.unitDefinedAbilities);
+
         // Remove battle data just in case. There was a bug where you would join
         // a battle, win the map, then place this unit again, and it would think
         // it's still in the battle.
@@ -363,6 +361,8 @@
         this.populateMods();
 
         this.populateAbilitiesBasedOnItems();
+
+        this.finalizeAbilities();
 
         if ( this.isPlayer() ) {
             game.QuestManager.placedAUnit(this.unitType);
@@ -781,80 +781,59 @@
     };
 
     /**
-     * Populates all the abilities for a unit plus the ones that are added because of 
-     * items. The abilities from items can replace abilities, modify certain fields of them,
-     * or go at the end of the list.
+     * Adds/updates/removes abilities as indicated by items.
      */
     window.game.Unit.prototype.populateAbilitiesBasedOnItems = function() {
+        // First, go through the abilities that are added by items.
+        var equippedItems = game.Player.inventory.getClassEquippedItems(this.unitType);
+        for (var i = 0; i < equippedItems.length; i++) {
+            var equippedItem = equippedItems[i];
 
-        this.allAbilities = [];
-        this.usableAbilityTypes = {};
+            if ( equippedItem.addsAbilities !== undefined ) {
+                for (var j = 0; j < equippedItem.addsAbilities.length; j++) {
+                    var itemAbility = equippedItem.addsAbilities[j];
+                    var abilityIndex = game.AbilityManager.hasAbility(itemAbility.id, this.allAbilities);
 
-        // First, make an exact copy of all the abilities in the unit.
-        // We don't want to modify the original list
-        this.allAbilities = game.AbilityManager.copyAbilitiesList(this.unitDefinedAbilities);
-
-        // loop through each ability that came from items
-        for (var i = 0; i < this.abilitiesFromItems.length; i++) {
-
-            var newAbility = {};
-            newAbility = game.AbilityManager.copyAbility(this.abilitiesFromItems[i]);
-            var abilityIndex = game.AbilityManager.hasAbility(this.abilitiesFromItems[i].id, this.allAbilities);
-            
-            // If an ability needs to be replaced
-            if ( newAbility.replacesAbility > -1) {
-
-                abilityIndexToReplace = game.AbilityManager.hasAbility(newAbility.replacesAbility, this.allAbilities);
-                // Replace the ability completely
-                if ( abilityIndexToReplace > -1 ) {
-                    this.allAbilities.splice(abilityIndexToReplace, 1, newAbility);
-                } else if ( abilityIndex > -1 ){
-                    // Update the ability only with the fields that the new ability
-                    // has.
-                    game.util.copyProps(newAbility, this.allAbilities[abilityIndex]);
-                } else {
-                    // Add the ability in case the one it needs to replace doesn't exist
-                    // and if this one doesn't exist.
-                    this.allAbilities.push(newAbility);
-                }
-                continue;
+                    if ( abilityIndex != -1 ) {
+                        // The ability exists, so update it.
+                        game.util.copyProps(itemAbility, this.allAbilities[abilityIndex]);
+                    } else {
+                        // It doesn't exist, so add it.
+                        var copiedAbility = game.AbilityManager.copyAbility(itemAbility);
+                        this.allAbilities.push(copiedAbility);
+                    }
+                };
             }
+        }; 
 
-            // if the ability exists but isn't going to be replaced, update it only
-            // with the fields that are filled in from the new ability
-            if ( abilityIndex > -1 ) {
-                game.util.copyProps(newAbility, this.allAbilities[abilityIndex]);
-            } else { // Otherwise, append the ability to the list because it's not in there
-                this.allAbilities.push(newAbility);
-            }
+        // Now go through each item and remove any abilities that it tells you
+        // to.
+        for (var i = 0; i < equippedItems.length; i++) {
+            var equippedItem = equippedItems[i];
+            if ( equippedItem.removesAbilities !== undefined ) {
+                for (var j = 0; j < equippedItem.removesAbilities.length; j++) {
+                    var removeAbilityID = equippedItem.removesAbilities[j];
 
-        };
+                    var abilityIndex = game.AbilityManager.hasAbility(removeAbilityID, this.allAbilities);
 
-        // Make one final runthrough to make sure abilities are actually gone
-        // when they're supposed to be. Here is a scenario to demonstrate why
-        // this is important:  
-        // 
-        // Let's say an item that adds a revive ability is
-        // supposed to replace a heal ability. The unit doesn't have a heal
-        // ability by default, however it will also be added from a different item.
-        // So while we're adding abilities from items, the revive ability gets
-        // added first. The code above checks to see if the heal ability exists,
-        // and it currently doesn't. Therefore, we append the revive ability
-        // because the unit should still have it. Then, in the next iteration of
-        // the loop, the heal ability does get added. The heal ability would
-        // stay because the revive ability already tried to replace it, but it
-        // wasn't in the ability list yet. Therefore, now we'll make our final
-        // run through and make sure the heal ability is gone.
-        var index = this.allAbilities.length;
-        while (index--) {
-            var ability = this.allAbilities[index];
-            if ( ability.replacesAbility > -1 ) {
-                var abilityIndex = game.AbilityManager.hasAbility(ability.replacesAbility, this.allAbilities);
-                if ( abilityIndex > -1 ) {
-                    this.allAbilities.splice(abilityIndex, 1);
+                    if ( abilityIndex != -1 ) {
+                        this.allAbilities.splice(abilityIndex, 1);
+                    }
                 }
             }
-        };
+        }
+    };
+
+    /**
+     * Makes sure that this unit at least has an ATTACK ability, fills out any
+     * missing ability data, and sets the usable ability types that this unit
+     * has.
+     */
+    window.game.Unit.prototype.finalizeAbilities = function() {
+        // If we removed all of the abilities, then give them their attack back.
+        if ( this.allAbilities.length == 0 ) {
+            this.allAbilities.push( {id:game.Ability.ATTACK.id} );
+        }
 
         // Make sure that all ability attributes are filled in. It's possible
         // that an ability from an item replaced an ability and didn't define
@@ -864,6 +843,7 @@
         // At this point, all the abilities should be set. Let's now loop
         // through all of them and add up all the relative weights for each
         // ability type.
+        this.usableAbilityTypes = {};
         for (var i = 0; i < this.allAbilities.length; i++) {
             var ability = this.allAbilities[i];
 
@@ -1010,7 +990,6 @@
      */
     window.game.Unit.prototype.populateMods = function() {
         this.mods = [];
-        this.abilitiesFromItems = [];
 
         // Go through each equipped items and add its mods to this unit's mods.
         var equippedItems = game.Player.inventory.getClassEquippedItems(this.unitType);
@@ -1018,11 +997,6 @@
             var equippedItem = equippedItems[i];
             for (var j = 0; j < equippedItem.mods.length; j++) {
                 this.mods.push(equippedItem.mods[j]);
-            };
-
-            // Add the abilities for this unit to use that this item adds (if any)
-            for (var j = 0; j < equippedItem.abilities.length; j++) {  
-                this.abilitiesFromItems.push(equippedItem.abilities[j]);
             };
         }; 
     };

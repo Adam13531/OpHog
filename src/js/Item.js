@@ -37,12 +37,16 @@
      * Optional properties:
      * stackable (if this is provided, then startingQuantity can also be provided, otherwise the default is 1)
      * mods - an Array:ItemMod. If this is provided, these mods will be applied to units who equip the items.
-     * modifiesAbilities - an Array:game.Ability. If this is provided, the abilities
-     * with the ids provided will be updated. id: game.Ability.<ability>.id is mandatory
-     * for each ability.
-     * An attribute called "replacesAbility" can also be provided to replace an ability
-     * completely. If an ability doesn't exist that replacesAbility says it's going to replace, then
-     * it will be appended to the list
+     * removesAbilities - an Array:Number, optional. If specified, a unit with 
+     *     this item equipped CANNOT have abilities with any of these IDs, even
+     *     if they were added by another item.
+     * addsAbilities - an Array:Object, optional. The objects must contain an 
+     *     "id" parameter corresponding to an ability ID, then you can include 
+     *     any parameters you want to override. If a unit does not have the ID
+     *      specified, then they will be granted that ability, otherwise their 
+     *      existing ability will be updated. For example, if you want to make 
+     *      them attack with a different relative weight, specific 
+     *      game.Ability.ATTACK.id and a new relativeWeight.
      * Note: the htmlDescription will have '[name]<br/>' prepended to it.
      */
     window.game.ItemType = {
@@ -63,11 +67,13 @@
             name:'Grugtham\'s Shield',
             htmlDescription:'<font color="#660000"><b>500000 Dragon Kill Points<b/></font>',
             equippableBy: game.EquippableBy.ALL,
-            modifiesAbilities: [
+            removesAbilities: [
+                game.Ability.ATTACK.id
+            ],
+            addsAbilities: [
                 {
                     id: game.Ability.BOULDER_DROP.id,
                     relativeWeight: 9000,
-                    replacesAbility: game.Ability.ATTACK.id
                 }
             ],
             cssClass:'item-sprite shield32-png',
@@ -79,12 +85,18 @@
             name:'Skull Stab',
             htmlDescription:'<font color="#660000"><b>This sword can actually only pierce hearts.<b/></font>',
             equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
-            modifiesAbilities: [
+            removesAbilities: [
+                game.Ability.ATTACK.id
+            ],
+            addsAbilities: [
                 {
                     id: game.Ability.ATTACK.id,
                     graphicIndex: 110, // orange/red fireball
-                    type: game.AbilityType.ATTACK,                    allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
-                    relativeWeight: 9000
+                    relativeWeight: 9000,
+                },
+                {
+                    id: game.Ability.BOULDER_DROP.id,
+                    relativeWeight: 9000,
                 }
             ],
             cssClass:'item-sprite sword32-png',
@@ -290,20 +302,12 @@
         this.cssClass = itemData.cssClass;
         this.htmlDescription = itemData.htmlDescription;
 
-        // Array of abilities that can be added to a unit from this particular
-        // item
-        this.abilities = [];
+        this.removesAbilities = itemData.removesAbilities;
 
-        // Do a deep copy of the abilities to make sure the originals aren't
-        // modified
-        if ( itemData.modifiesAbilities !== undefined ) {
-            for (var i = 0; i < itemData.modifiesAbilities.length; i++) {
-                var ability = game.AbilityManager.copyAbility(itemData.modifiesAbilities[i]);
-                this.abilities.push(ability);
-            };
-        }
+        // These don't need to be copies here since they will get copied by the
+        // unit.
+        this.addsAbilities = itemData.addsAbilities;
     };
-
 
     window.game.Item.prototype.isEquippableBy = function(equippableBy) {
         return !this.usable && (this.equippableBy & equippableBy) != 0;

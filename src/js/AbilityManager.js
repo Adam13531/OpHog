@@ -73,7 +73,6 @@
      *                                     or heal amounts that will be done 
      * Optional properties:
      * relativeWeight: Number - Used to calculate the probability of using the ability
-     * replacesAbility: game.Ability.id - Id of the ability that this ability will replace
      * 
      * @type {Object}
      */
@@ -290,7 +289,6 @@
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'allowedTargets', abilityData.allowedTargets);
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'actionOnHit', abilityData.actionOnHit);
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'damageFormula', abilityData.damageFormula);
-                game.util.useDefaultIfUndefined(abilitiesList[i], 'replacesAbility', -1);
 	        }
 	    },
 

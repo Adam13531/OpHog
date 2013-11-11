@@ -71,8 +71,10 @@
     //  life - see atk
     //  chanceToDropItem - Number - the chance to drop any item
     //  itemsDropped - Array:LootTableEntry
-    //  abilities - game.Ability - abilities that this unit will have. Abilities that
-    //  are defined in game.Ability can be overridden
+    //  abilities - Array:Object - abilities that this unit will have. You only 
+    //      need to fill in the ID and any parameters you want to override. 
+    //      For example, if you want the ATTACK ability but with a different 
+    //      graphic, you can specify game.Ability.ATTACK.id and a graphicIndex.
     window.game.UnitType = {
         ORC: {
             id:0,
