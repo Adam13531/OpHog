@@ -409,18 +409,25 @@
         initializeOverworldMap: function() {
             var mapTileIndices = this.overworldMapTileIndices;
 
+            var spawnerNodeIndexes = [];
             // Put each node into the map
             for (var i = 0; i < this.overworldMapNodes.length; i++) {
                 var node = this.overworldMapNodes[i];
                 var index = node.y * this.overworldMapWidth + node.x;
 
-                // Make them look like spawners
-                mapTileIndices[index] = game.Graphic.SPAWNER;
+                // Collect the spawner indexes
+                spawnerNodeIndexes.push(index);
             };
 
             var doodadIndices = new Array(mapTileIndices.length);
             var tilesetID = game.TilesetManager.MARSH_TILESET_ID;
             game.overworldMap = new game.Map(mapTileIndices, doodadIndices, tilesetID, this.overworldMapWidth, 1, true);
+
+            // Convert all the tiles that are supposed to be spawners into
+            // spawners.
+            for (var i = 0; i < spawnerNodeIndexes.length; i++) {
+                game.overworldMap.mapTiles[spawnerNodeIndexes[i]].convertToSpawner();
+            };
 
             // Clear fog around the "first" node.
             game.overworldMap.setFog(1, 3, 3, false);
