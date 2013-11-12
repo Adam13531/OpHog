@@ -429,8 +429,6 @@
         game.QuestUI.setupUI();
         game.ShopUI = new game.ShopUI();
         game.ShopInventory = new game.ShopInventory();
-        // Start out with HIGH graphics settings for now.
-        game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
         game.AudioManager.setAudioEnabled(game.AudioManager.audioEnabled);
 
         game.AudioManager.initialize();

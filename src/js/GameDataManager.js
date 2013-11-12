@@ -98,6 +98,8 @@
                 delete game.currentMap.mapTiles[i].rightList;
             };
 
+            this.log('Saving settings');
+            this.saveSettings();
             this.log('Saving the map');
             this.saveMap();
             this.log('Saving generators');
@@ -207,6 +209,8 @@
             this.loadGameState();
             this.log('Loading the map');
             this.loadMap();
+            this.log('Loading the settings');
+            this.loadSettings();
             this.log('Loading generators');
             this.loadGenerators();
             this.log('Loading quests');
@@ -539,6 +543,19 @@
                     battle.projectiles[j] = finalProjectile;
                 };
             };
+        },
+
+        loadSettings: function() {
+            // Defaults if they were never saved
+            var graphicsSetting = game.GraphicsSettings.HIGH;
+            if ( localStorage.getItem("graphicsSetting") !== null ) {
+                graphicsSetting = JSON.parse(localStorage.graphicsSetting);
+            }
+            game.graphicsUtil.setGraphicsSettings(graphicsSetting);
+        },
+
+        saveSettings: function() {
+            localStorage.graphicsSetting = JSON.stringify(game.graphicsSetting);
         },
 
         /**
