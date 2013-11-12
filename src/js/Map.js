@@ -1329,6 +1329,9 @@
                                 ctx.fillRect(0,0,game.TILESIZE,game.TILESIZE);
                                 ctx.fillStyle = regularFillStyle;
                             }
+                            if ( tile.isSpawnerPoint() ) {
+                                envSheet.drawSprite(ctx, game.Graphic.SPAWNER, 0,0);
+                            }
                         }
                     } else {
                         // If there's no fog here and we're not drawing the fog
