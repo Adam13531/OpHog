@@ -548,13 +548,16 @@
         loadSettings: function() {
             // Defaults if they were never saved
             var graphicsSetting = game.GraphicsSettings.HIGH;
-            if ( localStorage.getItem("graphicsSetting") !== null ) {
+
+            // Use the settings that were saved if they exist
+            if ( localStorage.getItem('hasSettings') !== null ) {
                 graphicsSetting = JSON.parse(localStorage.graphicsSetting);
             }
             game.graphicsUtil.setGraphicsSettings(graphicsSetting);
         },
 
         saveSettings: function() {
+            localStorage.hasSettings = JSON.stringify('true');
             localStorage.graphicsSetting = JSON.stringify(game.graphicsSetting);
         },
 
