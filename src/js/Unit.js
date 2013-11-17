@@ -1020,12 +1020,20 @@
     window.game.ComputeDamageFormula = function(damageFormula, user, target) {
         switch (damageFormula) {
             case game.DamageFormula.ATK_MINUS_DEF:
-                return user.getAtk() - target.getDef();
-                break;
+                var atk = user.getAtk();
+                var def = target.getDef();
+
+                // Prevent healing an enemy with an attack
+                if ( def > atk ) return 0;
+                return atk - def;
 
             case game.DamageFormula.GET_HALF_OF_MISSING_LIFE:
-                return (user.getMaxLife() - user.life) / 2;
-                break;
+                var max = user.getMaxLife();
+
+                // Prevent hurting your own unit with a heal when he's above max
+                // life.
+                if ( user.life >= max ) return 0;
+                return (max - user.life) / 2;
         }
     };
 
