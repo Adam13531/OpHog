@@ -499,9 +499,8 @@
     /**
      * Copies all properties from one object to another EXCEPT for
      * propsToIgnore.
-     * @param  {Object} sourceObject  - the object from which to copy
-     * properties
-     * @param  {Object} destObject    - the object to copy properties to
+     * @param  {Object} sourceObject - the object from which to copy properties
+     * @param  {Object} destObject - the object to copy properties to
      * @param  {Array:String} propsToIgnore - an array of properties NOT to
      * copy.
      */
@@ -512,6 +511,35 @@
                 destObject[prop] = sourceObject[prop];
             }
         }
+    };
+
+    /**
+     * Copies all properties from sourceObject to destObject EXCEPT for any
+     * properties already defined in destObject, i.e. this will not OVERWRITE
+     * any existing properties in destObject.
+     *
+     * For example:
+     *
+     * var sourceObject = {id: 5, relativeWeight:1, hello:'world'}
+     * var destObject = {id: 5, relativeWeight: 9999, hi: 'there'}
+     *
+     * Calling copyPropsIfUndefined will result in a destObject of:
+     *
+     * {id: 5, relativeWeight:9999, hi:'there', hello:'world'}
+     * See how relativeWeight and hi:'there' are unchanged?
+     *
+     * @param  {Object} sourceObject - the object from which to copy properties
+     * @param  {Object} destObject - the object to copy properties to
+     */
+    window.game.util.copyPropsIfUndefined = function(sourceObject, destObject) {
+        var propsToIgnore = [];
+        for ( var prop in destObject ) {
+            if ( destObject.hasOwnProperty(prop) ) {
+                propsToIgnore.push(prop);
+            }
+        }
+
+        this.copyProps(sourceObject, destObject, propsToIgnore);
     };
 
 }());
