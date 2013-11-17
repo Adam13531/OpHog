@@ -1033,7 +1033,11 @@
                 // Prevent hurting your own unit with a heal when he's above max
                 // life.
                 if ( user.life >= max ) return 0;
-                return (max - user.life) / 2;
+
+                // Minimally heal for one, otherwise you might be at 99/100 and
+                // get healed for 0 (i.e. this formula could never heal you to
+                // full).
+                return Math.min(1, (max - user.life) / 2);
         }
     };
 

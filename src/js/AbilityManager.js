@@ -11,7 +11,15 @@
         FOE: 2,
         ALIVE: 4,
         DEAD: 8,
-        BOSS: 16
+        BOSS: 16,
+
+        // Note: there is no corresponding HAS_FULL_LIFE flag because we don't
+        // foresee using it often, so any ability that does NOT specify
+        // IS_MISSING_LIFE as a flag can target units regardless of their life.
+        // Units that DO specify this flag can ONLY work on units who are not at
+        // maximum (which means they could be at 0 life, so don't forget to
+        // specify ALIVE if you don't want that).
+        IS_MISSING_LIFE: 32
     };
 
     /**
@@ -212,7 +220,7 @@
             type: game.AbilityType.HEAL,
             graphicIndex: 70,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE,
+            allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE | game.RandomUnitFlags.IS_MISSING_LIFE,
             actionOnHit: game.ActionOnHit.HEAL,
             damageFormula: game.DamageFormula.GET_HALF_OF_MISSING_LIFE
         }
