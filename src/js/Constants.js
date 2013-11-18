@@ -184,4 +184,20 @@
      */
     window.game.MINIMAP_DEFAULT_VISIBILITY = true;
 
+    /**
+     * Indicates where on the map the piece should fall. LEFT would be the left
+     * column. MIDDLE would indicate in any of the middle columns. RIGHT
+     * indicates the last column.
+     */
+    window.game.PuzzlePieceType = {
+        LEFT: 1,
+        MIDDLE: 2,
+        RIGHT: 4
+    }
+
+    /**
+     * Length of a side of a puzzle piece
+     */
+    window.game.PUZZLE_PIECE_SIZE = 5;
+
 }());
