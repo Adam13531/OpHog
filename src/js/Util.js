@@ -497,6 +497,26 @@
     };
 
     /**
+     * Sets the color of a slider
+     * @param {slider} $slider - Slider to change the color of
+     */
+    window.game.util.setSliderColor = function($slider) {
+        var max = $slider.slider('option', 'max');
+        var sliderValue = $slider.slider("value");
+        var percent = sliderValue / max;
+        var green = Math.round((percent) * 255);
+        green = Math.min(255, Math.max(0, green));
+        paddedGreenString = green.toString(16);
+
+        // If 'green' is 10, then the string will be 'a', but it
+        // SHOULD be '0a', so pad it here.
+        if ( paddedGreenString.length != 2 ) paddedGreenString = '0' + paddedGreenString;
+        $slider.css({
+            'background': '#00' + paddedGreenString + '00'
+        });
+    };
+
+    /**
      * Copies all properties from one object to another EXCEPT for
      * propsToIgnore.
      * @param  {Object} sourceObject  - the object from which to copy

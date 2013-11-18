@@ -184,6 +184,26 @@
         },
 
         /**
+         * Sets the audio volume for sounds
+         * @param {Number} volume - New volume amount
+         */
+        setSoundVolume: function(volume) {
+            this.soundVolume = volume;
+            $('#soundSlider').slider('option','value',this.soundVolume);
+            game.util.setSliderColor($('#soundSlider'));
+        },
+
+        /**
+         * Sets the audio volume for music
+         * @param {Number} volume - New volume amount
+         */
+        setMusicVolume: function(volume) {
+            this.musicVolume = volume;
+            $('#musicSlider').slider('option','value',this.musicVolume);
+            game.util.setSliderColor($('#musicSlider'));
+        },
+
+        /**
          * Attempts to play audio.
          * @param  {AudioDescriptor} audioDescriptor - the audio to play
          */

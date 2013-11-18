@@ -307,26 +307,12 @@
                 value:50,
                 range:'max',
                 slide: function( event, ui ) {
-                    var sliderValue = ui.value;
-                    var max = value.slider('option', 'max');
-                    var percent = sliderValue / max;
-                    var green = Math.round((percent) * 255);
-                    green = Math.min(255, Math.max(0, green));
-                    paddedGreenString = green.toString(16);
-
-                    // If 'green' is 10, then the string will be 'a', but it
-                    // SHOULD be '0a', so pad it here.
-                    if ( paddedGreenString.length != 2 ) paddedGreenString = '0' + paddedGreenString;
-                    value.css({
-                        'background': '#00' + paddedGreenString + '00'
-                    });
-
                     // We're in a $.each here, so make sure we're modifying the
                     // correct audio volume.
                     if ( value === $soundSlider ) {
-                        game.AudioManager.soundVolume = sliderValue;
+                        game.AudioManager.setSoundVolume(ui.value);
                     } else {
-                        game.AudioManager.musicVolume = sliderValue;
+                        game.AudioManager.setMusicVolume(ui.value);
                     }
                 }
             });

@@ -548,17 +548,29 @@
         loadSettings: function() {
             // Defaults if they were never saved
             var graphicsSetting = game.GraphicsSettings.HIGH;
+            var audioEnabledSetting = false;
+            var soundVolumeSetting = 50;
+            var musicVolumeSetting = 50;
 
             // Use the settings that were saved if they exist
             if ( localStorage.getItem('hasSettings') !== null ) {
                 graphicsSetting = JSON.parse(localStorage.graphicsSetting);
+                audioEnabledSetting = JSON.parse(localStorage.audioEnabledSetting);
+                soundVolumeSetting = JSON.parse(localStorage.soundVolumeSetting);
+                musicVolumeSetting = JSON.parse(localStorage.musicVolumeSetting);
             }
             game.graphicsUtil.setGraphicsSettings(graphicsSetting);
+            game.AudioManager.setAudioEnabled(audioEnabledSetting);
+            game.AudioManager.setSoundVolume(soundVolumeSetting);
+            game.AudioManager.setMusicVolume(musicVolumeSetting);
         },
 
         saveSettings: function() {
             localStorage.hasSettings = JSON.stringify('true');
             localStorage.graphicsSetting = JSON.stringify(game.graphicsSetting);
+            localStorage.audioEnabledSetting = JSON.stringify(game.AudioManager.canPlayAudio());
+            localStorage.soundVolumeSetting = JSON.stringify(game.AudioManager.soundVolume);
+            localStorage.musicVolumeSetting = JSON.stringify(game.AudioManager.musicVolume);
         },
 
         /**
