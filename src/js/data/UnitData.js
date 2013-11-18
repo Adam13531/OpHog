@@ -63,6 +63,7 @@
     //  height - Number - the height, in tiles, of the unit
     //  name - String - the name of the unit
     //  graphicIndexes - Array:Number - see Unit
+    //  shadowGraphic - Number - a graphic index to draw for the shadow
     //  atk - Object containing the below:
     //      start - Number - the starting value for this stat
     //      minGrowth - Number - when this unit levels, this is the minimum value that will be added to the stat
@@ -79,6 +80,7 @@
         ORC: {
             id:0,
             graphicIndexes:[game.Graphic.ORC_FIGHTER],
+            shadowGraphic: game.Graphic.MED_SHADOW_LOW,
 
             atk: {
                 start: 10,
@@ -109,6 +111,7 @@
         SPIDER: {
             id: 1,
             graphicIndexes:[game.Graphic.BLACK_SPIDER],
+            shadowGraphic: game.Graphic.SMALL_SHADOW_LOW,
 
             atk: {
                 start: 10,
@@ -294,6 +297,7 @@
             id: 7,
             name:'Archer',
             graphicIndexes:[game.Graphic.RANGER_M],
+            shadowGraphic: game.Graphic.BIG_SHADOW_LOW,
 
             atk: {
                 start: 30,
@@ -331,6 +335,7 @@
             id: 8,
             name:'Warrior',
             graphicIndexes:[game.Graphic.KNIGHT_M],
+            shadowGraphic: game.Graphic.BIG_SHADOW_LOW,
 
             atk: {
                 start: 30,
@@ -367,6 +372,7 @@
             id: 9,
             name:'Wizard',
             graphicIndexes:[game.Graphic.WIZARD_M],
+            shadowGraphic: game.Graphic.BIG_SHADOW_LOW,
 
             atk: {
                 start: 30,
@@ -536,6 +542,10 @@
             // one here.
             if ( unitType.abilityAI === undefined ) {
                 unitType.abilityAI = game.AbilityAI.RANDOM;
+            }
+
+            if ( unitType.shadowGraphic === undefined ) {
+                unitType.shadowGraphic = game.Graphic.MED_SHADOW_LOW;
             }
 
             game.util.useDefaultIfUndefined(unitType, 'width', DEFAULT_UNIT_WIDTH);

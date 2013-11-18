@@ -68,6 +68,10 @@
         ctx.restore();
     };
 
+    window.game.graphicsUtil.isHighGraphicsMode = function() {
+        return game.graphicsSetting == game.GraphicsSettings.HIGH;
+    };
+
     /**
      * This will set a dialog's fade-in and fade-out times. If the dialog didn't
      * already have one of those times, it will remain instantaneous.

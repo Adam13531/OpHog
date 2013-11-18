@@ -93,5 +93,11 @@
         ORC_FIGHTER: 292, // a gray orc with a red cape and a dagger
         GIANT_BLACK_SCORPION: 364, // a black scorpion with yellow eyes
         GREEN_DRAGON: 374, // a green dragon with a small wing
+        BIG_SHADOW_LOW: 452, // a shadow that takes up the whole bottom of a tile
+        MED_SHADOW_LOW: 453, // a shadow that takes up most of the bottom of a tile
+        SMALL_SHADOW_LOW: 454, // a shadow that takes up some of the bottom of a tile
+        BIG_SHADOW_FLOAT: 455, // BIG_SHADOW_LOW but it's floating off the ground by a bit
+        MED_SHADOW_FLOAT: 456, // MED_SHADOW_LOW but it's floating off the ground by a bit
+        SMALL_SHADOW_FLOAT: 457, // SMALL_SHADOW_LOW but it's floating off the ground by a bit
     };
 }());

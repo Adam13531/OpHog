@@ -147,6 +147,9 @@
         // For an enemy, it would draw them horizontally flipped.
         this.graphicIndexes = unitData.graphicIndexes;
 
+        // The number of the graphic to draw for the shadow.
+        this.shadowGraphic = unitData.shadowGraphic;
+
         this.widthInTiles = unitData.width;
         this.heightInTiles = unitData.height;
         this.name = unitData.name;
@@ -1423,6 +1426,11 @@
             var graphicIndexAnimationOffset = 0;
             if ( (this.animationTimer % 1000) >= 500 ) {
                 graphicIndexAnimationOffset = charSheet.getNumSpritesPerRow();
+            }
+
+            // Draw the shadow.
+            if ( game.graphicsUtil.isHighGraphicsMode() ) {
+                charSheet.drawSprite(ctx, this.shadowGraphic, this.x, this.y, this.isPlayer());
             }
 
             // The index in this.graphicIndexes to draw.
