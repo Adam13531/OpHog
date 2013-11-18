@@ -44,11 +44,8 @@
          * @return {Tileset}    the tileset corresponding to this ID.
          */
         getTilesetByID: function(id) {
-            for (var i = 0; i < this.tilesets.length; i++) {
-                if ( this.tilesets[i].id == id ) {
-                    return this.tilesets[i];
-                }
-            };
+            var tileset = game.util.getItemInContainerByProperty(this.tilesets, 'id', id);
+            if ( tileset != null ) return tileset;
 
             console.log('Error: no tileset with ID==' + id);
             return null;

@@ -345,12 +345,8 @@
 	     * @return {game.Ability} Default ability template for the ID that was passed in.
 	     */
 	    getAbilityDataFromID: function(abilityID) {
-	        for ( var key in game.Ability ) {
-	            var abilityDataTemplate = game.Ability[key];
-	            if ( abilityDataTemplate.id == abilityID ) {
-                    return abilityDataTemplate;
-	            }
-	        }
+            var ability = game.util.getItemInContainerByProperty(game.Ability, 'id', abilityID);
+            if ( ability !== null ) return ability;
 
             console.log('Error - ' + abilityID + ' is not a valid ability ID.');
             if ( typeof(abilityID) !== 'number' ) {
@@ -396,20 +392,6 @@
                 }
             };
 	    },
-
-        /**
-         * Removes a specified ability type from the list
-         * @param  {game.AbilityType} abilityType - Ability type to remove
-         * @param  {Array:game.AbilityType} abilityTypeList List of ability types
-         */
-        removeAbilityType: function(abilityType, abilityTypeList) {
-            for (var i = 0; i < abilityTypeList.length; i++) {
-                if ( abilityTypeList[i] == abilityType ) {
-                    abilityTypeList.splice(i, 1);
-                    break;
-                }
-            };
-        },
 
 	    /**
 	     * Gets all the abilities of the ability type that's passed in. This returns 

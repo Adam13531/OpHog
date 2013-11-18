@@ -213,12 +213,8 @@
      * @param {Number} itemID - ID of the item whose data you want
      */
     window.game.GetItemDataFromID = function(itemID) {
-        for ( var key in game.ItemType ) {
-            var item = game.ItemType[key];
-            if ( item.id == itemID ) {
-                return item;
-            }
-        }
+        var item = game.util.getItemInContainerByProperty(game.ItemType, 'id', itemID);
+        if ( item !== null ) return item;
 
         console.log('Error - ' + itemID + ' is not a valid item ID.');
         return null;

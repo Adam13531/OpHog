@@ -530,12 +530,13 @@
                 var battle = game.BattleManager.battles[i];
                 for (var j = 0; j < battle.projectiles.length; j++) {
                     var parsedProjectile = battle.projectiles[j];
+                    debugger;
                     var target = game.UnitManager.getUnitByID(parsedProjectile.target.id);
                     var owner = game.UnitManager.getUnitByID(parsedProjectile.owner.id);
                     var x = parsedProjectile.x;
                     var y = parsedProjectile.y;
-                    var type = parsedProjectile.type;
-                    var finalProjectile = new game.Projectile(x, y, type, owner, target);
+                    var actionOnHit = parsedProjectile.actionOnHit;
+                    var finalProjectile = new game.Projectile(x, y, actionOnHit, owner, target);
                     battle.projectiles[j] = finalProjectile;
                 };
             };
