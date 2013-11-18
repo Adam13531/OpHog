@@ -55,11 +55,7 @@
          * @return {Unit}        - the unit with that ID
          */
         getUnitByID: function(unitID) {
-            for (var i = 0; i < this.gameUnits.length; i++) {
-                if ( this.gameUnits[i].id == unitID ) return this.gameUnits[i];
-            };
-
-            return null;
+            return game.util.getItemInContainerByProperty(this.gameUnits, 'id', unitID);
         },
 
         /**

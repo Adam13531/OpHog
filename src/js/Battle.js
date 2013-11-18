@@ -174,11 +174,13 @@
 
         var allowLivingUnits = ((flags & game.RandomUnitFlags.ALIVE) != 0);
         var allowDeadUnits = ((flags & game.RandomUnitFlags.DEAD) != 0);
+        var unitMustBeMissingLife = ((flags & game.RandomUnitFlags.IS_MISSING_LIFE) != 0);
 
         // Cut the units down to only living or dead as requested.
         for (var i = 0; i < unitsToChooseFrom.length; i++) {
-            var isAlive = unitsToChooseFrom[i].isLiving();
-            if ( (!allowLivingUnits && isAlive) || (!allowDeadUnits && !isAlive) ) {
+            var unit = unitsToChooseFrom[i];
+            var isAlive = unit.isLiving();
+            if ( (!allowLivingUnits && isAlive) || (!allowDeadUnits && !isAlive) || (unitMustBeMissingLife && unit.life >= unit.getMaxLife()) ) {
                 unitsToChooseFrom.splice(i, 1);
                 i--;
             }
@@ -1056,8 +1058,7 @@
                 }
 
                 // Check to see if we have to wrap back to the top
-                if ( attemptY + unitHeight > height )
-                {
+                if ( attemptY + unitHeight > height ) {
                     attemptY = 0;
                     wrappedThisColumnAlready = true;
                 }

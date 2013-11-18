@@ -11,7 +11,15 @@
         FOE: 2,
         ALIVE: 4,
         DEAD: 8,
-        BOSS: 16
+        BOSS: 16,
+
+        // Note: there is no corresponding HAS_FULL_LIFE flag because we don't
+        // foresee using it often, so any ability that does NOT specify
+        // IS_MISSING_LIFE as a flag can target units regardless of their life.
+        // Units that DO specify this flag can ONLY work on units who are not at
+        // maximum (which means they could be at 0 life, so don't forget to
+        // specify ALIVE if you don't want that).
+        IS_MISSING_LIFE: 32
     };
 
     /**
@@ -212,7 +220,7 @@
             type: game.AbilityType.HEAL,
             graphicIndex: 70,
             relativeWeight: 1000,
-            allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE,
+            allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE | game.RandomUnitFlags.IS_MISSING_LIFE,
             actionOnHit: game.ActionOnHit.HEAL,
             damageFormula: game.DamageFormula.GET_HALF_OF_MISSING_LIFE
         }
@@ -225,8 +233,21 @@
      * after it is defined (it's an IIFE).
      */
     ( function verifyAllAbilityData() {
+        // These are ability IDs that we've already encountered. We use this to
+        // see if we've defined duplicates.
         var abilityIDs = [];
-        
+
+        // This function is only used for this IIFE, so I'll keep it in a
+        // variable here.
+        var displayUndefinedAbilityError = function(ability, undefinedAttribute) {
+            if ( ability[undefinedAttribute] === undefined ) {
+                console.log('ERROR: Ability "' + ability.name  + '" has "' + undefinedAttribute + '" undefined.');
+            }
+        };
+
+        // These MUST be present in each ability.
+        var necessaryProperties = ['type', 'graphicIndex', 'allowedTargets', 'actionOnHit', 'damageFormula'];
+
         for ( var key in game.Ability ) {
             var ability = game.Ability[key];
             var id = ability.id;
@@ -235,6 +256,23 @@
             if ( id === undefined ) {
                 game.util.debugDisplayText('Fatal error: there is an ability missing an ID!', 'abil id missing');
             }
+
+            // Names aren't necessary or even expected, but we'll give them
+            // names based on the key's name so that it's easier to debug
+            // ability logic.
+            if ( ability.name === undefined ) {
+                if ( key.length > 1 ) {
+                    // ATTACK --> Attack
+                    game.Ability[key].name = key[0] + key.substring(1).toLowerCase();
+                } else {
+                    game.Ability[key].name = key;
+                }
+            }
+
+            // Make sure they have all of the necessary properties.
+            for (var i = 0; i < necessaryProperties.length; i++) {
+                displayUndefinedAbilityError(ability, necessaryProperties[i]);
+            };
 
             if ( abilityIDs.indexOf(id) != -1 ) {
                 // Get the first ability with that ID
@@ -253,19 +291,6 @@
 	 */
 	window.game.AbilityManager = {
 
-		/**
-	     * Displays an error if a necessary ability attribute was never defined. 
-	     * These are programmer errors, which means we need to go add this attribute 
-	     * to ability.
-	     * @param {game.Ability} ability - Ability with the undefined attribute
-	     * @param {String} undefinedAttribute - Name of the undefined attribute
-	     */
-	    displayUndefinedAbilityError: function(ability, undefinedAttribute) {
-	        if ( ability[undefinedAttribute] === undefined ) {
-	            console.log('ERROR: Ability with id: ' + ability.id  + ' has ' + undefinedAttribute + ' undefined.');
-	        }
-	    },
-
 	    /**
 	     * Fills in all the missing attributes for each ability. For example, if
 	     * all we did was specify that we want an ability by giving it an ID, then
@@ -277,18 +302,9 @@
 	        for ( var i = 0; i < abilitiesList.length; i++ ) {
 	            var unitAbility = abilitiesList[i];
 	            var abilityData = this.getAbilityDataFromID(unitAbility.id);
-                this.displayUndefinedAbilityError(abilityData, 'type');
-                this.displayUndefinedAbilityError(abilityData, 'graphicIndex');
-	            this.displayUndefinedAbilityError(abilityData, 'allowedTargets');
-	            this.displayUndefinedAbilityError(abilityData, 'actionOnHit');
-	            this.displayUndefinedAbilityError(abilityData, 'damageFormula');
 
-	            game.util.useDefaultIfUndefined(abilitiesList[i], 'type', abilityData.type);
-	            game.util.useDefaultIfUndefined(abilitiesList[i], 'graphicIndex', abilityData.graphicIndex);
+                game.util.copyPropsIfUndefined(abilityData, abilitiesList[i]);
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', 1000);
-	            game.util.useDefaultIfUndefined(abilitiesList[i], 'allowedTargets', abilityData.allowedTargets);
-	            game.util.useDefaultIfUndefined(abilitiesList[i], 'actionOnHit', abilityData.actionOnHit);
-	            game.util.useDefaultIfUndefined(abilitiesList[i], 'damageFormula', abilityData.damageFormula);
 	        }
 	    },
 
@@ -329,22 +345,17 @@
 	     * @return {game.Ability} Default ability template for the ID that was passed in.
 	     */
 	    getAbilityDataFromID: function(abilityID) {
-	        var abilityData = null;
-	        for ( var key in game.Ability ) {
-	            var abilityDataTemplate = game.Ability[key];
-	            if ( abilityDataTemplate.id == abilityID ) {
-	                abilityData = abilityDataTemplate;
-	            }
-	        }
-	        if ( abilityData == null ) {
-	            console.log('Error - ' + abilityID + ' is not a valid ability ID.');
-	            if ( typeof(abilityID) !== 'number' ) {
-	                // If you hit this, it's likely that you passed in the entire
-	                // abilityData instead of just the ID.
-	                console.log('The above error happened because abilityID isn\'t even a number.');
-	            }
-	        }
-	        return abilityData;
+            var ability = game.util.getItemInContainerByProperty(game.Ability, 'id', abilityID);
+            if ( ability !== null ) return ability;
+
+            console.log('Error - ' + abilityID + ' is not a valid ability ID.');
+            if ( typeof(abilityID) !== 'number' ) {
+                // If you hit this, it's likely that you passed in the entire
+                // abilityData instead of just the ID.
+                console.log('The above error happened because abilityID isn\'t even a number.');
+            }
+
+	        return null;
 	    },
 
 	    /**
@@ -381,20 +392,6 @@
                 }
             };
 	    },
-
-        /**
-         * Removes a specified ability type from the list
-         * @param  {game.AbilityType} abilityType - Ability type to remove
-         * @param  {Array:game.AbilityType} abilityTypeList List of ability types
-         */
-        removeAbilityType: function(abilityType, abilityTypeList) {
-            for (var i = 0; i < abilityTypeList.length; i++) {
-                if ( abilityTypeList[i] == abilityType ) {
-                    abilityTypeList.splice(i, 1);
-                    break;
-                }
-            };
-        },
 
 	    /**
 	     * Gets all the abilities of the ability type that's passed in. This returns 

@@ -101,8 +101,8 @@
         //eg it's 200px longer
         $scrollpane.data('difference', difference);
 
-        if (difference <= 0 && $scrollpane.find('.slider-wrap').length > 0)//scrollbar exists but is no longer required
-        {
+        //scrollbar exists but is no longer required
+        if (difference <= 0 && $scrollpane.find('.slider-wrap').length > 0) {
             $scrollpane.find('.slider-wrap').remove();
             //remove the scrollbar
             $scrollpane.find('.scroll-content').css({
@@ -110,8 +110,9 @@
             });
             //and reset the top position
         }
-        if (difference > 0)//if the scrollbar is needed, set it up...
-        {
+
+        //if the scrollbar is needed, set it up...
+        if (difference > 0) {
             var proportion = difference / $scrollpane.find('.scroll-content').height();
             //eg 200px/500px
 
@@ -123,8 +124,8 @@
             var contentposition = $scrollpane.find('.scroll-content').position();
             var sliderInitial = 100 * (1 - Math.abs(contentposition.top) / difference);
 
-            if ($scrollpane.find('.slider-wrap').length == 0)//if the slider-wrap doesn't exist, insert it and set the initial value
-            {
+            //if the slider-wrap doesn't exist, insert it and set the initial value
+            if ($scrollpane.find('.slider-wrap').length == 0) {
                 // Apply "no-slider-vertical" so that we don't get a background
                 $scrollpane.append('<\div class="slider-wrap no-slider-vertical"><\div class="slider-vertical"><\/div><\/div>');
                 //append the necessary divs so they're only there if needed

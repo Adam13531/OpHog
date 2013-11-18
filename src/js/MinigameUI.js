@@ -162,13 +162,7 @@
                     // find the enemy by its ID. This is the reason why you're
                     // not allowed to have multiple enemies with the same ID in
                     // a map node. Search tag: [minigame_no_dupes].
-                    var enemy = null;
-                    for (var j = 0; j < types.length; j++) {
-                        if ( types[j].id == enemyID ) {
-                            enemy = types[j];
-                            break;
-                        }
-                    };
+                    var enemy = game.util.getItemInContainerByProperty(types, 'id', enemyID);
 
                     enemiesAsArray.push(new game.PossibleEnemy(enemyID, enemy.relativeWeight, enemy.minLevel, enemy.maxLevel, quantity));
                 };

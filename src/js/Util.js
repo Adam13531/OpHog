@@ -519,9 +519,8 @@
     /**
      * Copies all properties from one object to another EXCEPT for
      * propsToIgnore.
-     * @param  {Object} sourceObject  - the object from which to copy
-     * properties
-     * @param  {Object} destObject    - the object to copy properties to
+     * @param  {Object} sourceObject - the object from which to copy properties
+     * @param  {Object} destObject - the object to copy properties to
      * @param  {Array:String} propsToIgnore - an array of properties NOT to
      * copy.
      */
@@ -532,6 +531,86 @@
                 destObject[prop] = sourceObject[prop];
             }
         }
+    };
+
+    /**
+     * Copies all properties from sourceObject to destObject EXCEPT for any
+     * properties already defined in destObject, i.e. this will not OVERWRITE
+     * any existing properties in destObject.
+     *
+     * For example:
+     *
+     * var sourceObject = {id: 5, relativeWeight:1, hello:'world'}
+     * var destObject = {id: 5, relativeWeight: 9999, hi: 'there'}
+     *
+     * Calling copyPropsIfUndefined will result in a destObject of:
+     *
+     * {id: 5, relativeWeight:9999, hi:'there', hello:'world'}
+     * See how relativeWeight and hi:'there' are unchanged?
+     *
+     * @param  {Object} sourceObject - the object from which to copy properties
+     * @param  {Object} destObject - the object to copy properties to
+     */
+    window.game.util.copyPropsIfUndefined = function(sourceObject, destObject) {
+        var propsToIgnore = [];
+        for ( var prop in destObject ) {
+            if ( destObject.hasOwnProperty(prop) ) {
+                propsToIgnore.push(prop);
+            }
+        }
+
+        this.copyProps(sourceObject, destObject, propsToIgnore);
+    };
+
+    /**
+     * Returns an item in a container based on a property comparison.
+     *
+     * For example, if you have an array like this:
+     * a = [{id:1, name:'hi'}, {id:3, name:'hey'}, {id:5, name:'hey'}]
+     *
+     * You can call this with (a, 'name', 'hey') and it will return the second
+     * entry, or (a, 'id', 5) will return the third entry.
+     *
+     * Comparison is '==' for two reasons:
+     * 1. Searching for the key of one dictionary (which must be a string) in
+     *    the values of another will still work, e.g. for id comparisons.
+     * 2. 'propertyName' likely doesn't change types amongst objects in the same
+     *    container, so '==' is probably what you want anyway.
+     *
+     * You can also call this with a dictionary, e.g.
+     * a = {ATTACK: {id: 1}, FIREBALL: {id: 2}}
+     * 
+     * (a, 'id', 2) will return the FIREBALL object.
+     *
+     * One last note: if you're calling this on an array, consider switching 
+     * the array to a hashtable whose keys are 'propertyName'.
+     * 
+     * @param  {Object} container - an array a dictionary (either 
+     * is fine) of objects.
+     * @param  {String} propertyName - the name of a property in the objects of
+     * the container.
+     * @param  {Object} propertyValue - a value for the property
+     * @return {Object} the first element in 'container' whose property matches 
+     * what you passed in.
+     */
+    window.game.util.getItemInContainerByProperty = function(container, propertyName, propertyValue) {
+        // Need to special-case arrays based on the Google style guide:
+        // http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml?showone=for-in_loop#for-in_loop
+        if ( $.isArray(container) ) {
+            for (var i = 0; i < container.length; i++) {
+                if ( container[i] !== null && container[i][propertyName] == propertyValue ) {
+                    return container[i];
+                }
+            };
+        } else {
+            for ( var key in container ) {
+                if ( container[key][propertyName] == propertyValue ) {
+                    return container[key];
+                }
+            }
+        }
+
+        return null;
     };
 
 }());
