@@ -41,6 +41,22 @@
         },
 
         /**
+         * Adds a tileset to the manager. This is only important because it
+         * makes sure you don't have multiple tilesets with the same ID.
+         * @param {Tileset} tileset - the tileset to add.
+         */
+        addTileset: function(tileset) {
+            var id = tileset.id;
+            var existingTileset = game.util.getItemInContainerByProperty(this.tilesets, 'id', id);
+            if ( existingTileset != null ) {
+                console.log('You have multiple tilesets with the ID: ' + id);
+                game.util.debugDisplayText('Multiple tilesets with the same ID (check console)', 'dupe tileset' + id);
+            }
+            
+            this.tilesets.push(tileset);
+        },
+
+        /**
          * Retrieves a tileset based on its ID.
          * @param  {Number} id - the ID of the tileset, e.g. LAVA_TILESET_ID.
          * @return {Tileset}    the tileset corresponding to this ID.
@@ -67,7 +83,7 @@
             tileset.addDoodad(new game.Doodad([game.Graphic.BONES], 1, 5));
             tileset.addDoodad(new game.Doodad([game.Graphic.ANIMAL_SKULL], 1, 20));
 
-            this.tilesets.push(tileset);
+            this.addTileset(tileset);
         },
 
         constructLavaTileset: function() {
@@ -118,7 +134,7 @@
             tileset.addDoodad(new game.Doodad([game.Graphic.CRACKED_RED_BLOCK_HORIZ_RIDGE_1,game.Graphic.CRACKED_RED_BLOCK_HORIZ_RIDGE_2,game.Graphic.CRACKED_RED_BLOCK_HORIZ_RIDGE_3], 3, 20));
             
 
-            this.tilesets.push(tileset);
+            this.addTileset(tileset);
         },
 
         constructMarshTileset: function() {
@@ -163,7 +179,7 @@
             tileset.addDoodad(new game.Doodad([game.Graphic.TWO_FLOWERS], 1, 1));
             tileset.addDoodad(new game.Doodad([game.Graphic.THREE_FLOWERS], 1, 1));
 
-            this.tilesets.push(tileset);
+            this.addTileset(tileset);
         },
 
         constructForestTileset: function() {
@@ -239,7 +255,7 @@
             tileset.addDoodad(new game.Doodad([game.Graphic.TWO_FLOWERS], 1, 3));
             tileset.addDoodad(new game.Doodad([game.Graphic.THREE_FLOWERS], 1, 3));
 
-            this.tilesets.push(tileset);
+            this.addTileset(tileset);
         }
 
     };
