@@ -305,14 +305,14 @@
     window.game.Battle.prototype.generateExperience = function() {
         var logging = false;
 
-        // Get all living player units
-        var livingPlayerUnits = [];
+        // Get all valid player units (living, not summons)
+        var validPlayerUnits = [];
         for (var i = 0; i < this.playerUnits.length; i++) {
             var unit = this.playerUnits[i];
 
             // Ignore dead units
-            if ( unit.isLiving() ) {
-                livingPlayerUnits.push(unit);
+            if ( unit.isLiving() && !unit.isSummon() ) {
+                validPlayerUnits.push(unit);
             };
 
         };
@@ -379,8 +379,8 @@
 
         // Figure out the highest player level of the living units.
         var highestPlayerLevel = 0;
-        for (var i = 0; i < livingPlayerUnits.length; i++) {
-            var playerUnit = livingPlayerUnits[i];
+        for (var i = 0; i < validPlayerUnits.length; i++) {
+            var playerUnit = validPlayerUnits[i];
 
             highestPlayerLevel = Math.max(playerUnit.level, highestPlayerLevel);
         };
@@ -408,8 +408,8 @@
         // Figure out which bucket we're going to retain (see algorithm in the
         // function-level comments - we only retain a single bucket).
         var highestBucketWithUnits = 0;
-        for (var i = 0; i < livingPlayerUnits.length; i++) {
-            var playerUnit = livingPlayerUnits[i];
+        for (var i = 0; i < validPlayerUnits.length; i++) {
+            var playerUnit = validPlayerUnits[i];
             var playerLevel = playerUnit.level;
 
             // Keep track of the highest enemyBucketNumber that we find so that
