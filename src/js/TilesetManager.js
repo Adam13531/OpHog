@@ -70,7 +70,6 @@
 
         constructLavaTileset: function() {
             var lava1 = game.Graphic.RED_WATER_1;
-            var lava2 = game.Graphic.RED_WATER_2;
 
             // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
             var tileset = new game.Tileset(this.LAVA_TILESET_ID, game.Graphic.SPAWNER, lava1, game.Graphic.DARK_COBBLESTONE);
@@ -96,9 +95,9 @@
                 ));
             tileset.addDoodad(new game.Doodad(
                 [
-                lava2,lava2,lava2,
-                lava2,lava2,lava2,
-                lava2,lava2,lava2,
+                lava1,lava1,lava1,
+                lava1,lava1,lava1,
+                lava1,lava1,lava1,
                 ], 3, 5
                 ));
 
@@ -125,7 +124,6 @@
             var tileset = new game.Tileset(this.MARSH_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.LIGHT_GREEN_BRUSH, game.Graphic.DIRT_PATH);
 
             var water1 = game.Graphic.BLUE_WATER_1;
-            var water2 = game.Graphic.BLUE_WATER_2;
 
             // A big pond
             tileset.addDoodad(new game.Doodad(
@@ -148,9 +146,9 @@
                 ));
             tileset.addDoodad(new game.Doodad(
                 [
-                water2,water2,water2,
-                water2,water2,water2,
-                water2,water2,water2,
+                water1,water1,water1,
+                water1,water1,water1,
+                water1,water1,water1,
                 ], 3, 1
                 ));
 
