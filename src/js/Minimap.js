@@ -51,7 +51,7 @@
          * (e.g. LEFT | UP, RIGHT | DOWN, etc.).
          * @type {game.DirectionFlags}
          */
-        position: game.DirectionFlags.RIGHT | game.DirectionFlags.UP,
+        position: game.MINIMAP_DEFAULT_POSITION,
 
         /**
          * We draw the entire map ONCE to a canvas so that the performance is
@@ -86,7 +86,7 @@
          * Indicates whether the minimap is visible.
          * @type {Boolean}
          */
-        visible: true,
+        visible: game.MINIMAP_DEFAULT_VISIBILITY,
 
         /**
          * When you switch to a new map, you should call this function. It will

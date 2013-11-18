@@ -1,12 +1,5 @@
 ( function() {
 
-    window.game.DirectionFlags = {
-        UP: 1,    // 0001
-        RIGHT: 2, // 0010
-        DOWN: 4,  // 0100
-        LEFT: 8   // 1000
-    };
-
     /**
      * Indicates where on the map the piece should fall. LEFT would be the left
      * column. MIDDLE would indicate in any of the middle columns. RIGHT

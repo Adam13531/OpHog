@@ -552,6 +552,8 @@
             var audioEnabledSetting = false;
             var soundVolumeSetting = game.DEFAULT_SOUND_VOLUME;
             var musicVolumeSetting = game.DEFAULT_MUSIC_VOLUME;
+            var minimapPositionSetting = game.MINIMAP_DEFAULT_POSITION;
+            var minimapIsVisible = game.MINIMAP_DEFAULT_VISIBILITY;
 
             // Use the settings that were saved if they exist
             if ( localStorage.getItem('hasSettings') !== null ) {
@@ -559,11 +561,15 @@
                 audioEnabledSetting = JSON.parse(localStorage.audioEnabledSetting);
                 soundVolumeSetting = JSON.parse(localStorage.soundVolumeSetting);
                 musicVolumeSetting = JSON.parse(localStorage.musicVolumeSetting);
+                minimapPositionSetting = JSON.parse(localStorage.minimapPositionSetting);
+                minimapIsVisible = JSON.parse(localStorage.minimapIsVisible);
             }
             game.graphicsUtil.setGraphicsSettings(graphicsSetting);
             game.AudioManager.setAudioEnabled(audioEnabledSetting);
             game.AudioManager.setSoundVolume(soundVolumeSetting);
             game.AudioManager.setMusicVolume(musicVolumeSetting);
+            game.Minimap.setPanelPosition(minimapPositionSetting, minimapIsVisible);
+            game.Minimap.setVisible(minimapIsVisible);
         },
 
         saveSettings: function() {
@@ -572,7 +578,8 @@
             localStorage.audioEnabledSetting = JSON.stringify(game.AudioManager.canPlayAudio());
             localStorage.soundVolumeSetting = JSON.stringify(game.AudioManager.soundVolume);
             localStorage.musicVolumeSetting = JSON.stringify(game.AudioManager.musicVolume);
-
+            localStorage.minimapPositionSetting = JSON.stringify(game.Minimap.position);
+            localStorage.minimapIsVisible = JSON.stringify(game.Minimap.visible);
         },
 
         /**
