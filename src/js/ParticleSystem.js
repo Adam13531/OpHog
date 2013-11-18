@@ -23,16 +23,13 @@
    		// Only allow approximately 3 particles.
         // I say "approximately" we may have spawned 2 already, then we get back
         // to this function and it bursts out another 5, making 7.
-        if (this.particles.length < 3 && !this.spawnedAll)
-        {
+        if (this.particles.length < 3 && !this.spawnedAll) {
         	// Spawn somewhere between 1 and 5 particles.
         	var randBurst = Math.ceil(Math.random()*5);
         	for (var i = 0; i < randBurst; i++) {
         		this.particles.push(new game.Particle(this));
         	};
-        }
-        else
-        {
+        } else {
             this.spawnedAll = true;
         }
 

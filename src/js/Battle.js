@@ -1058,8 +1058,7 @@
                 }
 
                 // Check to see if we have to wrap back to the top
-                if ( attemptY + unitHeight > height )
-                {
+                if ( attemptY + unitHeight > height ) {
                     attemptY = 0;
                     wrappedThisColumnAlready = true;
                 }

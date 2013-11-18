@@ -79,8 +79,7 @@
         return function() {
             // Specify the flipped image's onload function here so that we don't
             // capture too many things in the closure.
-            spritesheet.hFlipImage.onload = function()
-            {
+            spritesheet.hFlipImage.onload = function() {
                 spritesheet.numCols = spritesheet.image.width / spritesheet.tileSize;
                 spritesheet.numRows = spritesheet.image.height / spritesheet.tileSize;
                 spritesheet.loadedVariation();
