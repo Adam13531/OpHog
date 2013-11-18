@@ -550,8 +550,8 @@
             // Defaults if they were never saved
             var graphicsSetting = game.GraphicsSettings.HIGH;
             var audioEnabledSetting = false;
-            var soundVolumeSetting = 50;
-            var musicVolumeSetting = 50;
+            var soundVolumeSetting = game.DEFAULT_SOUND_VOLUME;
+            var musicVolumeSetting = game.DEFAULT_MUSIC_VOLUME;
 
             // Use the settings that were saved if they exist
             if ( localStorage.getItem('hasSettings') !== null ) {
@@ -572,6 +572,7 @@
             localStorage.audioEnabledSetting = JSON.stringify(game.AudioManager.canPlayAudio());
             localStorage.soundVolumeSetting = JSON.stringify(game.AudioManager.soundVolume);
             localStorage.musicVolumeSetting = JSON.stringify(game.AudioManager.musicVolume);
+
         },
 
         /**

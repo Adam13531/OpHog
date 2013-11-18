@@ -304,7 +304,7 @@
             value.slider({
                 min:0,
                 max:100,
-                value:50,
+                value:((value === $soundSlider) ? game.DEFAULT_SOUND_VOLUME : game.DEFAULT_MUSIC_VOLUME),
                 range:'max',
                 slide: function( event, ui ) {
                     // We're in a $.each here, so make sure we're modifying the

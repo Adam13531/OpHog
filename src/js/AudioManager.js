@@ -37,6 +37,18 @@
      */
     window.game.FRAMES_BEFORE_AUDIO_SKIP_DISABLED = 3;
 
+    /**
+     * Default sound volume
+     * @type {Number}
+     */
+    window.game.DEFAULT_SOUND_VOLUME = 50;
+
+    /**
+     * Default music volume
+     * @type {Number}
+     */
+    window.game.DEFAULT_MUSIC_VOLUME = 50;
+
 
     /**
      * The audio manager is in charge of playing sound/music.
@@ -81,13 +93,13 @@
          * The volume of sounds that play (range: [0,100]);
          * @type {Number}
          */
-        soundVolume: 50,
+        soundVolume: game.DEFAULT_SOUND_VOLUME,
 
         /**
          * The volume of music that plays (range: [0,100]);
          * @type {Number}
          */
-        musicVolume: 50,
+        musicVolume: game.DEFAULT_MUSIC_VOLUME,
 
         /**
          * Initialize SoundManager2.
