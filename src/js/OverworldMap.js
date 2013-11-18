@@ -145,7 +145,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.FOREST_TILESET_ID
         },
         {
             x:7,

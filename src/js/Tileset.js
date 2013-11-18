@@ -17,6 +17,10 @@
         this.spawnTileGraphic = spawnTileGraphic;
         this.nonwalkableTileGraphic = nonwalkableTileGraphic;
         this.walkableTileGraphic = walkableTileGraphic;
+
+        // One doodad will show up approximately every 'doodadDensity' tiles,
+        // making this number lower results in more doodads.
+        this.doodadDensity = 5;
     };
 
     /**

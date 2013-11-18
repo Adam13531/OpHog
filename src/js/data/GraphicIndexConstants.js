@@ -29,12 +29,29 @@
         BARREL: 209, // fully intact barrel
         GREEN_TREE: 214, // a healthy oak tree
         GREEN_TREE_WITH_FRUIT: 215, // a healthy oak tree with three red fruits
+        EVERGREEN_TREE: 219, // a healthy, large evergreen
+        EVERGREEN_FOREST_PATCH_1: 280, // the upper left portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_2: 281, // the upper middle portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_3: 282, // the upper right portion of the evergreen forest
         CAULDRON: 315, // cauldron with purple liquid coming out
+        EVERGREEN_FOREST_PATCH_4: 337, // the middle left portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_5: 338, // the middle portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_6: 339, // the middle right portion of the evergreen forest
         SPAWNER: 371, // concentric cirles (yellow on outside)
+        EVERGREEN_FOREST_PATCH_7: 394, // the lower left portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_8: 395, // the lower middle portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_9: 396, // the lower right portion of the evergreen forest
+        EVERGREEN_DUO_1: 451, // the upper left of a 3-wide, 2-tall duo of evergreen trees
+        EVERGREEN_DUO_2: 452, // the upper middle of a 3-wide, 2-tall duo of evergreen trees
+        EVERGREEN_DUO_3: 453, // the upper right of a 3-wide, 2-tall duo of evergreen trees
         ANIMAL_SKULL: 497, // an animal skull with two horns (one is broken)
+        EVERGREEN_DUO_4: 508, // the lower left of a 3-wide, 2-tall duo of evergreen trees
+        EVERGREEN_DUO_5: 509, // the lower middle of a 3-wide, 2-tall duo of evergreen trees
+        EVERGREEN_DUO_6: 510, // the lower right of a 3-wide, 2-tall duo of evergreen trees
         DESERT_SAND: 713, // small dark beige streaks on a solid beige tile
         DIRT_PATH: 715, // small dark brown streaks on a solid brown tile
         LIGHT_GREEN_BRUSH: 769, // light green flowers/grass/greenery
+        LUSH_GREEN_BRUSH: 773, // bright green flowers/grass/greenery
         DARK_COBBLESTONE: 801, // many dark stones covering the entire tile
         RED_STONE_PATH_1: 1254, // stones at the NE, SE, and SW corners
         RED_STONE_PATH_2: 1255, // big stone at bottom, stones at NW and NE
