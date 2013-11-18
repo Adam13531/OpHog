@@ -51,5 +51,47 @@
         RED_WATER_1: 1720, // red-tinted water graphic, first frame
         BLUE_WATER_2: 1771, // blue-tinted water graphic, second frame
         RED_WATER_2: 1777, // red-tinted water graphic, second frame
+
+        //----------------------------------------------------------------------
+        // Graphics for eff_24.png
+        //----------------------------------------------------------------------
+        MEDIUM_BLUE_CIRCLE: 12, // a solid blue circular object, part of an explosion sequence
+        HORIZONTAL_NEEDLE: 43, // a white, thin sliver extending from left to right
+        RED_EXCLAMATION_POINT: 44, // a red '!' that's transparent in the middle
+        SMALL_PURPLE_BUBBLE: 46, // a tiny purple bubble that is transparent in the middle
+        SMALL_YELLOW_STAR: 70, // a yellow diamond, turned on its side
+        RED_FIREBALL_RIGHT: 110, // an orange/red fireball facing right
+
+        //----------------------------------------------------------------------
+        // Graphics for char_24.png. All indices specify the first frame in the
+        // two-frame animation.
+        // 
+        // The names for the keys should match create_key.doc (which Oryx
+        // provided) as much as possible.
+        // 
+        //----------------------------------------------------------------------
+        PALADIN_F: 0, // white chick with a red-cross shield, yellow armor, and a mace
+        SHAMAN_F: 3, // wizard with gray robes and wolf hat, a staff, and red face paint
+        PRIEST_F: 4, // maroon robes and big hat, staff, blonde hair
+        WIZARD_F: 5, // no visible face, staff, purple cloak
+        RANGER_F: 6, // RANGER_M but with lipstick and an orange cape
+        KNIGHT_F: 8, // a white chick with lipstick, a round shield, a shortsword, and red armor
+        PALADIN_M: 9, // a white dude with a blue-cross shield, yellow armor, and a mace
+        BERSERKER_M: 11, // a white dude with a vikin hat, brown shirt/cape, an a hatchet
+        SHAMAN_M: 12, // wizard with brown robes and wolf hat, a staff, and blue face paint
+        WIZARD_M: 14, // wizard with no visible face, a red cape, and a staff
+        RANGER_M: 15, // an archer with a bow, a quiver, and a gray cape with feathers
+        KNIGHT_M: 17, // a warrior with blue armor, a shield, helmet, and sword
+        KING: 49, // an old man with a crown and staff and blue capes
+        HIGH_ELF_RANGER_F: 121, // an elf with light gray skin, white hair, green cape, and bow
+        DROW_RANGER: 130, // a blue-skinned creature with white hair, a purple shirt, and a red cape
+        WOOF_ELF_RANGER_F: 171, // a gray-skinned creature with lipstick, brown hair, a gray shirt, and a gray/orange cape
+        TREANT: 201, // a brown tree with no leaves and an unhappy face
+        BLACK_WOLF: 243, // a dark grey wolf with red eyes
+        COBRA: 248, // a green cobra with red eyes
+        BLACK_SPIDER: 251, // a black spider with a red marking on it
+        ORC_FIGHTER: 292, // a gray orc with a red cape and a dagger
+        GIANT_BLACK_SCORPION: 364, // a black scorpion with yellow eyes
+        GREEN_DRAGON: 374, // a green dragon with a small wing
     };
 }());

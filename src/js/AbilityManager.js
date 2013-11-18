@@ -87,7 +87,7 @@
     window.game.Ability = {
         ATTACK: {
             id: 0,
-            graphicIndex: 43,
+            graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -97,7 +97,7 @@
 
         SKULL_THROW: {
             id: 1,
-            graphicIndex: 43,
+            graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -107,7 +107,7 @@
 
         SPIT_WEB: {
             id: 2,
-            graphicIndex: 43,
+            graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -117,7 +117,7 @@
 
         SCORPION_STING: {
             id: 3,
-            graphicIndex: 43,
+            graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -127,7 +127,7 @@
 
         SNAKE_VENOM: {
             id: 4,
-            graphicIndex: 43,
+            graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -137,7 +137,7 @@
 
         BRANCH_WHIP: {
             id: 5,
-            graphicIndex: 43,
+            graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -147,7 +147,7 @@
 
         BOULDER_DROP: {
             id: 6,
-            graphicIndex: 46,
+            graphicIndex: game.Graphic.SMALL_PURPLE_BUBBLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -157,7 +157,7 @@
 
         FLAME_THROWER: {
             id: 7,
-            graphicIndex: 43,
+            graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -167,7 +167,7 @@
 
         THROWING_KNIVES: {
             id: 8,
-            graphicIndex: 44,
+            graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -177,7 +177,7 @@
 
         FIREBALL: {
             id: 9,
-            graphicIndex: 43,
+            graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -187,7 +187,7 @@
 
         BEARD_THROW: {
             id: 10,
-            graphicIndex: 43,
+            graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -197,7 +197,7 @@
 
         REVIVE: {
             id: 11,
-            graphicIndex: 108,
+            graphicIndex: game.Graphic.SMALL_YELLOW_STAR,
             type: game.AbilityType.REVIVE,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.DEAD,
@@ -207,7 +207,7 @@
 
         SUMMON: {
             id: 12,
-            graphicIndex: 1, // Blank graphic
+            graphicIndex: 1, // Blank graphic. Summon is special-cased to not have a projectile anyway.
             type: game.AbilityType.SUMMON,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
@@ -218,7 +218,7 @@
         HEAL: {
             id: 13,
             type: game.AbilityType.HEAL,
-            graphicIndex: 70,
+            graphicIndex: game.Graphic.MEDIUM_BLUE_CIRCLE,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE | game.RandomUnitFlags.IS_MISSING_LIFE,
             actionOnHit: game.ActionOnHit.HEAL,
