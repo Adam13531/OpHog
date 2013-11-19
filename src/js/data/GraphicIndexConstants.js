@@ -53,6 +53,8 @@
         LIGHT_GREEN_BRUSH: 769, // light green flowers/grass/greenery
         LUSH_GREEN_BRUSH: 773, // bright green flowers/grass/greenery
         DARK_COBBLESTONE: 801, // many dark stones covering the entire tile
+        PATH_TILE_SAND: 997, // tan tile with specks. This marks the start of one of our "auto tiles".
+        PATH_TILE_DIRT: 1111, // brown tile with specks. This marks the start of one of our "auto tiles".
         RED_STONE_PATH_1: 1254, // stones at the NE, SE, and SW corners
         RED_STONE_PATH_2: 1255, // big stone at bottom, stones at NW and NE
         RED_STONE_PATH_3: 1256, // stones at all four corners
@@ -63,7 +65,9 @@
         CRACKED_RED_BLOCK_HORIZ_RIDGE_1: 1264, // the left edge of a 3-block ridge
         CRACKED_RED_BLOCK_HORIZ_RIDGE_2: 1265, // the middle part of a 3-block ridge
         CRACKED_RED_BLOCK_HORIZ_RIDGE_3: 1266, // the right edge of a 3-block ridge
+        PATH_TILE_DARK_DIRT: 1339, // dark brown tile with specks. This marks the start of one of our "auto tiles".
         DARK_MUD_PATH_FULL_TEXTURE: 1340, // dark mud path, takes up full tile, has some bubbles in it
+        PATH_TILE_MUD: 1453, // mud-colored tile with specks. This marks the start of one of our "auto tiles".
         BLUE_WATER_1: 1714, // blue-tinted water graphic, first frame
         RED_WATER_1: 1720, // red-tinted water graphic, first frame
         BLUE_WATER_2: 1771, // blue-tinted water graphic, second frame
