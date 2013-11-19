@@ -185,6 +185,12 @@
     window.game.MINIMAP_DEFAULT_VISIBILITY = true;
 
     /**
+     * Default that tells us if audio should be enabled
+     * @type {Boolean}
+     */
+    window.game.AUDIO_DEFAULT_ENABLED = false;
+
+    /**
      * Indicates where on the map the piece should fall. LEFT would be the left
      * column. MIDDLE would indicate in any of the middle columns. RIGHT
      * indicates the last column.

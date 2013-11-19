@@ -157,8 +157,11 @@
          * Deletes the saved game by removing everything from localStorage.
          */
         deleteSavedGame: function() {
+            // Makes sure not to delete UI settings
+            var uiSettings = localStorage.uiSettings;
             this.log('Wiping out localStorage (deleteSavedGame was called).', false);
             localStorage.clear();
+            localStorage.uiSettings = uiSettings;
         },
 
         /**
@@ -547,22 +550,23 @@
         },
 
         loadSettings: function() {
-            // Defaults if they were never saved
+            // Defaults that will be used if UI settings were never saved
             var graphicsSetting = game.GraphicsSettings.HIGH;
-            var audioEnabledSetting = false;
+            var audioEnabledSetting = game.AUDIO_DEFAULT_ENABLED;
             var soundVolumeSetting = game.DEFAULT_SOUND_VOLUME;
             var musicVolumeSetting = game.DEFAULT_MUSIC_VOLUME;
             var minimapPositionSetting = game.MINIMAP_DEFAULT_POSITION;
             var minimapIsVisible = game.MINIMAP_DEFAULT_VISIBILITY;
 
             // Use the settings that were saved if they exist
-            if ( localStorage.getItem('hasSettings') !== null ) {
-                graphicsSetting = JSON.parse(localStorage.graphicsSetting);
-                audioEnabledSetting = JSON.parse(localStorage.audioEnabledSetting);
-                soundVolumeSetting = JSON.parse(localStorage.soundVolumeSetting);
-                musicVolumeSetting = JSON.parse(localStorage.musicVolumeSetting);
-                minimapPositionSetting = JSON.parse(localStorage.minimapPositionSetting);
-                minimapIsVisible = JSON.parse(localStorage.minimapIsVisible);
+            if ( localStorage.uiSettings !== undefined ) {
+                var uiSettings = JSON.parse(localStorage.uiSettings);
+                graphicsSetting = uiSettings.graphicsSetting;
+                audioEnabledSetting = uiSettings.audioEnabledSetting;
+                soundVolumeSetting = uiSettings.soundVolumeSetting;
+                musicVolumeSetting = uiSettings.musicVolumeSetting;
+                minimapPositionSetting = uiSettings.minimapPositionSetting;
+                minimapIsVisible = uiSettings.minimapIsVisible;
             }
             game.graphicsUtil.setGraphicsSettings(graphicsSetting);
             game.AudioManager.setAudioEnabled(audioEnabledSetting);
@@ -573,13 +577,14 @@
         },
 
         saveSettings: function() {
-            localStorage.hasSettings = JSON.stringify('true');
-            localStorage.graphicsSetting = JSON.stringify(game.graphicsSetting);
-            localStorage.audioEnabledSetting = JSON.stringify(game.AudioManager.canPlayAudio());
-            localStorage.soundVolumeSetting = JSON.stringify(game.AudioManager.soundVolume);
-            localStorage.musicVolumeSetting = JSON.stringify(game.AudioManager.musicVolume);
-            localStorage.minimapPositionSetting = JSON.stringify(game.Minimap.position);
-            localStorage.minimapIsVisible = JSON.stringify(game.Minimap.visible);
+            var uiSettings = {};
+            uiSettings.graphicsSetting = game.graphicsSetting;
+            uiSettings.audioEnabledSetting = game.AudioManager.canPlayAudio();
+            uiSettings.soundVolumeSetting = game.AudioManager.soundVolume;
+            uiSettings.musicVolumeSetting = game.AudioManager.musicVolume;
+            uiSettings.minimapPositionSetting = game.Minimap.position;
+            uiSettings.minimapIsVisible = game.Minimap.visible;
+            localStorage.uiSettings = JSON.stringify(uiSettings);
         },
 
         /**

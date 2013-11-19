@@ -46,7 +46,7 @@
          * If false, the user disabled audio.
          * @type {Boolean}
          */
-        audioEnabled: false,
+        audioEnabled: game.AUDIO_DEFAULT_ENABLED,
 
         /**
          * This is a dictionary whose keys are AudioDescriptors and whose values
