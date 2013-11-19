@@ -677,7 +677,7 @@
                 else if ( flags[0] && flags[1] && flags[3] ) graphicOffset = 3;
                 else if ( flags[0] && flags[2] && flags[3] ) graphicOffset = 5;
                 else if ( flags[1] && flags[2] && flags[3] ) graphicOffset = 2;
-                else if ( flags[0] && flags[1] && flags[2] ) graphicOffset = 15 + spritePerRow;
+                else if ( flags[0] && flags[1] && flags[2] ) graphicOffset = 4;
                 else if ( flags[1] && flags[3] ) graphicOffset = 6;
                 else if ( flags[2] && flags[3] ) graphicOffset = 7;
                 else if ( flags[0] && flags[1] ) graphicOffset = 9;
