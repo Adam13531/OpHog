@@ -497,8 +497,9 @@
     };
 
     /**
-     * Sets the color of a slider
-     * @param {slider} $slider - Slider to change the color of
+     * Sets the color of the slider channel based on the value of the slider
+     * (when it's filled more, the background color is brighter).
+     * @param {Object} $slider - a JQuery UI slider to change the color of
      */
     window.game.util.setSliderColor = function($slider) {
         var max = $slider.slider('option', 'max');

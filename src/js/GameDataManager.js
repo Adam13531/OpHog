@@ -549,24 +549,17 @@
         },
 
         loadSettings: function() {
-            // Defaults that will be used if UI settings were never saved
-            var graphicsSetting = game.GraphicsSettings.HIGH;
-            var audioEnabledSetting = game.AUDIO_DEFAULT_ENABLED;
-            var soundVolumeSetting = game.DEFAULT_SOUND_VOLUME;
-            var musicVolumeSetting = game.DEFAULT_MUSIC_VOLUME;
-            var minimapPositionSetting = game.MINIMAP_DEFAULT_POSITION;
-            var minimapIsVisible = game.MINIMAP_DEFAULT_VISIBILITY;
+            if ( localStorage.uiSettings === undefined ) return;
 
             // Use the settings that were saved if they exist
-            if ( localStorage.uiSettings !== undefined ) {
-                var uiSettings = JSON.parse(localStorage.uiSettings);
-                graphicsSetting = uiSettings.graphicsSetting;
-                audioEnabledSetting = uiSettings.audioEnabledSetting;
-                soundVolumeSetting = uiSettings.soundVolumeSetting;
-                musicVolumeSetting = uiSettings.musicVolumeSetting;
-                minimapPositionSetting = uiSettings.minimapPositionSetting;
-                minimapIsVisible = uiSettings.minimapIsVisible;
-            }
+            var uiSettings = JSON.parse(localStorage.uiSettings);
+            var graphicsSetting = uiSettings.graphicsSetting;
+            var audioEnabledSetting = uiSettings.audioEnabledSetting;
+            var soundVolumeSetting = uiSettings.soundVolumeSetting;
+            var musicVolumeSetting = uiSettings.musicVolumeSetting;
+            var minimapPositionSetting = uiSettings.minimapPositionSetting;
+            var minimapIsVisible = uiSettings.minimapIsVisible;
+
             game.graphicsUtil.setGraphicsSettings(graphicsSetting);
             game.AudioManager.setAudioEnabled(audioEnabledSetting);
             game.AudioManager.setSoundVolume(soundVolumeSetting);

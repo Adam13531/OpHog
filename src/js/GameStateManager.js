@@ -274,10 +274,6 @@
                 // Reset the autosave timer since we just saved
                 this.autoSaveOnOverworldCountdown = game.SAVE_GAME_ON_OVERWORLD_INTERVAL;
             }
-
-            // These settings shouldn't ever be dependant on a saved game, so
-            // it's ok to always try to load them.
-            game.GameDataManager.loadSettings();
         },
 
         /**

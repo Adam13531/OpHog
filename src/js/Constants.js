@@ -191,15 +191,17 @@
     window.game.AUDIO_DEFAULT_ENABLED = false;
 
     /**
-     * Indicates where on the map the piece should fall. LEFT would be the left
-     * column. MIDDLE would indicate in any of the middle columns. RIGHT
-     * indicates the last column.
+     * These values indicate where a puzzle piece can be used in the map
+     * generation algorithm.
+     *
+     * LEFT would be the single left column. MIDDLE would indicate in any of the
+     * middle columns. RIGHT indicates the last column.
      */
     window.game.PuzzlePieceType = {
         LEFT: 1,
         MIDDLE: 2,
         RIGHT: 4
-    }
+    };
 
     /**
      * Length of a side of a puzzle piece

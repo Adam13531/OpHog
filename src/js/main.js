@@ -71,7 +71,12 @@
         if ( game.GameDataManager.hasSavedGame() ) {
             // Commenting this out because it produces too many oddities while
             // we're testing. This will be uncommented for production code.
+            // 
+            // NOTE: if you uncomment this, then make sure to get rid of the
+            // loadSettings since it will be redundant.
             // game.GameDataManager.loadGame();
+            
+            game.GameDataManager.loadSettings();
         }
 
         // Uncomment this if you want to jump directly to normal gameplay when
