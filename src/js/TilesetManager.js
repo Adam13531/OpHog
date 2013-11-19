@@ -71,7 +71,7 @@
 
         constructDesertTileset: function() {
             // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
-            var tileset = new game.Tileset(this.DESERT_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.DESERT_SAND, game.Graphic.DARK_MUD_PATH_FULL_TEXTURE);
+            var tileset = new game.Tileset(this.DESERT_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.DESERT_SAND, 997);
 
             // Single-tile doodads
             tileset.addDoodad(new game.Doodad([game.Graphic.BIG_GRAY_STONE], 1, 2));
@@ -90,7 +90,7 @@
             var lava1 = game.Graphic.RED_WATER_1;
 
             // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
-            var tileset = new game.Tileset(this.LAVA_TILESET_ID, game.Graphic.SPAWNER, lava1, game.Graphic.DARK_COBBLESTONE);
+            var tileset = new game.Tileset(this.LAVA_TILESET_ID, game.Graphic.SPAWNER, lava1, 997 + 6 * 57);
 
             // A big pond
             tileset.addDoodad(new game.Doodad(
@@ -139,7 +139,7 @@
 
         constructMarshTileset: function() {
             // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
-            var tileset = new game.Tileset(this.MARSH_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.LUSH_GREEN_BRUSH, game.Graphic.DIRT_PATH);
+            var tileset = new game.Tileset(this.MARSH_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.LUSH_GREEN_BRUSH, 997 + 8 * 57);
 
             var water1 = game.Graphic.BLUE_WATER_1;
 
@@ -184,7 +184,7 @@
 
         constructForestTileset: function() {
             // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
-            var tileset = new game.Tileset(this.FOREST_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.LIGHT_GREEN_BRUSH, game.Graphic.DIRT_PATH);
+            var tileset = new game.Tileset(this.FOREST_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.LIGHT_GREEN_BRUSH, 997 + 57 * 2);
 
             var f1 = game.Graphic.EVERGREEN_FOREST_PATCH_1;
             var f2 = game.Graphic.EVERGREEN_FOREST_PATCH_2;

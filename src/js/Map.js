@@ -5,36 +5,24 @@
     /**
      * Makes a new map. This will also call this.initialize(), because the
      * constructor itself only sets up very basic things.
-     * @param {Array:Number} mapTilesIndices - the graphic indices for each tile
-     * in the map
-     * @param {Array:Number} doodadIndices - the graphic indices for doodads, or
-     * undefined if there is no doodad at that location.
+     * @param {Array:Tile}  tiles - the tiles that make up this map
+     * @param {Array:Number}  doodadIndices - the graphic indices for doodads,
+     * or undefined if there is no doodad at that location.
      * @param {Number} tilesetID - the ID of the tileset to use
-     * @param {Number} width                - width of this map
-     * @param {Object} nodeOfMap - an object from game.OverworldMapData.overworldMapNodes
+     * @param {Number} width - width of this map
+     * @param {Object} nodeOfMap - an object from
+     * game.OverworldMapData.overworldMapNodes
      * @param {Boolean} isOverworldMap - true if this is the overworld map.
      */
-    window.game.Map = function Map(mapTilesIndices, doodadIndices, tilesetID, width, nodeOfMap, isOverworldMap) {
+    window.game.Map = function Map(tiles, doodadIndices, tilesetID, width, nodeOfMap, isOverworldMap) {
         this.numCols = width;
-        this.numRows = mapTilesIndices.length / this.numCols;
+        this.numRows = tiles.length / this.numCols;
         this.isOverworldMap = isOverworldMap;
         this.nodeOfMap = nodeOfMap;
 
         this.tileset = game.TilesetManager.getTilesetByID(tilesetID);
 
-        /**
-         * The tiles representing this map.
-         * @type {Array:Tile}
-         */
-        this.mapTiles = [];
-        for (var i = 0; i < mapTilesIndices.length; i++) {
-            var index = mapTilesIndices[i];
-            this.mapTiles.push(new game.Tile(this.tileset, index, i, i % this.numCols, Math.floor(i/this.numCols)));
-        };
-
-        // Save this so that the GameDataManager can easily restore the map
-        // simply by calling the constructor.
-        this.mapTilesIndices = mapTilesIndices;
+        this.mapTiles = tiles;
         this.doodadIndices = doodadIndices;
 
         /**
@@ -1336,6 +1324,14 @@
                             // eventually and not see units show up behind
                             // transparent tiles.
                             ctx.fillRect(0, 0, game.TILESIZE, game.TILESIZE);
+
+                            // Walkable tiles don't always cover the whole area,
+                            // so we need to draw the unwalkable tile beneath
+                            // it.
+                            if ( tile.isWalkable() ) {
+                                envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, 0,0);
+                            }
+
                             envSheet.drawSprite(ctx, graphic, 0,0);
                             if ( doodadGraphic != null ) {
                                 envSheet.drawSprite(ctx, doodadGraphic, 0,0);
@@ -1350,6 +1346,9 @@
                         // If there's no fog here and we're not drawing the fog
                         // layer, then we just draw the map normally.
                         if ( !this.fog[index] ) {
+                            if ( tile.isWalkable() ) {
+                                envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, 0,0);
+                            }
                             envSheet.drawSprite(ctx, graphic, 0,0);
                             if ( doodadGraphic != null ) {
                                 envSheet.drawSprite(ctx, doodadGraphic, 0,0);

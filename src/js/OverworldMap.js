@@ -63,6 +63,11 @@
          */
         overworldMapWidth: 50,
 
+        // Since we hard-coded the overworld map, I'm putting this here to
+        // indicate which tile is walkable. When we make it so that there are
+        // multiple walkable tiles, we'll have to fix this value.
+        overworldWalkableTile: 715,
+
         /**
          * Each node in this array is an Object with the following:
          *     x - Number - x coordinate in tiles
@@ -407,11 +412,19 @@
          * Initializes the overworld map. This should only be called once.
          */
         initializeOverworldMap: function() {
-            var mapTileIndices = this.overworldMapTileIndices;
-
-            var doodadIndices = new Array(mapTileIndices.length);
+            // This is an empty array because there are no doodads yet.
+            var doodadIndices = new Array(this.overworldMapTileIndices.length);
             var tilesetID = game.TilesetManager.MARSH_TILESET_ID;
-            game.overworldMap = new game.Map(mapTileIndices, doodadIndices, tilesetID, this.overworldMapWidth, 1, true);
+            var tiles = [];
+            for (var i = 0; i < this.overworldMapTileIndices.length; i++) {
+                var x = i % this.overworldMapWidth;
+                var y = Math.floor(i/this.overworldMapWidth);
+                var graphic = this.overworldMapTileIndices[i];
+                var walkable = graphic == this.overworldWalkableTile;
+                tiles.push(new game.Tile(tilesetID, graphic, i, x, y, walkable));
+            };
+
+            game.overworldMap = new game.Map(tiles, doodadIndices, tilesetID, this.overworldMapWidth, 1, true);
 
             // Put each node into the map
             for (var i = 0; i < this.overworldMapNodes.length; i++) {

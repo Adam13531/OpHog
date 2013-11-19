@@ -610,6 +610,135 @@
         },
 
         /**
+         * Returns an array of boolean values representing which neighbors are
+         * walkable.
+         *
+         * The tile you pass in is index '4' below:
+         *
+         * 0 1 2
+         * 3 4 5
+         * 6 7 8
+         *
+         * So if the neighbors above/below the tile you pass in are walkable,
+         * you'll get
+         * [
+         *     false,true, false
+         *     false,false,false
+         *     false,true, false
+         * ]
+         *
+         * back.
+         * 
+         * @param  {Array:Tile} tiles     - an array of tiles to look through
+         * for neighbors
+         * @param  {Number} tileIndex - the index of the tile whose neighbors
+         * you want
+         * @return {Array:Boolean}
+         */
+        getAdjacentNonzeroTiles: function(tiles, tileIndex) {
+            var tileX = tileIndex % this.widthInTiles;
+            var tileY = Math.floor(tileIndex / this.widthInTiles);
+
+            var flags = [false,false,false,
+                         false,false,false,
+                         false,false,false];
+
+            // If we're out of bounds, then we return immediately
+            if ( tileX < 0 || tileX >= this.widthInTiles || tileY < 0 || tileY >= this.heightInTiles ) {
+                return flags;
+            }
+
+            if ( tileX > 0) {
+                // 0
+                flags[0] = tiles[tileIndex - this.widthInTiles - 1].isWalkable();
+                // 3
+                flags[3] = tiles[tileIndex - 1].isWalkable();
+                // 6
+                flags[6] = tiles[tileIndex + this.widthInTiles - 1].isWalkable();
+            }
+
+            if ( tileY > 0 ) {
+                // 1
+                flags[1] = tiles[tileIndex - this.widthInTiles].isWalkable();
+            }
+
+            if ( tileY < this.heightInTiles - 1 ) {
+                // 7
+                flags[7] = tiles[tileIndex + this.widthInTiles].isWalkable();
+            }
+
+            if ( tileX < this.widthInTiles - 1) {
+                // 2
+                flags[2] = tiles[tileIndex - this.widthInTiles + 1].isWalkable();
+                // 5
+                flags[5] = tiles[tileIndex + 1].isWalkable();
+                // 8
+                flags[8] = tiles[tileIndex + this.widthInTiles + 1].isWalkable();
+            }
+
+            return flags;
+        },
+
+        /**
+         * Converts the graphic indices of walkable tiles to be the pretty
+         * paths.
+         * @param  {Array:Tile} tiles     - an array of tiles to prettify. These
+         * are modified directly.
+         */
+        prettifyPaths: function(tiles) {
+            for (var i = 0; i < tiles.length; i++) {
+                if ( !tiles[i].isWalkable() ) continue;
+
+                var flags = this.getAdjacentNonzeroTiles(tiles, i);
+                // 0 1 2
+                // 3 4 5
+                // 6 7 8
+                // 
+                // Okay, here's how this works: the intersection/corner/whatever
+                // pieces of the path are stored in the same way for each
+                // tileset, so we'll compute an offset here and apply it to the
+                // walkable tile graphic.
+                var spritePerRow = envSheet.getNumSpritesPerRow();
+                var graphicOffset = spritePerRow;
+                if ( flags[1] && flags[3] && flags[5] && flags[7] ) graphicOffset = 1;
+                else if ( flags[1] && flags[3] && flags[7] ) graphicOffset = 3;
+                else if ( flags[1] && flags[5] && flags[7] ) graphicOffset = 5;
+                else if ( flags[3] && flags[5] && flags[7] ) graphicOffset = 2;
+                else if ( flags[1] && flags[3] && flags[5] ) graphicOffset = 15 + spritePerRow;
+                else if ( flags[3] && flags[7] ) graphicOffset = 6;
+                else if ( flags[5] && flags[7] ) graphicOffset = 7;
+                else if ( flags[1] && flags[3] ) graphicOffset = 9;
+                else if ( flags[1] && flags[5] ) graphicOffset = 8;
+                else if ( flags[3] && flags[5] ) graphicOffset = 16 + spritePerRow;
+                else if ( flags[1] && flags[7] ) graphicOffset = 17 + spritePerRow;
+                else if ( flags[5] ) graphicOffset = 1 + spritePerRow;
+                else if ( flags[1] ) graphicOffset = 6 + spritePerRow;
+                else if ( flags[7] ) graphicOffset = 4 + spritePerRow;
+                else if ( flags[3] ) graphicOffset = 3 + spritePerRow;
+                tiles[i].graphicIndex = this.tileset.walkableTileGraphic + graphicOffset;
+            };
+        },
+
+        /**
+         * Convert the mapArray, which is just 0s and 1s, to Tiles with the
+         * correct graphic indices.
+         * @return {Array:Tile}
+         */
+        convertMapArrayToTiles: function() {
+            var tiles = [];
+            
+            for (var i = 0; i < this.mapArray.length; i++) {
+                var walkable = (this.mapArray[i] == 1);
+                var graphic = walkable ? this.tileset.walkableTileGraphic : this.tileset.nonwalkableTileGraphic;
+                var x = i % this.widthInTiles;
+                var y = Math.floor(i/this.widthInTiles);
+                tiles.push(new game.Tile(this.tileset.id, graphic, i, x, y, walkable));
+            };
+
+            return tiles;
+        },
+
+        /**
          * Generates a random map
          * @param  {Number} width      width of the map to be generated in tiles
          * @param  {Number} height     height of the map to be generated in tiles
@@ -673,13 +802,12 @@
             this.handleBlankRows();
 
             this.computeDoodads();
+            
+            var tiles = this.convertMapArrayToTiles();
 
-            // Convert the array of 0s and 1s to map tiles
-            for (var i = 0; i < this.mapArray.length; i++) {
-                this.mapArray[i] = (this.mapArray[i] == 0 ? this.tileset.nonwalkableTileGraphic : this.tileset.walkableTileGraphic);
-            };
+            this.prettifyPaths(tiles);
 
-            var map = new game.Map(this.mapArray, this.doodadIndices, this.tileset.id, this.widthInTiles, nodeOfMap, false);
+            var map = new game.Map(tiles, this.doodadIndices, this.tileset.id, this.widthInTiles, nodeOfMap, false);
 
             // We don't need these any longer, so free the memory.
             delete this.columns;

@@ -16,15 +16,20 @@
         UNFOGGY: 16,
     };
 
-    /**
-     * Tiles do not currently have any other functions because there is only
-     * data in this class and everything is essentially constant. This will
-     * change when we add animation.
-     * @param {Tileset} tileset - the tileset used for this map
-     * @param {Number} graphicIndex - the index used to represent this tile
-     */
-    window.game.Tile = function Tile(tileset, graphicIndex, tileIndex, tileX, tileY) {
-        this.tileset = tileset;
+     /**
+      * A tile object.
+      * @param {Number} tilesetID    - the ID of the tileset to use. This isn't
+      * a Tileset itself so that tiles can be saved/loaded easily.
+      * @param {Number} graphicIndex - the index used to represent this tile.
+      * @param {Number} tileIndex    - this is the index into the current map's
+      * tile array. It comes in handy a lot, but causes the tile to be tightly
+      * coupled with our Map class.
+      * @param {Number} tileX        - the X of this tile.
+      * @param {Number} tileY        - the Y of this tile.
+      * @param {Boolean} walkable     - whether or not this tile is walkable.
+      */
+    window.game.Tile = function Tile(tilesetID, graphicIndex, tileIndex, tileX, tileY, walkable) {
+        this.tileset = game.TilesetManager.getTilesetByID(tilesetID);
         this.graphicIndex = graphicIndex;
 
         /**
@@ -37,7 +42,7 @@
             this.tileFlags |= game.TileFlags.SPAWNER | game.TileFlags.WALKABLE;
         }
 
-        if (this.graphicIndex == this.tileset.walkableTileGraphic) {
+        if (walkable) {
             this.tileFlags |= game.TileFlags.WALKABLE;
         }
 
