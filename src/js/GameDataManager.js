@@ -530,7 +530,6 @@
                 var battle = game.BattleManager.battles[i];
                 for (var j = 0; j < battle.projectiles.length; j++) {
                     var parsedProjectile = battle.projectiles[j];
-                    debugger;
                     var target = game.UnitManager.getUnitByID(parsedProjectile.target.id);
                     var owner = game.UnitManager.getUnitByID(parsedProjectile.owner.id);
                     var x = parsedProjectile.x;
@@ -549,7 +548,24 @@
         saveMap: function() {
             var lookingAtOverworld = game.currentMap.isOverworldMap;
             if ( !lookingAtOverworld ) {
-                localStorage.mapTilesIndices = JSON.stringify(game.currentMap.mapTilesIndices);
+                var tiles = [];
+
+                // Save the tiles (they are Tile objects).
+                for (var i = 0; i < game.currentMap.mapTiles.length; i++) {
+                    var tile = game.currentMap.mapTiles[i];
+
+                    // Get everything needed by the constructor
+                    var tileObject = {
+                        tilesetID: tile.tileset.id,
+                        graphicIndex: tile.graphicIndex,
+                        tileIndex:tile.tileIndex,
+                        tileX: tile.x,
+                        tileY: tile.y,
+                        walkable: tile.isWalkable()
+                    };
+                    tiles.push(tileObject);
+                };
+                localStorage.mapTiles = JSON.stringify(tiles);
                 localStorage.doodadIndices = JSON.stringify(game.currentMap.doodadIndices);
                 localStorage.tilesetID = game.currentMap.tileset.id;
                 localStorage.currentMapNode = JSON.stringify(game.currentMap.nodeOfMap);
@@ -573,7 +589,15 @@
             game.overworldMap.fog = overworldFog;
 
             if ( !lookingAtOverworld ) {
-                var mapTilesIndices = JSON.parse(localStorage.mapTilesIndices);
+
+                // Turn the tiles from objects into Tiles.
+                var parsedTiles = JSON.parse(localStorage.mapTiles);
+                var tiles = [];
+                for (var i = 0; i < parsedTiles.length; i++) {
+                    var pt = parsedTiles[i];
+                    var tile = new game.Tile(pt.tilesetID, pt.graphicIndex, pt.tileIndex, pt.tileX, pt.tileY, pt.walkable);
+                    tiles.push(tile);
+                };
                 var doodadIndices = JSON.parse(localStorage.doodadIndices);
                 var tilesetID = Number(localStorage.tilesetID);
                 var nodeOfMap = JSON.parse(localStorage.currentMapNode);
@@ -581,7 +605,7 @@
                 var fog = JSON.parse(localStorage.fog);
 
                 // This will reform all tiles' leftList and rightList.
-                game.currentMap = new game.Map(mapTilesIndices, doodadIndices, tilesetID, numCols, nodeOfMap, false);
+                game.currentMap = new game.Map(tiles, doodadIndices, tilesetID, numCols, nodeOfMap, false);
                 game.UnitPlacementUI.initializeSpawnPoint();
 
                 // Restore fog
