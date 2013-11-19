@@ -613,68 +613,40 @@
          * Returns an array of boolean values representing which neighbors are
          * walkable.
          *
-         * The tile you pass in is index '4' below:
-         *
-         * 0 1 2
-         * 3 4 5
-         * 6 7 8
-         *
-         * So if the neighbors above/below the tile you pass in are walkable,
-         * you'll get
-         * [
-         *     false,true, false
-         *     false,false,false
-         *     false,true, false
-         * ]
-         *
-         * back.
-         * 
+         * The return array is in this order: [north, west, east, south], so if
+         * you get [1,0,1,0], it means that the tile above the one you passed in
+         * and the tile to the right of it are walkable.
          * @param  {Array:Tile} tiles     - an array of tiles to look through
          * for neighbors
          * @param  {Number} tileIndex - the index of the tile whose neighbors
          * you want
          * @return {Array:Boolean}
          */
-        getAdjacentNonzeroTiles: function(tiles, tileIndex) {
+        getAdjacentWalkability: function(tiles, tileIndex) {
             var tileX = tileIndex % this.widthInTiles;
             var tileY = Math.floor(tileIndex / this.widthInTiles);
 
-            var flags = [false,false,false,
-                         false,false,false,
-                         false,false,false];
+            var flags = [     false,// <-- north
+                   false,/*<-west east->*/false,
+                              false // <-- south
+                              ];
 
             // If we're out of bounds, then we return immediately
             if ( tileX < 0 || tileX >= this.widthInTiles || tileY < 0 || tileY >= this.heightInTiles ) {
                 return flags;
             }
 
-            if ( tileX > 0) {
-                // 0
-                flags[0] = tiles[tileIndex - this.widthInTiles - 1].isWalkable();
-                // 3
-                flags[3] = tiles[tileIndex - 1].isWalkable();
-                // 6
-                flags[6] = tiles[tileIndex + this.widthInTiles - 1].isWalkable();
-            }
+            // west
+            if ( tileX > 0) flags[1] = tiles[tileIndex - 1].isWalkable();
 
-            if ( tileY > 0 ) {
-                // 1
-                flags[1] = tiles[tileIndex - this.widthInTiles].isWalkable();
-            }
+            // north
+            if ( tileY > 0 ) flags[0] = tiles[tileIndex - this.widthInTiles].isWalkable();
 
-            if ( tileY < this.heightInTiles - 1 ) {
-                // 7
-                flags[7] = tiles[tileIndex + this.widthInTiles].isWalkable();
-            }
+            // south
+            if ( tileY < this.heightInTiles - 1 ) flags[3] = tiles[tileIndex + this.widthInTiles].isWalkable();
 
-            if ( tileX < this.widthInTiles - 1) {
-                // 2
-                flags[2] = tiles[tileIndex - this.widthInTiles + 1].isWalkable();
-                // 5
-                flags[5] = tiles[tileIndex + 1].isWalkable();
-                // 8
-                flags[8] = tiles[tileIndex + this.widthInTiles + 1].isWalkable();
-            }
+            // east
+            if ( tileX < this.widthInTiles - 1) flags[2] = tiles[tileIndex + 1].isWalkable();
 
             return flags;
         },
@@ -689,32 +661,33 @@
             for (var i = 0; i < tiles.length; i++) {
                 if ( !tiles[i].isWalkable() ) continue;
 
-                var flags = this.getAdjacentNonzeroTiles(tiles, i);
-                // 0 1 2
-                // 3 4 5
-                // 6 7 8
-                // 
+                // 0 == north
+                // 1 == west
+                // 2 == east
+                // 3 == south
+                var flags = this.getAdjacentWalkability(tiles, i);
+
                 // Okay, here's how this works: the intersection/corner/whatever
                 // pieces of the path are stored in the same way for each
                 // tileset, so we'll compute an offset here and apply it to the
                 // walkable tile graphic.
                 var spritePerRow = envSheet.getNumSpritesPerRow();
                 var graphicOffset = spritePerRow;
-                if ( flags[1] && flags[3] && flags[5] && flags[7] ) graphicOffset = 1;
-                else if ( flags[1] && flags[3] && flags[7] ) graphicOffset = 3;
-                else if ( flags[1] && flags[5] && flags[7] ) graphicOffset = 5;
-                else if ( flags[3] && flags[5] && flags[7] ) graphicOffset = 2;
-                else if ( flags[1] && flags[3] && flags[5] ) graphicOffset = 15 + spritePerRow;
-                else if ( flags[3] && flags[7] ) graphicOffset = 6;
-                else if ( flags[5] && flags[7] ) graphicOffset = 7;
-                else if ( flags[1] && flags[3] ) graphicOffset = 9;
-                else if ( flags[1] && flags[5] ) graphicOffset = 8;
-                else if ( flags[3] && flags[5] ) graphicOffset = 16 + spritePerRow;
-                else if ( flags[1] && flags[7] ) graphicOffset = 17 + spritePerRow;
-                else if ( flags[5] ) graphicOffset = 1 + spritePerRow;
-                else if ( flags[1] ) graphicOffset = 6 + spritePerRow;
-                else if ( flags[7] ) graphicOffset = 4 + spritePerRow;
-                else if ( flags[3] ) graphicOffset = 3 + spritePerRow;
+                if ( flags[0] && flags[1] && flags[2] && flags[3] ) graphicOffset = 1;
+                else if ( flags[0] && flags[1] && flags[3] ) graphicOffset = 3;
+                else if ( flags[0] && flags[2] && flags[3] ) graphicOffset = 5;
+                else if ( flags[1] && flags[2] && flags[3] ) graphicOffset = 2;
+                else if ( flags[0] && flags[1] && flags[2] ) graphicOffset = 15 + spritePerRow;
+                else if ( flags[1] && flags[3] ) graphicOffset = 6;
+                else if ( flags[2] && flags[3] ) graphicOffset = 7;
+                else if ( flags[0] && flags[1] ) graphicOffset = 9;
+                else if ( flags[0] && flags[2] ) graphicOffset = 8;
+                else if ( flags[1] && flags[2] ) graphicOffset = 16 + spritePerRow;
+                else if ( flags[0] && flags[3] ) graphicOffset = 17 + spritePerRow;
+                else if ( flags[2] ) graphicOffset = 1 + spritePerRow;
+                else if ( flags[0] ) graphicOffset = 6 + spritePerRow;
+                else if ( flags[3] ) graphicOffset = 4 + spritePerRow;
+                else if ( flags[1] ) graphicOffset = 3 + spritePerRow;
                 tiles[i].graphicIndex = this.tileset.walkableTileGraphic + graphicOffset;
             };
         },
@@ -726,7 +699,7 @@
          */
         convertMapArrayToTiles: function() {
             var tiles = [];
-            
+
             for (var i = 0; i < this.mapArray.length; i++) {
                 var walkable = (this.mapArray[i] == 1);
                 var graphic = walkable ? this.tileset.walkableTileGraphic : this.tileset.nonwalkableTileGraphic;
