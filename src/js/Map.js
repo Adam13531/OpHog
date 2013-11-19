@@ -1295,6 +1295,13 @@
         var alpha = blink * .1 + .3;
         var greenFillStyle = 'rgba(0, 255, 0, ' + alpha + ')';
 
+        // These tiles will be animated by pulling the sprite at the next row in
+        // the tilesheet, so you can't animate BLUE_WATER_2 by simply adding it
+        // to this array. If we ever end up animating more than just water
+        // tiles, we should come up with a better framework than the ~5 lines of
+        // code that are handling it now.
+        var animatedIndices = [game.Graphic.BLUE_WATER_1, game.Graphic.RED_WATER_1];
+
         // Keep track of the regular fill style too so that we don't have to
         // save/restore the entire canvas context when this is all we're
         // changing.
@@ -1311,6 +1318,15 @@
                     graphic = tile.graphicIndex;
                     doodadGraphic = this.doodadIndices[index];
 
+                    // Draw the second frame of animated tiles every other
+                    // second. We're exploiting alphaBlink here, which is really
+                    // just the amount of time that's passed since we started
+                    // playing.
+                    if ( (Math.floor(game.alphaBlink) % 2) == 0 ) {
+                        if ( $.inArray(graphic, animatedIndices) != -1 ) graphic += envSheet.getNumSpritesPerRow();
+                        if ( $.inArray(doodadGraphic, animatedIndices) != -1 ) doodadGraphic += envSheet.getNumSpritesPerRow();
+                    }
+
                     if ( drawingFogLayer ) {
                         if ( this.fog[index] ) {
 
@@ -1318,7 +1334,7 @@
                             // there's no background beneath our map to begin
                             // with. TODO: we should be able to remove this
                             // eventually and not see units show up behind
-                            // castles.
+                            // transparent tiles.
                             ctx.fillRect(0, 0, game.TILESIZE, game.TILESIZE);
                             envSheet.drawSprite(ctx, graphic, 0,0);
                             if ( doodadGraphic != null ) {

@@ -63,6 +63,7 @@
     //  height - Number - the height, in tiles, of the unit
     //  name - String - the name of the unit
     //  graphicIndexes - Array:Number - see Unit
+    //  shadowGraphic - Number - a graphic index to draw for the shadow
     //  atk - Object containing the below:
     //      start - Number - the starting value for this stat
     //      minGrowth - Number - when this unit levels, this is the minimum value that will be added to the stat
@@ -78,7 +79,8 @@
     window.game.UnitType = {
         ORC: {
             id:0,
-            graphicIndexes:[292],
+            graphicIndexes:[game.Graphic.ORC_FIGHTER],
+            shadowGraphic: game.Graphic.MED_SHADOW_LOW,
 
             atk: {
                 start: 10,
@@ -108,7 +110,8 @@
 
         SPIDER: {
             id: 1,
-            graphicIndexes:[251],
+            graphicIndexes:[game.Graphic.BLACK_SPIDER],
+            shadowGraphic: game.Graphic.SMALL_SHADOW_LOW,
 
             atk: {
                 start: 10,
@@ -138,7 +141,7 @@
 
         SCORPION: {
             id: 2,
-            graphicIndexes:[364],
+            graphicIndexes:[game.Graphic.GIANT_BLACK_SCORPION],
 
             atk: {
                 start: 10,
@@ -173,7 +176,7 @@
 
         SNAKE: {
             id: 3,
-            graphicIndexes:[248],
+            graphicIndexes:[game.Graphic.COBRA],
 
             atk: {
                 start: 10,
@@ -204,7 +207,7 @@
         TREE: {
             id: 4,
             name:'Treant',
-            graphicIndexes:[201],
+            graphicIndexes:[game.Graphic.TREANT],
 
             atk: {
                 start: 10,
@@ -234,7 +237,7 @@
 
         WOLF: {
             id: 5,
-            graphicIndexes:[243],
+            graphicIndexes:[game.Graphic.BLACK_WOLF],
             atk: {
                 start: 10,
                 minGrowth: 1,
@@ -263,7 +266,7 @@
 
         DRAGON: {
             id: 6,
-            graphicIndexes:[374],
+            graphicIndexes:[game.Graphic.GREEN_DRAGON],
             atk: {
                 start: 10,
                 minGrowth: 1,
@@ -293,7 +296,8 @@
         PLAYER_ARCHER: {
             id: 7,
             name:'Archer',
-            graphicIndexes:[15],
+            graphicIndexes:[game.Graphic.RANGER_M],
+            shadowGraphic: game.Graphic.BIG_SHADOW_LOW,
 
             atk: {
                 start: 30,
@@ -314,7 +318,7 @@
             abilities: [
                 {
                     id: game.Ability.ATTACK.id,
-                    graphicIndex: 43,
+                    graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
                     graphicOnCrit: 61,
                     relativeWeight: 5
                 },
@@ -330,7 +334,8 @@
         PLAYER_WARRIOR: {
             id: 8,
             name:'Warrior',
-            graphicIndexes:[17],
+            graphicIndexes:[game.Graphic.KNIGHT_M],
+            shadowGraphic: game.Graphic.BIG_SHADOW_LOW,
 
             atk: {
                 start: 30,
@@ -366,7 +371,8 @@
         PLAYER_WIZARD: {
             id: 9,
             name:'Wizard',
-            graphicIndexes:[14],
+            graphicIndexes:[game.Graphic.WIZARD_M],
+            shadowGraphic: game.Graphic.BIG_SHADOW_LOW,
 
             atk: {
                 start: 30,
@@ -402,7 +408,7 @@
         NPC_OLD_MAN_WIZARD: {
             id: 10,
             name: 'Old Man Wizard',
-            graphicIndexes:[49],
+            graphicIndexes:[game.Graphic.KING],
 
             atk: {
                 start: 30,
@@ -432,9 +438,9 @@
      * 
      * @type {Array:(Array:Number)}
      */
-    window.game.EXTRA_ARCHER_COSTUMES = [game.UnitType.PLAYER_ARCHER.graphicIndexes, [6],[121],[130],[171]];
-    window.game.EXTRA_WARRIOR_COSTUMES = [game.UnitType.PLAYER_WARRIOR.graphicIndexes, [11],[9],[8],[0]];
-    window.game.EXTRA_WIZARD_COSTUMES = [game.UnitType.PLAYER_WIZARD.graphicIndexes, [3],[12],[4],[5]];
+    window.game.EXTRA_ARCHER_COSTUMES = [game.UnitType.PLAYER_ARCHER.graphicIndexes, [game.Graphic.RANGER_F],[game.Graphic.HIGH_ELF_RANGER_F],[game.Graphic.DROW_RANGER],[game.Graphic.WOOF_ELF_RANGER_F]];
+    window.game.EXTRA_WARRIOR_COSTUMES = [game.UnitType.PLAYER_WARRIOR.graphicIndexes, [game.Graphic.BERSERKER_M],[game.Graphic.PALADIN_M],[game.Graphic.KNIGHT_F],[game.Graphic.PALADIN_F]];
+    window.game.EXTRA_WIZARD_COSTUMES = [game.UnitType.PLAYER_WIZARD.graphicIndexes, [game.Graphic.SHAMAN_F],[game.Graphic.SHAMAN_M],[game.Graphic.PRIEST_F],[game.Graphic.WIZARD_F]];
 
     /**
      * Gets unit data based on the ID passed in. 'level' is used to level up the
@@ -536,6 +542,10 @@
             // one here.
             if ( unitType.abilityAI === undefined ) {
                 unitType.abilityAI = game.AbilityAI.RANDOM;
+            }
+
+            if ( unitType.shadowGraphic === undefined ) {
+                unitType.shadowGraphic = game.Graphic.MED_SHADOW_LOW;
             }
 
             game.util.useDefaultIfUndefined(unitType, 'width', DEFAULT_UNIT_WIDTH);

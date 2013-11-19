@@ -447,15 +447,13 @@
 
             this.doodadIndices = new Array(this.mapArray.length);
 
-            var doodadDensity = 5; // approximately 1 doodad every 5 tiles
-
             // Based on the map size, the doodadDensity, and the number of
             // different doodads we can place, we'll attempt to place doodads a
             // different number of times.
             //
             // 1250 tiles in a 50x25 map, divided by the density == 125, divided
             // by number of doodads == ~20.
-            var attemptsPerSquare = this.widthInTiles * this.heightInTiles / doodadDensity / doodads.length;
+            var attemptsPerSquare = this.widthInTiles * this.heightInTiles / this.tileset.doodadDensity / doodads.length;
 
             for (var i = 0; i < doodads.length; i++) {
                 var doodad = doodads[i];

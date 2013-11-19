@@ -91,7 +91,7 @@
             addsAbilities: [
                 {
                     id: game.Ability.ATTACK.id,
-                    graphicIndex: 110, // orange/red fireball
+                    graphicIndex: game.Graphic.RED_FIREBALL_RIGHT,
                     relativeWeight: 9000,
                 },
                 {

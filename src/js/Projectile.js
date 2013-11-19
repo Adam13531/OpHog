@@ -1,14 +1,25 @@
 ( function() {
 
-    // x and y are the "fire" points of the owner (in pixels). The projectile
-    // should know how to position itself based on those points. It doesn't
-    // actually do this right now.
-    //
-    // Note: "fire points" are simply where the projectile is shot. This may be
-    // the end of a wizard's staff or the middle of an archer's bow.
+    /**
+     * A projectile.
+     * @param {Number} x - the "fire" coordinates of the owner (in pixels), i.e.
+     * where the projectile gets shot from; this may be the end of a wizard's
+     * staff or the middle of an archer's bow. The projectile knows how to
+     * position itself based on those points.
+     * @param {Number} y - see 'x'
+     * @param {game.ActionOnHit} actionOnHit - what to do what this projectile
+     * hits (e.g. heal or do damage)
+     * @param {Unit} target - the target of this projectile
+     * @param {Unit} owner - the unit who created this projectile
+     */
     window.game.Projectile = function Projectile(x,y,actionOnHit, owner, target) {
-        this.x = x;
-        this.y = y;
+        this.width = game.TILESIZE;
+        this.height = game.TILESIZE;
+
+        // Center this projectile on the point that was passed in.
+        this.setCenterX(x);
+        this.setCenterY(y);
+
         this.actionOnHit = actionOnHit;
         this.owner = owner;
         this.target = target;
@@ -62,9 +73,9 @@
         var desiredX = this.target.getCenterX();
         var desiredY = this.target.getCenterY();
 
-        var newCoords = game.util.chaseCoordinates(this.x, this.y, desiredX, desiredY, change, true);
-        this.x = newCoords.x;
-        this.y = newCoords.y;
+        var newCoords = game.util.chaseCoordinates(this.getCenterX(), this.getCenterY(), desiredX, desiredY, change, true);
+        this.setCenterX(newCoords.x);
+        this.setCenterY(newCoords.y);
 
         if ( newCoords.atDestination ) {
             this.projectileMetTarget();
@@ -74,13 +85,29 @@
 
     };
 
+    window.game.Projectile.prototype.getCenterX = function() {
+        return this.x + this.width / 2;
+    };
+    window.game.Projectile.prototype.getCenterY = function() {
+        return this.y + this.height / 2;
+    };
+    window.game.Projectile.prototype.setCenterX = function(pixelX) {
+        this.x = pixelX - this.width / 2;
+    };
+    window.game.Projectile.prototype.setCenterY = function(pixelY) {
+        this.y = pixelY - this.height / 2;
+    };
+
     /**
      * This function is here for any projectile-specific code, e.g. making a
      * particle system.
+     *
+     * This is called BEFORE the projectile callback is triggered, so this
+     * projectile hasn't killed/revived/whatever'd the target yet.
      */
     window.game.Projectile.prototype.projectileMetTarget = function() {
         game.AudioManager.playAudio(game.Audio.HIT_1);
-        var particleSystem = new game.ParticleSystem(this.x, this.y);
+        var particleSystem = new game.ParticleSystem(this.getCenterX(), this.getCenterY());
         game.ParticleManager.addSystem(particleSystem);
     };
 

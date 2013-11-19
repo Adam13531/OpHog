@@ -29,12 +29,29 @@
         BARREL: 209, // fully intact barrel
         GREEN_TREE: 214, // a healthy oak tree
         GREEN_TREE_WITH_FRUIT: 215, // a healthy oak tree with three red fruits
+        EVERGREEN_TREE: 219, // a healthy, large evergreen
+        EVERGREEN_FOREST_PATCH_1: 280, // the upper left portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_2: 281, // the upper middle portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_3: 282, // the upper right portion of the evergreen forest
         CAULDRON: 315, // cauldron with purple liquid coming out
+        EVERGREEN_FOREST_PATCH_4: 337, // the middle left portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_5: 338, // the middle portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_6: 339, // the middle right portion of the evergreen forest
         SPAWNER: 371, // concentric cirles (yellow on outside)
+        EVERGREEN_FOREST_PATCH_7: 394, // the lower left portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_8: 395, // the lower middle portion of the evergreen forest
+        EVERGREEN_FOREST_PATCH_9: 396, // the lower right portion of the evergreen forest
+        EVERGREEN_DUO_1: 451, // the upper left of a 3-wide, 2-tall duo of evergreen trees
+        EVERGREEN_DUO_2: 452, // the upper middle of a 3-wide, 2-tall duo of evergreen trees
+        EVERGREEN_DUO_3: 453, // the upper right of a 3-wide, 2-tall duo of evergreen trees
         ANIMAL_SKULL: 497, // an animal skull with two horns (one is broken)
+        EVERGREEN_DUO_4: 508, // the lower left of a 3-wide, 2-tall duo of evergreen trees
+        EVERGREEN_DUO_5: 509, // the lower middle of a 3-wide, 2-tall duo of evergreen trees
+        EVERGREEN_DUO_6: 510, // the lower right of a 3-wide, 2-tall duo of evergreen trees
         DESERT_SAND: 713, // small dark beige streaks on a solid beige tile
         DIRT_PATH: 715, // small dark brown streaks on a solid brown tile
         LIGHT_GREEN_BRUSH: 769, // light green flowers/grass/greenery
+        LUSH_GREEN_BRUSH: 773, // bright green flowers/grass/greenery
         DARK_COBBLESTONE: 801, // many dark stones covering the entire tile
         RED_STONE_PATH_1: 1254, // stones at the NE, SE, and SW corners
         RED_STONE_PATH_2: 1255, // big stone at bottom, stones at NW and NE
@@ -51,5 +68,53 @@
         RED_WATER_1: 1720, // red-tinted water graphic, first frame
         BLUE_WATER_2: 1771, // blue-tinted water graphic, second frame
         RED_WATER_2: 1777, // red-tinted water graphic, second frame
+
+        //----------------------------------------------------------------------
+        // Graphics for eff_24.png
+        //----------------------------------------------------------------------
+        MEDIUM_BLUE_CIRCLE: 12, // a solid blue circular object, part of an explosion sequence
+        HORIZONTAL_NEEDLE: 43, // a white, thin sliver extending from left to right
+        RED_EXCLAMATION_POINT: 44, // a red '!' that's transparent in the middle
+        SMALL_PURPLE_BUBBLE: 46, // a tiny purple bubble that is transparent in the middle
+        SMALL_YELLOW_STAR: 70, // a yellow diamond, turned on its side
+        RED_FIREBALL_RIGHT: 110, // an orange/red fireball facing right
+
+        //----------------------------------------------------------------------
+        // Graphics for char_24.png. All indices specify the first frame in the
+        // two-frame animation.
+        // 
+        // The names for the keys should match create_key.doc (which Oryx
+        // provided) as much as possible.
+        // 
+        //----------------------------------------------------------------------
+        PALADIN_F: 0, // white chick with a red-cross shield, yellow armor, and a mace
+        SHAMAN_F: 3, // wizard with gray robes and wolf hat, a staff, and red face paint
+        PRIEST_F: 4, // maroon robes and big hat, staff, blonde hair
+        WIZARD_F: 5, // no visible face, staff, purple cloak
+        RANGER_F: 6, // RANGER_M but with lipstick and an orange cape
+        KNIGHT_F: 8, // a white chick with lipstick, a round shield, a shortsword, and red armor
+        PALADIN_M: 9, // a white dude with a blue-cross shield, yellow armor, and a mace
+        BERSERKER_M: 11, // a white dude with a vikin hat, brown shirt/cape, an a hatchet
+        SHAMAN_M: 12, // wizard with brown robes and wolf hat, a staff, and blue face paint
+        WIZARD_M: 14, // wizard with no visible face, a red cape, and a staff
+        RANGER_M: 15, // an archer with a bow, a quiver, and a gray cape with feathers
+        KNIGHT_M: 17, // a warrior with blue armor, a shield, helmet, and sword
+        KING: 49, // an old man with a crown and staff and blue capes
+        HIGH_ELF_RANGER_F: 121, // an elf with light gray skin, white hair, green cape, and bow
+        DROW_RANGER: 130, // a blue-skinned creature with white hair, a purple shirt, and a red cape
+        WOOF_ELF_RANGER_F: 171, // a gray-skinned creature with lipstick, brown hair, a gray shirt, and a gray/orange cape
+        TREANT: 201, // a brown tree with no leaves and an unhappy face
+        BLACK_WOLF: 243, // a dark grey wolf with red eyes
+        COBRA: 248, // a green cobra with red eyes
+        BLACK_SPIDER: 251, // a black spider with a red marking on it
+        ORC_FIGHTER: 292, // a gray orc with a red cape and a dagger
+        GIANT_BLACK_SCORPION: 364, // a black scorpion with yellow eyes
+        GREEN_DRAGON: 374, // a green dragon with a small wing
+        BIG_SHADOW_LOW: 452, // a shadow that takes up the whole bottom of a tile
+        MED_SHADOW_LOW: 453, // a shadow that takes up most of the bottom of a tile
+        SMALL_SHADOW_LOW: 454, // a shadow that takes up some of the bottom of a tile
+        BIG_SHADOW_FLOAT: 455, // BIG_SHADOW_LOW but it's floating off the ground by a bit
+        MED_SHADOW_FLOAT: 456, // MED_SHADOW_LOW but it's floating off the ground by a bit
+        SMALL_SHADOW_FLOAT: 457, // SMALL_SHADOW_LOW but it's floating off the ground by a bit
     };
 }());
