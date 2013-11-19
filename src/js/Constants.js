@@ -11,6 +11,17 @@
     window.game.graphicsUtil = {};
 
     /**
+     * Specifies a direction
+     * @type {Object}
+     */
+    window.game.DirectionFlags = {
+        UP: 1,    // 0001
+        RIGHT: 2, // 0010
+        DOWN: 4,  // 0100
+        LEFT: 8   // 1000
+    };
+
+    /**
      * The relative path from Javascript files to the resource folder.
      *
      * WARNING: this can only be used from files in the 'src' folder, not
@@ -148,5 +159,51 @@
      * @type {Number}
      */
     window.game.SAVE_GAME_ON_OVERWORLD_INTERVAL = 10000;
+
+    /**
+     * Default sound volume
+     * @type {Number}
+     */
+    window.game.DEFAULT_SOUND_VOLUME = 50;
+
+    /**
+     * Default music volume
+     * @type {Number}
+     */
+    window.game.DEFAULT_MUSIC_VOLUME = 50;
+
+    /**
+     * Default position of the minimap
+     * @type {game.DirectionFlags}
+     */
+    window.game.MINIMAP_DEFAULT_POSITION = game.DirectionFlags.RIGHT | game.DirectionFlags.UP;
+
+    /**
+     * Default visibility for the minimap
+     * @type {Boolean}
+     */
+    window.game.MINIMAP_DEFAULT_VISIBILITY = true;
+
+    /**
+     * Default that tells us if audio should be enabled
+     * @type {Boolean}
+     */
+    window.game.AUDIO_DEFAULT_ENABLED = false;
+
+    /**
+     * Indicates where on the map the piece should fall. LEFT would be the left
+     * column. MIDDLE would indicate in any of the middle columns. RIGHT
+     * indicates the last column.
+     */
+    window.game.PuzzlePieceType = {
+        LEFT: 1,
+        MIDDLE: 2,
+        RIGHT: 4
+    }
+
+    /**
+     * Length of a side of a puzzle piece
+     */
+    window.game.PUZZLE_PIECE_SIZE = 5;
 
 }());

@@ -37,7 +37,6 @@
      */
     window.game.FRAMES_BEFORE_AUDIO_SKIP_DISABLED = 3;
 
-
     /**
      * The audio manager is in charge of playing sound/music.
      */
@@ -47,7 +46,7 @@
          * If false, the user disabled audio.
          * @type {Boolean}
          */
-        audioEnabled: false,
+        audioEnabled: game.AUDIO_DEFAULT_ENABLED,
 
         /**
          * This is a dictionary whose keys are AudioDescriptors and whose values
@@ -81,13 +80,13 @@
          * The volume of sounds that play (range: [0,100]);
          * @type {Number}
          */
-        soundVolume: 50,
+        soundVolume: game.DEFAULT_SOUND_VOLUME,
 
         /**
          * The volume of music that plays (range: [0,100]);
          * @type {Number}
          */
-        musicVolume: 50,
+        musicVolume: game.DEFAULT_MUSIC_VOLUME,
 
         /**
          * Initialize SoundManager2.
@@ -181,6 +180,26 @@
                     delete this.playHistory[key];
                 }
             }
+        },
+
+        /**
+         * Sets the audio volume for sounds
+         * @param {Number} volume - New volume amount
+         */
+        setSoundVolume: function(volume) {
+            this.soundVolume = volume;
+            $('#soundSlider').slider('option','value',this.soundVolume);
+            game.util.setSliderColor($('#soundSlider'));
+        },
+
+        /**
+         * Sets the audio volume for music
+         * @param {Number} volume - New volume amount
+         */
+        setMusicVolume: function(volume) {
+            this.musicVolume = volume;
+            $('#musicSlider').slider('option','value',this.musicVolume);
+            game.util.setSliderColor($('#musicSlider'));
         },
 
         /**

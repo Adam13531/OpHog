@@ -98,6 +98,8 @@
                 delete game.currentMap.mapTiles[i].rightList;
             };
 
+            this.log('Saving settings');
+            this.saveSettings();
             this.log('Saving the map');
             this.saveMap();
             this.log('Saving generators');
@@ -155,8 +157,11 @@
          * Deletes the saved game by removing everything from localStorage.
          */
         deleteSavedGame: function() {
+            // Makes sure not to delete UI settings
+            var uiSettings = localStorage.uiSettings;
             this.log('Wiping out localStorage (deleteSavedGame was called).', false);
             localStorage.clear();
+            localStorage.uiSettings = uiSettings;
         },
 
         /**
@@ -207,6 +212,8 @@
             this.loadGameState();
             this.log('Loading the map');
             this.loadMap();
+            this.log('Loading the settings');
+            this.loadSettings();
             this.log('Loading generators');
             this.loadGenerators();
             this.log('Loading quests');
@@ -539,6 +546,44 @@
                     battle.projectiles[j] = finalProjectile;
                 };
             };
+        },
+
+        loadSettings: function() {
+            // Defaults that will be used if UI settings were never saved
+            var graphicsSetting = game.GraphicsSettings.HIGH;
+            var audioEnabledSetting = game.AUDIO_DEFAULT_ENABLED;
+            var soundVolumeSetting = game.DEFAULT_SOUND_VOLUME;
+            var musicVolumeSetting = game.DEFAULT_MUSIC_VOLUME;
+            var minimapPositionSetting = game.MINIMAP_DEFAULT_POSITION;
+            var minimapIsVisible = game.MINIMAP_DEFAULT_VISIBILITY;
+
+            // Use the settings that were saved if they exist
+            if ( localStorage.uiSettings !== undefined ) {
+                var uiSettings = JSON.parse(localStorage.uiSettings);
+                graphicsSetting = uiSettings.graphicsSetting;
+                audioEnabledSetting = uiSettings.audioEnabledSetting;
+                soundVolumeSetting = uiSettings.soundVolumeSetting;
+                musicVolumeSetting = uiSettings.musicVolumeSetting;
+                minimapPositionSetting = uiSettings.minimapPositionSetting;
+                minimapIsVisible = uiSettings.minimapIsVisible;
+            }
+            game.graphicsUtil.setGraphicsSettings(graphicsSetting);
+            game.AudioManager.setAudioEnabled(audioEnabledSetting);
+            game.AudioManager.setSoundVolume(soundVolumeSetting);
+            game.AudioManager.setMusicVolume(musicVolumeSetting);
+            game.Minimap.setPanelPosition(minimapPositionSetting, minimapIsVisible);
+            game.Minimap.setVisible(minimapIsVisible);
+        },
+
+        saveSettings: function() {
+            var uiSettings = {};
+            uiSettings.graphicsSetting = game.graphicsSetting;
+            uiSettings.audioEnabledSetting = game.AudioManager.canPlayAudio();
+            uiSettings.soundVolumeSetting = game.AudioManager.soundVolume;
+            uiSettings.musicVolumeSetting = game.AudioManager.musicVolume;
+            uiSettings.minimapPositionSetting = game.Minimap.position;
+            uiSettings.minimapIsVisible = game.Minimap.visible;
+            localStorage.uiSettings = JSON.stringify(uiSettings);
         },
 
         /**
