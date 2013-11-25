@@ -1399,14 +1399,27 @@
         // Draw just the fog itself now
         ctx.save();
         ctx.fillStyle = 'rgba(0,0,0,.5)';
+
+        var width = 1;
         for (var y = 0; y < this.numRows; y++) {
-            for (var x = 0; x < this.numCols; x++) {
-                if ( this.fog[y * this.numCols + x] ) {
-                    // Only draw fog if the camera can see it
-                    if ( game.Camera.canSeeTileCoordinates(x, y) ) {
-                        ctx.fillRect(x * game.TILESIZE, y * game.TILESIZE, game.TILESIZE, game.TILESIZE);
+            for (var x = 0; x < this.numCols; x += width) {
+                width = 1;
+
+                // Only draw if this tile is foggy and the camera can see it.
+                if ( !this.fog[y * this.numCols + x] || !game.Camera.canSeeTileCoordinates(x, y) ) continue;
+
+                // 'fillRect' is relatively costly, so we will draw as much fog
+                // as we can at a time without doing anything too
+                // computationally expensive to achieve this optimization.
+                for (var xx = x + 1; xx < this.numCols; xx++ ) {
+                    if ( !this.fog[y * this.numCols + xx] ) {
+                        break;
                     }
+
+                    width++;
                 }
+
+                ctx.fillRect(x * game.TILESIZE, y * game.TILESIZE, game.TILESIZE * width, game.TILESIZE);
             }
         }
         ctx.restore();
