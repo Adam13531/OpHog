@@ -1295,6 +1295,12 @@
         // changing.
         var regularFillStyle = 'rgba(0,0,0,1)';
         ctx.fillStyle = regularFillStyle;
+
+        // Keep track of where we draw instead of simply using ctx.translate,
+        // which is a slow function.
+        var drawX = 0;
+        var drawY = 0;
+
         for (var y = 0; y < this.numRows; y++) {
             for (var x = 0; x < this.numCols; x++) {
                 index = y * this.numCols + x;
@@ -1323,26 +1329,26 @@
                             // with. TODO: we should be able to remove this
                             // eventually and not see units show up behind
                             // transparent tiles.
-                            ctx.fillRect(0, 0, game.TILESIZE, game.TILESIZE);
+                            ctx.fillRect(drawX,drawY, game.TILESIZE, game.TILESIZE);
 
                             // Walkable tiles don't always cover the whole area,
                             // so we need to draw the unwalkable tile beneath
                             // it.
                             if ( tile.isWalkable() ) {
-                                envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, 0,0);
+                                envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, drawX,drawY);
                             }
 
-                            envSheet.drawSprite(ctx, graphic, 0,0);
+                            envSheet.drawSprite(ctx, graphic, drawX,drawY);
                             if ( doodadGraphic != null ) {
-                                envSheet.drawSprite(ctx, doodadGraphic, 0,0);
+                                envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
                             }
                             if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
                                 ctx.fillStyle = greenFillStyle;
-                                ctx.fillRect(0,0,game.TILESIZE,game.TILESIZE);
+                                ctx.fillRect(drawX,drawY,game.TILESIZE,game.TILESIZE);
                                 ctx.fillStyle = regularFillStyle;
                             }
                             if ( tile.isSpawnerPoint() ) {
-                                envSheet.drawSprite(ctx, game.Graphic.SPAWNER, 0,0);
+                                envSheet.drawSprite(ctx, game.Graphic.SPAWNER, drawX,drawY);
                             }
                         }
                     } else {
@@ -1350,30 +1356,31 @@
                         // layer, then we just draw the map normally.
                         if ( !this.fog[index] ) {
                             if ( tile.isWalkable() ) {
-                                envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, 0,0);
+                                envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, drawX,drawY);
                             }
-                            envSheet.drawSprite(ctx, graphic, 0,0);
+                            envSheet.drawSprite(ctx, graphic, drawX,drawY);
                             if ( doodadGraphic != null ) {
-                                envSheet.drawSprite(ctx, doodadGraphic, 0,0);
+                                envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
                             }
                             if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
                                 ctx.fillStyle = greenFillStyle;
-                                ctx.fillRect(0,0,game.TILESIZE,game.TILESIZE);
+                                ctx.fillRect(drawX,drawY,game.TILESIZE,game.TILESIZE);
                                 ctx.fillStyle = regularFillStyle;
                             }
                             if ( tile.isCastle() ) {
-                                envSheet.drawSprite(ctx, game.Graphic.GENERATOR, 0,0);
+                                envSheet.drawSprite(ctx, game.Graphic.GENERATOR, drawX,drawY);
                             }
                             if ( tile.isSpawnerPoint() ) {
-                                envSheet.drawSprite(ctx, game.Graphic.SPAWNER, 0,0);
+                                envSheet.drawSprite(ctx, game.Graphic.SPAWNER, drawX,drawY);
                             }
                         }
                     }
                 }
 
-                ctx.translate(game.TILESIZE, 0);
+                drawX += game.TILESIZE;
             }
-            ctx.translate(-game.TILESIZE * this.numCols, game.TILESIZE);
+            drawX -= game.TILESIZE * this.numCols;
+            drawY += game.TILESIZE;
         }
     };
 
