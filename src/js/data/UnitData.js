@@ -428,6 +428,54 @@
             
             chanceToDropItem: 0,
             itemsDropped: noItems
+        },
+
+        YETI: {
+            id: 11,
+            graphicIndexes:[game.Graphic.YETI],
+
+            atk: {
+                start: 10,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            def: {
+                start: 0,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            life: {
+                start: 50,
+                minGrowth: 5,
+                maxGrowth: 10
+            },
+            
+            chanceToDropItem: .1,
+            itemsDropped: higherChanceForUsableItems
+        },
+
+        ICE_WATER_ELEMENTAL: {
+            id: 12,
+            graphicIndexes:[game.Graphic.ICE_WATER_ELEMENTAL],
+
+            atk: {
+                start: 10,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            def: {
+                start: 0,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            life: {
+                start: 50,
+                minGrowth: 5,
+                maxGrowth: 10
+            },
+            
+            chanceToDropItem: .1,
+            itemsDropped: higherChanceForUsableItems
         }
     };
 

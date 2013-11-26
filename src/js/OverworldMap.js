@@ -280,11 +280,11 @@
 
             enemies: [
                 {
-                    id: game.UnitType.ORC.id,
+                    id: game.UnitType.ICE_WATER_ELEMENTAL.id,
                     levelRange: [10,15],
                 },
                 {
-                    id: game.UnitType.SPIDER.id,
+                    id: game.UnitType.YETI.id,
                     levelRange: [10,15],
                 }
             ],

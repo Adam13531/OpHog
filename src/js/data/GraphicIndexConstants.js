@@ -132,8 +132,10 @@
         BLACK_WOLF: 243, // a dark grey wolf with red eyes
         COBRA: 248, // a green cobra with red eyes
         BLACK_SPIDER: 251, // a black spider with a red marking on it
+        ICE_WATER_ELEMENTAL: 281, // blue elemental with arms raised up
         ORC_FIGHTER: 292, // a gray orc with a red cape and a dagger
         GIANT_BLACK_SCORPION: 364, // a black scorpion with yellow eyes
+        YETI: 373, // white yeti
         GREEN_DRAGON: 374, // a green dragon with a small wing
         BIG_SHADOW_LOW: 452, // a shadow that takes up the whole bottom of a tile
         MED_SHADOW_LOW: 453, // a shadow that takes up most of the bottom of a tile
