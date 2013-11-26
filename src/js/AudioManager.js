@@ -89,6 +89,35 @@
         musicVolume: game.DEFAULT_MUSIC_VOLUME,
 
         /**
+         * When a music file plays, it is given this ID, then the ID is
+         * incremented, so this is unique for music files.
+         * @type {Number}
+         */
+        nextMusicId: 1,
+
+        /**
+         * We keep track of which MUSIC (not sound) files are playing so that we
+         * can adjust the volume of them when we slide the bar or disable/enable
+         * audio. We don't do the same for sounds since they should be
+         * short-lived.
+         * @type {Array}
+         */
+        musicPlaying: [],
+
+        /**
+         * This is true after SoundManager2 calls onready.
+         * @type {Boolean}
+         */
+        finishedInitializingSoundManager: false,
+
+        /**
+         * JQuery objects for the sliders.
+         * @type {Object}
+         */
+        $soundSlider: null,
+        $musicSlider: null,
+
+        /**
          * Initialize SoundManager2.
          */
         initialize: function() {
@@ -100,11 +129,15 @@
                 // optional: ignore Flash where possible, use 100% HTML5 mode
                 // preferFlash: false,
                 onready: function() {
-                // Ready to use; soundManager.createSound() etc. can now be called.
-                // 
+                    // Ready to use; soundManager.createSound() etc. can now be
+                    // called.
                     game.AudioManager.loadSounds();
+                    game.AudioManager.finishedInitializingSoundManager = true;
                 }
             });
+
+            this.$soundSlider = $('#soundSlider');
+            this.$musicSlider = $('#musicSlider');
         },
 
         /**
@@ -133,7 +166,7 @@
          * sounds.
          */
         canPlayAudio: function() {
-            return this.audioEnabled;
+            return this.audioEnabled && this.finishedInitializingSoundManager;
         },
 
         /**
@@ -149,10 +182,21 @@
             $audioOffButton.prop('checked', !this.audioEnabled);
             $audioOnButton.prop('checked', this.audioEnabled);
 
-            // Refresh the radio buttons so that they reflect their new 'checked'
-            // state.
+            // Refresh the radio buttons so that they reflect their new
+            // 'checked' state.
             $audioOffButton.button('refresh');
             $audioOnButton.button('refresh');
+
+            // Mute/unmute the music that was playing.
+            if ( !enabled ) {
+                this.changeVolumeOfPlayingMusic(0);
+            } else {
+                this.changeVolumeOfPlayingMusic(this.musicVolume);
+            }
+
+            // Set the appropriate colors for the sliders.
+            game.util.setSliderColor(this.$soundSlider, this.audioEnabled);
+            game.util.setSliderColor(this.$musicSlider, this.audioEnabled);
         },
 
         /**
@@ -185,21 +229,56 @@
         /**
          * Sets the audio volume for sounds
          * @param {Number} volume - New volume amount
+         * @param {Boolean} enableAudioToo - if true, this will enable audio.
+         * This should be true when the user initiates this action so that
+         * sliding the bar will unmute all audio.
          */
-        setSoundVolume: function(volume) {
+        setSoundVolume: function(volume, enableAudioToo) {
+            if ( enableAudioToo === true ) {
+                this.setAudioEnabled(true);
+            }
+
             this.soundVolume = volume;
-            $('#soundSlider').slider('option','value',this.soundVolume);
-            game.util.setSliderColor($('#soundSlider'));
+            this.$soundSlider.slider('option','value',this.soundVolume);
+            game.util.setSliderColor(this.$soundSlider, this.audioEnabled);
         },
 
         /**
          * Sets the audio volume for music
          * @param {Number} volume - New volume amount
+         * @param {Boolean} enableAudioToo - if true, this will enable audio.
+         * This should be true when the user initiates this action so that
+         * sliding the bar will unmute all audio.
          */
-        setMusicVolume: function(volume) {
+        setMusicVolume: function(volume, enableAudioToo) {
+            if ( enableAudioToo === true ) {
+                this.setAudioEnabled(true);
+            }
+
             this.musicVolume = volume;
-            $('#musicSlider').slider('option','value',this.musicVolume);
-            game.util.setSliderColor($('#musicSlider'));
+            this.$musicSlider.slider('option','value',this.musicVolume);
+            game.util.setSliderColor(this.$musicSlider, this.audioEnabled);
+
+            this.changeVolumeOfPlayingMusic(volume);
+        },
+
+        changeVolumeOfPlayingMusic: function(volume) {
+            for (var i = 0; i < this.musicPlaying.length; i++) {
+                this.musicPlaying[i].setVolume(volume);
+            };
+        },
+
+        /**
+         * When music is finished playing, this will remove it from the list
+         * where we keep track of it.
+         */
+        finishedPlayingMusic: function() {
+            for (var i = 0; i < this.musicPlaying.length; i++) {
+                if ( this.musicPlaying[i].musicId == this.musicId ) {
+                    this.musicPlaying.splice(i, 1);
+                    return;
+                }
+            };
         },
 
         /**
@@ -237,7 +316,15 @@
             audioPlayHistory.push(game.FRAMES_BEFORE_AUDIO_SKIP_DISABLED);
 
             var playVolume = audioDescriptor.isMusic ? this.musicVolume : this.soundVolume;
-            soundManager.play(soundManagerID, {volume:playVolume});
+            var onFinishFunction = audioDescriptor.isMusic ? this.finishedPlayingMusic : undefined;
+            var soundManagerObject = soundManager.play(soundManagerID, {volume:playVolume, onfinish:onFinishFunction});
+
+            // If it was music, then we need to keep track of it.
+            if ( audioDescriptor.isMusic ) {
+                soundManagerObject.musicId = this.nextMusicId;
+                this.nextMusicId++;
+                this.musicPlaying.push(soundManagerObject);
+            }
         }
 
     };

@@ -315,9 +315,9 @@
                     // We're in a $.each here, so make sure we're modifying the
                     // correct audio volume.
                     if ( value === $soundSlider ) {
-                        game.AudioManager.setSoundVolume(ui.value);
+                        game.AudioManager.setSoundVolume(ui.value, true);
                     } else {
-                        game.AudioManager.setMusicVolume(ui.value);
+                        game.AudioManager.setMusicVolume(ui.value, true);
                     }
                 }
             });
@@ -420,9 +420,9 @@
         game.QuestUI.setupUI();
         game.ShopUI = new game.ShopUI();
         game.ShopInventory = new game.ShopInventory();
-        game.AudioManager.setAudioEnabled(game.AudioManager.audioEnabled);
 
         game.AudioManager.initialize();
+        game.AudioManager.setAudioEnabled(game.AudioManager.audioEnabled);
     }
 
     function initSettings() {

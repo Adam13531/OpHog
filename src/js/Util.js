@@ -500,20 +500,25 @@
      * Sets the color of the slider channel based on the value of the slider
      * (when it's filled more, the background color is brighter).
      * @param {Object} $slider - a JQuery UI slider to change the color of
+     * @param {Boolean} changeGreen - if true, this will set the color to green,
+     * otherwise red.
      */
-    window.game.util.setSliderColor = function($slider) {
+    window.game.util.setSliderColor = function($slider, changeGreen) {
         var max = $slider.slider('option', 'max');
         var sliderValue = $slider.slider("value");
         var percent = sliderValue / max;
-        var green = Math.round((percent) * 255);
-        green = Math.min(255, Math.max(0, green));
-        paddedGreenString = green.toString(16);
+        var colorVal = Math.round((percent) * 255);
+        colorVal = Math.min(255, Math.max(0, colorVal));
+        paddedColorString = colorVal.toString(16);
 
-        // If 'green' is 10, then the string will be 'a', but it
-        // SHOULD be '0a', so pad it here.
-        if ( paddedGreenString.length != 2 ) paddedGreenString = '0' + paddedGreenString;
+        // If 'colorVal' is 10, then the string will be 'a', but it SHOULD be
+        // '0a', so pad it here.
+        if ( paddedColorString.length != 2 ) paddedColorString = '0' + paddedColorString;
+
+        var colorString = changeGreen ? '#00' + paddedColorString + '00' : '#' + paddedColorString + '0000';
+
         $slider.css({
-            'background': '#00' + paddedGreenString + '00'
+            'background': colorString
         });
     };
 

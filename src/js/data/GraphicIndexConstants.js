@@ -93,6 +93,7 @@
         RED_WATER_1: 1720, // red-tinted water graphic, first frame
         BLUE_WATER_2: 1771, // blue-tinted water graphic, second frame
         RED_WATER_2: 1777, // red-tinted water graphic, second frame
+        PATH_TILE_SNOW_BLUE: 2137, // blue-colored snow tile. This marks the start of one of our "auto tiles".
 
         //----------------------------------------------------------------------
         // Graphics for eff_24.png

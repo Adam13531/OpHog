@@ -25,7 +25,9 @@
         this.aacExists = aacExists;
         this.isMusic = isMusic;
 
-        // This is the ID assigned to this descriptor by SoundManager2.
+        // This is the ID assigned to this descriptor by SoundManager2. The
+        // AudioManager only ever makes one of each AudioDescriptor, so this
+        // doesn't differ between instances of each audio.
         this.soundManagerID = null;
 
         /**

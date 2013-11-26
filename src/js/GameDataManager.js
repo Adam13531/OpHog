@@ -561,9 +561,9 @@
             var minimapIsVisible = uiSettings.minimapIsVisible;
 
             game.graphicsUtil.setGraphicsSettings(graphicsSetting);
-            game.AudioManager.setAudioEnabled(audioEnabledSetting);
             game.AudioManager.setSoundVolume(soundVolumeSetting);
             game.AudioManager.setMusicVolume(musicVolumeSetting);
+            game.AudioManager.setAudioEnabled(audioEnabledSetting);
             game.Minimap.setPanelPosition(minimapPositionSetting, minimapIsVisible);
             game.Minimap.setVisible(minimapIsVisible);
         },
