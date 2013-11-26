@@ -262,7 +262,7 @@
 
         constructSnowTileset: function() {
             // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
-            var tileset = new game.Tileset(this.SNOW_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.SNOW_BANK, game.Graphic.PATH_TILE_SNOW);
+            var tileset = new game.Tileset(this.SNOW_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.SNOW_BANK, game.Graphic.PATH_TILE_SNOW_BLUE);
 
             var f1 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_1;
             var f2 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_2;
