@@ -4,7 +4,7 @@
      * We don't have access to hardware specs, so we have to get clever in order
      * to figure out whether the user should be in low-graphics mode or not.
      *
-     * This class is in charge of blittings tons of stuff to the screen to
+     * This class is in charge of blitting tons of stuff to the screen to
      * figure out a graphicsScore. Higher scores are better and are roughly an
      * indication of how much can be rendered.
      *
