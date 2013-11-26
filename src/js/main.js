@@ -53,11 +53,11 @@
      */
     function loadedSpritesheet() {
         numSpritesheetsLoaded++;
+        LoadingManager.addProgress();
+
         if ( numSpritesheetsLoaded >= NUM_SPRITESHEETS_TO_LOAD ) {
             doneLoadingEverything();
         }
-
-        LoadingManager.addProgress();
     }
 
     /**
@@ -652,6 +652,9 @@
         // Get the time that passed since the last update.
         var delta = Date.now() - lastUpdate;
         lastUpdate = Date.now();
+
+        // Immediately tell the framerate limiter
+        game.FramerateLimiter.update(delta);
         // Allow for some variability in the framerate, but not too much,
         // otherwise everything that uses this delta could hit problems. This is
         // because the user has control over this simply by pausing Javascript
@@ -705,6 +708,10 @@
         game.TextManager.update(delta);
         game.AudioManager.update(delta);
         game.ShopInventory.update(deltaAsSec);
+
+        // Draw under everything else
+        game.FramerateLimiter.draw(ctx);
+
 
         ctx.save();
         game.Camera.scaleAndTranslate(ctx);

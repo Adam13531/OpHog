@@ -1295,85 +1295,88 @@
         // changing.
         var regularFillStyle = 'rgba(0,0,0,1)';
         ctx.fillStyle = regularFillStyle;
+
+        // Keep track of where we draw instead of simply using ctx.translate,
+        // which is a slow function.
+        var drawX = 0;
+        var drawY = 0;
+
+        var advanceDrawX = function() {
+            drawX += game.TILESIZE;
+        };
+
         for (var y = 0; y < this.numRows; y++) {
             for (var x = 0; x < this.numCols; x++) {
                 index = y * this.numCols + x;
                 tile = this.mapTiles[index];
 
-                // Only draw tiles that the map can see
-                if ( game.Camera.canSeeTile(tile) ) {
+                // Only draw tiles that the map can see.
+                if ( !game.Camera.canSeeTile(tile) ) {
+                    advanceDrawX();
+                    continue;
+                }
 
-                    graphic = tile.graphicIndex;
-                    doodadGraphic = this.doodadIndices[index];
+                graphic = tile.graphicIndex;
+                doodadGraphic = this.doodadIndices[index];
 
-                    // Draw the second frame of animated tiles every other
-                    // second. We're exploiting alphaBlink here, which is really
-                    // just the amount of time that's passed since we started
-                    // playing.
-                    if ( (Math.floor(game.alphaBlink) % 2) == 0 ) {
-                        if ( $.inArray(graphic, animatedIndices) != -1 ) graphic += envSheet.getNumSpritesPerRow();
-                        if ( $.inArray(doodadGraphic, animatedIndices) != -1 ) doodadGraphic += envSheet.getNumSpritesPerRow();
-                    }
+                // Draw the second frame of animated tiles every other second.
+                // We're exploiting alphaBlink here, which is really just the
+                // amount of time that's passed since we started playing.
+                if ( (Math.floor(game.alphaBlink) % 2) == 0 ) {
+                    if ( $.inArray(graphic, animatedIndices) != -1 ) graphic += envSheet.getNumSpritesPerRow();
+                    if ( $.inArray(doodadGraphic, animatedIndices) != -1 ) doodadGraphic += envSheet.getNumSpritesPerRow();
+                }
 
-                    if ( drawingFogLayer ) {
-                        if ( this.fog[index] ) {
-
-                            // Draw black in the background for now since
-                            // there's no background beneath our map to begin
-                            // with. TODO: we should be able to remove this
-                            // eventually and not see units show up behind
-                            // transparent tiles.
-                            ctx.fillRect(0, 0, game.TILESIZE, game.TILESIZE);
-
-                            // Walkable tiles don't always cover the whole area,
-                            // so we need to draw the unwalkable tile beneath
-                            // it.
-                            if ( tile.isWalkable() ) {
-                                envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, 0,0);
-                            }
-
-                            envSheet.drawSprite(ctx, graphic, 0,0);
-                            if ( doodadGraphic != null ) {
-                                envSheet.drawSprite(ctx, doodadGraphic, 0,0);
-                            }
-                            if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
-                                ctx.fillStyle = greenFillStyle;
-                                ctx.fillRect(0,0,game.TILESIZE,game.TILESIZE);
-                                ctx.fillStyle = regularFillStyle;
-                            }
-                            if ( tile.isSpawnerPoint() ) {
-                                envSheet.drawSprite(ctx, game.Graphic.SPAWNER, 0,0);
-                            }
+                if ( drawingFogLayer ) {
+                    if ( this.fog[index] ) {
+                        // Walkable tiles don't always cover the whole area, so
+                        // we need to draw the unwalkable tile beneath it.
+                        if ( tile.isWalkable() ) {
+                            envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, drawX,drawY);
                         }
-                    } else {
-                        // If there's no fog here and we're not drawing the fog
-                        // layer, then we just draw the map normally.
-                        if ( !this.fog[index] ) {
-                            if ( tile.isWalkable() ) {
-                                envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, 0,0);
-                            }
-                            envSheet.drawSprite(ctx, graphic, 0,0);
-                            if ( doodadGraphic != null ) {
-                                envSheet.drawSprite(ctx, doodadGraphic, 0,0);
-                            }
-                            if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
-                                ctx.fillStyle = greenFillStyle;
-                                ctx.fillRect(0,0,game.TILESIZE,game.TILESIZE);
-                                ctx.fillStyle = regularFillStyle;
-                            }
-                            if ( tile.isCastle() ) {
-                                envSheet.drawSprite(ctx, game.Graphic.GENERATOR, 0,0);
-                            }
-                            if ( tile.isSpawnerPoint() ) {
-                                envSheet.drawSprite(ctx, game.Graphic.SPAWNER, 0,0);
-                            }
+
+                        envSheet.drawSprite(ctx, graphic, drawX,drawY);
+                        if ( doodadGraphic != null ) {
+                            envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
+                        }
+                        if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
+                            ctx.fillStyle = greenFillStyle;
+                            ctx.fillRect(drawX,drawY,game.TILESIZE,game.TILESIZE);
+                            ctx.fillStyle = regularFillStyle;
+                        }
+                        if ( tile.isSpawnerPoint() ) {
+                            envSheet.drawSprite(ctx, game.Graphic.SPAWNER, drawX,drawY);
+                        }
+                    }
+                } else {
+                    // If there's no fog here and we're not drawing the fog
+                    // layer, then we just draw the map normally.
+                    if ( !this.fog[index] ) {
+                        if ( tile.isWalkable() ) {
+                            envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, drawX,drawY);
+                        }
+                        envSheet.drawSprite(ctx, graphic, drawX,drawY);
+                        if ( doodadGraphic != null ) {
+                            envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
+                        }
+                        if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
+                            ctx.fillStyle = greenFillStyle;
+                            ctx.fillRect(drawX,drawY,game.TILESIZE,game.TILESIZE);
+                            ctx.fillStyle = regularFillStyle;
+                        }
+                        if ( tile.isCastle() ) {
+                            envSheet.drawSprite(ctx, game.Graphic.GENERATOR, drawX,drawY);
+                        }
+                        if ( tile.isSpawnerPoint() ) {
+                            envSheet.drawSprite(ctx, game.Graphic.SPAWNER, drawX,drawY);
                         }
                     }
                 }
 
-                ctx.translate(game.TILESIZE, 0);
+                advanceDrawX();
             }
-            ctx.translate(-game.TILESIZE * this.numCols, game.TILESIZE);
+            drawX -= game.TILESIZE * this.numCols;
+            drawY += game.TILESIZE;
         }
     };
 
@@ -1396,14 +1399,27 @@
         // Draw just the fog itself now
         ctx.save();
         ctx.fillStyle = 'rgba(0,0,0,.5)';
+
+        var width = 1;
         for (var y = 0; y < this.numRows; y++) {
-            for (var x = 0; x < this.numCols; x++) {
-                if ( this.fog[y * this.numCols + x] ) {
-                    // Only draw fog if the camera can see it
-                    if ( game.Camera.canSeeTileCoordinates(x, y) ) {
-                        ctx.fillRect(x * game.TILESIZE, y * game.TILESIZE, game.TILESIZE, game.TILESIZE);
+            for (var x = 0; x < this.numCols; x += width) {
+                width = 1;
+
+                // Only draw if this tile is foggy and the camera can see it.
+                if ( !this.fog[y * this.numCols + x] || !game.Camera.canSeeTileCoordinates(x, y) ) continue;
+
+                // 'fillRect' is relatively costly, so we will draw as much fog
+                // as we can at a time without doing anything too
+                // computationally expensive to achieve this optimization.
+                for (var xx = x + 1; xx < this.numCols; xx++ ) {
+                    if ( !this.fog[y * this.numCols + xx] ) {
+                        break;
                     }
+
+                    width++;
                 }
+
+                ctx.fillRect(x * game.TILESIZE, y * game.TILESIZE, game.TILESIZE * width, game.TILESIZE);
             }
         }
         ctx.restore();

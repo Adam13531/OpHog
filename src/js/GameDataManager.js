@@ -576,7 +576,15 @@
             uiSettings.musicVolumeSetting = game.AudioManager.musicVolume;
             uiSettings.minimapPositionSetting = game.Minimap.position;
             uiSettings.minimapIsVisible = game.Minimap.visible;
+            uiSettings.alreadyComputedGraphicsScore = !game.FramerateLimiter.calculatingScore;
             localStorage.uiSettings = JSON.stringify(uiSettings);
+        },
+
+        loadFrameLimiterState: function() {
+            if ( localStorage.uiSettings === undefined ) return false;
+
+            var uiSettings = JSON.parse(localStorage.uiSettings);
+            return uiSettings.alreadyComputedGraphicsScore;
         },
 
         /**
