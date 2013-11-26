@@ -12,6 +12,7 @@
         MARSH_TILESET_ID: 1,
         DESERT_TILESET_ID: 2,
         FOREST_TILESET_ID: 3,
+        SNOW_TILESET_ID: 4,
 
         /**
          * The available tilesets.
@@ -37,6 +38,7 @@
             this.constructLavaTileset();
             this.constructMarshTileset();
             this.constructForestTileset();
+            this.constructSnowTileset();
             this.initialized = true;
         },
 
@@ -255,6 +257,51 @@
             tileset.addDoodad(new game.Doodad([game.Graphic.TWO_FLOWERS], 1, 3));
             tileset.addDoodad(new game.Doodad([game.Graphic.THREE_FLOWERS], 1, 3));
 
+            this.addTileset(tileset);
+        },
+
+        constructSnowTileset: function() {
+            // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
+            var tileset = new game.Tileset(this.SNOW_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.SNOW_BANK, game.Graphic.PATH_TILE_SNOW);
+
+            var f1 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_1;
+            var f2 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_2;
+            var f3 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_3;
+            var f4 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_4;
+            var f5 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_5;
+            var f6 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_6;
+            var f7 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_7;
+            var f8 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_8;
+            var f9 = game.Graphic.SNOWY_EVERGREEN_TREE_PATCH_9;
+
+            var d1 = game.Graphic.SNOWY_EVERGREEN_DUO_1;
+            var d2 = game.Graphic.SNOWY_EVERGREEN_DUO_2;
+            var d3 = game.Graphic.SNOWY_EVERGREEN_DUO_3;
+            var d4 = game.Graphic.SNOWY_EVERGREEN_DUO_4;
+            var d5 = game.Graphic.SNOWY_EVERGREEN_DUO_5;
+            var d6 = game.Graphic.SNOWY_EVERGREEN_DUO_6;
+
+            tileset.addDoodad(new game.Doodad(
+                [
+                f1,f2,f3,
+                f4,f5,f6,
+                f7,f8,f9,
+                ], 3, 3
+                ));
+
+            tileset.addDoodad(new game.Doodad(
+                [
+                d1,d2,d3,
+                d4,d5,d6,
+                ], 3, 5
+                ));
+
+            // Single-tile doodads
+            tileset.addDoodad(new game.Doodad([game.Graphic.SNOWY_EVERGREEN_TREE], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.ONE_FLOWER], 1, 3));
+            tileset.addDoodad(new game.Doodad([game.Graphic.WELL_WITH_BROWN_WATER], 1, 10));
+            tileset.addDoodad(new game.Doodad([game.Graphic.PILE_OF_STONE], 1, 10));
+ 
             this.addTileset(tileset);
         }
 

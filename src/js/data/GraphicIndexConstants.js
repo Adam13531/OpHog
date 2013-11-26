@@ -17,6 +17,7 @@
         MEDIUM_GREEN_BUSH: 44, // a green bush covering about 75% of the tile
         THREE_FLOWERS: 100, // three flowers arranged in a triangle at the outer edge of the tile
         TWO_FLOWERS: 101, // two flowers arranged at NW and SE corners of the tile
+        ONE_FLOWER: 102, // one flower in the center of the tile
         BIG_GRAY_STONE: 105, // a square stone
         BIG_BLUE_POND: 108, // blue circular pond that covers most of the tile
         SMALL_BLUE_POND: 109, // blue circular pond that covers about half the tile
@@ -30,6 +31,7 @@
         GREEN_TREE: 214, // a healthy oak tree
         GREEN_TREE_WITH_FRUIT: 215, // a healthy oak tree with three red fruits
         EVERGREEN_TREE: 219, // a healthy, large evergreen
+        SNOWY_EVERGREEN_TREE: 220, // a healthy, large evergreen with snow on it
         EVERGREEN_FOREST_PATCH_1: 280, // the upper left portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_2: 281, // the upper middle portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_3: 282, // the upper right portion of the evergreen forest
@@ -44,14 +46,32 @@
         EVERGREEN_DUO_1: 451, // the upper left of a 3-wide, 2-tall duo of evergreen trees
         EVERGREEN_DUO_2: 452, // the upper middle of a 3-wide, 2-tall duo of evergreen trees
         EVERGREEN_DUO_3: 453, // the upper right of a 3-wide, 2-tall duo of evergreen trees
+        WELL_WITH_BROWN_WATER: 488, // well with brown water in it
+        PILE_OF_STONE: 491, // grey pile of stone
         ANIMAL_SKULL: 497, // an animal skull with two horns (one is broken)
         EVERGREEN_DUO_4: 508, // the lower left of a 3-wide, 2-tall duo of evergreen trees
         EVERGREEN_DUO_5: 509, // the lower middle of a 3-wide, 2-tall duo of evergreen trees
         EVERGREEN_DUO_6: 510, // the lower right of a 3-wide, 2-tall duo of evergreen trees
+        SNOWY_EVERGREEN_TREE_PATCH_1: 556, // the upper left portion of the snowy evergreen forest
+        SNOWY_EVERGREEN_TREE_PATCH_2: 557, // the upper middle portion of the snowy evergreen forest
+        SNOWY_EVERGREEN_TREE_PATCH_3: 558, // the upper right portion of the snowy evergreen forest
+        SNOWY_EVERGREEN_TREE_PATCH_4: 613, // the middle left portion of the snowy evergreen forest
+        SNOWY_EVERGREEN_TREE_PATCH_5: 614, // the middle portion of the snowy evergreen forest
+        SNOWY_EVERGREEN_TREE_PATCH_6: 615, // the middle right portion of the snowy evergreen forest
+        SNOWY_EVERGREEN_TREE_PATCH_7: 670, // the bottom left portion of the snowy evergreen forest
+        SNOWY_EVERGREEN_TREE_PATCH_8: 671, // the bottom middle portion of the snowy evergreen forest
+        SNOWY_EVERGREEN_TREE_PATCH_9: 672, // the bottom right portion of the snowy evergreen forest
         DESERT_SAND: 713, // small dark beige streaks on a solid beige tile
         DIRT_PATH: 715, // small dark brown streaks on a solid brown tile
+        SNOW_BANK: 718, // light grey-colored tile with white spots
+        SNOWY_EVERGREEN_DUO_1: 727, // the upper left of a 3-wide, 2-tall duo of snowy evergreen trees
+        SNOWY_EVERGREEN_DUO_2: 728, // the upper middle of a 3-wide, 2-tall duo of snowy evergreen trees
+        SNOWY_EVERGREEN_DUO_3: 729, // the upper right of a 3-wide, 2-tall duo of snowy evergreen trees
         LIGHT_GREEN_BRUSH: 769, // light green flowers/grass/greenery
-        LUSH_GREEN_BRUSH: 773, // bright green flowers/grass/greenery
+        LUSH_GREEN_BRUSH: 773, // bright green flowers/grass/greenery     
+        SNOWY_EVERGREEN_DUO_4: 784, // the lower left of a 3-wide, 2-tall duo of snowy evergreen trees
+        SNOWY_EVERGREEN_DUO_5: 785, // the lower middle of a 3-wide, 2-tall duo of snowy evergreen trees
+        SNOWY_EVERGREEN_DUO_6: 786, // the lower right of a 3-wide, 2-tall duo of snowy evergreen trees
         DARK_COBBLESTONE: 801, // many dark stones covering the entire tile
         PATH_TILE_SAND: 997, // tan tile with specks. This marks the start of one of our "auto tiles".
         PATH_TILE_DIRT: 1111, // brown tile with specks. This marks the start of one of our "auto tiles".
@@ -68,6 +88,7 @@
         PATH_TILE_DARK_DIRT: 1339, // dark brown tile with specks. This marks the start of one of our "auto tiles".
         DARK_MUD_PATH_FULL_TEXTURE: 1340, // dark mud path, takes up full tile, has some bubbles in it
         PATH_TILE_MUD: 1453, // mud-colored tile with specks. This marks the start of one of our "auto tiles".
+        PATH_TILE_SNOW: 1567, // white-colored tile. This marks the start of one of our "auto tiles".
         BLUE_WATER_1: 1714, // blue-tinted water graphic, first frame
         RED_WATER_1: 1720, // red-tinted water graphic, first frame
         BLUE_WATER_2: 1771, // blue-tinted water graphic, second frame
