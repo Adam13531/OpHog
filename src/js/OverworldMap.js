@@ -274,7 +274,7 @@
         {
             x:14,
             y:5,
-            description: 'The Future',
+            description: 'The Wintery Apocalypse',
             difficulty: 5,
             clearFog: [[19,3,12]],
 
@@ -307,7 +307,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SNOW_TILESET_ID
         },
         {
             x:19,
