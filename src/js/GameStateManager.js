@@ -124,6 +124,11 @@
          * lose.
          */
         commonWinLoseFunctions: function () {
+            // Leave everything on the screen after a minigame
+            if ( this.currentState == game.GameStates.MINIGAME_WIN_SCREEN || 
+                 this.currentState == game.GameStates.MINIGAME_LOSE_SCREEN ) {
+                return;
+            }
             game.BattleManager.removeAllBattles();
             game.UnitManager.removeAllUnitsFromMap();
             game.playerInventoryUI.exitUseMode(true);

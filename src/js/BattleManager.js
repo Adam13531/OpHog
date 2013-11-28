@@ -35,9 +35,6 @@
             for (var i = 0; i < this.battles.length; i++) {
                 var battle = this.battles[i];
                 if ( battle.isDead() ) {
-                    battle.aboutToRemoveBattle();
-                    this.battles.splice(i, 1);
-                    i--;
 
                     // If we're playing the minigame, then there should only be
                     // one battle, so winning or losing that will end the
@@ -48,6 +45,14 @@
                         } else {
                             game.GameStateManager.enterMinigameLoseState();
                         }
+                    }
+                    
+                    // Don't remove battles at the end of a minigame
+                    if ( game.GameStateManager.currentState != game.GameStates.MINIGAME_WIN_SCREEN &&
+                         game.GameStateManager.currentState != game.GameStates.MINIGAME_LOSE_SCREEN) {
+                        battle.aboutToRemoveBattle();
+                        this.battles.splice(i, 1);
+                        i--;
                     }
                 }
             };
