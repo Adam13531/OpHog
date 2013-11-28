@@ -310,6 +310,21 @@
     };
 
     /**
+     * We define items without specifying their graphic indices, because we
+     * instead specify their background-positions with a css class. It's not the
+     * most optimal way of doing things, but I should fix this in another
+     * commit.
+     */
+    window.game.Item.prototype.getGraphicIndex = function() {
+        var valString = game.util.getCssPropertyFromCssClass(this.cssClass, 'background-position');
+        var valArray = valString.split(' ');
+        var x = Math.abs(parseInt(valArray[0])) / game.ITEM_SPRITE_SIZE;
+        var y = Math.abs(parseInt(valArray[1])) / game.ITEM_SPRITE_SIZE;
+        var graphicIndex = y * itemSheet.getNumSpritesPerRow() + x;
+        return graphicIndex;
+    };
+
+    /**
      * Uses an item on a unit. The caller must know whether this item is usable
      * on a unit (so that he can pass the correct argument (a unit) in)
      * @param  {Unit} unit - the target

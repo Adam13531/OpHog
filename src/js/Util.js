@@ -14,6 +14,37 @@
     };
 
     /**
+     * This is easiest to show using an example. Suppose you have this CSS class:
+     *
+     * .potion {
+     *     background-position: -64px -0px;
+     * }
+     *
+     * If you call getCssPropertyFromCssClass('potion', 'background-position'),
+     * you'll get '64px -0px' back in return, which you can then parse with 
+     * string.split and parseInt().
+     *
+     * I made this function because we currently need the CSS classes for items
+     * to display in our JQuery UI inventory, but we also need their graphic 
+     * indexes for use in the loot UI, so this will fetch the index given the
+     * CSS class.
+     * 
+     * @param  {String} cssClass       - a CSS class (without the period)
+     * @param  {String} propToRetrieve - the property you want from the DOM
+     * element that gets ceated
+     * @return {String} - the value of the property you requested
+     */
+    window.game.util.getCssPropertyFromCssClass = function(cssClass, propToRetrieve) {
+        // Temporarily add to the garbage element with a display of none. People
+        // online said that you can't trust the results unless you add it to the
+        // DOM.
+        $('#garbage').append('<span id="justUsedForGettingCssProp" style="display:none" class="' + cssClass + '"/>');
+        var valString = $('#justUsedForGettingCssProp').css(propToRetrieve);
+        $('#justUsedForGettingCssProp').remove();
+        return valString;
+    };
+
+    /**
      * Calculates the Manhattan distance between two sets of coordinates.
      *
      * The units are simply numbers (not pixels or tiles).
