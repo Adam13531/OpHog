@@ -1,0 +1,206 @@
+Paladin F
+Swordsman F
+Berserker F
+Shaman F
+Priest F
+Wizard F
+Ranger F
+Thief F
+Knight F
+Paladin M
+Swordsman M
+Berserker M
+Shaman M
+Priest M
+Wizard M
+Ranger M
+Thief M
+Knight M
+
+Knight Alt
+Guard Alt F
+Guard Alt M
+Knight
+Guard F
+Guard M
+Princess
+Prince
+Queen
+King
+Bishop
+Chef
+Butcher
+Merchant
+Human F
+Human M
+Hooded Human
+Bandit
+
+Knight Alt
+Guard Alt F
+Guard Alt M
+Knight
+Guard F
+Guard M
+Princess
+Prince
+Queen
+King
+Prophet
+Alchemist
+Slave
+Merchant
+Human F
+Human M
+Hooded Human
+Bandit
+
+High Elf Mage F
+High Elf Ranger F
+High Elf Shield Fighter F
+High Elf Fighter F
+High Elf Mage M
+High Elf Ranger M
+High Elf Shield Fighter M
+High Elf Fighter M
+Drow Sorceress
+Drow Mage
+Drow Ranger
+Drow Fighter
+Drow Assassin
+Dwarf Priest
+Dwarf Alt
+Dwarf
+Bandit
+Assassin
+
+Mimic
+Treant
+Djinn
+Bone Golem
+Lava Golem
+Flesh Golem
+Mud Golem
+Stone Golem
+Horned Demon
+Fire Demon
+Elder Demon
+Minotaur Alt
+Minotaur Club
+Minotaur Axe
+Gnoll Shaman
+Gnoll Fighter Captain
+Gnoll Fighter Alt
+Gnoll Fighter
+Gnome Wizard Alt
+Gnome Wizard
+Gnome Fighter Alt
+Gnome Fighter Alt
+Gnome Fighter
+Lizardman High Shaman
+Lizardman Shaman
+Lizardman Captain
+Lizardman Archer
+Lizardman Warrior
+Wood Elf Druid F
+Wood Elf Ranger F
+Wood Elf Shield Fighter F
+Wood Elf Fighter F
+Wood Elf Druid M
+Wood Elf Ranger M
+Wood Elf Shield Fighter M
+Wood Elf Fighter M
+
+Air Elemental
+Ice/Water Elemental
+Earth Elemental
+Death Knight Alt
+Death Knight Alt
+Death Knight
+Cyclops Alt
+Cycops
+Troll Captain
+Troll
+Orc Mystic
+Orc Captain
+Orc Fighter
+Goblin Mystic
+Goblin King
+Goblin Captain
+Goblin Archer
+Goblin Fighter
+Crow/Raven
+Blue Bird
+Dove/Pigeon
+Black Wolf
+Brown Wolf
+Grey Wolf
+Fire Beetle
+Beetle
+Cobra
+Brown Rat
+Grey Rat
+Black Spider
+Red Spider
+Beholder
+Red Bat
+Black Bat
+Green Slime
+Purple Slime
+
+Green Witch
+Frost Witch
+Witch
+Vampire Lord
+Vampire Alt
+Vampire
+Death
+Dark Wizard
+Necromancer
+Pharoah
+Mummy
+Ghost
+Shadow
+Skeleton Warrior
+Skeleton Archer
+Skeleton
+Headless Zombie
+Zombie
+
+Imp/Demon/Devil
+Pixie/Fairy/Sprite
+Ettin Alt
+Ettin
+Scorpion Alt
+Scorpion Alt
+Giant Scorpion
+Polar Bear
+Grey Bear
+Brown Bear
+Giant Worm
+Giant Leech
+Yeti Alt
+Yeti
+Green Dragon
+Gold Dragon
+Purple Dragon
+Red Dragon
+
+Cold Flame
+Flame
+Red Jelly
+Green Jelly
+Blue Jelly
+Brown Specter
+Blue Specter
+Red Specter
+Eyes
+Eye
+Mud Minion
+Smoke Minion
+Ice Minion
+Fire Minion
+Rotten Turnip
+Turnip
+Wisp Alt
+Wisp
