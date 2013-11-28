@@ -260,6 +260,14 @@
     };
 
     /**
+     * Tells you when two rectangles collide (intersection OR containment).
+     */
+    window.game.util.rectsCollide = function(x1,y1,w1,h1, x2,y2,w2,h2) {
+        if ( x2 > x1 + w1 || y2 > y1 + h1 || x2 + w2 < x1 || y2 + h2 < y1 ) return false;
+        return true;
+    };
+
+    /**
      * Given an array, this will return a random element.
      * @param  {Array} array An array to choose from.
      * @return {Object}       A random element from that array.
