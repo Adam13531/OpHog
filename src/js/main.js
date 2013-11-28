@@ -29,7 +29,7 @@
      * The number of spritesheets that the game has to load.
      * @type {Number}
      */
-    var NUM_SPRITESHEETS_TO_LOAD = 3;
+    var NUM_SPRITESHEETS_TO_LOAD = 4;
 
     $(document).ready(function() {
         init();
@@ -44,6 +44,7 @@
         envSheet = new game.SpriteSheet(game.imagePath + '/env_24.png', game.TILESIZE, loadedSpritesheet);
         eff24Sheet = new game.SpriteSheet(game.imagePath + '/eff_24.png', game.TILESIZE, loadedSpritesheet);
         charSheet = new game.SpriteSheet(game.imagePath + '/char_24.png', game.TILESIZE, loadedSpritesheet);
+        itemSheet = new game.SpriteSheet(game.imagePath + '/item_32.png', game.ITEM_SPRITE_SIZE, loadedSpritesheet);
     }
 
     /**
@@ -416,7 +417,6 @@
         game.QuestManager.initialize();
 
         game.UnitPlacementUI.setupUI();
-        game.LootUI.setupUI();
         game.QuestUI.setupUI();
         game.ShopUI = new game.ShopUI();
         game.ShopInventory = new game.ShopInventory();
@@ -748,6 +748,8 @@
         game.GameStateManager.draw(ctx);
         game.Player.drawCoinTotal(ctx);
         game.Minimap.draw(ctx);
+
+        game.LootUI.draw(ctx);
 
         game.UICanvas.draw();
 

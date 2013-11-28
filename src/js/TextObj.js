@@ -8,6 +8,7 @@
      * for "height").
      */
     window.game.TextObjFont = '12px Futura, Helvetica, sans-serif';
+    window.game.MediumFont = '20px Futura, Helvetica, sans-serif';
     window.game.BigFont = '40px Futura, Helvetica, sans-serif';
 
     /**

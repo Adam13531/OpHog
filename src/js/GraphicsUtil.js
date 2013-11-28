@@ -133,7 +133,6 @@
         this.setDialogFadeInOutTime($('#settingsDialog'), instantaneousDialogs);
         this.setDialogFadeInOutTime($('#shop-screen'), instantaneousDialogs);
         this.setDialogFadeInOutTime($('#buyingScreenContainer'), instantaneousDialogs);
-        this.setDialogFadeInOutTime($('#loot-ui'), instantaneousDialogs);
         this.setDialogFadeInOutTime($('#minigame-ui'), instantaneousDialogs);
         this.setDialogFadeInOutTime($('#quest-ui'), instantaneousDialogs);
 
