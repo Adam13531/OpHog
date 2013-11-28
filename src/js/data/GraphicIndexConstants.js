@@ -88,11 +88,26 @@
         PATH_TILE_DARK_DIRT: 1339, // dark brown tile with specks. This marks the start of one of our "auto tiles".
         DARK_MUD_PATH_FULL_TEXTURE: 1340, // dark mud path, takes up full tile, has some bubbles in it
         PATH_TILE_MUD: 1453, // mud-colored tile with specks. This marks the start of one of our "auto tiles".
+        BLUE_WATER_EDGE_LARGE_SQUARE_1: 1543, // the top left of a 3-wide, 3-tall square of water only on the edges
+        BLUE_WATER_EDGE_LARGE_SQUARE_2: 1544, // the top middle of a 3-wide, 3-tall square of water only on the edges
+        BLUE_WATER_EDGE_LARGE_SQUARE_3: 1545, // the top right of a 3-wide, 3-tall square of water only on the edges
         PATH_TILE_SNOW: 1567, // white-colored tile. This marks the start of one of our "auto tiles".
+        BLUE_WATER_EDGE_LARGE_SQUARE_4: 1600, // the middle left of a 3-wide, 3-tall square of water only on the edges
+        BLUE_WATER_EDGE_LARGE_SQUARE_5: 1601, // the middle of a 3-wide, 3-tall square of water only on the edges
+        BLUE_WATER_EDGE_LARGE_SQUARE_6: 1602, // the middle right of a 3-wide, 3-tall square of water only on the edges
+        BLUE_WATER_EDGE_LARGE_SQUARE_7: 1657, // the bottom left of a 3-wide, 3-tall square of water only on the edges
+        BLUE_WATER_EDGE_LARGE_SQUARE_8: 1658, // the bottom middle of a 3-wide, 3-tall square of water only on the edges
+        BLUE_WATER_EDGE_LARGE_SQUARE_9: 1659, // the bottom right of a 3-wide, 3-tall square of water only on the edges
         BLUE_WATER_1: 1714, // blue-tinted water graphic, first frame
         RED_WATER_1: 1720, // red-tinted water graphic, first frame
         BLUE_WATER_2: 1771, // blue-tinted water graphic, second frame
         RED_WATER_2: 1777, // red-tinted water graphic, second frame
+        BLUE_WATER_EDGE_SMALL_SQUARE_1: 1828, // the top left of a 2-wide, 2-tall square of water only on the edges
+        BLUE_WATER_EDGE_SMALL_SQUARE_2: 1829, // the top right of a 2-wide, 2-tall square of water only on the edges
+        BLOCK_IN_BLUE_WATER_TOUCHING: 1830, // grey tile that has some blue water touching it
+        BLUE_WATER_EDGE_SMALL_SQUARE_3: 1885, // the bottom left of a 2-wide, 2-tall square of water only on the edges
+        BLUE_WATER_EDGE_SMALL_SQUARE_4: 1886, // the bottom right of a 2-wide, 2-tall square of water only on the edges
+        BLOCK_IN_BLUE_WATER_NOT_TOUCHING: 1887, // grey tile that has some water near it that's not touching it
         PATH_TILE_SNOW_BLUE: 2137, // blue-colored snow tile. This marks the start of one of our "auto tiles".
 
         //----------------------------------------------------------------------
@@ -114,17 +129,27 @@
         // 
         //----------------------------------------------------------------------
         PALADIN_F: 0, // white chick with a red-cross shield, yellow armor, and a mace
+        SWORDSMAN_F: 1, // black chick with a sword, pink shirt, yellow earing, and grey cape
+        BESERKER_F: 2, // white chick with an axe, red hat with grey horns, blonde hair, and brown vest
         SHAMAN_F: 3, // wizard with gray robes and wolf hat, a staff, and red face paint
         PRIEST_F: 4, // maroon robes and big hat, staff, blonde hair
         WIZARD_F: 5, // no visible face, staff, purple cloak
         RANGER_F: 6, // RANGER_M but with lipstick and an orange cape
+        THIEF_F: 7, // white chick with lipstick, green cape, red feather, and a knife
         KNIGHT_F: 8, // a white chick with lipstick, a round shield, a shortsword, and red armor
         PALADIN_M: 9, // a white dude with a blue-cross shield, yellow armor, and a mace
+        SWORDSMAN_M: 10, // black dude with a sword, blue shirt, and grey shirt
         BERSERKER_M: 11, // a white dude with a vikin hat, brown shirt/cape, an a hatchet
         SHAMAN_M: 12, // wizard with brown robes and wolf hat, a staff, and blue face paint
+        PRIEST_M: 13, // white dude with a golden staff, white robe with a cross on the front of the hood
         WIZARD_M: 14, // wizard with no visible face, a red cape, and a staff
         RANGER_M: 15, // an archer with a bow, a quiver, and a gray cape with feathers
+        THIEF_M: 16, // white dude with a green cape, red feather, and a knife
         KNIGHT_M: 17, // a warrior with blue armor, a shield, helmet, and sword
+        KNIGHT_ALT_1: 40, // knight with a grey full face helmet, shield with blue circle on it, and a spear
+        GUARD_ALT_F_1: 41, // white chick with a grey helmet, red hair, lipstick, blue cape, and a spear
+        GUARD_ALT_M_1: 42, // white dude with with a grey helmet, blue cape, and a spear
+        KNIGHT_1: 43, // knight with grey full face helmet, shield with black hole in the center, and a spear
         KING: 49, // an old man with a crown and staff and blue capes
         HIGH_ELF_RANGER_F: 121, // an elf with light gray skin, white hair, green cape, and bow
         DROW_RANGER: 130, // a blue-skinned creature with white hair, a purple shirt, and a red cape
