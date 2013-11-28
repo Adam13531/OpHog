@@ -37,6 +37,9 @@
         // If either of these circles touches either of another battle's
         // circles, then the battles will be combined.
         //
+        // These will get modified nearly immediately by layout(), so changing
+        // them here will have no effect as long as this battle updates before
+        // checkForBattles is called.
         //
         // Coordinate units are in pixels.
         this.playerCenterX = centerX;
@@ -987,7 +990,10 @@
         var stagingAreaCenterY = this.centerY - (height / 2 * game.TILESIZE);
 
         // Base the battle-join radius on the size of the perfect square.
-        var radius = (height / 2) * game.TILESIZE;
+        var radius = (height) * game.TILESIZE;
+
+        // If the minimum radius is too low, then you end up with lots of 1v1s.
+        radius = Math.max(2 * game.TILESIZE, radius);
 
         if ( isPlayer ) {
             stagingAreaCenterX = this.centerX - (width * game.TILESIZE);
