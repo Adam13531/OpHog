@@ -657,11 +657,9 @@
         // See the function-level comments.
         var losingTeam = this.getLosingTeam();
 
-        if ( this.battleWinner == game.BattleWinner.PLAYER && game.GameStateManager.isMinigameGameplay() ) {
-            // You don't get normal experience or loot if you were playing the
-            // minigame.
-            game.MinigameUI.wonMinigame();
-        } else if ( this.battleWinner == game.BattleWinner.PLAYER ) {
+        if ( this.battleWinner == game.BattleWinner.PLAYER && 
+             !(game.GameStateManager.isMinigameGameplay() || 
+               game.GameStateManager.inOverworldMap()) ) {
             // Generate experience and items
             this.generateExperience();
             this.generateLoot();

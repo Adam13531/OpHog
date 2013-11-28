@@ -42,14 +42,15 @@
                     if ( game.GameStateManager.isMinigameGameplay() ) {
                         if ( battle.playerWon() ) {
                             game.GameStateManager.enterMinigameWinState();
+                            game.MinigameUI.wonMinigame();
                         } else {
                             game.GameStateManager.enterMinigameLoseState();
                         }
                     }
                     
                     // Don't remove battles at the end of a minigame
-                    if ( game.GameStateManager.currentState != game.GameStates.MINIGAME_WIN_SCREEN &&
-                         game.GameStateManager.currentState != game.GameStates.MINIGAME_LOSE_SCREEN) {
+                    if ( !game.GameStateManager.inMinigameWinState() &&
+                         !game.GameStateManager.inMinigameLoseState() ) {
                         battle.aboutToRemoveBattle();
                         this.battles.splice(i, 1);
                         i--;

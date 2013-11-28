@@ -124,14 +124,16 @@
          * lose.
          */
         commonWinLoseFunctions: function () {
+            game.playerInventoryUI.exitUseMode(true);
+
             // Leave everything on the screen after a minigame
-            if ( this.currentState == game.GameStates.MINIGAME_WIN_SCREEN || 
-                 this.currentState == game.GameStates.MINIGAME_LOSE_SCREEN ) {
+            if ( this.inMinigameWinState() || 
+                 this.inMinigameLoseState() ) {
                 return;
             }
+
             game.BattleManager.removeAllBattles();
             game.UnitManager.removeAllUnitsFromMap();
-            game.playerInventoryUI.exitUseMode(true);
             $('#buyingScreenContainer').dialog('close');
         },
 
