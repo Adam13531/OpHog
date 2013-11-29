@@ -4,6 +4,9 @@
  * ADVISORY WHEN ADDING: try to keep the indices sorted, and try to include a
  * description that the tag (e.g. "GENERATOR") won't necessarily tell you (eg.
  * "swirly pink door").
+ *     Addendum (11/28/13): no need to add descriptive comments anymore.
+ *     Normally, I'd overwrite the old comment, but I wanted it to be clear why 
+ *     some have comments and some don't.
  */
 ( function() {
     window.game.Graphic = {
@@ -169,5 +172,19 @@
         BIG_SHADOW_FLOAT: 455, // BIG_SHADOW_LOW but it's floating off the ground by a bit
         MED_SHADOW_FLOAT: 456, // MED_SHADOW_LOW but it's floating off the ground by a bit
         SMALL_SHADOW_FLOAT: 457, // SMALL_SHADOW_LOW but it's floating off the ground by a bit
+
+        //----------------------------------------------------------------------
+        // Graphics for item_32.png
+        //----------------------------------------------------------------------
+        THIN_RED_POTION: 2,
+        FAT_YELLOW_POTION: 10,
+        GOLD_EYE_NECKLACE: 28,
+        GREEN_GEM: 58,
+        CYAN_GEM: 59,
+        RED_GEM: 60,
+        SMALL_YELLOW_SQUARE_ITEM: 112,
+        LARGE_YELLOW_SQUARE_ITEM: 113,
+        GRAY_SWORD: 227,
+        RED_WHITE_SHIELD: 247,
     };
 }());

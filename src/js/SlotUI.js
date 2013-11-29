@@ -120,7 +120,8 @@
 
             var img = game.imagePath + '/img_trans.png';
             this.$itemImage.attr('src', img);
-            this.$itemImage.attr('class', item.cssClass);
+            this.$itemImage.addClass('item-sprite');
+            this.$itemImage.css('background-position', item.getCssBackgroundPosition());
 
             // Add this so that the quantity is actually visible
             this.$itemImage.addClass('outline-font');

@@ -21,13 +21,12 @@
      * }
      *
      * If you call getCssPropertyFromCssClass('potion', 'background-position'),
-     * you'll get '64px -0px' back in return, which you can then parse with 
+     * you'll get '-64px -0px' back in return, which you can then parse with 
      * string.split and parseInt().
      *
-     * I made this function because we currently need the CSS classes for items
-     * to display in our JQuery UI inventory, but we also need their graphic 
-     * indexes for use in the loot UI, so this will fetch the index given the
-     * CSS class.
+     * I made this function before items had graphicIndex set on them directly,
+     * so we only had the CSS class and we wanted the graphic index. I'm keeping
+     * the function around so that we don't have to rewrite it.
      * 
      * @param  {String} cssClass       - a CSS class (without the period)
      * @param  {String} propToRetrieve - the property you want from the DOM

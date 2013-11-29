@@ -46,7 +46,7 @@
             };
         }
 
-        this.cssClass = itemData.cssClass;
+        this.graphicIndex = itemData.graphicIndex;
         this.htmlDescription = itemData.htmlDescription;
 
         this.removesAbilities = itemData.removesAbilities;
@@ -56,23 +56,20 @@
         this.addsAbilities = itemData.addsAbilities;
     };
 
-    window.game.Item.prototype.isEquippableBy = function(equippableBy) {
-        return !this.usable && (this.equippableBy & equippableBy) != 0;
+    /**
+     * @return {String} a string like '-64px -0px' which represents the position
+     * in the spritesheet so that DOM elements can show the item (they can't
+     * understand graphicIndex).
+     */
+    window.game.Item.prototype.getCssBackgroundPosition = function() {
+        var numCols = itemSheet.getNumSpritesPerRow();
+        var x = -1 * (this.graphicIndex % numCols) * game.ITEM_SPRITE_SIZE;
+        var y = -1 * Math.floor(this.graphicIndex / numCols) * game.ITEM_SPRITE_SIZE;
+        return x + 'px ' + y + 'px';
     };
 
-    /**
-     * We define items without specifying their graphic indices, because we
-     * instead specify their background-positions with a css class. It's not the
-     * most optimal way of doing things, but I should fix this in another
-     * commit.
-     */
-    window.game.Item.prototype.getGraphicIndex = function() {
-        var valString = game.util.getCssPropertyFromCssClass(this.cssClass, 'background-position');
-        var valArray = valString.split(' ');
-        var x = Math.abs(parseInt(valArray[0])) / game.ITEM_SPRITE_SIZE;
-        var y = Math.abs(parseInt(valArray[1])) / game.ITEM_SPRITE_SIZE;
-        var graphicIndex = y * itemSheet.getNumSpritesPerRow() + x;
-        return graphicIndex;
+    window.game.Item.prototype.isEquippableBy = function(equippableBy) {
+        return !this.usable && (this.equippableBy & equippableBy) != 0;
     };
 
     /**

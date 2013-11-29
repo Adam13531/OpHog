@@ -74,7 +74,7 @@
 
     /**
      * Required properties:
-     * id, itemLevel, name, htmlDescription, [usable|equippableBy], cssClass
+     * id, itemLevel, name, htmlDescription, [usable|equippableBy], graphicIndex
      * If 'usable' is true, then you need to specify 'useTarget'
      *
      * Optional properties:
@@ -102,7 +102,7 @@
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
-            cssClass:'item-sprite redgem32-png'
+            graphicIndex: game.Graphic.RED_GEM,
         },
         SHIELD: {
             id: 1,
@@ -119,7 +119,7 @@
                     relativeWeight: 9000,
                 }
             ],
-            cssClass:'item-sprite shield32-png',
+            graphicIndex: game.Graphic.RED_WHITE_SHIELD,
             mods: [new game.Thorns(5), new game.ReduceDamage(5)]
         },
         SWORD: {
@@ -142,7 +142,7 @@
                     relativeWeight: 9000,
                 }
             ],
-            cssClass:'item-sprite sword32-png',
+            graphicIndex: game.Graphic.GRAY_SWORD,
             mods: [new game.LifeLeech(.5, .5), new game.MultipleProjectiles(2)],
             placementCost: 10
         },
@@ -155,7 +155,7 @@
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
-            cssClass:'item-sprite pinkgem32-png'
+            graphicIndex: game.Graphic.CYAN_GEM,
         },
         POTION: {
             id: 4,
@@ -166,7 +166,7 @@
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
-            cssClass:'item-sprite potion32-png'
+            graphicIndex: game.Graphic.THIN_RED_POTION,
         },
         REVEALER: {
             id: 5,
@@ -177,7 +177,7 @@
             useTarget: game.UseTarget.MAP,
             stackable:true,
             startingQuantity:3,
-            cssClass:'item-sprite eye-necklace-32-png'
+            graphicIndex: game.Graphic.GOLD_EYE_NECKLACE,
         },
         POISON_GEM: {
             id: 6,
@@ -188,7 +188,7 @@
             useTarget: game.UseTarget.LIVING_ENEMY_UNIT,
             stackable:true,
             startingQuantity:3,
-            cssClass:'item-sprite greengem32-png'
+            graphicIndex: game.Graphic.GREEN_GEM,
         },
         CREATE_SPAWNER: {
             id: 7,
@@ -199,7 +199,7 @@
             useTarget: game.UseTarget.MAP_WALKABLE_ONLY,
             stackable:true,
             startingQuantity:3,
-            cssClass:'item-sprite greenrectangle-png'
+            graphicIndex: game.Graphic.SMALL_YELLOW_SQUARE_ITEM,
         },
         MEGA_CREATE_SPAWNER: {
             id: 8,
@@ -210,7 +210,7 @@
             useTarget: game.UseTarget.MAP_WALKABLE_ONLY,
             stackable:true,
             startingQuantity:3,
-            cssClass:'item-sprite redrectangle-png'
+            graphicIndex: game.Graphic.LARGE_YELLOW_SQUARE_ITEM,
         },
         REVIVE_POTION: {
             id: 9,
@@ -221,7 +221,7 @@
             useTarget: game.UseTarget.DEAD_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
-            cssClass:'item-sprite gold-potion-png'
+            graphicIndex: game.Graphic.FAT_YELLOW_POTION,
         },
     };
 
