@@ -100,6 +100,7 @@
         var $minimapUpRightButton = $('#minimapUpRight');
         var $minimapDownLeftButton = $('#minimapDownLeft');
         var $minimapDownRightButton = $('#minimapDownRight');
+        var $showLootNotifications = $('#showLootNotifications');
 
         var $settingsButton = $('#settingsButton');
         var $toggleMinimapVisibility = $('#toggleMinimapVisibility');
@@ -305,6 +306,12 @@
             game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.RIGHT, true);
         });
 
+        $showLootNotifications.button();
+        $showLootNotifications.click(function() {
+            game.LootUI.setShowLootNotifications();
+            $settingsDialog.dialog('close');
+        });
+
         // Set up the audio volume sliders
         $.each([$soundSlider, $musicSlider], function(index, value) {
             value.slider({
@@ -423,6 +430,8 @@
 
         game.AudioManager.initialize();
         game.AudioManager.setAudioEnabled(game.AudioManager.audioEnabled);
+
+        game.LootUI.setupUI();
     }
 
     function initSettings() {
