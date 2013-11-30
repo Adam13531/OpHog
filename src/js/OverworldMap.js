@@ -34,34 +34,130 @@
          * @type {Array:Number}
          */
         overworldMapTileIndices: [
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,715,715,715,769,715,715,715,769,715,769,715,769,715,715,715,769,715,715,715,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,715,769,715,769,715,769,715,769,715,769,715,769,715,769,715,769,715,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,715,769,715,715,715,715,715,715,715,715,715,715,715,769,715,715,715,769,715,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,715,769,715,769,715,769,769,769,715,769,715,769,715,769,715,769,715,769,715,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,715,715,715,769,715,769,769,769,715,769,715,769,715,715,715,769,715,715,715,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
-            769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,769,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,884,884,884,884,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,884,884,884,884,884,884,884,884,1714,1714,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,884,884,884,884,884,884,884,884,1112,884,884,1714,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,884,884,1112,884,884,884,884,884,1112,884,884,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,1714,
+            1714,1714,1714,1714,1714,884,884,884,1112,884,884,884,884,884,1112,1112,1112,884,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,1714,
+            1714,1714,1714,1714,1714,884,1112,1112,1112,884,884,884,884,884,1112,884,884,884,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,1714,
+            1714,1714,1714,1714,1714,884,1112,884,884,884,884,884,884,884,1112,884,884,884,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,
+            1714,1714,1714,1714,1714,884,1112,1112,1112,884,884,884,884,884,1112,884,884,884,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,
+            1714,1714,1714,1714,1714,884,884,884,1112,1112,1112,1112,1112,1112,1112,1112,884,884,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,
+            1714,1714,1714,1714,1714,1714,884,884,884,884,884,1112,884,884,884,884,884,1714,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,
+            1714,1714,1714,1714,1714,1714,884,884,884,884,884,1112,884,884,884,884,884,1714,1714,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,884,884,884,884,884,884,884,884,884,884,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,998,998,998,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,884,884,884,884,884,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,998,998,998,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,998,998,998,998,998,998,998,998,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,713,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1340,1340,1340,1340,1340,1340,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,1714,
+            ],
+
+        overworldDoodadIndices: [
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,713,713,713,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,101,undefined,undefined,undefined,214,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,215,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,271,272,272,272,273,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,214,undefined,328,329,329,329,330,undefined,undefined,undefined,713,713,713,713,713,713,713,713,713,713,713,713,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,328,329,329,329,330,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,43,undefined,102,undefined,385,386,386,386,387,undefined,undefined,214,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,100,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,214,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,43,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,215,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,101,undefined,713,214,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,713,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,713,713,713,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,713,713,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,undefined,undefined,undefined,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,713,undefined,undefined,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,713,713,713,713,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,undefined,
+            ],
+
+        walkability: [
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,true,true,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,true,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,true,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,true,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,true,false,false,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,false,false,false,false,false,false,true,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,true,true,true,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,true,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,true,true,true,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,true,true,true,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,true,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,false,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,true,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,false,false,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,true,true,true,true,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
+            false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,
             ],
 
         /**
          * The width of overworldMapTileIndices
          * @type {Number}
          */
-        overworldMapWidth: 50,
+        overworldMapWidth: 43,
 
         // Since we hard-coded the overworld map, I'm putting this here to
         // indicate which tile is walkable. When we make it so that there are
@@ -119,12 +215,12 @@
          */
         overworldMapNodes: [
         {
-            x: 1,
-            y: 3,
+            x: 8,
+            y: 7,
             description: 'Green Hill Zone',
             difficulty: 1,
             dimensions: [5,2],
-            clearFog: [[6,2,2], [2,7,3]],
+            clearFog: [[11,9,7], [11,18,2]],
 
             enemies: [
                 {
@@ -158,8 +254,8 @@
             tilesetID: game.TilesetManager.FOREST_TILESET_ID
         },
         {
-            x:7,
-            y:1,
+            x: 14,
+            y: 23,
             description: 'Pumpkin Hill',
             difficulty: 2,
             dimensions: [5,3],
@@ -206,8 +302,8 @@
             tilesetID: game.TilesetManager.LAVA_TILESET_ID
         },
         {
-            x:9,
-            y:5,
+            x: 31,
+            y: 3,
             description: 'Bot Land',
             difficulty: 3,
             dimensions: [10,5],
@@ -249,12 +345,12 @@
             tilesetID: game.TilesetManager.DESERT_TILESET_ID
         },
         {
-            x:11,
-            y:1,
+            x: 14,
+            y: 6,
             description: 'The Casino',
             difficulty: 4,
             dimensions: [10,5],
-            clearFog: [[14,5,4]],
+            clearFog: [[32,9,10],[20,8,3]],
 
             enemies: [
                 {
@@ -292,8 +388,8 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
-            x:14,
-            y:5,
+            x: 19,
+            y: 32,
             description: 'The Wintery Apocalypse',
             difficulty: 5,
             dimensions: [10,5],
@@ -335,12 +431,12 @@
             tilesetID: game.TilesetManager.SNOW_TILESET_ID
         },
         {
-            x:19,
-            y:3,
+            x: 15,
+            y: 12,
             description: 'Lazy Town',
             difficulty: 6,
             dimensions: [10,5],
-            clearFog: [[19,3,9999]],
+            clearFog: [[16,28,9999]],
 
             enemies: [
                 {
@@ -439,18 +535,17 @@
          */
         initializeOverworldMap: function() {
             // This is an empty array because there are no doodads yet.
-            var doodadIndices = new Array(this.overworldMapTileIndices.length);
             var tilesetID = game.TilesetManager.MARSH_TILESET_ID;
             var tiles = [];
             for (var i = 0; i < this.overworldMapTileIndices.length; i++) {
                 var x = i % this.overworldMapWidth;
                 var y = Math.floor(i/this.overworldMapWidth);
                 var graphic = this.overworldMapTileIndices[i];
-                var walkable = graphic == this.overworldWalkableTile;
+                var walkable = this.walkability[i];
                 tiles.push(new game.Tile(tilesetID, graphic, i, x, y, walkable));
             };
 
-            game.overworldMap = new game.Map(tiles, doodadIndices, tilesetID, this.overworldMapWidth, 1, true);
+            game.overworldMap = new game.Map(tiles, this.overworldDoodadIndices, tilesetID, this.overworldMapWidth, 1, true);
 
             // Put each node into the map
             for (var i = 0; i < this.overworldMapNodes.length; i++) {
@@ -463,7 +558,7 @@
             };
 
             // Clear fog around the "first" node.
-            game.overworldMap.setFog(1, 3, 3, false);
+            game.overworldMap.setFog(8, 7, 3, false);
         }
     };
 }());
