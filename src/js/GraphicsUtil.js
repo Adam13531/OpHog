@@ -93,6 +93,13 @@
         }
     };
 
+    window.game.graphicsUtil.drawLine = function(ctx,x1,y1,x2,y2) {
+        ctx.beginPath();
+        ctx.moveTo(x1,y1);
+        ctx.lineTo(x2,y2);
+        ctx.stroke();
+    };
+
     /**
      * Changes graphics modes (e.g. low/high).
      * @param {game.GraphicsSettings} graphicsSetting - the new mode
