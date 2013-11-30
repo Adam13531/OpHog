@@ -1588,6 +1588,9 @@
 
     /**
      * Draws a grid at puzzle piece boundaries. This is only used for debugging.
+     * It's also incorrect sometimes due to how we slice out blank portions of
+     * the map. This function only accounts for the TOP of the map being sliced,
+     * not the MIDDLE.
      */
     window.game.Map.prototype.debugDrawPuzzlePieceBoundaries = function(ctx) {
         ctx.save();

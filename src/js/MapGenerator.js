@@ -125,6 +125,42 @@
                                  0,0,0,0,0,
                                  0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
 
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 0,1,1,1,1,
+                                 1,1,0,0,0,
+                                 0,1,1,1,1,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 1,1,1,1,0,
+                                 0,0,0,1,1,
+                                 1,1,1,1,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,1,1,1,0,
+                                 1,1,1,1,0,
+                                 0,0,0,1,1,
+                                 1,1,1,1,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,1,0,0,
+                                 1,1,1,1,0,
+                                 0,0,0,1,1,
+                                 1,1,1,1,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,1,0,0,
+                                 1,1,1,1,0,
+                                 0,0,0,1,1,
+                                 1,1,1,1,0,
+                                 0,0,1,0,0,], game.PuzzlePieceType.MIDDLE);
+
+            this.addPuzzlePiece([0,0,1,0,0,
+                                 1,1,1,0,0,
+                                 0,0,0,0,0,
+                                 1,1,1,0,0,
+                                 0,0,1,0,0,], game.PuzzlePieceType.MIDDLE);
+
             this.addPuzzlePiece([0,0,1,0,0,
                                  0,1,0,0,0,
                                  1,0,0,0,0,
@@ -199,8 +235,14 @@
 
             this.addPuzzlePiece([0,0,0,0,0,
                                  0,0,0,0,0,
-                                 1,1,1,0,0,
+                                 1,1,1,1,1,
                                  0,0,0,0,0,
+                                 0,0,0,0,0,], game.PuzzlePieceType.RIGHT);
+
+            this.addPuzzlePiece([0,0,0,0,0,
+                                 1,1,0,0,0,
+                                 0,1,1,1,1,
+                                 1,1,0,0,0,
                                  0,0,0,0,0,], game.PuzzlePieceType.RIGHT);
         },
 
@@ -377,7 +419,10 @@
                 if ( leftPiece != null ) leftPiece.print('Left piece');
                 if ( downPiece != null ) downPiece.print('Down piece');
 
-                console.log('Fatal error: couldn\'t place piece at index: ' + index + ' flags: ' + flags + ' row: ' + row + ' heightInPuzzlePieces: ' + this.heightInPuzzlePieces);
+                var flagString = game.util.flagsToSemanticString(flags, game.PuzzlePieceType);
+                console.log('Fatal error: couldn\'t place piece at index: ' + index);
+                console.log('Row #' + row + ' of ' + (this.heightInPuzzlePieces - 1)); 
+                console.log('Column #' + columnIndex + ' of ' + (this.widthInPuzzlePieces - 1) + ', which means we need a piece with flags==' + flagString); 
                 if ( row == 0 && flags == game.PuzzlePieceType.MIDDLE ) console.log('This piece can\'t have top openings.');
                 if ( row == this.heightInPuzzlePieces - 1 && flags == game.PuzzlePieceType.MIDDLE ) console.log('This piece can\'t have bottom openings.');
             }
