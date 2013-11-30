@@ -128,8 +128,9 @@
         // two-frame animation.
         // 
         // The names for the keys should match create_key.doc (which Oryx
-        // provided) as much as possible.
-        // 
+        // provided) as much as possible. You can use a file called
+        // reversed_creature_key.txt that Adam made because it might be easier.
+        // He reversed the order of the creature names that Oryx provided.
         //----------------------------------------------------------------------
         PALADIN_F: 0, // white chick with a red-cross shield, yellow armor, and a mace
         SWORDSMAN_F: 1, // black chick with a sword, pink shirt, yellow earing, and grey cape
@@ -149,13 +150,60 @@
         RANGER_M: 15, // an archer with a bow, a quiver, and a gray cape with feathers
         THIEF_M: 16, // white dude with a green cape, red feather, and a knife
         KNIGHT_M: 17, // a warrior with blue armor, a shield, helmet, and sword
-        KNIGHT_ALT_1: 40, // knight with a grey full face helmet, shield with blue circle on it, and a spear
+        KNIGHT_ALT_1: 40, // knight with a grey helm, shield with blue circle on it, and a spear
         GUARD_ALT_F_1: 41, // white chick with a grey helmet, red hair, lipstick, blue cape, and a spear
         GUARD_ALT_M_1: 42, // white dude with with a grey helmet, blue cape, and a spear
-        KNIGHT_1: 43, // knight with grey full face helmet, shield with black hole in the center, and a spear
-        KING: 49, // an old man with a crown and staff and blue capes
+        KNIGHT_1: 43, // knight with grey helm, shield with black hole in the center, and a spear
+        GUARD_F_1: 44, // white chick with a grey helmet, lipstick, red cape, and a spear
+        GUARD_M_1: 45, // white dude with a grey helmet, red cape, and a spear
+        PRINCESS_1: 46,
+        PRINCE_1: 47,
+        QUEEN_1: 48,
+        KING_1: 49, // an old man with a crown and staff and blue capes
+        BISHOP: 50,
+        CHEF: 51,
+        BUTCHER: 52,
+        MERCHANT_1: 53,
+        HUMAN_F_1: 54,
+        HUMAN_M_1: 55,
+        HOODED_HUMAN_1: 56,
+        BANDIT_1: 57,
+        KNIGHT_ALT_2: 80,
+        GUARD_ALT_F_2: 81,
+        GUARD_ALT_M_2: 82,
+        KNIGHT_2: 83,
+        GUARD_F_2: 84,
+        GUARD_M_2: 85,
+        PRINCESS_2: 86,
+        PRINCE_2: 87,
+        QUEEN_2: 88,
+        KING_2: 89,
+        PROPHET: 90,
+        ALCHEMIST: 91,
+        SLAVE: 92,
+        MERCHANT_2: 93,
+        HUMAN_F_2: 94,
+        HUMAN_M_2: 95,
+        HOODED_HUMAN_2: 96,
+        BANDIT_2: 97,
+        HIGH_ELF_MAGE_F: 120,
         HIGH_ELF_RANGER_F: 121, // an elf with light gray skin, white hair, green cape, and bow
+        HIGH_ELF_SHIELD_FIGHTER_F: 122,
+        HIGH_ELF_FIGHTER_F: 123,
+        HIGH_ELF_MAGE_M: 124,
+        HIGH_ELF_RANGER_M: 125,
+        HIGH_ELF_SHIELD_FIGHTER_M: 126,
+        HIGH_ELF_FIGHTER_M: 127,
+        DROW_SORCERESS: 128,
+        DROW_MAGE: 129,
         DROW_RANGER: 130, // a blue-skinned creature with white hair, a purple shirt, and a red cape
+        DROW_FIGHTER: 131,
+        DROW_ASSASSIN: 132,
+        DWARF_PRIEST: 133,
+        DWARF_ALT: 134,
+        DWARF: 135,
+        BANDIT_3: 137,
+        ASSASSIN: 138,
         WOOF_ELF_RANGER_F: 171, // a gray-skinned creature with lipstick, brown hair, a gray shirt, and a gray/orange cape
         TREANT: 201, // a brown tree with no leaves and an unhappy face
         BLACK_WOLF: 243, // a dark grey wolf with red eyes

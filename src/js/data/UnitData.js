@@ -408,7 +408,7 @@
         NPC_OLD_MAN_WIZARD: {
             id: 10,
             name: 'Old Man Wizard',
-            graphicIndexes:[game.Graphic.KING],
+            graphicIndexes:[game.Graphic.KING_1],
 
             atk: {
                 start: 30,
