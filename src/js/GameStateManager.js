@@ -300,7 +300,9 @@
             game.overworldMap.setLastCameraProperties(game.Camera.getCenterX(), game.Camera.getCenterY(), game.Camera.getCurrentZoom());
 
             var nodeOfMap = game.OverworldMapData.getOverworldNodeOfLastMap();
-            game.currentMap = game.MapGenerator.generateRandomMap(50, 25, nodeOfMap);
+            var width = nodeOfMap.dimensions[0] * game.PUZZLE_PIECE_SIZE;
+            var height = nodeOfMap.dimensions[1] * game.PUZZLE_PIECE_SIZE;
+            game.currentMap = game.MapGenerator.generateRandomMap(width, height, nodeOfMap);
             game.UnitPlacementUI.initializeSpawnPoint();
 
             game.Minimap.initialize();

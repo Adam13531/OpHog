@@ -74,6 +74,8 @@
          *     y - Number - y coordinate in tiles
          *     description - String - this will show verbatim over the node
          *     difficulty - Number - difficulty of the map that will be generated
+         *     dimensions - Array:Number - an array of size 2 representing size
+         *         of the map in PUZZLE PIECES, not tiles.
          *     clearFog - Array:Array - an array of patches of fog to clear. Each array is [tileX, tileY, radius].
          *
          *     enemies - Array:Object - an array of objects with the following:
@@ -119,6 +121,7 @@
             y: 3,
             description: 'Green Hill Zone',
             difficulty: 1,
+            dimensions: [5,2],
             clearFog: [[6,2,2], [2,7,3]],
 
             enemies: [
@@ -157,6 +160,7 @@
             y:1,
             description: 'Pumpkin Hill',
             difficulty: 2,
+            dimensions: [10,5],
             clearFog: [[9,3,3]],
 
             enemies: [
@@ -200,6 +204,7 @@
             y:5,
             description: 'Bot Land',
             difficulty: 3,
+            dimensions: [10,5],
             clearFog: [[6,10,6]],
 
             enemies: [
@@ -238,6 +243,7 @@
             y:1,
             description: 'The Casino',
             difficulty: 4,
+            dimensions: [10,5],
             clearFog: [[14,5,4]],
 
             enemies: [
@@ -276,6 +282,7 @@
             y:5,
             description: 'The Wintery Apocalypse',
             difficulty: 5,
+            dimensions: [10,5],
             clearFog: [[19,3,12]],
 
             enemies: [
@@ -314,6 +321,7 @@
             y:3,
             description: 'Lazy Town',
             difficulty: 6,
+            dimensions: [10,5],
             clearFog: [[19,3,9999]],
 
             enemies: [
@@ -455,11 +463,17 @@
         var node = nodes[i];
         var nodeDescription = (node.description === undefined) ? ('Node #' + i) : ('"' + node.description + '"');
         var error = false;
+        var dimensions = node.dimensions;
         var enemies = node.enemies;
         var boss = node.boss;
         var generators = node.generators;
         var tilesetID = node.tilesetID;
         var minigame = node.minigame;
+
+        if ( dimensions === undefined || dimensions.length != 2 ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' has invalid (or undefined) dimensions!', 'invalid dimension' + i);
+        }
 
         if ( enemies === undefined ) {
             error = true;

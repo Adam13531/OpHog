@@ -391,11 +391,13 @@
          * heightInPuzzlePieces)
          */
         generateColumn: function(columnIndex) {
-            // Start the complexityMultiplier at 1 every time. This is simply
-            // the number of attempts we've tried so far.
+            // Start the complexityMultiplier at 1 every time so that every
+            // puzzle piece has its normal probability of being chosen.
             this.complexityMultiplier = 1;
             var validColumn = false;
+            var numAttempts = 0;
             while (!validColumn) {
+                numAttempts++;
 
                 for ( var i = 0; i < this.heightInPuzzlePieces; i++ ) {
                     var puzzlePiece;
@@ -413,7 +415,14 @@
                     numOpenings += puzzlePiece.getNumOpenings(game.DirectionFlags.RIGHT);
                 };
 
-                validColumn = (numOpenings >= this.pathComplexity);
+                if ( columnIndex == 0 ) {
+                    // The first column must have EXACTLY this many openings.
+                    validColumn = (numOpenings == this.pathComplexity);
+                } else {
+                    // Every other column just needs at least as many as the
+                    // first.
+                    validColumn = (numOpenings >= this.pathComplexity);
+                }
 
                 // The last column doesn't need right openings and just needs to
                 // connect to the previous column, so it's always valid.
@@ -423,7 +432,21 @@
 
                 if (!validColumn) {
                     this.columns.splice(columnIndex * this.heightInPuzzlePieces, this.heightInPuzzlePieces);
-                    this.complexityMultiplier++;
+
+                    if ( columnIndex == 0 ) {
+                        // The first column is a little tricky... if we require
+                        // only a single opening in the first column, then
+                        // increasing the path complexity may make it nearly
+                        // impossible to ever leave the loop. However, if we
+                        // require 5 openings, then we'll eventually want the
+                        // complexity to go up, so every 10 attempts we will
+                        // increase it.
+                        if ( (numAttempts % 10) == 0 && this.pathComplexity * 10 >= numAttempts ) {
+                            this.complexityMultiplier++;
+                        }
+                    } else {
+                        this.complexityMultiplier++;
+                    }
                 }
             }
         },
