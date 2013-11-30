@@ -25,6 +25,18 @@
         lootObjects: new Array(),
 
         /**
+         * If true, loot notifications will show up on the screen.
+         * @type {Boolean}
+         */
+        showLootNotifications: true,
+
+        setupUI: function() {
+            // Set loot notifications to enabled. The save file (or the user)
+            // can later change this.
+            this.setShowLootNotifications(true);
+        },
+
+        /**
          * Alerts the user that they obtained an item. This will add a row to
          * the UI.
          * @param {Item} item                  - the item you got
@@ -36,10 +48,26 @@
          * If this isn't supplied, the quantity is pulled from the item.
          */
         addItemNotification: function(item, didItemFitInInventory, originalQuantity) {
-            if ( item == null ) return;
+            if ( item == null || !this.showLootNotifications) return;
 
             var lootObject = new game.LootObject(item, originalQuantity, didItemFitInInventory);
             this.lootObjects.push(lootObject);
+        },
+
+        /**
+         * Sets showLootNotifications and updates the button appropriately.
+         * @param {Boolean} enabled - this is optional. If you leave it
+         * undefined, then it will be treated as whatever the current state of
+         * the button is.
+         */
+        setShowLootNotifications: function(enabled) {
+            if ( enabled === undefined ) {
+                enabled = $('#showLootNotifications').prop('checked');
+            }
+
+            this.showLootNotifications = enabled;
+            $('#showLootNotifications').prop('checked', enabled);
+            $('#showLootNotifications').button('refresh');
         },
 
         /**

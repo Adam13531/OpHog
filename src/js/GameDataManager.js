@@ -559,6 +559,7 @@
             var musicVolumeSetting = uiSettings.musicVolumeSetting;
             var minimapPositionSetting = uiSettings.minimapPositionSetting;
             var minimapIsVisible = uiSettings.minimapIsVisible;
+            var showLootNotifications = uiSettings.showLootNotifications;
 
             game.graphicsUtil.setGraphicsSettings(graphicsSetting);
             game.AudioManager.setSoundVolume(soundVolumeSetting);
@@ -566,6 +567,7 @@
             game.AudioManager.setAudioEnabled(audioEnabledSetting);
             game.Minimap.setPanelPosition(minimapPositionSetting, minimapIsVisible);
             game.Minimap.setVisible(minimapIsVisible);
+            game.LootUI.setShowLootNotifications(showLootNotifications);
         },
 
         saveSettings: function() {
@@ -577,6 +579,7 @@
             uiSettings.minimapPositionSetting = game.Minimap.position;
             uiSettings.minimapIsVisible = game.Minimap.visible;
             uiSettings.alreadyComputedGraphicsScore = !game.FramerateLimiter.calculatingScore;
+            uiSettings.showLootNotifications = game.LootUI.showLootNotifications;
             localStorage.uiSettings = JSON.stringify(uiSettings);
         },
 

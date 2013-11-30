@@ -74,8 +74,12 @@
          *     y - Number - y coordinate in tiles
          *     description - String - this will show verbatim over the node
          *     difficulty - Number - difficulty of the map that will be generated
+         *     dimensions - Array:Number - an array of size 2 representing size
+         *         of the map in PUZZLE PIECES, not tiles.
          *     clearFog - Array:Array - an array of patches of fog to clear. Each array is [tileX, tileY, radius].
-         *
+         *     npcs - Array:Object - an array of objects with the following:
+         *         absoluteChance - a chance from 0-1 that NPCs will spawn on this map.
+         *             It is called 'absolute' because it's not based on anything else.
          *     enemies - Array:Object - an array of objects with the following:
          *         id - Number - the ID of the enemy (see UnitData.js)
          *         levelRange - Array[2] - an array of [minLevel, maxLevel].
@@ -119,6 +123,7 @@
             y: 3,
             description: 'Green Hill Zone',
             difficulty: 1,
+            dimensions: [5,2],
             clearFog: [[6,2,2], [2,7,3]],
 
             enemies: [
@@ -157,6 +162,7 @@
             y:1,
             description: 'Pumpkin Hill',
             difficulty: 2,
+            dimensions: [5,3],
             clearFog: [[9,3,3]],
 
             enemies: [
@@ -174,6 +180,10 @@
                     relativeWeight: 250
                 }
             ],
+
+            npcs: {
+                absoluteChance: 1,
+            },
 
             generators: {
                 chancePerWalkableTile: .02,
@@ -200,6 +210,7 @@
             y:5,
             description: 'Bot Land',
             difficulty: 3,
+            dimensions: [10,5],
             clearFog: [[6,10,6]],
 
             enemies: [
@@ -212,6 +223,10 @@
                     levelRange: [4,6],
                 }
             ],
+
+            npcs: {
+                absoluteChance: .75,
+            },
 
             generators: {
                 chancePerWalkableTile: .02,
@@ -238,6 +253,7 @@
             y:1,
             description: 'The Casino',
             difficulty: 4,
+            dimensions: [10,5],
             clearFog: [[14,5,4]],
 
             enemies: [
@@ -250,6 +266,10 @@
                     levelRange: [8,10],
                 }
             ],
+
+            npcs: {
+                absoluteChance: .5,
+            },
 
             generators: {
                 chancePerWalkableTile: .02,
@@ -276,6 +296,7 @@
             y:5,
             description: 'The Wintery Apocalypse',
             difficulty: 5,
+            dimensions: [10,5],
             clearFog: [[19,3,12]],
 
             enemies: [
@@ -288,6 +309,10 @@
                     levelRange: [10,15],
                 }
             ],
+            
+            npcs: {
+                absoluteChance: .25,
+            },
 
             generators: {
                 chancePerWalkableTile: .02,
@@ -314,6 +339,7 @@
             y:3,
             description: 'Lazy Town',
             difficulty: 6,
+            dimensions: [10,5],
             clearFog: [[19,3,9999]],
 
             enemies: [
@@ -455,11 +481,18 @@
         var node = nodes[i];
         var nodeDescription = (node.description === undefined) ? ('Node #' + i) : ('"' + node.description + '"');
         var error = false;
+        var dimensions = node.dimensions;
         var enemies = node.enemies;
+        var npcs = node.npcs;
         var boss = node.boss;
         var generators = node.generators;
         var tilesetID = node.tilesetID;
         var minigame = node.minigame;
+
+        if ( dimensions === undefined || dimensions.length != 2 ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' has invalid (or undefined) dimensions!', 'invalid dimension' + i);
+        }
 
         if ( enemies === undefined ) {
             error = true;
@@ -488,6 +521,14 @@
 
         if ( error ) {
             continue;
+        }
+
+        // If you didn't specify NPCs then that's fine, you just won't get any
+        // in your map.
+        if ( npcs === undefined ) {
+            node.npcs = {
+                absoluteChance: 0
+            };
         }
 
         // Keep track of which enemies we've seen so that we warn when you have

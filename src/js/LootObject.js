@@ -10,7 +10,6 @@
          */
         this.ttl = game.NUM_SEC_TO_SHOW_OBTAINED_ITEMS;
         this.item = item;
-        this.graphicIndex = this.item.getGraphicIndex();
         this.opacity = 1;
 
         // These dimensions will be computed later when we have a canvas context
@@ -120,7 +119,7 @@
 
         // Draw the item
         ctx.globalAlpha = this.opacity;
-        itemSheet.drawSprite(ctx, this.graphicIndex, x + this.padding, y + this.height / 2 - game.ITEM_SPRITE_SIZE / 2);
+        itemSheet.drawSprite(ctx, this.item.graphicIndex, x + this.padding, y + this.height / 2 - game.ITEM_SPRITE_SIZE / 2);
 
         // Draw the line(s) of text
         ctx.font = game.MediumFont;

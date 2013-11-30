@@ -295,8 +295,13 @@
      * Places NPCs randomly on the map.
      */
     window.game.Map.prototype.placeNPCs = function() {
-        // Get 7 tiles that are minimally 3 away from every spawner        
-        var npcTiles = this.getRandomPlaceableTiles(3, 7);
+        var chanceForNPC = this.nodeOfMap.npcs.absoluteChance;
+        if ( !game.util.percentChance(chanceForNPC) ) {
+            return;
+        }
+
+        // Get tiles that are minimally 3 away from every spawner        
+        var npcTiles = this.getRandomPlaceableTiles(3, 1);
 
         for (var i = 0; i < npcTiles.length; i++) {
             var npcTile = npcTiles[i];
@@ -1579,6 +1584,50 @@
      */
     window.game.Map.prototype.getTile = function(tileX, tileY) {
         return this.mapTiles[tileY * this.numCols + tileX];
+    };
+
+    /**
+     * Draws a grid at puzzle piece boundaries. This is only used for debugging.
+     * It's also incorrect sometimes due to how we slice out blank portions of
+     * the map. This function only accounts for the TOP of the map being sliced,
+     * not the MIDDLE.
+     */
+    window.game.Map.prototype.debugDrawPuzzlePieceBoundaries = function(ctx) {
+        ctx.save();
+        game.Camera.scaleAndTranslate(ctx);
+
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = 3;
+
+        var ppSize = game.PUZZLE_PIECE_SIZE;
+        var tSize = game.TILESIZE;
+
+        // Currently (11/29/13), we cut off the tops and bottoms of maps if
+        // there's a lot of blank space, which means we need to offset the grid
+        // that we draw by how much we cut off the top. For now, we know how
+        // much we got off the top based on how far the first spawner is from
+        // the top of the map.
+        var allSpawners = game.currentMap.getAllTiles(game.TileFlags.SPAWNER);
+        var firstSpawner = allSpawners[0];
+
+        // '2' because the spawner shoudl be in the center of the tile.
+        var offsetFromTop = firstSpawner.y - 2;
+
+        for (var i = 0; i < this.numRows / ppSize; i++) {
+            var tileIndex = i * ppSize + offsetFromTop;
+            var y = tileIndex * tSize;
+            game.graphicsUtil.drawLine(ctx, 0, y, this.widthInPixels, y);
+        };
+
+        for (var i = 0; i < this.numCols / ppSize; i++) {
+            var x = i * ppSize * tSize;
+            game.graphicsUtil.drawLine(ctx,x, offsetFromTop * tSize, x, this.heightInPixels);
+        };
+        
+        // Draw a line on the bottom of the map to complete the grid.
+        var y = this.heightInPixels - ctx.lineWidth/2;
+        game.graphicsUtil.drawLine(ctx, 0, y, this.widthInPixels, y);
+        ctx.restore();
     };
 
 }());
