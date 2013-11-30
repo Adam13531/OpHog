@@ -211,16 +211,33 @@
 
         /**
          * Draws the entire map to the minimap's canvas.
+         *
+         * I'm going to explain the ceil/floor stuff that's going on in this
+         * comment instead of down below. We're taking a large map and trying to
+         * draw it accurately in a small space. Normally, this would work fine,
+         * because we would use nearly exact ratios, e.g. drawing 2 tiles of
+         * size 48 into a minimap of size 20 would mean that each pixel in the
+         * minimap represents 2.4 pixels in the map. However, some browsers
+         * don't like it when you draw to decimal values (e.g. drawing at x==2.4
+         * could create a shearing effect).
+         *
+         * So if the size SHOULD be 2.4, we instead draw at the rounded
+         * coordinate: 2. The next loop, we SHOULD be drawing at 4.8, so it
+         * rounds to 5. After that, it SHOULD be 7.2, so it's 7. The differences
+         * between this series ([0,2,5,7,10,12,14...]) are [2,3,2,3,2,2,...].
+         * Those differences are the sizes we must use when drawing. The
+         * algorithm below will compute them correctly by checking to see if the
+         * next hop is equal to the Math.ceil value, and if so, it will
+         * increment the size.
          */
         drawMapToMinimapCanvas: function() {
             var tileWidth = this.width / game.currentMap.numCols;
             var tileHeight = this.height / game.currentMap.numRows;
 
-            // Use "ceil" instead of "round" so that we're guaranteed to draw to
-            // every pixel of the minimap's canvas. If we used "round", it might
-            // round down, which may leave small gaps between rows/cols.
-            tileWidth = Math.ceil(tileWidth);
-            tileHeight = Math.ceil(tileHeight);
+            var ceilTileWidth = Math.ceil(tileWidth);
+            var ceilTileHeight = Math.ceil(tileHeight);
+            var floorTileWidth = Math.floor(tileWidth);
+            var floorTileHeight = Math.floor(tileHeight);
 
             // Clear the context first
             this.minimapCtx.clearRect(0, 0, this.width, this.height);
@@ -239,7 +256,22 @@
                     var drawX = Math.round(x * tileWidth);
                     var drawY = Math.round(y * tileHeight);
 
-                    this.minimapCtx.fillRect(drawX, drawY, tileWidth, tileHeight);
+                    var width = floorTileWidth;
+                    var height = floorTileHeight;
+
+                    // If the rounded value is always going to be the same, then
+                    // ignore the computation below.
+                    if ( ceilTileWidth != floorTileWidth ) {
+                        var nextIncrementX = Math.round((x + 1) * tileWidth);
+                        if ( nextIncrementX - drawX == ceilTileWidth ) width++;
+                    }
+
+                    if ( ceilTileHeight != floorTileHeight ) {
+                        var nextIncrementY = Math.round((y + 1) * tileHeight);
+                        if ( nextIncrementY - drawY == ceilTileHeight ) height++;
+                    }
+
+                    this.minimapCtx.fillRect(drawX, drawY, width, height);
                 }
             }
         },
