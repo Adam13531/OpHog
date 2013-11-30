@@ -295,8 +295,13 @@
      * Places NPCs randomly on the map.
      */
     window.game.Map.prototype.placeNPCs = function() {
-        // Get 7 tiles that are minimally 3 away from every spawner        
-        var npcTiles = this.getRandomPlaceableTiles(3, 7);
+        var chanceForNPC = this.nodeOfMap.npcs.absoluteChance;
+        if ( !game.util.percentChance(chanceForNPC) ) {
+            return;
+        }
+
+        // Get tiles that are minimally 3 away from every spawner        
+        var npcTiles = this.getRandomPlaceableTiles(3, 1);
 
         for (var i = 0; i < npcTiles.length; i++) {
             var npcTile = npcTiles[i];

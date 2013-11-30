@@ -77,7 +77,9 @@
          *     dimensions - Array:Number - an array of size 2 representing size
          *         of the map in PUZZLE PIECES, not tiles.
          *     clearFog - Array:Array - an array of patches of fog to clear. Each array is [tileX, tileY, radius].
-         *
+         *     npcs - Array:Object - an array of objects with the following:
+         *         absoluteChance - a chance from 0-1 that NPCs will spawn on this map.
+         *             It is called 'absolute' because it's not based on anything else.
          *     enemies - Array:Object - an array of objects with the following:
          *         id - Number - the ID of the enemy (see UnitData.js)
          *         levelRange - Array[2] - an array of [minLevel, maxLevel].
@@ -160,7 +162,7 @@
             y:1,
             description: 'Pumpkin Hill',
             difficulty: 2,
-            dimensions: [10,5],
+            dimensions: [5,3],
             clearFog: [[9,3,3]],
 
             enemies: [
@@ -178,6 +180,10 @@
                     relativeWeight: 250
                 }
             ],
+
+            npcs: {
+                absoluteChance: 1,
+            },
 
             generators: {
                 chancePerWalkableTile: .02,
@@ -218,6 +224,10 @@
                 }
             ],
 
+            npcs: {
+                absoluteChance: .75,
+            },
+
             generators: {
                 chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
@@ -257,6 +267,10 @@
                 }
             ],
 
+            npcs: {
+                absoluteChance: .5,
+            },
+
             generators: {
                 chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
@@ -295,6 +309,10 @@
                     levelRange: [10,15],
                 }
             ],
+            
+            npcs: {
+                absoluteChance: .25,
+            },
 
             generators: {
                 chancePerWalkableTile: .02,
@@ -465,6 +483,7 @@
         var error = false;
         var dimensions = node.dimensions;
         var enemies = node.enemies;
+        var npcs = node.npcs;
         var boss = node.boss;
         var generators = node.generators;
         var tilesetID = node.tilesetID;
@@ -502,6 +521,14 @@
 
         if ( error ) {
             continue;
+        }
+
+        // If you didn't specify NPCs then that's fine, you just won't get any
+        // in your map.
+        if ( npcs === undefined ) {
+            node.npcs = {
+                absoluteChance: 0
+            };
         }
 
         // Keep track of which enemies we've seen so that we warn when you have
