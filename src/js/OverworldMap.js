@@ -591,25 +591,22 @@
             }
         };
 
-        for (var j = 0; j < generators.length; j++) {
-            var generator = generators[j];
-            if ( generator.chancePerWalkableTile === undefined ) {
-                game.util.debugDisplayText(nodeDescription + ' has a generator with no chancePerWalkableTile!', 'no chancePerWalkableTile' + i + j);
-                continue;
-            }
-            if ( generator.spread === undefined ) {
-                game.util.debugDisplayText(nodeDescription + ' has a generator with no spread!', 'no spread' + i + j);
-                continue;
-            }
-            if ( generator.placement === undefined ) {
-                game.util.debugDisplayText(nodeDescription + ' has a generator with no placement!', 'no placement' + i + j);
-                continue;
-            }
+        if ( generators.chancePerWalkableTile === undefined ) {
+            game.util.debugDisplayText(nodeDescription + ' defines generators with no chancePerWalkableTile!', 'no chancePerWalkableTile' + i + j);
+            continue;
+        }
+        if ( generators.spread === undefined ) {
+            game.util.debugDisplayText(nodeDescription + ' defines generators with no spread!', 'no spread' + i + j);
+            continue;
+        }
+        if ( generators.placement === undefined ) {
+            game.util.debugDisplayText(nodeDescription + ' defines generators with no placement!', 'no placement' + i + j);
+            continue;
+        }
 
-            if ( generator.minDistanceFromSpawn === undefined ) {
-                generator.minDistanceFromSpawn = 7;
-            }
-        };
+        if ( generators.minDistanceFromSpawn === undefined ) {
+            generators.minDistanceFromSpawn = 7;
+        }
 
         if ( boss.id === undefined ) {
             game.util.debugDisplayText(nodeDescription + ' has no boss ID!', 'no boss ID' + i);
