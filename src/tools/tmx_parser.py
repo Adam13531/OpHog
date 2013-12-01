@@ -87,11 +87,19 @@ def main():
     convertedMapFile.write('\n\n')
 
     fastForwardToData()
+    readData('overworldPaths: [\n\t')
+    convertedMapFile.write('\n\n')
+
+    fastForwardToData()
     readData('overworldDoodadIndices: [\n\t')
     convertedMapFile.write('\n\n')
 
     fastForwardToData()
-    readData('walkability: [\n\t', True)
+    readData('overworldWalkability: [\n\t', True)
+    convertedMapFile.write('\n\n')
+
+    fastForwardToData()
+    readData('overworldExtra: [\n\t')
 
     savedMapFile.close()
     convertedMapFile.close()

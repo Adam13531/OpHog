@@ -13,8 +13,15 @@
      * @param {Object} nodeOfMap - an object from
      * game.OverworldMapData.overworldMapNodes
      * @param {Boolean} isOverworldMap - true if this is the overworld map.
+     * @param {Array:Number} pathLayer - only used by the overworld map. The
+     * overworld map doesn't have a single nonwalkable tile, so it needs to know
+     * specifically which tiles to draw on another layer so that gray doesn't
+     * appear beneath it.
+     * @param {Array:Number} extraLayer - only used by the overworld map. This
+     * contains shadows, ridges, etc. that make the world look better but aren't
+     * really necessary. 
      */
-    window.game.Map = function Map(tiles, doodadIndices, tilesetID, width, nodeOfMap, isOverworldMap) {
+    window.game.Map = function Map(tiles, doodadIndices, tilesetID, width, nodeOfMap, isOverworldMap, pathLayer, extraLayer) {
         this.numCols = width;
         this.numRows = tiles.length / this.numCols;
         this.isOverworldMap = isOverworldMap;
@@ -24,6 +31,8 @@
 
         this.mapTiles = tiles;
         this.doodadIndices = doodadIndices;
+        this.pathLayer = pathLayer;
+        this.extraLayer = extraLayer;
 
         /**
          * Array of booleans representing whether there's fog over a tile.
@@ -1339,10 +1348,15 @@
                         if ( tile.isWalkable() ) {
                             envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, drawX,drawY);
                         }
-
                         envSheet.drawSprite(ctx, graphic, drawX,drawY);
+                        if ( this.isOverworldMap && this.pathLayer[index] !== undefined ) {
+                            envSheet.drawSprite(ctx, this.pathLayer[index], drawX, drawY);
+                        }
                         if ( doodadGraphic != null ) {
                             envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
+                        }
+                        if ( this.isOverworldMap && this.extraLayer[index] !== undefined ) {
+                            envSheet.drawSprite(ctx, this.extraLayer[index], drawX, drawY);
                         }
                         if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
                             ctx.fillStyle = greenFillStyle;
@@ -1361,8 +1375,14 @@
                             envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, drawX,drawY);
                         }
                         envSheet.drawSprite(ctx, graphic, drawX,drawY);
+                        if ( this.isOverworldMap && this.pathLayer[index] !== undefined ) {
+                            envSheet.drawSprite(ctx, this.pathLayer[index], drawX, drawY);
+                        }
                         if ( doodadGraphic != null ) {
                             envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
+                        }
+                        if ( this.isOverworldMap && this.extraLayer[index] !== undefined ) {
+                            envSheet.drawSprite(ctx, this.extraLayer[index], drawX, drawY);
                         }
                         if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
                             ctx.fillStyle = greenFillStyle;
