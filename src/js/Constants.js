@@ -208,4 +208,30 @@
      */
     window.game.PUZZLE_PIECE_SIZE = 5;
 
+    /**
+     * These are the movement AIs. Each individual AI is commented.
+     */
+    window.game.MovementAI = {
+        // Units with this AI will follow a path from start to finish.
+        FOLLOW_PATH: 'follow path',
+
+        // Units with this AI will be leashed to a certain point. They are given
+        // leashTileX and leashTileY. These units can walk on unwalkable tiles.
+        LEASH_TO_TILE: 'leash to tile',
+
+        // Wander around the walkable tiles that aren't covered in fog. Units
+        // can move in any direction as long as tiles
+        // are walkable. Backtracking is allowed.
+        // 
+        // This is intended for the overworld for now.
+        WANDER_UNFOGGY_WALKABLE: 'wander unfoggy walkable',
+
+        // Moves to a specific tile, only following walkable tiles that aren't
+        // foggy. Units can move in any direction as long as tiles are walkable.
+        // Backtracking is allowed.
+        // 
+        // This is intended for the overworld for now.
+        MOVE_TO_SPECIFIC_TILE: 'move to specific point'
+    };
+
 }());

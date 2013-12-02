@@ -6,11 +6,24 @@
      * @param {Number} tileY - y coordinate
      * @param {Array:PossibleEnemy} possibleEnemies - the set of possible
      * enemies that this generator can produce.
+     * @param {Array:MovementAI} movementAIs List of possible movement AIs that
+     * enemies can have that get spawned from this generator.
+     * @param {Number} maxEnemiesToSpawn Maximum number of enemies that this
+     * generator is allowed to spawn.
      */
-    window.game.Generator = function Generator(tileX, tileY, possibleEnemies) {
+    window.game.Generator = function Generator(tileX, tileY, possibleEnemies, movementAIs, maxEnemiesToSpawn) {
         this.tileX = tileX;
         this.tileY = tileY;
         this.possibleEnemies = possibleEnemies;
+        this.numGeneratedEnemies = 0;
+        this.maxEnemiesToSpawn = maxEnemiesToSpawn;
+
+        this.movementAIs = [];
+        for (var i = 0; i < movementAIs.length; i++) {
+            var movementAI = {};
+            game.util.copyProps(movementAIs[i], movementAI);
+            this.movementAIs.push(movementAI);
+        };
     };
 
     /**
@@ -35,12 +48,14 @@
         var deltaAsSec = delta / 1000;
 
         // Hard-code some relatively small percent for now.
-        if ( Math.random() < .004 ) this.produceEnemy();
+        if ( Math.random() < .004 &&
+             this.numGeneratedEnemies < this.maxEnemiesToSpawn ) {
+            this.produceEnemy();
+        }
     };
 
     /**
      * Creates an enemy.
-     * @return {null}
      */
     window.game.Generator.prototype.produceEnemy = function() {
         var possibleEnemy = game.util.randomFromWeights(this.possibleEnemies);
@@ -52,6 +67,7 @@
 
         newUnit.placeUnit(this.tileX, this.tileY, game.MovementAI.FOLLOW_PATH);
         game.UnitManager.addUnit(newUnit);
+        this.numGeneratedEnemies++;
     };
 
 }());

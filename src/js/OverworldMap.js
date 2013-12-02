@@ -138,6 +138,13 @@
             ],
 
             generators: {
+                maxEnemiesToSpawn: 5,
+                movementAIs: [
+                    {
+                        id: game.MovementAI.LEASH_TO_GENERATOR,
+                        relativeWeight: 50,
+                    }
+                ],
                 chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
@@ -606,6 +613,23 @@
 
         if ( generators.minDistanceFromSpawn === undefined ) {
             generators.minDistanceFromSpawn = 7;
+        }
+
+        if ( generators.maxEnemiesToSpawn === undefined ) {
+            generators.maxEnemiesToSpawn = 10;
+        }
+
+        var defaultMovementAIID = game.MovementAI.FOLLOW_PATH;
+        var defaultMovementAIRelativeWeight = 50;
+        if ( generators.movementAIs === undefined ) {
+            generators.movementAIs = [];
+            generators.movementAIs.push( {id: defaultMovementAIID, relativeWeight: defaultMovementAIRelativeWeight} );
+        } else {
+            for (var j = 0; j < generators.movementAIs.length; j++) {
+                movementAI = generators.movementAIs[j];
+                game.util.useDefaultIfUndefined(movementAI, 'id', defaultMovementAIID);
+                game.util.useDefaultIfUndefined(movementAI, 'relativeWeight', defaultMovementAIRelativeWeight);
+            };
         }
 
         if ( boss.id === undefined ) {

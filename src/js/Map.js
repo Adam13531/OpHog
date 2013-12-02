@@ -252,6 +252,8 @@
         var generatorPlacement = nodeOfMap.generators.placement;
         var spread = nodeOfMap.generators.spread;
         var enemies = nodeOfMap.enemies;
+        var movementAIs = nodeOfMap.generators.movementAIs;
+        var maxEnemiesToSpawn = nodeOfMap.generators.maxEnemiesToSpawn;
 
         if ( chancePerWalkableTile !== undefined ) {
             var numWalkableTiles = this.getAllTiles(game.TileFlags.WALKABLE).length;
@@ -286,7 +288,7 @@
                 };
             }
             
-            var generator = new game.Generator(generatorTile.x, generatorTile.y, possibleEnemies);
+            var generator = new game.Generator(generatorTile.x, generatorTile.y, possibleEnemies, movementAIs, maxEnemiesToSpawn);
             game.GeneratorManager.addGenerator(generator);
         };
     };
