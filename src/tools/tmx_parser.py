@@ -36,11 +36,13 @@ def readData(header, treatAsBool=False) :
             if index == '' : break
             indexAsInt = int(index)
             if treatAsBool :
-                boolStr = 'false' if indexAsInt is 0 else 'true'
-                convertedMapFile.write(boolStr + ',')
+                # Output 0 or 1 instead of false/true because it takes fewer
+                # characters, and the map files can get big.
+                zeroOrOne = 0 if indexAsInt is 0 else 1
+                convertedMapFile.write(str(zeroOrOne) + ',')
             else :
-                finalIndex = 'undefined' if indexAsInt is 0 else indexAsInt - 1
-                convertedMapFile.write(str(finalIndex) + ',')
+                # Output -1 instead of "undefined" to save characters.
+                convertedMapFile.write(str(indexAsInt - 1) + ',')
             count += 1
             if count is width :
                 convertedMapFile.write('\n\t')
