@@ -63,7 +63,14 @@
      * @param  {Number} deltaInSeconds - change in seconds since last update
      */
     window.game.ShopInventory.prototype.update = function(deltaInSeconds) {
+        var oldTime = this.timeUntilNewInventoryItems;
         this.timeUntilNewInventoryItems -= deltaInSeconds;
+
+        // Only update when at least one second has actually passed (at the very
+        // least so that we don't call '$.text()' repeatedly).
+        if ( Math.floor(oldTime) == Math.floor(this.timeUntilNewInventoryItems) ) {
+            return;
+        }
 
         // Checks to see if new items need to be generated for the inventory
         if (this.timeUntilNewInventoryItems < 0) {
