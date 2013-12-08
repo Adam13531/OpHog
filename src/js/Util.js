@@ -687,4 +687,50 @@
         return null;
     };
 
+    /**
+     * This will print the current stack trace to the screen. It's useful for
+     * devices that don't have a console (e.g. iPad).
+     *
+     * I adapted this code from something I found online.
+     */
+    window.game.util.printStackTrace = function() {
+        var callstack = [];
+        var stackLines = null;
+        try {
+            // The whole point of this line is to produce an exception.
+            thisVariableDoes.notExist +=0;
+        } catch(e) {
+
+            // Many browsers will have 'stack' in the exception (at least Chrome
+            // and Firefox will).
+            if (e.stack) {
+                stackLines = e.stack.split('\n');
+            } else if (window.opera && e.message) { //Opera
+                stackLines = e.message.split('\n');
+            }
+
+            if ( stackLines != null ) {
+                for (var i = 0; i < stackLines.length; i++) {
+                    callstack.push(stackLines[i]);
+                };
+                //Remove call to this function, which will appear on the top of
+                //the stack.
+                callstack.shift();
+            }
+        }
+
+        // Not sure how well the following code works.
+        if (stackLines == null) { //IE and Safari
+            var currentFunction = arguments.callee.caller;
+            while (currentFunction) {
+                var fn = currentFunction.toString();
+                var fname = fn.substring(fn.indexOf('function') + 8, fn.indexOf('')) || 'anonymous';
+                callstack.push(fname);
+                currentFunction = currentFunction.caller;
+            }
+        }
+
+        game.util.debugDisplayText(callstack.join('\n'),'callstack')
+    };
+
 }());
