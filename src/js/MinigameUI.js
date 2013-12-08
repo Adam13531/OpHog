@@ -16,16 +16,9 @@
     window.game.MinigameUI = {
 
         /**
-         * The number of "options" you have in the minigame. For now, this is
-         * how many divs will show with choices of enemies.
-         * @type {Number}
-         */
-        numDifficulties: 5,
-
-        /**
          * This contains all of the data for the minigames so that we know what
          * to do when you click a row. The number of entries in this array is
-         * equal to numDifficulties.
+         * equal to game.NUM_MINIGAME_DIFFICULTIES.
          *
          * The first entry in this array is the hardest difficulty (i.e. the top
          * row).
@@ -109,9 +102,10 @@
             var nodeData = nodeOfMap.minigame;
             var baseCoins = nodeData.baseCoins;
             var coinsPerLevel = nodeData.coinsPerLevel;
-
+            var minEnemiesArray = nodeData.minEnemies;
+            var maxEnemiesArray = nodeData.maxEnemies;
             // Start with the highest difficulty
-            for (var i = this.numDifficulties - 1; i >= 0; i--) {
+            for (var i = game.NUM_MINIGAME_DIFFICULTIES - 1; i >= 0; i--) {
 
                 // Get a list of all possible enemies in the map
                 var possibleEnemies = [];
@@ -120,7 +114,7 @@
                 };
 
                 // Make sure we don't choose too many types.
-                var numTypesToChoose = Math.min(possibleEnemies.length, Math.min(game.MAXIMUM_ENEMY_TYPES_IN_MINIGAME, this.numDifficulties));
+                var numTypesToChoose = Math.min(possibleEnemies.length, Math.min(game.MAXIMUM_ENEMY_TYPES_IN_MINIGAME, game.NUM_MINIGAME_DIFFICULTIES));
 
                 // These are the types of enemies that will actually show up.
                 // It's an Array of enemies as they show up in the map node.
@@ -137,8 +131,8 @@
                 };
 
                 // Figure out how many enemies will show up.
-                var minEnemies = (i + 1) * 5;
-                var maxEnemies = (i + 1) * 7;
+                var minEnemies = minEnemiesArray[i];
+                var maxEnemies = maxEnemiesArray[i];
                 var numTotalEnemies = game.util.randomInteger(minEnemies, maxEnemies);
 
                 // Make sure there's at least one enemy.
@@ -180,10 +174,10 @@
 
             this.computeMinigameData();
 
-            var heightPercent = Math.floor(100 / this.numDifficulties) - 2;
+            var heightPercent = Math.floor(100 / game.NUM_MINIGAME_DIFFICULTIES) - 2;
             this.selectedMinigame = null;
 
-            for (var i = 0; i < this.numDifficulties; i++) {
+            for (var i = 0; i < game.NUM_MINIGAME_DIFFICULTIES; i++) {
                 var divID = game.MINIGAME_DIV_ID_PREFIX + i;
                 $('#minigame-ui').append('<div id="' + divID + '"></div>');
 
@@ -272,7 +266,7 @@
         /**
          * This simply encloses minigameID in the function that's returned.
          * @param  {Number} minigameID - the row of the minigame. This is in the
-         * range [0, numDifficulties).
+         * range [0, game.NUM_MINIGAME_DIFFICULTIES).
          * @return {Function} - the "click" function for the minigame.
          */
         getStartMinigameFunction: function(minigameID) {
@@ -300,7 +294,7 @@
         /**
          * This actually starts the minigame by placing the players/enemies.
          * @param  {Number} minigameID - the row of the minigame. This is in the
-         * range [0, numDifficulties).
+         * range [0, game.NUM_MINIGAME_DIFFICULTIES).
          */
         startMinigame: function(minigameID) {
             var minigameData = this.minigameData[minigameID];
@@ -341,7 +335,7 @@
         /**
          * Adds the specified image data as an icon in this minigame.
          * @param  {Number} minigameID - the row of the minigame. This is in the
-         * range [0, numDifficulties).
+         * range [0, game.NUM_MINIGAME_DIFFICULTIES).
          * @param  {String} imageData - base64-encoded image data
          * @param  {Number} quantity  - the number to display on this icon
          */

@@ -208,4 +208,11 @@
      */
     window.game.PUZZLE_PIECE_SIZE = 5;
 
+    /**
+     * The number of "options" you have in the minigame. For now, this is how
+     * many divs will show with choices of enemies.
+     * @type {Number}
+     */
+    window.game.NUM_MINIGAME_DIFFICULTIES = 5;
+
 }());

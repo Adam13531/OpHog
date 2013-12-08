@@ -286,6 +286,11 @@
          *             minigame option
          *         coinsPerLevel - Number - the number of bonus coins per 
          *             difficulty level
+         *         minEnemies - Array:Number - minimum number of total enemies 
+         *             for each difficulty (the first is the easiest difficulty).
+         *             This is optional, but the default is something I put in 
+         *             just so that there are no errors; the numbers may not make sense.
+         *         maxEnemies - Array:Number - see above.
          *         spread - game.MinigameEnemySpread - this tells the minigame 
          *             how to pick enemies
          *
@@ -322,12 +327,14 @@
 
             boss: {
                 id: game.UnitType.TREE.id,
-                level: 20
+                level: 2
             },
 
             minigame: {
                 baseCoins: 300,
                 coinsPerLevel: 400,
+                minEnemies: [1,2,3,4,5],
+                maxEnemies: [3,5,7,9,11],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -810,6 +817,20 @@
         if ( minigame.coinsPerLevel === undefined ) {
             game.util.debugDisplayText(nodeDescription + ' has no minigame coinsPerLevel!', 'no minigame coinsPerLevel' + i);
             continue;
+        }
+
+        if ( node.minigame.minEnemies === undefined ) {
+            node.minigame.minEnemies = [];
+            for (var j = 0; j < game.NUM_MINIGAME_DIFFICULTIES; j++) {
+                node.minigame.minEnemies.push((j+1) * 5);
+            };
+        }
+
+        if ( node.minigame.maxEnemies === undefined ) {
+            node.minigame.maxEnemies = [];
+            for (var j = 0; j < game.NUM_MINIGAME_DIFFICULTIES; j++) {
+                node.minigame.maxEnemies.push((j+1) * 7);
+            };
         }
 
     };
