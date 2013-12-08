@@ -52,6 +52,34 @@
         },
 
         /**
+         * Registers both dblclick AND Hammer's doubletap so that this works
+         * with mouse AND touch.
+         * @param  {Object} $selector      - the JQuery selector corresponding
+         * to the DOM element where you want to register this handle
+         * @param  {Function} functionToCall - the function to call when you
+         * double click/tap
+         */
+        registerDoubleClickAndDoubleTap: function($selector, functionToCall) {
+            $selector.dblclick(functionToCall);
+
+            // Prevent the default of most browsers where it would zoom in.
+            var hammertime = $selector.hammer({prevent_default:true});
+            hammertime.on('doubletap', functionToCall );
+        },
+
+        /**
+         * See registerDoubleClickAndDoubleTap.
+         */
+        registerClickAndTap: function($selector, functionToCall) {
+            $selector.click(functionToCall);
+
+            // This will prevent you from being able to scroll the page by
+            // dragging.
+            var hammertime = $selector.hammer({prevent_default:true});
+            hammertime.on('tap', functionToCall );
+        },
+
+        /**
          * See hammerResetDragging.
          */
         update: function() {
