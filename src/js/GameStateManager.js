@@ -246,6 +246,14 @@
             game.GeneratorManager.removeAllGenerators();
             game.CollectibleManager.removeAllCollectibles();
 
+            // Particles are in world coordinates and should be removed so that
+            // they don't show in unusual locations.
+            game.ParticleManager.removeAllParticleSystems();
+
+            // It doesn't make sense for text to stay around either, but
+            // especially so because most text is based on world coordinates.
+            game.TextManager.removeAllTextObjects();
+
             game.TilesetManager.init();
 
             // If true, we will save the game at the end of this function.

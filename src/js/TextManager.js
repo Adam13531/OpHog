@@ -32,6 +32,10 @@
             };
         },
 
+        removeAllTextObjects: function() {
+            this.textObjs = [];
+        },
+
         /**
          * Draws text a single time. 
          * @param  {Object} ctx     - the canvas context
