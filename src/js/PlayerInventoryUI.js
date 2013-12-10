@@ -49,10 +49,9 @@
 
         // Position the instructions based on the canvas so that it looks
         // like a banner at the top.
-        var $canvas = $('#canvas');
-        var canvasPos = $canvas.position();
-        var width = $canvas.width() - 100;
-        var left = ($canvas.width() - width) / 2;
+        var canvasPos = game.$canvas.position();
+        var width = game.$canvas.width() - 100;
+        var left = (game.$canvas.width() - width) / 2;
         this.$useItemInstructions.css({
             position : 'absolute',
             top : (canvasPos.top + 5) + 'px',
@@ -111,7 +110,7 @@
             position: {
                 my: 'center',
                 at: 'center',
-                of: ('#canvas')
+                of: game.$canvas
             },
 
         });

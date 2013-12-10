@@ -72,7 +72,7 @@
                 position: {
                     my: 'center',
                     at: 'center',
-                    of: ('#canvas')
+                    of: game.$canvas
                 },
                 
             });

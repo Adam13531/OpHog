@@ -31,6 +31,9 @@
      */
     var NUM_SPRITESHEETS_TO_LOAD = 4;
 
+    // This is global.
+    game.$canvas = null;
+
     $(document).ready(function() {
         init();
     });
@@ -89,7 +92,6 @@
         // This requires that the spritesheets were loaded.
         game.MinigameUI.setupUI();
 
-        var $canvas = $('#canvas');
         var $lowGraphicsButton = $('#graphicsLow');
         var $highGraphicsButton = $('#graphicsHigh');
         var $audioOffButton = $('#audioOff');
@@ -229,7 +231,7 @@
                 // canvas"
                 my: 'right top',
                 at: 'right top',
-                of: $canvas
+                of: game.$canvas
             },
 
             close: function(event, ui) {
@@ -343,7 +345,7 @@
         // here: https://github.com/EightMedia/hammer.js/wiki/Getting-Started).
         // 
         // game.util.dumpObject comes in handy here too.
-        var hammertime = $canvas.hammer({prevent_default:true});
+        var hammertime = game.$canvas.hammer({prevent_default:true});
 
         // Get all of the camera's event handlers.
         hammertime.on('transformstart', game.Camera.getTransformStartEventHandler());
@@ -412,7 +414,7 @@
             game.Minimap.browserSizeChanged();
         });
 
-        $canvas.mousewheel(game.Camera.getMouseWheelEventHandler());
+        game.$canvas.mousewheel(game.Camera.getMouseWheelEventHandler());
 
         // Initialize the UI showing the inventory.
         // We initialize the UI first so that the character pictures show up
@@ -435,11 +437,12 @@
     }
 
     function initSettings() {
-        ctx = $('#canvas')[0].getContext('2d');
+        game.$canvas = $('#canvas');
+        ctx = game.$canvas[0].getContext('2d');
 
         //Calculate canvas height and width
-        game.canvasWidth = parseInt($('#canvas').attr('width'));
-        game.canvasHeight = parseInt($('#canvas').attr('height'));
+        game.canvasWidth = parseInt(game.$canvas.attr('width'));
+        game.canvasHeight = parseInt(game.$canvas.attr('height'));
 
         game.UICanvas.initialize();
 
