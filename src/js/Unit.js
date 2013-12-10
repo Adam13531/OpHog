@@ -638,7 +638,9 @@
         // var speed = Math.random()*120 + 500;
         var speed = 60;
         if ( game.GameStateManager.isMovingToNormalMap() ) {
-            speed = 300;
+            // Increase the speed based on how long we've been transitioning,
+            // that way the user doesn't have to wait forever.
+            speed = Math.min(1800, 300 + game.GameStateManager.timeSpentInCurrentState);
         }
         var change = speed * deltaAsSec;
 

@@ -52,6 +52,12 @@
         autoSaveOnOverworldCountdown: game.SAVE_GAME_ON_OVERWORLD_INTERVAL,
 
         /**
+         * Number of ms spent in the current state.
+         * @type {Number}
+         */
+        timeSpentInCurrentState: 0,
+
+        /**
          * These functions simply return true/false if you're in the specified
          * state.
          */
@@ -426,6 +432,10 @@
                 return;
             }
 
+            if ( this.previousState != this.currentState ) {
+                this.timeSpentInCurrentState = 0;
+            }
+
             this.previousState = this.currentState;
             this.currentState = newState;
 
@@ -528,6 +538,8 @@
          * @param  {Number} delta - time in ms since this function was last called
          */
         update: function(delta) {
+            this.timeSpentInCurrentState += delta;
+
             // If you're transitioning from the overworld to the normal map,
             // then check to see if all of your units made it to their
             // destinations.
