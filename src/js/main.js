@@ -746,11 +746,15 @@
         // Restore so that the camera will stop affecting the following draw
         // commands.
         ctx.restore();
-        game.TextManager.draw(ctx);
+        game.TextManager.draw(ctx, true);
 
         game.Player.drawCastleLife(ctx);
 
         game.Camera.concealOutOfBoundsAreas(ctx);
+
+        // Draw text that uses screen coordinates now that we've concealed the
+        // non-world area.
+        game.TextManager.draw(ctx, false);
 
         // The stuff that is drawn now will show up even over the "concealed"
         // areas.
