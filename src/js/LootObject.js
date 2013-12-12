@@ -18,6 +18,9 @@
         this.computedMetrics = false;
 
         this.padding = 5;
+        this.textOutlineColor = '#000';
+        this.textColor = '#fff';
+        this.borderColor = 'rgba(0,200,0,.75)';
         this.computeItemText(originalQuantity, didFit);
     };
 
@@ -100,6 +103,9 @@
         }
         if ( !didFit ) {
             this.text += ' - not enough room in inventory!';
+            this.textOutlineColor = '#200';
+            this.textColor = '#f00';
+            this.borderColor = 'rgba(200,0,0,.75)';
         }
     };
 
@@ -124,8 +130,8 @@
         // Draw the line(s) of text
         ctx.font = game.MediumFont;
         ctx.textBaseline = 'top';
-        ctx.strokeStyle = '#000';
-        ctx.fillStyle = '#fff';
+        ctx.strokeStyle = this.textOutlineColor;
+        ctx.fillStyle = this.textColor;
         ctx.lineWidth = 2;
         var startTextY = this.height / 2 - this.heightNeededForLines / 2 + 1;
 
@@ -148,7 +154,7 @@
 
         // Draw border
         ctx.lineWidth = 3;
-        ctx.strokeStyle = 'rgba(0,200,0,.75)';
+        ctx.strokeStyle = this.borderColor;
         ctx.strokeRect(x, y, this.width, this.height);
 
         ctx.restore();
