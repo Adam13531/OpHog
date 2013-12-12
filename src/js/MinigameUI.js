@@ -34,11 +34,17 @@
         selectedMinigame: null,
 
         /**
+         * The DOM element representing the dialog.
+         * @type {Object}
+         */
+        $minigameUI: null,
+
+        /**
          * Sets up the entire minigame UI.
          */
         setupUI: function() {
-            var $minigameUI = $('#minigame-ui');
-            $minigameUI.dialog({
+            this.$minigameUI = $('#minigame-ui');
+            this.$minigameUI.dialog({
                 autoOpen: false, 
 
                 // Prevent the user from closing this by pressing escape.
@@ -77,7 +83,7 @@
                 
             });
 
-            game.DialogManager.addDialog($minigameUI);
+            game.DialogManager.addDialog(this.$minigameUI);
         },
 
         /**
@@ -170,7 +176,7 @@
          */
         populateUI: function() {
             // Remove all existing divs
-            $('#minigame-ui').empty();
+            this.$minigameUI.empty();
 
             this.computeMinigameData();
 
@@ -179,7 +185,7 @@
 
             for (var i = 0; i < game.NUM_MINIGAME_DIFFICULTIES; i++) {
                 var divID = game.MINIGAME_DIV_ID_PREFIX + i;
-                $('#minigame-ui').append('<div id="' + divID + '"></div>');
+                this.$minigameUI.append('<div id="' + divID + '"></div>');
 
                 // The css to set, which we conditionally add to
                 var cssToSet = {
@@ -239,7 +245,7 @@
          * Adds the "skip minigame" button to the UI.
          */
         addSkipButton: function() {
-            $('#minigame-ui').append('<div id="minigame-cancel-div"></div>');
+            this.$minigameUI.append('<div id="minigame-cancel-div"></div>');
             $('#minigame-cancel-div').css({
                 // Despite the 2px margin that's on the last minigame div, we
                 // still want more padding.
@@ -376,15 +382,15 @@
         },
 
         show: function() {
-            $('#minigame-ui').dialog('open');
+            this.$minigameUI.dialog('open');
         },
         showIfHidden: function() {
-            if ( !$("#minigame-ui").dialog( 'isOpen' ) ) {
+            if ( !this.$minigameUI.dialog( 'isOpen' ) ) {
                 this.show();
             }
         },
         hide: function() {
-            $('#minigame-ui').dialog('close');
+            this.$minigameUI.dialog('close');
         }
 
     };
