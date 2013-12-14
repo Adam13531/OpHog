@@ -11,7 +11,7 @@
 		this.base(true, domSelector, slot);
 
         // Allow the user to double-click an item to buy it
-        $(this.$spanSelector).dblclick(game.ShopUI.buyItem());
+        game.HammerHelper.registerDoubleClickAndDoubleTap($(this.$spanSelector), game.ShopUI.buyItem());
 	};
 
 	window.game.ShopSlotUI.prototype = new game.SlotUI;

@@ -37,7 +37,7 @@
             position: {
                 my: 'center',
                 at: 'center',
-                of: ('#canvas')
+                of: game.$canvas
             },
         });
 
@@ -46,7 +46,7 @@
         // Turn this into a jQuery button so it gets themed
         $('#shopBuyButton').button();
 
-        $('#shopBuyButton').click(this.buyItem());
+        game.HammerHelper.registerClickAndTap($('#shopBuyButton'), this.buyItem());
     };
 
     window.game.ShopUI.prototype = new game.InventoryUI;

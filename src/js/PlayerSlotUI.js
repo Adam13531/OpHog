@@ -146,7 +146,7 @@
 
 		// For usable slots, double-clicking will enter USE mode.
         if ( this.slot.isUsableSlot() ) {
-            $(this.$spanSelector).dblclick(this.useItem(this));
+            game.HammerHelper.registerDoubleClickAndDoubleTap($(this.$spanSelector), this.useItem(this));
         }
 	}; 
 

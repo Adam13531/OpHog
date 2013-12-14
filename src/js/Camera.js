@@ -353,11 +353,10 @@
         browserSizeChanged: function() {
             var browserHeight = $(window).height();
 
-            var $canvas = $('#canvas');
             var $uiCanvas = $('#ui-canvas');
 
             // Update these variables
-            game.canvasWidth = $canvas.width();
+            game.canvasWidth = game.$canvas.width();
             game.UICanvas.width = $uiCanvas.width();
             game.UICanvas.height = $uiCanvas.height();
 
@@ -372,7 +371,7 @@
             
             // The canvas will scale according to where the UI-canvas is.
             game.canvasHeight = newTop;
-            $canvas.css({
+            game.$canvas.css({
                 position:'absolute',
                 height: newTop +'px',
                 top: '0px'
@@ -380,7 +379,7 @@
 
             // Modify the canvas contexts too or else everything will be weirdly
             // stretched.
-            var ctx = $canvas[0].getContext('2d');
+            var ctx = game.$canvas[0].getContext('2d');
             var uictx = game.UICanvas.uictx;
             ctx.canvas.width = game.canvasWidth;
             ctx.canvas.height = game.canvasHeight;
@@ -389,12 +388,12 @@
 
             // Change the position of the settings button.
             var $settingsButton = $('#settingsButton');
-            var canvasPos = $canvas.position();
+            var canvasPos = game.$canvas.position();
             var settingsWidth = $settingsButton.width();
             $settingsButton.css({
                 position : 'absolute',
                 top : (canvasPos.top + 5) + 'px',
-                left : (canvasPos.left + $canvas.width() - settingsWidth - 5) + 'px'
+                left : (canvasPos.left + game.$canvas.width() - settingsWidth - 5) + 'px'
             });
 
             // Make sure the portrait UI isn't scrolled too far.

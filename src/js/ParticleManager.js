@@ -21,10 +21,13 @@
             this.setEnabled(!this.enabled);
         },
 
+        removeAllParticleSystems: function() {
+            this.systems = [];
+        },
+
         setEnabled: function(enabled) {
             if ( !enabled ) {
-                // Get rid of existing systems
-                this.systems = [];
+                this.removeAllParticleSystems();
             }
 
             this.enabled = enabled;

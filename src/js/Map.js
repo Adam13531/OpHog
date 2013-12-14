@@ -13,8 +13,15 @@
      * @param {Object} nodeOfMap - an object from
      * game.OverworldMapData.overworldMapNodes
      * @param {Boolean} isOverworldMap - true if this is the overworld map.
+     * @param {Array:Number} pathLayer - only used by the overworld map. The
+     * overworld map doesn't have a single nonwalkable tile, so it needs to know
+     * specifically which tiles to draw on another layer so that gray doesn't
+     * appear beneath it.
+     * @param {Array:Number} extraLayer - only used by the overworld map. This
+     * contains shadows, ridges, etc. that make the world look better but aren't
+     * really necessary. 
      */
-    window.game.Map = function Map(tiles, doodadIndices, tilesetID, width, nodeOfMap, isOverworldMap) {
+    window.game.Map = function Map(tiles, doodadIndices, tilesetID, width, nodeOfMap, isOverworldMap, pathLayer, extraLayer) {
         this.numCols = width;
         this.numRows = tiles.length / this.numCols;
         this.isOverworldMap = isOverworldMap;
@@ -24,6 +31,8 @@
 
         this.mapTiles = tiles;
         this.doodadIndices = doodadIndices;
+        this.pathLayer = pathLayer;
+        this.extraLayer = extraLayer;
 
         /**
          * Array of booleans representing whether there's fog over a tile.
@@ -1334,49 +1343,45 @@
                     if ( $.inArray(doodadGraphic, animatedIndices) != -1 ) doodadGraphic += envSheet.getNumSpritesPerRow();
                 }
 
-                if ( drawingFogLayer ) {
-                    if ( this.fog[index] ) {
-                        // Walkable tiles don't always cover the whole area, so
-                        // we need to draw the unwalkable tile beneath it.
-                        if ( tile.isWalkable() ) {
-                            envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, drawX,drawY);
-                        }
-
-                        envSheet.drawSprite(ctx, graphic, drawX,drawY);
-                        if ( doodadGraphic != null ) {
-                            envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
-                        }
-                        if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
-                            ctx.fillStyle = greenFillStyle;
-                            ctx.fillRect(drawX,drawY,game.TILESIZE,game.TILESIZE);
-                            ctx.fillStyle = regularFillStyle;
-                        }
-                        if ( tile.isSpawnerPoint() ) {
-                            envSheet.drawSprite(ctx, game.Graphic.SPAWNER, drawX,drawY);
-                        }
+                if ( drawingFogLayer == this.fog[index] ) {
+                    // Walkable tiles don't always cover the whole area, so we
+                    // need to draw the unwalkable tile beneath it. The
+                    // overworld uses 'pathLayer' to accomplish the same thing.
+                    if ( !this.isOverworldMap && tile.isWalkable() ) {
+                        envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, drawX,drawY);
                     }
-                } else {
-                    // If there's no fog here and we're not drawing the fog
-                    // layer, then we just draw the map normally.
-                    if ( !this.fog[index] ) {
-                        if ( tile.isWalkable() ) {
-                            envSheet.drawSprite(ctx, tile.tileset.nonwalkableTileGraphic, drawX,drawY);
-                        }
-                        envSheet.drawSprite(ctx, graphic, drawX,drawY);
-                        if ( doodadGraphic != null ) {
-                            envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
-                        }
-                        if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
-                            ctx.fillStyle = greenFillStyle;
-                            ctx.fillRect(drawX,drawY,game.TILESIZE,game.TILESIZE);
-                            ctx.fillStyle = regularFillStyle;
-                        }
-                        if ( tile.isCastle() ) {
-                            envSheet.drawSprite(ctx, game.Graphic.GENERATOR, drawX,drawY);
-                        }
-                        if ( tile.isSpawnerPoint() ) {
-                            envSheet.drawSprite(ctx, game.Graphic.SPAWNER, drawX,drawY);
-                        }
+
+                    // Draw the tile
+                    envSheet.drawSprite(ctx, graphic, drawX,drawY);
+
+                    // For the overworld, draw the path
+                    if ( this.isOverworldMap && this.pathLayer[index] !== undefined ) {
+                        envSheet.drawSprite(ctx, this.pathLayer[index], drawX, drawY);
+                    }
+
+                    // Draw the doodad
+                    if ( doodadGraphic != null ) {
+                        envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
+                    }
+
+                    // For the overworld, draw the 'extra' layer
+                    if ( this.isOverworldMap && this.extraLayer[index] !== undefined ) {
+                        envSheet.drawSprite(ctx, this.extraLayer[index], drawX, drawY);
+                    }
+
+                    // If you're in USE mode, highlight valid target tiles.
+                    if ( game.playerInventoryUI.isTileAUseTarget(x,y) ) {
+                        ctx.fillStyle = greenFillStyle;
+                        ctx.fillRect(drawX,drawY,game.TILESIZE,game.TILESIZE);
+                        ctx.fillStyle = regularFillStyle;
+                    }
+
+                    // Draw castles and spawners.
+                    if ( tile.isCastle() ) {
+                        envSheet.drawSprite(ctx, game.Graphic.GENERATOR, drawX,drawY);
+                    }
+                    if ( tile.isSpawnerPoint() ) {
+                        envSheet.drawSprite(ctx, game.Graphic.SPAWNER, drawX,drawY);
                     }
                 }
 

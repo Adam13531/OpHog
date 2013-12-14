@@ -214,7 +214,12 @@
     window.game.MovementAI = {
         // Units with this AI will follow a path from start to finish.
         FOLLOW_PATH: 'follow path',
-
+    /**
+     * The number of "options" you have in the minigame. For now, this is how
+     * many divs will show with choices of enemies.
+     * @type {Number}
+     */
+    window.game.NUM_MINIGAME_DIFFICULTIES = 5;
         // Units with this AI will be leashed to a certain point. They are given
         // leashTileX and leashTileY. These units can walk on unwalkable tiles.
         LEASH_TO_TILE: 'leash to tile',
@@ -232,6 +237,4 @@
         // 
         // This is intended for the overworld for now.
         MOVE_TO_SPECIFIC_TILE: 'move to specific point'
-    };
-
-}());
+    };}());

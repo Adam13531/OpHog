@@ -32,6 +32,10 @@
             };
         },
 
+        removeAllTextObjects: function() {
+            this.textObjs = [];
+        },
+
         /**
          * Draws text a single time. 
          * @param  {Object} ctx     - the canvas context
@@ -124,11 +128,16 @@
         },
 
         /**
-         * Draws all text objects.
+         * Draws text objects.
+         * @param {Boolean} drawWorldTexts - if true, this will only draw text
+         * objects that are in world coordinates. If false, it will only draw
+         * text objects in screen coordinates.
          */
-        draw: function(ctx) {
+        draw: function(ctx, drawWorldTexts) {
             for (var i = 0; i < this.textObjs.length; i++) {
-                this.textObjs[i].draw(ctx);
+                if ( this.textObjs[i].useWorldCoordinates == drawWorldTexts) {
+                    this.textObjs[i].draw(ctx);
+                }
             };
         }
     };

@@ -42,7 +42,7 @@
                 $dialog.dialog( 'option', 'position', {
                     my: 'center',
                     at: 'center',
-                    of: $('#canvas')
+                    of: game.$canvas
                 });
             }
         },
@@ -61,6 +61,29 @@
 
             // The minigame UI shouldn't ever be closeable.
             $('#minigame-ui').dialog('option', 'closeOnEscape', false);
+        },
+
+        /**
+         * This will set all dialogs' fade-in and fade-out times. If the dialog
+         * didn't already have one of those times, it will remain instantaneous.
+         * @param {Boolean} isInstantaneous - if true, this will set both the
+         * fade-in and fade-out to 0. Otherwise, it will set it to the global
+         * constants.
+         */
+        setAllDialogFadeInOutTime: function(isInstantaneous) {
+            for (var i = 0; i < this.$dialogs.length; i++) {
+                var thisDialog = this.$dialogs[i];
+
+                var show = thisDialog.dialog('option', 'show');
+                if ( show != null ) {
+                    show.duration = isInstantaneous ? 0 : game.DIALOG_SHOW_MS;
+                }
+                
+                var hide = thisDialog.dialog('option', 'hide');
+                if ( hide != null ) {
+                    hide.duration = isInstantaneous ? 0 : game.DIALOG_HIDE_MS;
+                }
+            };
         },
 
         /**

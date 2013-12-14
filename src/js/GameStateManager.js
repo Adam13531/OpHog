@@ -52,6 +52,12 @@
         autoSaveOnOverworldCountdown: game.SAVE_GAME_ON_OVERWORLD_INTERVAL,
 
         /**
+         * Number of ms spent in the current state.
+         * @type {Number}
+         */
+        timeSpentInCurrentState: 0,
+
+        /**
          * These functions simply return true/false if you're in the specified
          * state.
          */
@@ -246,6 +252,14 @@
             game.GeneratorManager.removeAllGenerators();
             game.CollectibleManager.removeAllCollectibles();
 
+            // Particles are in world coordinates and should be removed so that
+            // they don't show in unusual locations.
+            game.ParticleManager.removeAllParticleSystems();
+
+            // It doesn't make sense for text to stay around either, but
+            // especially so because most text is based on world coordinates.
+            game.TextManager.removeAllTextObjects();
+
             game.TilesetManager.init();
 
             // If true, we will save the game at the end of this function.
@@ -418,6 +432,10 @@
                 return;
             }
 
+            if ( this.previousState != this.currentState ) {
+                this.timeSpentInCurrentState = 0;
+            }
+
             this.previousState = this.currentState;
             this.currentState = newState;
 
@@ -520,6 +538,8 @@
          * @param  {Number} delta - time in ms since this function was last called
          */
         update: function(delta) {
+            this.timeSpentInCurrentState += delta;
+
             // If you're transitioning from the overworld to the normal map,
             // then check to see if all of your units made it to their
             // destinations.

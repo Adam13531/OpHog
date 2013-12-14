@@ -65,8 +65,7 @@
         // Setting the item to whatever it currently is will update the picture.
         this.updateItem();
 
-        $(this.$spanSelector).click(this.clickedSlot(this));
-
+        game.HammerHelper.registerClickAndTap($(this.$spanSelector), this.clickedSlot(this));
     };
 
     /**

@@ -72,27 +72,6 @@
         return game.graphicsSetting == game.GraphicsSettings.HIGH;
     };
 
-    /**
-     * This will set a dialog's fade-in and fade-out times. If the dialog didn't
-     * already have one of those times, it will remain instantaneous.
-     * @param {Object}  $selector - a JQuery-selected dialog, e.g. you could
-     * pass in $('#dialog') for this.
-     * @param {Boolean} isInstantaneous - if true, this will set both the
-     * fade-in and fade-out to 0. Otherwise, it will set it to the global
-     * constants.
-     */
-    window.game.graphicsUtil.setDialogFadeInOutTime = function($selector, isInstantaneous) {
-        var show = $selector.dialog('option', 'show');
-        if ( show != null ) {
-            show.duration = isInstantaneous ? 0 : game.DIALOG_SHOW_MS;
-        }
-        
-        var hide = $selector.dialog('option', 'hide');
-        if ( hide != null ) {
-            hide.duration = isInstantaneous ? 0 : game.DIALOG_HIDE_MS;
-        }
-    };
-
     window.game.graphicsUtil.drawLine = function(ctx,x1,y1,x2,y2) {
         ctx.beginPath();
         ctx.moveTo(x1,y1);
@@ -135,13 +114,7 @@
                 break;
         };
 
-        // Adjust all of the fade-in/out times.
-        this.setDialogFadeInOutTime($('#inventory-screen'), instantaneousDialogs);
-        this.setDialogFadeInOutTime($('#settingsDialog'), instantaneousDialogs);
-        this.setDialogFadeInOutTime($('#shop-screen'), instantaneousDialogs);
-        this.setDialogFadeInOutTime($('#buyingScreenContainer'), instantaneousDialogs);
-        this.setDialogFadeInOutTime($('#minigame-ui'), instantaneousDialogs);
-        this.setDialogFadeInOutTime($('#quest-ui'), instantaneousDialogs);
+        game.DialogManager.setAllDialogFadeInOutTime(instantaneousDialogs);
 
         // Refresh the radio buttons so that they reflect their new 'checked'
         // state.
