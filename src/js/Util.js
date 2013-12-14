@@ -511,7 +511,8 @@
         // doesn't exist.
         var $divContainer = $('#allDebugDisplayText');
         if ( $divContainer.length == 0 ) {
-            game.$canvas.before('<div id="allDebugDisplayText"></div>');
+            // Use 'body' because it's always defined.
+            $('body').after('<div id="allDebugDisplayText"></div>');
 
             // Obtain the div now that it exists
             $divContainer = $('#allDebugDisplayText');

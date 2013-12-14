@@ -18,6 +18,12 @@
         this.numGeneratedEnemies = 0;
         this.maxEnemiesToSpawn = maxEnemiesToSpawn;
 
+        /**
+         * The units this generator produced.
+         * @type {Array:Unit}
+         */
+        this.unitsProduced = [];
+
         this.movementAIs = [];
         for (var i = 0; i < movementAIs.length; i++) {
             var movementAI = {};
@@ -55,6 +61,22 @@
     };
 
     /**
+     * Tell the units that their generator was destroyed so that they don't try
+     * to update a generator that doesn't exist.
+     */
+    window.game.Generator.prototype.aboutToDestroy = function() {
+        for (var i = 0; i < this.unitsProduced.length; i++) {
+            this.unitsProduced[i].generator = undefined;
+        };
+    };
+
+    window.game.Generator.prototype.unitDied = function(unit) {
+        // Checking to see if 'unit' was actually produced by this generator is
+        // unnecessary since the generator is only ever set in produceEnemy.
+        this.numGeneratedEnemies--;
+    };
+
+    /**
      * Creates an enemy.
      */
     window.game.Generator.prototype.produceEnemy = function() {
@@ -68,6 +90,8 @@
         newUnit.placeUnit(this.tileX, this.tileY, game.MovementAI.FOLLOW_PATH);
         game.UnitManager.addUnit(newUnit);
         this.numGeneratedEnemies++;
+        this.unitsProduced.push(newUnit);
+        newUnit.generator = this;
     };
 
 }());

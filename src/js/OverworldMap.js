@@ -320,12 +320,6 @@
 
             generators: {
                 maxEnemiesToSpawn: 5,
-                movementAIs: [
-                    {
-                        id: game.MovementAI.LEASH_TO_GENERATOR,
-                        relativeWeight: 50,
-                    }
-                ],
                 chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
@@ -810,13 +804,15 @@
         if ( generators.movementAIs === undefined ) {
             generators.movementAIs = [];
             generators.movementAIs.push( {id: defaultMovementAIID, relativeWeight: defaultMovementAIRelativeWeight} );
-        } else {
-            for (var j = 0; j < generators.movementAIs.length; j++) {
-                movementAI = generators.movementAIs[j];
-                game.util.useDefaultIfUndefined(movementAI, 'id', defaultMovementAIID);
-                game.util.useDefaultIfUndefined(movementAI, 'relativeWeight', defaultMovementAIRelativeWeight);
-            };
         }
+
+        for (var j = 0; j < generators.movementAIs.length; j++) {
+            var movementAI = generators.movementAIs[j];
+            if ( movementAI.id === undefined ) {
+                game.util.debugDisplayText(nodeDescription + ' defines a movement AI with no ID!', 'no movement AI ID' + i + j);
+            }
+            game.util.useDefaultIfUndefined(movementAI, 'relativeWeight', defaultMovementAIRelativeWeight);
+        };
 
         if ( boss.id === undefined ) {
             game.util.debugDisplayText(nodeDescription + ' has no boss ID!', 'no boss ID' + i);

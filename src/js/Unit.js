@@ -437,6 +437,10 @@
     window.game.Unit.prototype.removeUnitFromMap = function() {
         this.removeFromMap = true;
         this.hasBeenPlaced = false;
+
+        if ( this.generator !== undefined ) {
+            this.generator.unitDied(this);
+        }
     };
 
     /**
