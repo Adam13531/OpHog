@@ -51,7 +51,7 @@
 
             var x = attacker.getCenterX();
             var y = attacker.getCenterY();
-            var newProjectile = new game.Projectile(x, y, attacker.currentAbility.actionOnHit, attacker, targetUnit);
+            var newProjectile = new game.Projectile(x, y, attacker.currentAbility, attacker, targetUnit);
             battle.addProjectile(newProjectile);
         };
 

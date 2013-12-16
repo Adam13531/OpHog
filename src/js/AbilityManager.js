@@ -81,6 +81,7 @@
      *                                     or heal amounts that will be done 
      * Optional properties:
      * relativeWeight: Number - Used to calculate the probability of using the ability
+     * particleSystemOptions: Object - see ParticleSystem.js for full details.
      * 
      * @type {Object}
      */
@@ -152,7 +153,11 @@
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
-            damageFormula: game.DamageFormula.ATK_MINUS_DEF
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF,
+            particleSystemOptions: 
+            {
+                particleGradients: [game.PURPLE_GRADIENT]
+            }
         },
 
         FLAME_THROWER: {
@@ -304,7 +309,8 @@
 	            var abilityData = this.getAbilityDataFromID(unitAbility.id);
 
                 game.util.copyPropsIfUndefined(abilityData, abilitiesList[i]);
-	            game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', 1000);
+                game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', 1000);
+	            game.util.useDefaultIfUndefined(abilitiesList[i], 'particleSystemOptions', {});
 	        }
 	    },
 

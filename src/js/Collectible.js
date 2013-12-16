@@ -99,7 +99,14 @@
                 break;
             }
             
-        var particleSystem = new game.ParticleSystem(unit.getCenterX(), unit.getCenterY());
+        var options = {
+            numParticlesPerBurst: [10,20],
+            numBursts: [2,2],
+            cooldownBetweenBursts: [25,75],
+            particleGradients: [game.BLUE_GRADIENT, game.GREEN_GRADIENT, game.RED_GRADIENT, game.PURPLE_GRADIENT]
+        };
+
+        var particleSystem = new game.ParticleSystem(unit.getCenterX(), unit.getCenterY(), options);
         game.ParticleManager.addSystem(particleSystem);
     };
 

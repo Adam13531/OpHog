@@ -149,7 +149,14 @@
                 this.target.modifyLife(-50, true, false);
 
                 // Spawn a particle system too
-                var particleSystem = new game.ParticleSystem(this.target.getCenterX(), this.target.getCenterY());
+
+                var options = {
+                    particleGradients: [game.GREEN_GRADIENT],
+                    particleSpeed: [100,150],
+                    particleSize: [4,6],
+                    numParticlesPerBurst: [3,6]
+                };
+                var particleSystem = new game.ParticleSystem(this.target.getCenterX(), this.target.getCenterY(), options);
                 game.ParticleManager.addSystem(particleSystem);
                 break;
             default:

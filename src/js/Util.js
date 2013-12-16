@@ -72,6 +72,14 @@
     };
 
     /**
+     * When your min/max are stored as an array of length 2, use this
+     * convenience function. It is only here to improve readability.
+     */
+    window.game.util.randomIntegerInRange = function(arrayOfLength2) {
+        return this.randomInteger(arrayOfLength2[0], arrayOfLength2[1]);
+    };
+
+    /**
      * This function sets 'property' in the specified dictionary with
      * defaultValue if it doesn't already exist.
      *

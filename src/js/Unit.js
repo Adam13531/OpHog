@@ -963,7 +963,7 @@
         };
 
         if ( !modifiedAttack ) {
-            var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),this.currentAbility.actionOnHit,this,targetUnit);
+            var newProjectile = new game.Projectile(this.getCenterX(), this.getCenterY(),this.currentAbility,this,targetUnit);
             battle.addProjectile(newProjectile);
         }
     };
@@ -1030,8 +1030,9 @@
         var targetUnit = projectile.target;
 
         var damage = game.ComputeDamageFormula(this.currentAbility.damageFormula, this, targetUnit);
+        var actionOnHit = projectile.associatedAbility.actionOnHit;
 
-        switch ( projectile.actionOnHit ) {
+        switch ( actionOnHit ) {
             case game.ActionOnHit.DO_DAMAGE:
                 var myAtk = this.getAtk();
                 var targetDef = targetUnit.getDef();
@@ -1076,7 +1077,7 @@
                 targetUnit.restoreLife();
                 break;
             default:
-                console.log('ERROR: ActionOnHit: \'' + projectile.actionOnHit + '\' has not been implemented.');
+                console.log('ERROR: ActionOnHit: \'' + actionOnHit + '\' has not been implemented.');
                 break;
         }
     };

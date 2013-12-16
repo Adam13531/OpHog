@@ -7,12 +7,12 @@
      * staff or the middle of an archer's bow. The projectile knows how to
      * position itself based on those points.
      * @param {Number} y - see 'x'
-     * @param {game.ActionOnHit} actionOnHit - what to do what this projectile
-     * hits (e.g. heal or do damage)
+     * @param {game.Ability} associatedAbility - the ability that caused this
+     * projectile to be produced. We later pull various bits of data from it.
      * @param {Unit} target - the target of this projectile
      * @param {Unit} owner - the unit who created this projectile
      */
-    window.game.Projectile = function Projectile(x,y,actionOnHit, owner, target) {
+    window.game.Projectile = function Projectile(x,y,associatedAbility, owner, target) {
         this.width = game.TILESIZE;
         this.height = game.TILESIZE;
 
@@ -20,7 +20,7 @@
         this.setCenterX(x);
         this.setCenterY(y);
 
-        this.actionOnHit = actionOnHit;
+        this.associatedAbility = associatedAbility;
         this.owner = owner;
         this.target = target;
 
@@ -30,22 +30,13 @@
         // 300 pixels / second
         this.speed = 300;
 
-        // This is here just as a hack for now. "Melee projectiles" may still
-        // need to spawn particle systems when they hit, so I'll leave this
-        // functionality here.
-        this.isMelee = false;
-
         this.diesIfTargetIsDead = true;
 
         this.graphicIndex = this.owner.currentAbility.graphicIndex;
 
-        if ( this.actionOnHit == game.ActionOnHit.REVIVE ) {
+        if ( this.associatedAbility.type == game.AbilityType.REVIVE ) {
             this.speed = 50;
             this.diesIfTargetIsDead = false;
-        }
-
-        if ( this.isMelee ) {
-            this.speed = 9999999999;
         }
     };
 
@@ -63,7 +54,7 @@
 
         // The revive projectile gets faster as it lives longer so that it can
         // catch repositioning units.
-        if ( this.actionOnHit == game.ActionOnHit.REVIVE ) {
+        if ( this.associatedAbility.type == game.AbilityType.REVIVE ) {
             this.speed += .5;
         }
 
@@ -107,7 +98,7 @@
      */
     window.game.Projectile.prototype.projectileMetTarget = function() {
         game.AudioManager.playAudio(game.Audio.HIT_1);
-        var particleSystem = new game.ParticleSystem(this.getCenterX(), this.getCenterY());
+        var particleSystem = new game.ParticleSystem(this.getCenterX(), this.getCenterY(), this.associatedAbility.particleSystemOptions);
         game.ParticleManager.addSystem(particleSystem);
     };
 
@@ -123,8 +114,6 @@
      * @param  {Object} ctx the canvas.
      */
     window.game.Projectile.prototype.draw = function(ctx) {
-        if ( this.isMelee ) return;
-
         if ( !game.Camera.canSeeRect(this.x, this.y, game.TILESIZE, game.TILESIZE) ) return;
 
         // All enemy units need to have their projectiles facing the opposite
@@ -134,8 +123,6 @@
         } else {
             eff24Sheet.drawSprite(ctx, this.graphicIndex, this.x, this.y);
         }
-
-
     };
 
 }());
