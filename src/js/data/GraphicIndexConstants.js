@@ -116,10 +116,30 @@
         //----------------------------------------------------------------------
         // Graphics for eff_24.png
         //----------------------------------------------------------------------
+        MEDIUM_YELLOW_CIRCLE_1: 2,
+        MEDIUM_YELLOW_CIRCLE_2: 3,
+        MEDIUM_YELLOW_CIRCLE_3: 4,
+        MEDIUM_GRAY_CIRCLE_1: 5,
+        MEDIUM_GRAY_CIRCLE_2: 6,
+        MEDIUM_GRAY_CIRCLE_3: 7,
+        MEDIUM_GRAY_CIRCLE_4: 8,
+        MEDIUM_GRAY_CIRCLE_5: 9,
         MEDIUM_BLUE_CIRCLE_1: 12, // a solid blue circular object, part of an explosion sequence
         MEDIUM_BLUE_CIRCLE_2: 13,
         MEDIUM_BLUE_CIRCLE_3: 14,
         MEDIUM_BLUE_CIRCLE_4: 15,
+        MEDIUM_PURPLE_CIRCLE_1: 16,
+        MEDIUM_PURPLE_CIRCLE_2: 17,
+        MEDIUM_PURPLE_CIRCLE_3: 18,
+        MEDIUM_PURPLE_CIRCLE_4: 19,
+        MEDIUM_BLACK_CIRCLE_1: 22,
+        MEDIUM_BLACK_CIRCLE_2: 23,
+        MEDIUM_BLACK_CIRCLE_3: 24,
+        MEDIUM_BLACK_CIRCLE_4: 25,
+        MEDIUM_GREEN_CIRCLE_1: 26,
+        MEDIUM_GREEN_CIRCLE_2: 27,
+        MEDIUM_GREEN_CIRCLE_3: 28,
+        MEDIUM_GREEN_CIRCLE_4: 29,
         HORIZONTAL_NEEDLE: 43, // a white, thin sliver extending from left to right
         RED_EXCLAMATION_POINT: 44, // a red '!' that's transparent in the middle
         SMALL_PURPLE_BUBBLE: 46, // a tiny purple bubble that is transparent in the middle

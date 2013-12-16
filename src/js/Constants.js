@@ -249,6 +249,11 @@
      */
     window.game.AnimatedSpriteID = {
         BLUE_BURST: 0,
+        BLACK_BURST: 1,
+        GRAY_BURST: 2,
+        PURPLE_BURST: 3,
+        GREEN_BURST: 4,
+        YELLOW_BURST: 5,
     };
 
 }());

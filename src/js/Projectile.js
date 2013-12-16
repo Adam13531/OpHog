@@ -101,7 +101,10 @@
         var particleSystem = new game.ParticleSystem(this.getCenterX(), this.getCenterY(), this.associatedAbility.particleSystemOptions);
         game.ParticleManager.addSystem(particleSystem);
 
-        game.AnimatedSpriteManager.createAnimatedSpriteByID(game.AnimatedSpriteID.BLUE_BURST, this.x, this.y);
+        var explosionID = this.associatedAbility.explosionEffectID;
+        if ( explosionID !== undefined ) {
+            game.AnimatedSpriteManager.createAnimatedSpriteByID(explosionID, this.x, this.y);
+        }
     };
 
     /**

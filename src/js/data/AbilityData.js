@@ -82,6 +82,8 @@
      * Optional properties:
      * relativeWeight: Number - Used to calculate the probability of using the ability
      * particleSystemOptions: Object - see ParticleSystem.js for full details.
+     * explosionEffectID: game.AnimatedSpriteID. If specified, this animated 
+     *     sprite will be produced when the projectile hits.
      * 
      * @type {Object}
      */
@@ -154,6 +156,7 @@
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF,
+            explosionEffectID: game.AnimatedSpriteID.PURPLE_BURST,
             particleSystemOptions: 
             {
                 particleGradients: [game.PURPLE_GRADIENT]
@@ -186,6 +189,7 @@
             type: game.AbilityType.ATTACK,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            explosionEffectID: game.AnimatedSpriteID.YELLOW_BURST,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },

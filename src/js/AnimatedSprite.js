@@ -29,9 +29,9 @@
 
         this.timeUntilNextFrame -= delta;
 
-        while ( this.timeUntilNextFrame <= 0 && !this.isDead ) {
+        if ( this.timeUntilNextFrame <= 0 ) {
             this.currentIndex++;
-            this.timeUntilNextFrame += this.msPerFrame;
+            this.timeUntilNextFrame = this.msPerFrame;
             if ( this.currentIndex == this.graphicIndices.length ) {
                 this.isDead = true;
             }
