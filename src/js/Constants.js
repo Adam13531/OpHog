@@ -241,4 +241,14 @@
         MOVE_TO_SPECIFIC_TILE: 'move to specific point'
     };
 
+    /**
+     * IDs for animated sprites for use in the factory method.
+     *
+     * Make sure each ID is unique.
+     * @type {Object}
+     */
+    window.game.AnimatedSpriteID = {
+        BLUE_BURST: 0,
+    };
+
 }());

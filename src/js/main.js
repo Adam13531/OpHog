@@ -717,6 +717,7 @@
         game.BattleManager.update(delta);
         game.UnitManager.update(delta);
         game.ParticleManager.update(delta);
+        game.AnimatedSpriteManager.update(delta);
         game.TextManager.update(delta);
         game.AudioManager.update(delta);
         game.ShopInventory.update(deltaAsSec);
@@ -739,6 +740,7 @@
         game.UnitManager.draw(ctx);
         game.BattleManager.draw(ctx);
         game.ParticleManager.draw(ctx);
+        game.AnimatedSpriteManager.draw(ctx);
 
         // Fog will cover everything drawn before this line of code (e.g. units,
         // projectiles).

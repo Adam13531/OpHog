@@ -223,7 +223,7 @@
         HEAL: {
             id: 13,
             type: game.AbilityType.HEAL,
-            graphicIndex: game.Graphic.MEDIUM_BLUE_CIRCLE,
+            graphicIndex: game.Graphic.MEDIUM_BLUE_CIRCLE_1,
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE | game.RandomUnitFlags.IS_MISSING_LIFE,
             actionOnHit: game.ActionOnHit.HEAL,

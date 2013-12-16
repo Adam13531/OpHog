@@ -100,6 +100,8 @@
         game.AudioManager.playAudio(game.Audio.HIT_1);
         var particleSystem = new game.ParticleSystem(this.getCenterX(), this.getCenterY(), this.associatedAbility.particleSystemOptions);
         game.ParticleManager.addSystem(particleSystem);
+
+        game.AnimatedSpriteManager.createAnimatedSpriteByID(game.AnimatedSpriteID.BLUE_BURST, this.x, this.y);
     };
 
     /**

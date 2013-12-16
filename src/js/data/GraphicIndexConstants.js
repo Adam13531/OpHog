@@ -116,7 +116,10 @@
         //----------------------------------------------------------------------
         // Graphics for eff_24.png
         //----------------------------------------------------------------------
-        MEDIUM_BLUE_CIRCLE: 12, // a solid blue circular object, part of an explosion sequence
+        MEDIUM_BLUE_CIRCLE_1: 12, // a solid blue circular object, part of an explosion sequence
+        MEDIUM_BLUE_CIRCLE_2: 13,
+        MEDIUM_BLUE_CIRCLE_3: 14,
+        MEDIUM_BLUE_CIRCLE_4: 15,
         HORIZONTAL_NEEDLE: 43, // a white, thin sliver extending from left to right
         RED_EXCLAMATION_POINT: 44, // a red '!' that's transparent in the middle
         SMALL_PURPLE_BUBBLE: 46, // a tiny purple bubble that is transparent in the middle
