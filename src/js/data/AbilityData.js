@@ -180,6 +180,7 @@
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            explosionEffectID: game.AnimatedSpriteID.BLUE_SMOKE_CLOUD,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
         },
 

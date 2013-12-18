@@ -147,6 +147,12 @@
         RED_FIREBALL_RIGHT: 110, // an orange/red fireball facing right
 
         //----------------------------------------------------------------------
+        // Graphics for eff_32.png
+        //----------------------------------------------------------------------
+        BLUE_SMOKE_CLOUD_1: 14,
+        BLUE_SMOKE_CLOUD_2: 15,
+
+        //----------------------------------------------------------------------
         // Graphics for char_24.png. All indices specify the first frame in the
         // two-frame animation.
         // 

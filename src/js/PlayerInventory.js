@@ -33,7 +33,8 @@
 			var newSlot = new game.PlayerSlot(game.SlotTypes.ARCH, this.slotID++);
 			this.addSlot(newSlot);
 		};
-		this.generateItems();
+
+		// this.generateItems();
 
         // Have the first item selected by default
         game.playerInventoryUI.clickedSlot(game.playerInventoryUI.slots[0]);

@@ -254,6 +254,7 @@
         PURPLE_BURST: 3,
         GREEN_BURST: 4,
         YELLOW_BURST: 5,
+        BLUE_SMOKE_CLOUD: 6,
     };
 
 }());

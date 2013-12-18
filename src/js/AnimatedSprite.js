@@ -18,6 +18,13 @@
         this.isDead = false;
         this.x = x;
         this.y = y;
+
+        this.size = this.spriteSheet.tileSize;
+
+        // If the size is different from the size of a unit, then we need to
+        // offset this sprite.
+        this.x -= (this.size - game.TILESIZE) / 2;
+        this.y -= (this.size - game.TILESIZE) / 2;
     };
 
     /**
