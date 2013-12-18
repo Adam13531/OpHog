@@ -83,6 +83,15 @@
          */
         this.ttl = 10;
 
+        // If this procs every so often, then we should make it last a multiple
+        // of 'procEvery' so that it doesn't stay around for a while without
+        // procing.
+        if ( this.procEvery != 0 ) {
+            if ( Math.floor(this.ttl / this.procEvery) != Math.ceil(this.ttl / this.procEvery) ) {
+                this.ttl = Math.ceil(this.ttl / this.procEvery) * this.procEvery;
+            }
+        }
+
         /**
          * This keeps track of when the effect should proc next, if ever. It's
          * like "cooldown".
