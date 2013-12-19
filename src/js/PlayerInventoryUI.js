@@ -8,6 +8,10 @@
 		this.base();
 
         this.$itemDescriptionID = $('#item-description');
+        this.$inventoryDialog = $('#inventory-screen');
+        this.$sellItemButton = $('#sellItemButton');
+        this.$useItemButton = $('#useItemButton');
+        this.$useItemInstructions = $('#useItemInstructions');
 
 		/**
          * This is the slot that you dragged from and must be global
@@ -34,7 +38,6 @@
         // Put some starter text for the description
         this.$itemDescriptionID.html('<h2>Click a slot to select it.</h2>');
 
-        this.$useItemButton = $('#useItemButton');
         this.$useItemButton.button();
 
         // Lower the font size so that the button isn't huge
@@ -42,10 +45,7 @@
             'font-size': '.75em'
         });
 
-        this.$sellItemButton = $('#sellItemButton');
         this.$sellItemButton.button();
-
-        this.$useItemInstructions = $('#useItemInstructions');
 
         // Position the instructions based on the canvas so that it looks
         // like a banner at the top.
@@ -83,8 +83,7 @@
         }(this));
 
         // For more thorough comments, look at the settings dialog.
-        var $inventoryDialog = $('#inventory-screen');
-        $inventoryDialog.dialog({
+        this.$inventoryDialog.dialog({
             // This is just for debugging (FYI: 'true' is for debugging, but
             // I sometimes check in this code with this set to 'false' but
             // with this comment still)
@@ -115,7 +114,7 @@
 
         });
 
-        game.DialogManager.addDialog($inventoryDialog);
+        game.DialogManager.addDialog(this.$inventoryDialog);
 	};
 
 	window.game.PlayerInventoryUI.prototype = new game.InventoryUI;
@@ -416,11 +415,6 @@
 
         this.hide();
         this.$useItemInstructions.show();
-        // Leaving these here in case we want them later...
-        // $('#inventory-screen').dialog('option', 'hide').duration = 100;
-        // $('#inventoryThemeSpan').css({
-        //     opacity: '.5' // note: opacity starts at .95
-        // });
     };
 
     /**
@@ -536,7 +530,7 @@
      * called every time you show the inventory screen.
      */
     window.game.PlayerInventoryUI.prototype.show = function() {
-        $('#inventory-screen').dialog('open');
+        this.$inventoryDialog.dialog('open');
 
         // See the comment for setScrollbars to see why this is needed.
         this.setScrollbars();
@@ -546,9 +540,16 @@
      * Convenience function to hide the inventory UI
      */
     window.game.PlayerInventoryUI.prototype.hide = function() {
-        $('#inventory-screen').dialog('close');
+        this.$inventoryDialog.dialog('close');
     };
 
+    window.game.PlayerInventoryUI.prototype.toggleVisibility = function() {
+        if ( this.$inventoryDialog.is(":visible") ) {
+            this.hide();
+        } else {
+            this.show();
+        }
+    };
 
     /**
      * This is called when a slot's item is changed.

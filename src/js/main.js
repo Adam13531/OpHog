@@ -627,12 +627,7 @@
 
             // 'I' - toggle the inventory screen
             if (evt.keyCode == game.Key.DOM_VK_I) {
-                var $invScreen = $('#inventory-screen');
-                if ( $invScreen.is(":visible") ) {
-                    game.playerInventoryUI.hide();
-                } else {
-                    game.playerInventoryUI.show();
-                }
+                game.playerInventoryUI.toggleVisibility();
             }
 
             // 'Q' - toggle the quest UI
