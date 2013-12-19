@@ -297,21 +297,19 @@
     };
 
     /**
-     * Places a unit at the given tile locations
-     * @param  {number} tileX tile as an X coordinate
-     * @param  {number} tileY tile as a Y coordinate
+     * Places a unit at the given pixel locations
+     * @param  {Number} xInPixels - x coordinate
+     * @param  {Number} yInPixels - y coordinate
      * @param  {game.MovementAI} movementAI - a movement AI to apply, or null if
      * you don't want to change whatever the current one is.
      */
-    window.game.Unit.prototype.placeUnit = function(tileX, tileY, movementAI) {
+    window.game.Unit.prototype.placeUnitAtPixelCoords = function(xInPixels, yInPixels, movementAI) {
         if ( movementAI != null ) {
             this.movementAI = movementAI;
         }
 
-        var centerXPx = tileX * game.TILESIZE + game.TILESIZE / 2;
-        var centerYPx = tileY * game.TILESIZE + game.TILESIZE / 2;
-        this.setCenterX(centerXPx);
-        this.setCenterY(centerYPx);
+        this.setCenterX(xInPixels);
+        this.setCenterY(yInPixels);
         this.restoreLife();
         this.movingToPreBattlePosition = false;
         this.hasBeenPlaced = true;
@@ -344,6 +342,16 @@
         if ( this.isPlayer() ) {
             game.QuestManager.placedAUnit(this.unitType);
         }
+    };
+
+    /**
+     * Wrapper function for placeUnitAtPixelCoords. This function lets you
+     * specify tile coordinates.
+     */
+    window.game.Unit.prototype.placeUnit = function(tileX, tileY, movementAI) {
+        var centerXPx = tileX * game.TILESIZE + game.TILESIZE / 2;
+        var centerYPx = tileY * game.TILESIZE + game.TILESIZE / 2;
+        this.placeUnitAtPixelCoords(centerXPx, centerYPx, movementAI);
     };
 
     /**
@@ -942,7 +950,7 @@
             }
             flags |= game.PlayerFlags.SUMMON;
             var newUnit = new game.Unit(game.UnitType.TREE.id, flags, 1);
-            newUnit.placeUnit(this.getCenterTileX(), this.getCenterTileY(),this.movementAI);
+            newUnit.placeUnitAtPixelCoords(this.getCenterX(), this.getCenterY(),this.movementAI);
             game.UnitManager.addUnit(newUnit);
 
             // Force the unit to join this battle. We pass coordinates so that
