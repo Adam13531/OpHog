@@ -9,6 +9,13 @@
     window.game.MinigameData = function MinigameData(enemies, moneyGiven) {
         this.enemies = enemies;
         this.moneyGiven = moneyGiven;
+
+        // The sum of the quantities of all possible enemies.
+        this.numTotalEnemies = 0;
+
+        for (var i = 0; i < this.enemies.length; i++) {
+            this.numTotalEnemies += this.enemies[i].quantity;
+        };
     };
 
 }());

@@ -20,8 +20,8 @@
          * to do when you click a row. The number of entries in this array is
          * equal to game.NUM_MINIGAME_DIFFICULTIES.
          *
-         * The first entry in this array is the hardest difficulty (i.e. the top
-         * row).
+         * The first entry in this array is the easiest difficulty (i.e. the
+         * bottom row in the UI).
          * @type {Array:MinigameData}
          */
         minigameData: [],
@@ -110,9 +110,11 @@
             var coinsPerLevel = nodeData.coinsPerLevel;
             var minEnemiesArray = nodeData.minEnemies;
             var maxEnemiesArray = nodeData.maxEnemies;
-            // Start with the highest difficulty
-            for (var i = game.NUM_MINIGAME_DIFFICULTIES - 1; i >= 0; i--) {
 
+            // Start with the lowest difficulty so that each tier above it can
+            // have more enemies than the previous tier, otherwise you may have
+            // two tiers with the same enemies but different rewards.
+            for (var i = 0; i < game.NUM_MINIGAME_DIFFICULTIES; i++) {
                 // Get a list of all possible enemies in the map
                 var possibleEnemies = [];
                 for (var j = 0; j < nodeOfMap.enemies.length; j++) {
@@ -144,8 +146,15 @@
                 // Make sure there's at least one enemy.
                 numTotalEnemies = Math.max(1, numTotalEnemies);
 
+                // Make sure that we generate at least one more than the last
+                // tier minigame.
+                if ( i > 0 ) {
+                    var numEnemiesLastTier = this.minigameData[i-1].numTotalEnemies;
+                    numTotalEnemies = Math.max(numEnemiesLastTier + 1, numTotalEnemies);
+                }
+
                 // Generate that many enemies
-                for (var j = numTotalEnemies - 1; j >= 0; j--) {
+                for (var j = 0; j < numTotalEnemies; j++) {
                     var randomyEnemy = game.util.randomFromWeights(types);
                     enemiesAndQuantities[randomyEnemy.id]++;
                 };
@@ -183,7 +192,9 @@
             var heightPercent = Math.floor(100 / game.NUM_MINIGAME_DIFFICULTIES) - 2;
             this.selectedMinigame = null;
 
-            for (var i = 0; i < game.NUM_MINIGAME_DIFFICULTIES; i++) {
+            // Start at the end of the array so that we add the hardest minigame
+            // first.
+            for (var i = game.NUM_MINIGAME_DIFFICULTIES - 1; i >= 0; i--) {
                 var divID = game.MINIGAME_DIV_ID_PREFIX + i;
                 this.$minigameUI.append('<div id="' + divID + '"></div>');
 

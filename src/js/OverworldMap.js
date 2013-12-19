@@ -290,6 +290,12 @@
          *             for each difficulty (the first is the easiest difficulty).
          *             This is optional, but the default is something I put in 
          *             just so that there are no errors; the numbers may not make sense.
+         *
+         *              Also note that each minigame tier will have more 
+         *              total enemies than the tier below it, so if you specify
+         *              a maximum 2 for the first tier, then your maximum for
+         *              the fifth tier will be no less than 6 (because there are
+         *              four tiers in between 1 and 5, so 2+4==6).
          *         maxEnemies - Array:Number - see above.
          *         spread - game.MinigameEnemySpread - this tells the minigame 
          *             how to pick enemies
