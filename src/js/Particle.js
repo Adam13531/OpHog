@@ -7,8 +7,13 @@
     window.game.Particle = function Particle(particleSystem) {
         this.particleSystem = particleSystem;
 
-        this.x = this.particleSystem.x;
-        this.y = this.particleSystem.y;
+        // Generate an angle and a distance from the center so that our
+        // particles spawn in a circular area.
+        var angle = Math.random() * 2 * Math.PI;
+        var spawnRadius = game.util.randomIntegerInRange(this.particleSystem.particleSpawnRadius);
+
+        this.x = this.particleSystem.x + spawnRadius * Math.cos(angle);
+        this.y = this.particleSystem.y + spawnRadius * Math.sin(angle);
 
         this.radius = game.util.randomIntegerInRange(this.particleSystem.particleSize);
 

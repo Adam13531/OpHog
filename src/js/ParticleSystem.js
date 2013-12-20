@@ -37,6 +37,10 @@
         var particleTTL = (options.particleTTL === undefined ? [400,1200] : options.particleTTL);
         var particleSpeed = (options.particleSpeed === undefined ? [270,300] : options.particleSpeed);
 
+        // This is also a range... particles can only spawn a distance between
+        // the min and max from the center
+        var particleSpawnRadius = (options.particleSpawnRadius === undefined ? [0,0] : options.particleSpawnRadius);
+
         // This is an {Array:game.Gradient}.
         var particleGradients = (options.particleGradients === undefined ? [game.BLUE_GRADIENT] : options.particleGradients);
 
@@ -47,6 +51,7 @@
         this.particleTTL = particleTTL;
         this.particleGradients = particleGradients;
         this.particleSpeed = particleSpeed;
+        this.particleSpawnRadius = particleSpawnRadius;
     };
 
     /**
