@@ -551,7 +551,7 @@
 
             // Call this after we set the page so that the buy button will be
             // enabled/disabled appropriately.
-            this.playerCoinsChanged();
+            this.playerDiamondsChanged();
 
             this.updateAvailableUnitCounts();
         },
@@ -610,17 +610,16 @@
         },
 
         /**
-         * Call this function any time the player's coin total changes. This
+         * Call this function any time the player's diamond total changes. This
          * will properly enable/disable/color/etc. any part of the UI that
-         * depends on how many coins you have.
-         * @return {undefined}
+         * depends on how many diamonds you have.
          */
-        playerCoinsChanged: function() {
+        playerDiamondsChanged: function() {
             this.updateAllUnits();
 
             // Update the "buy" button
             var cost = this.costToPurchaseSlot(this.unitType);
-            if ( !game.Player.hasThisMuchMoney(cost) ) {
+            if ( !game.Player.hasThisManyDiamonds(cost) ) {
                 $('#buySlotButton').button('disable');
             } else {
                 $('#buySlotButton').button('enable');

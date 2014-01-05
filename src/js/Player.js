@@ -174,9 +174,6 @@
          */
         modifyCoins: function(amount) {
             this.coins += amount;
-
-            game.UnitPlacementUI.playerCoinsChanged();
-            game.ShopUI.playerCoinsChanged();
         },
 
         /**
@@ -185,8 +182,8 @@
         modifyDiamonds: function(amount) {
             this.diamonds += amount;
 
-            game.UnitPlacementUI.playerCoinsChanged();
-            game.ShopUI.playerCoinsChanged();
+            game.UnitPlacementUI.playerDiamondsChanged();
+            game.ShopUI.playerDiamondsChanged();
         },
 
         /**

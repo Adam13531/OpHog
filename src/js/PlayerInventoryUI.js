@@ -151,7 +151,7 @@
         }
 
         var sellPrice = this.getSellPrice(this.selectedSlotUI.getItem());
-        game.Player.modifyCoins(sellPrice);
+        game.Player.modifyDiamonds(sellPrice);
 
         this.selectedSlotUI.slot.setItem(null);
     };
@@ -427,7 +427,7 @@
             return 0;
         }
 
-        return item.itemID * 1000;
+        return item.itemID;
     };
 
     /**
@@ -445,7 +445,9 @@
 
         this.$sellItemButton.button('enable');
         var sellPrice = this.getSellPrice(item);
-        this.$sellItemButton.html('<span class="ui-button-text" style="font-size:.75em">Sell</span><span style="font-size:.6em">$' + sellPrice + '</span>');
+        this.$sellItemButton.html('<span class="ui-button-text" style="font-size:.75em">Sell</span><span style="font-size:.6em">' + 
+            sellPrice + ' </span>' + 
+            '<span class ="ui-button ui-icon diamond"></span>');
     };
 
     /**

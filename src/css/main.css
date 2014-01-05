@@ -120,6 +120,18 @@ textarea {
 .use-slot{background-color:#880015;color:white;text-align:center;font-size:80%;}
 .test3{background-color:white;color:black;}
 
+.ui-button .ui-icon.diamond {
+    background-image: url(../../res/img/icon_16.png);
+    width: 16;
+    height: 16; 
+}
+
+.ui-button.ui-state-hover .ui-icon.diamond {
+    background-image: url(../../res/img/icon_16.png);
+    width: 16;
+    height: 16; 
+}
+
 /*Prevent the user from selecting text*/
 .no-text-select{
     -webkit-touch-callout: none;

@@ -115,14 +115,14 @@
             return 0;
         }
 
-        return item.itemID * 1000;
+        return item.itemID * 10;
     };
 
     /**
      * Basically an event handler that gets alerted when the player either gains
      * or loses money.
      */
-    window.game.ShopUI.prototype.playerCoinsChanged = function() {
+    window.game.ShopUI.prototype.playerDiamondsChanged = function() {
         this.updateBuyButton();
         this.updateDescription();
     };
@@ -138,7 +138,10 @@
         } else {
             $('#shopBuyButton').button('enable');
         }
-        $('#shopBuyButton').text('Buy $' + this.getBuyPrice());
+        $('#shopBuyButton').button( 'option' ,'icons', {
+            secondary: 'diamond'
+            });
+        $('#shopBuyButton > .ui-button-text').html('Price: ' + this.getBuyPrice())
     };
 
     /**
@@ -167,7 +170,7 @@
 
             var cost = game.ShopUI.getBuyPrice();
             var item = game.ShopUI.getSelectedSlot().slot.item;
-            game.Player.modifyCoins(-cost);
+            game.Player.modifyDiamonds(-cost);
             var added = game.Player.inventory.addItem(item);
             if ( added != game.AddedItemToInventoryState.NOT_ADDED) {
                 game.ShopUI.getSelectedSlot().slot.setItem(null); // Removes the bought item
@@ -175,7 +178,7 @@
             } else {
                 // Give the player their money back if they couldn't get the item
                 // into their inventory.
-                game.Player.modifyCoins(cost);
+                game.Player.modifyDiamonds(cost);
                 // Alert the player that they don't have enough inventory space
                 var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'You don\'t have enough inventory space', true, '#f00', false);
                 game.TextManager.addTextObj(textObj);
@@ -190,7 +193,7 @@
      */
     window.game.ShopUI.prototype.itemIsBuyable = function() {
         var cost = this.getBuyPrice();
-        if (  !game.Player.hasThisMuchMoney(cost) ||
+        if (  !game.Player.hasThisManyDiamonds(cost) ||
               this.getSelectedSlot() == null ||
               this.getSelectedSlot().isEmpty() ) {
             return false;

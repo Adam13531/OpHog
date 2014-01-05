@@ -242,7 +242,7 @@
             // If you had enough coins in your current game to buy a new slot,
             // then you loaded a game where you didn't have enough coins, this
             // would cover the state-change that would disable the "buy" button.
-            game.UnitPlacementUI.playerCoinsChanged();
+            game.UnitPlacementUI.playerDiamondsChanged();
 
             this.loadingGame = false;
         },
