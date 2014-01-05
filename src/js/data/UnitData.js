@@ -399,7 +399,7 @@
                 }
             ],
 
-            abilityAI: game.AbilityAI.USE_HEAL_IF_POSSIBLE,
+            abilityAI: game.AbilityAI.RANDOM,
             
             chanceToDropItem: 0,
             itemsDropped: noItems

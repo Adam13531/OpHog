@@ -51,7 +51,8 @@
     window.game.DamageFormula = {
         ATK_MINUS_DEF: 'atk minus def',
         REVIVE: 'revive',
-        GET_HALF_OF_MISSING_LIFE: 'get half of missing life'
+        GET_HALF_OF_MISSING_LIFE: 'get half of missing life',
+        USE_ATK_VALUE: 'use the value of atk',
     };
 
     /**
@@ -232,7 +233,7 @@
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE | game.RandomUnitFlags.IS_MISSING_LIFE,
             actionOnHit: game.ActionOnHit.HEAL,
-            damageFormula: game.DamageFormula.GET_HALF_OF_MISSING_LIFE
+            damageFormula: game.DamageFormula.USE_ATK_VALUE
         }
 
     };

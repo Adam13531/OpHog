@@ -310,13 +310,18 @@
 
         this.setCenterX(xInPixels);
         this.setCenterY(yInPixels);
-        this.restoreLife();
         this.movingToPreBattlePosition = false;
         this.hasBeenPlaced = true;
         this.previousTile = null;
         this.destX = null;
         this.destY = null;
         this.animationTimer = 0;
+
+        this.cacheEquipmentStats();
+
+        // Now that we have the equipment stats, we can restore our life.
+        this.life = 0;
+        this.restoreLife();
 
         // Make an exact copy of all the abilities in the unit. We don't want to
         // modify the original list.
@@ -352,6 +357,16 @@
         var centerXPx = tileX * game.TILESIZE + game.TILESIZE / 2;
         var centerYPx = tileY * game.TILESIZE + game.TILESIZE / 2;
         this.placeUnitAtPixelCoords(centerXPx, centerYPx, movementAI);
+    };
+
+    /**
+     * Puts stats from class-equipped items into the unit so that the unit won't
+     * be affected by changes to your equipment.
+     */
+    window.game.Unit.prototype.cacheEquipmentStats = function() {
+        this.equipmentAtkBonus = this.getItemStatModifiers('atk');
+        this.equipmentDefBonus = this.getItemStatModifiers('def');
+        this.equipmentLifeBonus = this.getItemStatModifiers('maxLife');
     };
 
     /**
@@ -1009,26 +1024,26 @@
      * @return {Number} - Damage to be done
      */
     window.game.ComputeDamageFormula = function(damageFormula, user, target) {
+        var userAtk = user.getAtk();
+        var userLife = user.life;
+        var userMaxLife = user.getMaxLife();
+        var targetDef = target.getDef();
         switch (damageFormula) {
             case game.DamageFormula.ATK_MINUS_DEF:
-                var atk = user.getAtk();
-                var def = target.getDef();
-
                 // Prevent healing an enemy with an attack
-                if ( def > atk ) return 0;
-                return atk - def;
-
+                if ( targetDef > userAtk ) return 0;
+                return userAtk - targetDef;
+            case game.DamageFormula.USE_ATK_VALUE:
+                return userAtk;
             case game.DamageFormula.GET_HALF_OF_MISSING_LIFE:
-                var max = user.getMaxLife();
-
                 // Prevent hurting your own unit with a heal when he's above max
                 // life.
-                if ( user.life >= max ) return 0;
+                if ( userLife >= userMaxLife ) return 0;
 
                 // Minimally heal for one, otherwise you might be at 99/100 and
                 // get healed for 0 (i.e. this formula could never heal you to
                 // full).
-                return Math.min(1, (max - user.life) / 2);
+                return Math.min(1, (userMaxLife - userLife) / 2);
         }
     };
 
@@ -1257,16 +1272,22 @@
 
     /**
      * See getEffectStatModifiers.
+     * @param {Boolean} pullFromUnit - if true, this will use the cached values.
      */
-    window.game.Unit.prototype.getItemStatModifiers = function(statType) {
+    window.game.Unit.prototype.getItemStatModifiers = function(statType, pullFromUnit) {
         var modifier = 0;
-
-        var equippedItems = game.Player.inventory.getClassEquippedItems(this.unitType);
-        for (var i = 0; i < equippedItems.length; i++) {
-            var equippedItem = equippedItems[i];
-            if ( statType == 'atk' ) modifier += equippedItem.atk;
-            else if ( statType == 'def' ) modifier += equippedItem.def;
-            else if ( statType == 'maxLife' ) modifier += equippedItem.life;
+        if ( pullFromUnit === true ) {
+            if ( statType == 'atk' ) modifier += this.equipmentAtkBonus;
+            else if ( statType == 'def' ) modifier += this.equipmentDefBonus;
+            else if ( statType == 'maxLife' ) modifier += this.equipmentLifeBonus;
+        } else {
+            var equippedItems = game.Player.inventory.getClassEquippedItems(this.unitType);
+            for (var i = 0; i < equippedItems.length; i++) {
+                var equippedItem = equippedItems[i];
+                if ( statType == 'atk' ) modifier += equippedItem.atk;
+                else if ( statType == 'def' ) modifier += equippedItem.def;
+                else if ( statType == 'maxLife' ) modifier += equippedItem.life;
+            }
         }
 
         return modifier;
@@ -1277,7 +1298,7 @@
      * those functions for comments.
      */
     window.game.Unit.prototype.getStatModifiers = function(statType) {
-        return this.getEffectStatModifiers(statType) + this.getItemStatModifiers(statType);
+        return this.getEffectStatModifiers(statType) + this.getItemStatModifiers(statType, true);
     };
 
     /**
