@@ -97,6 +97,12 @@
     window.game.ITEM_SPRITE_SIZE = 32;
 
     /**
+     * The size of a sprite on the icon spritesheet.
+     * @type {Number}
+     */
+    window.game.ICON_SPRITE_SIZE = 16;
+
+    /**
      * Amount of ms it takes to fade in dialogs.
      * @type {Number}
      */

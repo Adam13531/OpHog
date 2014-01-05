@@ -29,7 +29,7 @@
      * The number of spritesheets that the game has to load.
      * @type {Number}
      */
-    var NUM_SPRITESHEETS_TO_LOAD = 5;
+    var NUM_SPRITESHEETS_TO_LOAD = 6;
 
     // This is global.
     game.$canvas = null;
@@ -49,6 +49,7 @@
         eff32Sheet = new game.SpriteSheet(game.imagePath + '/eff_32.png', game.ITEM_SPRITE_SIZE, loadedSpritesheet);
         charSheet = new game.SpriteSheet(game.imagePath + '/char_24.png', game.TILESIZE, loadedSpritesheet);
         itemSheet = new game.SpriteSheet(game.imagePath + '/item_32.png', game.ITEM_SPRITE_SIZE, loadedSpritesheet);
+        iconSheet = new game.SpriteSheet(game.imagePath + '/icon_16.png', game.ICON_SPRITE_SIZE, loadedSpritesheet);
     }
 
     /**
@@ -760,7 +761,7 @@
         // The stuff that is drawn now will show up even over the "concealed"
         // areas.
         game.GameStateManager.draw(ctx);
-        game.Player.drawCoinTotal(ctx);
+        game.Player.drawCurrencyTotal(ctx);
         game.Minimap.draw(ctx);
 
         game.LootUI.draw(ctx);

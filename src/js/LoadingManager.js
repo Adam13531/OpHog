@@ -49,7 +49,7 @@
          */
         addProgress: function() {
             // See function-level comments.
-            var NUM_TIMES_THIS_IS_CALLED = 11;
+            var NUM_TIMES_THIS_IS_CALLED = 12;
 
             var $progressBar = $('#loadProgress');
             var val = $progressBar.progressbar( 'value' ) || 0;

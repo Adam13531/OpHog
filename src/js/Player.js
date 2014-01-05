@@ -15,6 +15,12 @@
         coins: 750,
 
         /**
+         * The number of diamonds you have.
+         * @type {Number}
+         */
+        diamonds: 100,
+
+        /**
          * After your cooldown hits 0, this is the number that it will be set
          * to. This represents the number of seconds it takes for you to
          * regenerate coins.
@@ -92,17 +98,20 @@
         },
 
         /**
-         * This draws the number of coins you have on the screen.
+         * This draws the number of coins/diamonds you have on the screen.
          * @param  {Object} ctx - the canvas context
-         * @return {undefined}
          */
-        drawCoinTotal: function(ctx) {
+        drawCurrencyTotal: function(ctx) {
             ctx.save();
             ctx.font = '12px Futura, Helvetica, sans-serif';
-            var text = 'Coins: ' + this.coins;
-            var width = ctx.measureText(text).width;
+            var lookingAtOverworld = game.currentMap.isOverworldMap;
+            var padding = 4;
+
+            var text = ': ' + this.coins;
+            var width = ctx.measureText(text).width + game.ICON_SPRITE_SIZE;
             var x = game.canvasWidth / 2 - width / 2;
             var y = 5;
+            var rowHeight = 12 + padding; // 12 is the font size
 
             if ( this.coins >= 0 ) {
                 ctx.fillStyle = '#0b0';
@@ -111,8 +120,25 @@
             }
 
             ctx.textBaseline = 'top';
-            ctx.fillText(text, x, y);
+            if ( lookingAtOverworld ) {
+                y -= rowHeight;
+            } else {
+                iconSheet.drawSprite(ctx, game.Graphic.GOLD_COIN, x, y);
+                ctx.fillText(text, x + game.ICON_SPRITE_SIZE, y);
+            }
+
+            text = ': ' + this.diamonds;
+            width = ctx.measureText(text).width + game.ICON_SPRITE_SIZE;
+            x = game.canvasWidth / 2 - width / 2;
+            y += rowHeight;
+
+            iconSheet.drawSprite(ctx, game.Graphic.BLUE_DIAMOND, x, y);
+            ctx.fillStyle = '#0bb';
+            ctx.fillText(text, x + game.ICON_SPRITE_SIZE, y);
+
             ctx.restore();
+
+            if ( lookingAtOverworld ) return;
 
             // Draw a little meter to represent your coin regen cooldown
             ctx.save();
