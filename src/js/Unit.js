@@ -1256,10 +1256,37 @@
     };
 
     /**
+     * See getEffectStatModifiers.
+     */
+    window.game.Unit.prototype.getItemStatModifiers = function(statType) {
+        var modifier = 0;
+
+        var equippedItems = game.Player.inventory.getClassEquippedItems(this.unitType);
+        for (var i = 0; i < equippedItems.length; i++) {
+            var equippedItem = equippedItems[i];
+            if ( statType == 'atk' ) modifier += equippedItem.atk;
+            else if ( statType == 'def' ) modifier += equippedItem.def;
+            else if ( statType == 'maxLife' ) modifier += equippedItem.life;
+        }
+
+        return modifier;
+    };
+
+    /**
+     * Thin wrapper around getItemStatModifiers and getEffectStatModifiers. See
+     * those functions for comments.
+     */
+    window.game.Unit.prototype.getStatModifiers = function(statType) {
+        return this.getEffectStatModifiers(statType) + this.getItemStatModifiers(statType);
+    };
+
+    /**
      * Go through each StatusEffect that is affecting this unit and sum the
      * amount to add/subtract for a given stat.
-     * @param  {String} statType - the stat you're interested in
-     * @return {Number}          total bonus/drain on that stat
+     * @param  {String} statType - the stat you're interested in (see code below
+     * for possible values)
+     * @return {Number}          total bonus/drain on that stat (positive ==
+     * bonus)
      */
     window.game.Unit.prototype.getEffectStatModifiers = function(statType) {
         var modifier = 0;
@@ -1278,14 +1305,14 @@
      * Returns atk stat with any status effects and items taken into account.
      */
     window.game.Unit.prototype.getAtk = function() {
-        var atkBonus = this.getEffectStatModifiers('atk');
+        var atkBonus = this.getStatModifiers('atk');
         return this.atk + atkBonus;
     };
     /**
      * Returns def stat with any status effects and items taken into account.
      */
     window.game.Unit.prototype.getDef = function() {
-        var defBonus = this.getEffectStatModifiers('def');
+        var defBonus = this.getStatModifiers('def');
         return this.def + defBonus;
     };
     /**
@@ -1293,7 +1320,7 @@
      * account.
      */
     window.game.Unit.prototype.getMaxLife = function() {
-        var maxLifeBonus = this.getEffectStatModifiers('maxLife');
+        var maxLifeBonus = this.getStatModifiers('maxLife');
         return this.maxLife + maxLifeBonus;
     };
     /**

@@ -107,6 +107,9 @@
         SHIELD: {
             id: 1,
             itemLevel:1,
+            atk: 5,
+            life: 15,
+            def: 5,
             name:'Grugtham\'s Shield',
             htmlDescription:'<font color="#660000"><b>500000 Dragon Kill Points<b/></font>',
             equippableBy: game.EquippableBy.ALL,
@@ -243,10 +246,22 @@
                 };
             }
 
+            // Equippable items
             if ( item.usable == false || item.usable === undefined ) {
+                game.util.useDefaultIfUndefined(item, 'atk', 0);
+                game.util.useDefaultIfUndefined(item, 'def', 0);
+                game.util.useDefaultIfUndefined(item, 'life', 0);
+
                 // Make sure all equippable items have a placementCost.
                 game.util.useDefaultIfUndefined(item, 'placementCost', 0);
                 item.htmlDescription += '<br/>' + 'Increases placement cost by ' + item.placementCost;
+
+                if ( item.atk > 0 || item.def > 0 || item.life > 0 ) {
+                    item.htmlDescription += '<br/>';
+                    if ( item.atk > 0 ) item.htmlDescription += '+' + item.atk + ' atk ';
+                    if ( item.def > 0 ) item.htmlDescription += '+' + item.def + ' def ';
+                    if ( item.life > 0 ) item.htmlDescription += '+' + item.life + ' life';
+                }
             }
         };
     }());
