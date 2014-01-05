@@ -964,7 +964,10 @@
                 flags = game.PlayerFlags.PLAYER;
             }
             flags |= game.PlayerFlags.SUMMON;
-            var newUnit = new game.Unit(game.UnitType.TREE.id, flags, 1);
+            var summonedUnitID = this.currentAbility.summonedUnitID;
+            var summonedUnitLevel = this.currentAbility.summonedUnitLevel;
+            var newUnit = new game.Unit(summonedUnitID, flags, summonedUnitLevel);
+
             newUnit.placeUnitAtPixelCoords(this.getCenterX(), this.getCenterY(),this.movementAI);
             game.UnitManager.addUnit(newUnit);
 

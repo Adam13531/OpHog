@@ -80,6 +80,11 @@
      *                                 hit by this ability
      * damageformula: game.DamageFormula - Instructions on how to calculate damage 
      *                                     or heal amounts that will be done 
+     * 
+     * summonedUnitLevel: Number - this is required if type === game.AbilityType.SUMMON. 
+     *     It represents the level of the summoned unit.
+     * summonedUnitID: String - this is required if type === game.AbilityType.SUMMON. 
+     *     It is a key into game.UnitType. See fillInSummonData for more info.
      * Optional properties:
      * relativeWeight: Number - Used to calculate the probability of using the ability
      * particleSystemOptions: Object - see ParticleSystem.js for full details.
@@ -223,7 +228,9 @@
             relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
-            damageFormula: game.DamageFormula.ATK_MINUS_DEF
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF,
+            summonedUnitLevel: 2,
+            summonedUnitID: 'TREE',
         },
 
         HEAL: {
@@ -252,7 +259,9 @@
         // variable here.
         var displayUndefinedAbilityError = function(ability, undefinedAttribute) {
             if ( ability[undefinedAttribute] === undefined ) {
-                console.log('ERROR: Ability "' + ability.name  + '" has "' + undefinedAttribute + '" undefined.');
+                var err = 'ERROR: Ability "' + ability.name  + '" has "' + undefinedAttribute + '" undefined.';
+                game.util.debugDisplayText(err);
+                console.log(err);
             }
         };
 
@@ -284,6 +293,14 @@
             for (var i = 0; i < necessaryProperties.length; i++) {
                 displayUndefinedAbilityError(ability, necessaryProperties[i]);
             };
+
+            if ( ability.type == game.AbilityType.SUMMON ) {
+                // There are two more necessary properties if you're specifying
+                // a summon ability.
+                if ( ability.summonedUnitLevel === undefined || ability.summonedUnitID === undefined ) {
+                    displayUndefinedAbilityError(ability, 'summonedUnitLevel or summonedUnitID');
+                }
+            }
 
             if ( abilityIDs.indexOf(id) != -1 ) {
                 // Get the first ability with that ID

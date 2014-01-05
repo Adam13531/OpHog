@@ -544,6 +544,35 @@
     };
 
     /**
+     * There is a circular dependency between units and abilities. Abilities
+     * happen to be defined first since every single unit depends on abilities,
+     * but only some abilities (summons) depend on units.
+     *
+     * When you declare an ability that depends on a unit, you declare it with a
+     * string that corresponds to game.UnitType. This function is what resolves
+     * those strings into the numerical IDs that correspond to a unit type.
+     */
+    ( function fillInSummonData() {
+        for ( var key in game.Ability ) {
+            var ability = game.Ability[key];
+            var originalSummonedUnitID = ability.summonedUnitID;
+            if ( originalSummonedUnitID !== undefined ) {
+                ability.summonedUnitID = game.UnitType[originalSummonedUnitID];
+                if ( ability.summonedUnitID === undefined ) {
+                    // To fix this error, just go into AbilityData.js and
+                    // correct summonedUnitID.
+                    var err = 'Error: "' + ability.name + '" defines a ' +
+                    'summonedUnitID that doesn\'t exist in game.Ability. Name: ' + originalSummonedUnitID;
+                    game.util.debugDisplayText(err);
+                    console.log(err);
+                } else {
+                    ability.summonedUnitID = ability.summonedUnitID.id;
+                }
+            }
+        };
+    }());
+
+    /**
      * This function ensures you didn't define an unit ID twice, and it will
      * insert default values where necessary. It is called immediately after it
      * is defined (it's an IIFE).
