@@ -146,8 +146,7 @@
                 }
             ],
             graphicIndex: game.Graphic.GRAY_SWORD,
-            mods: [new game.LifeLeech(.5, .5), new game.MultipleProjectiles(2)],
-            placementCost: 10
+            mods: [new game.LifeLeech(.5, .5), new game.MultipleProjectiles(2)]
         },
         HEAL_GEM: {
             id: 3,
@@ -251,10 +250,6 @@
                 game.util.useDefaultIfUndefined(item, 'atk', 0);
                 game.util.useDefaultIfUndefined(item, 'def', 0);
                 game.util.useDefaultIfUndefined(item, 'life', 0);
-
-                // Make sure all equippable items have a placementCost.
-                game.util.useDefaultIfUndefined(item, 'placementCost', 0);
-                item.htmlDescription += '<br/>' + 'Increases placement cost by ' + item.placementCost;
 
                 if ( item.atk > 0 || item.def > 0 || item.life > 0 ) {
                     item.htmlDescription += '<br/>';

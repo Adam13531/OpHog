@@ -32,7 +32,6 @@
             }
         } else {
             this.equippableBy = itemData.equippableBy;
-            this.placementCost = itemData.placementCost;
             this.atk = itemData.atk;
             this.def = itemData.def;
             this.life = itemData.life;
