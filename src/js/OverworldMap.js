@@ -282,9 +282,9 @@
          *     tilesetID - Number - an ID defined in TilesetManager that corresponds
          *             to a tileset.
          *     minigame - Object - an object with the following:
-         *         baseCoins - Number - the number of coins to give for the first 
+         *         baseDiamonds - Number - the number of diamonds to give for the first 
          *             minigame option
-         *         coinsPerLevel - Number - the number of bonus coins per 
+         *         diamondsPerLevel - Number - the number of bonus diamonds per 
          *             difficulty level
          *         minEnemies - Array:Number - minimum number of total enemies 
          *             for each difficulty (the first is the easiest difficulty).
@@ -340,8 +340,8 @@
             },
 
             minigame: {
-                baseCoins: 300,
-                coinsPerLevel: 400,
+                baseDiamonds: 10,
+                diamondsPerLevel: 2,
                 minEnemies: [1,2,3,4,5],
                 maxEnemies: [3,5,7,9,11],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -390,8 +390,8 @@
             },
 
             minigame: {
-                baseCoins: 300,
-                coinsPerLevel: 500,
+                baseDiamonds: 10,
+                diamondsPerLevel: 2,
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -433,8 +433,8 @@
             },
 
             minigame: {
-                baseCoins: 400,
-                coinsPerLevel: 400,
+                baseDiamonds: 12,
+                diamondsPerLevel: 2,
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -476,8 +476,8 @@
             },
 
             minigame: {
-                baseCoins: 400,
-                coinsPerLevel: 500,
+                baseDiamonds: 10,
+                diamondsPerLevel: 3,
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -519,8 +519,8 @@
             },
 
             minigame: {
-                baseCoins: 500,
-                coinsPerLevel: 600,
+                baseDiamonds: 12,
+                diamondsPerLevel: 3,
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -558,8 +558,8 @@
             },
 
             minigame: {
-                baseCoins: 600,
-                coinsPerLevel: 650,
+                baseDiamonds: 12,
+                diamondsPerLevel: 4,
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -839,13 +839,13 @@
             continue;
         }
 
-        if ( minigame.baseCoins === undefined ) {
-            game.util.debugDisplayText(nodeDescription + ' has no minigame baseCoins!', 'no minigame baseCoins' + i);
+        if ( minigame.baseDiamonds === undefined ) {
+            game.util.debugDisplayText(nodeDescription + ' has no minigame baseDiamonds!', 'no minigame baseDiamonds' + i);
             continue;
         }
 
-        if ( minigame.coinsPerLevel === undefined ) {
-            game.util.debugDisplayText(nodeDescription + ' has no minigame coinsPerLevel!', 'no minigame coinsPerLevel' + i);
+        if ( minigame.diamondsPerLevel === undefined ) {
+            game.util.debugDisplayText(nodeDescription + ' has no minigame diamondsPerLevel!', 'no minigame diamondsPerLevel' + i);
             continue;
         }
 

@@ -106,8 +106,8 @@
             // Data from the current map node
             var nodeOfMap = game.currentMap.nodeOfMap;
             var nodeData = nodeOfMap.minigame;
-            var baseCoins = nodeData.baseCoins;
-            var coinsPerLevel = nodeData.coinsPerLevel;
+            var baseDiamonds = nodeData.baseDiamonds;
+            var diamondsPerLevel = nodeData.diamondsPerLevel;
             var minEnemiesArray = nodeData.minEnemies;
             var maxEnemiesArray = nodeData.maxEnemies;
 
@@ -176,7 +176,7 @@
                     enemiesAsArray.push(new game.PossibleEnemy(enemyID, enemy.relativeWeight, enemy.minLevel, enemy.maxLevel, quantity));
                 };
 
-                this.minigameData.push(new game.MinigameData(enemiesAsArray, baseCoins + coinsPerLevel * i));
+                this.minigameData.push(new game.MinigameData(enemiesAsArray, baseDiamonds + diamondsPerLevel * i));
             };
         },
 
@@ -220,7 +220,7 @@
 
                 // Note: the money given isn't actually granted to the player
                 // yet.
-                this.addIcon(i, envSheet.getSpriteDataFromSingleIndex(game.Graphic.TREASURE_CHEST, true), minigameData.moneyGiven);
+                this.addIcon(i, envSheet.getSpriteDataFromSingleIndex(game.Graphic.TREASURE_CHEST_WITH_DIAMONDS, true), minigameData.moneyGiven);
 
                 // CSS properties for the money image and text that shows the
                 // reward amount.
@@ -300,10 +300,10 @@
         wonMinigame: function() {
             moneyGiven = this.selectedMinigame.moneyGiven;
 
-            game.Player.modifyCoins(moneyGiven);
+            game.Player.modifyDiamonds(moneyGiven);
 
-            var coinString = '+' + moneyGiven + ' coin' + (moneyGiven != 1 ? 's' : '');
-            var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2 + 40, coinString, true, '#0f0', false);
+            var diamondsString = '+' + moneyGiven + ' diamond' + (moneyGiven != 1 ? 's' : '');
+            var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2 + 40, diamondsString, true, '#0f0', false);
 
             game.TextManager.addTextObj(textObj);
         },
