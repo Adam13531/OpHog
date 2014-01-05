@@ -162,6 +162,10 @@
             return this.coins >= numberOfCoins;
         },
 
+        hasThisManyDiamonds: function(numberOfDiamonds) {
+            return this.diamonds >= numberOfDiamonds;
+        },
+
         /**
          * Modifies your coin total and updates UIs that might care.
          * @param  {Number} amount - the amount of coins to add (negative ==
@@ -170,6 +174,16 @@
          */
         modifyCoins: function(amount) {
             this.coins += amount;
+
+            game.UnitPlacementUI.playerCoinsChanged();
+            game.ShopUI.playerCoinsChanged();
+        },
+
+        /**
+         * See modifyCoins.
+         */
+        modifyDiamonds: function(amount) {
+            this.diamonds += amount;
 
             game.UnitPlacementUI.playerCoinsChanged();
             game.ShopUI.playerCoinsChanged();

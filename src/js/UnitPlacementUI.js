@@ -27,7 +27,7 @@
 	 * The amount a slot costs per level
 	 * @type {Number}
 	 */
-	window.game.UNIT_PLACEMENT_SLOT_COST = 500;
+	window.game.UNIT_PLACEMENT_SLOT_COST = 100;
 	/**
 	 * Opacity of the units in the UI that aren't placed
 	 * @type {String}
@@ -261,7 +261,7 @@
         buyNewUnit: function(unitType) {
             // Make sure the player can afford it
             var cost = this.costToPurchaseSlot(unitType);
-            if (!game.Player.hasThisMuchMoney(cost)) {
+            if (!game.Player.hasThisManyDiamonds(cost)) {
                 return false;
             }
 
@@ -278,7 +278,7 @@
             // true. Otherwise, it can be false.
             var buyingDisplayedUnitType = (unitType == this.unitType);
 
-            game.Player.modifyCoins(-cost);
+            game.Player.modifyDiamonds(-cost);
 
             // Keep track of where the 'buy' button is so that we can restore
             // that position at the end of this function.

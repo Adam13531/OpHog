@@ -186,6 +186,7 @@
         $grantMoney.click(function() {
             $settingsDialog.dialog('close');
             game.Player.modifyCoins(9999999);
+            game.Player.modifyDiamonds(99999);
         });
 
         $goToOverworld.button();
@@ -588,10 +589,15 @@
             }
 
             // 'M' - if not positive, bring money to 1000. Otherwise, double it.
+            // Same for diamonds.
             if (evt.keyCode == game.Key.DOM_VK_M) {
                 var coins = game.Player.coins;
                 coins = coins <= 0 ? (-coins + 1000) : coins;
                 game.Player.modifyCoins(coins);
+
+                var diamonds = game.Player.diamonds;
+                diamonds = diamonds <= 0 ? (-diamonds + 1000) : diamonds;
+                game.Player.modifyDiamonds(diamonds);
             }
 
             // 'Y' - Opens shopUI

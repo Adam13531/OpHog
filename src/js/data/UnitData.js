@@ -486,7 +486,7 @@
      * 
      * @type {Array:(Array:Number)}
      */
-    window.game.EXTRA_ARCHER_COSTUMES = [game.UnitType.PLAYER_ARCHER.graphicIndexes, [game.Graphic.RANGER_F],[game.Graphic.HIGH_ELF_RANGER_F],[game.Graphic.DROW_RANGER],[game.Graphic.WOOF_ELF_RANGER_F]];
+    window.game.EXTRA_ARCHER_COSTUMES = [game.UnitType.PLAYER_ARCHER.graphicIndexes, [game.Graphic.RANGER_F],[game.Graphic.HIGH_ELF_RANGER_F],[game.Graphic.DROW_RANGER],[game.Graphic.WOOD_ELF_RANGER_F]];
     window.game.EXTRA_WARRIOR_COSTUMES = [game.UnitType.PLAYER_WARRIOR.graphicIndexes, [game.Graphic.BERSERKER_M],[game.Graphic.PALADIN_M],[game.Graphic.KNIGHT_F],[game.Graphic.PALADIN_F]];
     window.game.EXTRA_WIZARD_COSTUMES = [game.UnitType.PLAYER_WIZARD.graphicIndexes, [game.Graphic.SHAMAN_F],[game.Graphic.SHAMAN_M],[game.Graphic.PRIEST_F],[game.Graphic.WIZARD_F]];
 

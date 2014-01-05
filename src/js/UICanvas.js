@@ -360,8 +360,8 @@
 
             var cost = game.UnitPlacementUI.costToPurchaseSlot(unitType);
 
-            var fontColor = '#fff';
-            if ( !game.Player.hasThisMuchMoney(cost) ) {
+            var fontColor = '#0bb';
+            if ( !game.Player.hasThisManyDiamonds(cost) ) {
                 fontColor = '#f00';
 
                 // Gray out the button if you don't have enough money.
@@ -370,7 +370,9 @@
                 this.uictx.fillRect(this.drawX, this.drawY, game.TILESIZE, game.TILESIZE);
                 this.uictx.restore();
             }
-            game.TextManager.drawTextImmediate(this.uictx, '$' + cost, this.drawX, this.drawY + 25, {screenCoords:true, fontSize:12, baseline:'top', treatXAsCenter:false, color:fontColor});
+            game.TextManager.drawTextImmediate(this.uictx, cost, this.drawX, this.drawY + 25, {screenCoords:true, fontSize:12, baseline:'top', treatXAsCenter:false, color:fontColor});
+
+            iconSheet.drawSprite(this.uictx, game.Graphic.BLUE_DIAMOND, this.drawX + 3, this.drawY + 38);
             this.drawX += game.TILESIZE + this.xPadding;
         },
 
