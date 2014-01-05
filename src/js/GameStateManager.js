@@ -144,6 +144,13 @@
         },
 
         /**
+         * Gets the cost of retrying a map.
+         */
+        getRetryCost: function() {
+            return 10;
+        },
+
+        /**
          * Sets up the transition buttons, which are the "retry" and "go to
          * overworld" buttons.
          */
@@ -165,6 +172,9 @@
 
             $retryButton.click(function(gameStateManager) {
                 return function() {
+                    var cost = gameStateManager.getRetryCost();
+                    if ( !game.Player.hasThisManyDiamonds(cost) ) return;
+                    game.Player.modifyDiamonds(-cost);
                     gameStateManager.returnToNormalGameplay();
                 }
             }(this));
@@ -187,6 +197,27 @@
         },
 
         /**
+         * Call this whenever your diamond total changes.
+         */
+        playerDiamondsChanged: function() {
+            this.setRetryButtonState();
+        },
+
+        /**
+         * Disables/enables the retry button based on how many diamonds you
+         * have.
+         */
+        setRetryButtonState: function() {
+            var $retryButton = $('#retryButton');
+            var cost = this.getRetryCost();
+            if ( !game.Player.hasThisManyDiamonds(cost) ) {
+                $retryButton.button('disable');
+            } else {
+                $retryButton.button('enable');
+            }
+        },
+
+        /**
          * Positions and shows the transition buttons.
          *
          * The buttons will always be positioned in the center of the canvas.
@@ -201,6 +232,20 @@
 
             var $goToOverworldButton = $('#goToOverworldButton');
             var $retryButton = $('#retryButton');
+
+            $retryButton.button( 'option' ,'icons', {
+                secondary: 'diamond'
+                });
+
+            var cost = this.getRetryCost();
+            $retryButton.html('<span class="ui-button-text">Retry for ' + cost + 
+            '<span class="ui-button ui-icon diamond"></span>');
+            this.setRetryButtonState();
+
+            // To get the same height as the retry button, put a hidden diamond
+            // icon in the button. This is a hack, but it works.
+            $goToOverworldButton.html('<span class="ui-button-text">Go to overworld' + 
+            '<span style="display:none" class="ui-button ui-icon diamond"></span>');
 
             var retryWidth = parseInt($retryButton.css('width'));
             var goToOverworldWidth = parseInt($goToOverworldButton.css('width'));
@@ -451,9 +496,10 @@
             // Need to restore the boss since it was removed and reset the castle
             // life.
             if ( this.previousState == game.GameStates.NORMAL_LOSE_SCREEN && this.isNormalGameplay() ) {
-                // Note that placing the boss and NPCs is also done in the map's
-                // initialize function, so if we add more code here, we should
-                // refactor that.
+                // Note that most of this is also done in the map's initialize
+                // function, so if we add more code here, we should refactor
+                // that.
+                game.currentMap.setStartingCoins();
                 game.currentMap.addBossUnit();
                 game.currentMap.placeNPCs();
                 game.Player.resetCastleLife();
@@ -474,7 +520,7 @@
             // Normal state --> lose
             if ( this.previousState == game.GameStates.NORMAL_GAMEPLAY && this.inLoseState() ) {
                 this.commonWinLoseFunctions();
-                game.Player.modifyCoins(-1000);
+                game.Player.setCoins(0);
                 this.showTransitionButtons(true, true);
                 game.AudioManager.playAudio(game.Audio.EXPLODE_2);
             }

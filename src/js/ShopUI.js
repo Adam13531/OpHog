@@ -141,7 +141,7 @@
         $('#shopBuyButton').button( 'option' ,'icons', {
             secondary: 'diamond'
             });
-        $('#shopBuyButton > .ui-button-text').html('Price: ' + this.getBuyPrice())
+        $('#shopBuyButton > .ui-button-text').html('Price: ' + this.getBuyPrice());
     };
 
     /**

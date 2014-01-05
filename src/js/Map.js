@@ -52,6 +52,13 @@
     };
 
     /**
+     * Sets your coin total to the amount that you start with on this map.
+     */
+    window.game.Map.prototype.setStartingCoins = function() {
+        game.Player.setCoins(this.nodeOfMap.startingCoins);
+    };
+
+    /**
      * This calls the correct initialize function to initialize the map.
      */
     window.game.Map.prototype.initialize = function() {
@@ -88,6 +95,8 @@
         this.placeNPCs();
 
         this.addBossUnit();
+
+        this.setStartingCoins();
     };
 
     /**

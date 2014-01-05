@@ -76,6 +76,7 @@
     //      need to fill in the ID and any parameters you want to override. 
     //      For example, if you want the ATTACK ability but with a different 
     //      graphic, you can specify game.Ability.ATTACK.id and a graphicIndex.
+    //      Default relativeWeight is 1000 and is set in AbilityManager.js.
     window.game.UnitType = {
         ORC: {
             id:0,
@@ -164,11 +165,11 @@
                     id: game.Ability.SCORPION_STING.id
                 },
                 {
-                    id: game.Ability.SUMMON.id
+                    id: game.Ability.SUMMON.id,
                 }
             ],
 
-            abilityAI: game.AbilityAI.ALWAYS_SUMMON,
+            abilityAI: game.AbilityAI.RANDOM,
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -319,11 +320,10 @@
                 {
                     id: game.Ability.ATTACK.id,
                     graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
-                    graphicOnCrit: 61,
-                    relativeWeight: 5
                 },
                 {
-                    id: game.Ability.SUMMON.id
+                    id: game.Ability.SUMMON.id,
+                    relativeWeight: 100,
                 }
             ],
             

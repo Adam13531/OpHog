@@ -176,6 +176,10 @@
             this.coins += amount;
         },
 
+        setCoins: function(amount) {
+            this.coins = amount;
+        },
+
         /**
          * See modifyCoins.
          */
@@ -184,6 +188,7 @@
 
             game.UnitPlacementUI.playerDiamondsChanged();
             game.ShopUI.playerDiamondsChanged();
+            game.GameStateManager.playerDiamondsChanged();
         },
 
         /**
@@ -210,6 +215,11 @@
          * @return {undefined}
          */
         update: function(delta) {
+            // Coins don't regenerate while you're on the lose screen so that
+            // you don't think you'll start with more coins than you really
+            // have.
+            if ( game.GameStateManager.inLoseState() ) return;
+
             var deltaAsSec = delta / 1000;
             this.coinRegenCooldown -= deltaAsSec;
             if ( this.coinRegenCooldown <= 0 ) {

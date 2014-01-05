@@ -447,7 +447,7 @@
         var sellPrice = this.getSellPrice(item);
         this.$sellItemButton.html('<span class="ui-button-text" style="font-size:.75em">Sell</span><span style="font-size:.6em">' + 
             sellPrice + ' </span>' + 
-            '<span class ="ui-button ui-icon diamond"></span>');
+            '<span class="ui-button ui-icon diamond"></span>');
     };
 
     /**

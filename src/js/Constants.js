@@ -109,6 +109,12 @@
     window.game.DIALOG_SHOW_MS = 150;
 
     /**
+     * There is a constant unit placement cost of this many coins.
+     * @type {Number}
+     */
+    window.game.UNIT_PLACEMENT_COST = 200;
+
+    /**
      * Amount of ms it takes to fade out dialogs.
      * @type {Number}
      */

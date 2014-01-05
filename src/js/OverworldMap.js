@@ -299,6 +299,7 @@
          *         maxEnemies - Array:Number - see above.
          *         spread - game.MinigameEnemySpread - this tells the minigame 
          *             how to pick enemies
+         *     startingCoins - Number - the number of coins you start with
          *
          * Error-checking and the insertion of default values are done in 
          * setupOverworldMapNodes.
@@ -309,6 +310,7 @@
             x: 8,
             y: 7,
             description: 'Green Hill Zone',
+            startingCoins: game.UNIT_PLACEMENT_COST * 5,
             difficulty: 1,
             dimensions: [5,2],
             clearFog: [[11,9,7], [11,18,2]],
@@ -715,6 +717,8 @@
         if ( error ) {
             continue;
         }
+
+        game.util.useDefaultIfUndefined(node, 'startingCoins', game.UNIT_PLACEMENT_COST * 15);
 
         // If you didn't specify NPCs then that's fine, you just won't get any
         // in your map.

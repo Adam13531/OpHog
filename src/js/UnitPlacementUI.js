@@ -222,7 +222,7 @@
          * @return {Number}    Cost to place the unit 
          */
         costToPlaceUnit: function(unit) {
-            return (unit.level * 50);
+            return game.UNIT_PLACEMENT_COST;
         },
 
         /**
