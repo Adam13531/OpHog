@@ -31,9 +31,22 @@
          */
         this.usingItem = null;
 
-        $('#war-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite war-alt-0-png' + '"/>');
-        $('#wiz-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite wiz-alt-0-png' + '"/>');
-        $('#arch-section').append('<img src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch-alt-0-png' + '"/>');
+        $('#war-section').append('<img id="warSectionImage" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite war-alt-0-png' + '"/>');
+        $('#wiz-section').append('<img id="wizSectionImage"  src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite wiz-alt-0-png' + '"/>');
+        $('#arch-section').append('<img id="archSectionImage"  src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch-alt-0-png' + '"/>');
+
+        // Clicking the character images will act as an equip/unequip button in
+        // case drag doesn't work on their device for some reason (I'M LOOKING
+        // AT YOU, WINDOWS PHONE).
+        $('#warSectionImage').click(function() {
+            game.playerInventoryUI.equipOrUnequipSelectedItem(game.SlotTypes.WAR);
+        });
+        $('#wizSectionImage').click(function() {
+            game.playerInventoryUI.equipOrUnequipSelectedItem(game.SlotTypes.WIZ);
+        });
+        $('#archSectionImage').click(function() {
+            game.playerInventoryUI.equipOrUnequipSelectedItem(game.SlotTypes.ARCH);
+        });
 
         // Put some starter text for the description
         this.$itemDescriptionID.html('<h2>Click a slot to select it.</h2>');
@@ -119,6 +132,52 @@
 
 	window.game.PlayerInventoryUI.prototype = new game.InventoryUI;
     
+    /**
+     * Equips or unequips the selected item. If you're the selected slot is an
+     * equip slot, then this will equip to the class corresponding to
+     * clickedSlotType.
+     * @param  {game.SlotTypes} clickedSlotType - the slot to equip to (if
+     * you're equipping), otherwise it isn't used).
+     */
+    window.game.PlayerInventoryUI.prototype.equipOrUnequipSelectedItem = function(clickedSlotType) {
+        // There must be a selected slot with an item.
+        if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
+            return;
+        }
+
+        var selectedSlot = this.selectedSlotUI.slot;
+        var slotToSwap = null;
+
+        // The slot must be some kind of equippable slot.
+        if ( selectedSlot.isUsableSlot() ) {
+            return;
+        }
+
+        if ( selectedSlot.isClassSlot() ) {
+            // It's a class slot, so we want to unequip the item.
+            slotToSwap = game.Player.inventory.getFirstEmptySlot(game.SlotTypes.EQUIP);
+        } else {
+            // It's an equip slot, so we want to try equipping an item.
+            slotToSwap = game.Player.inventory.getFirstEmptySlot(clickedSlotType);
+        }
+
+        // There must be an available slot to swap with.
+        if ( slotToSwap == null ) {
+            return;
+        }
+
+        // Get the corresponding SlotUI.
+        var slotUIToSwap = this.slots[slotToSwap.slotIndex];
+
+        // Do the swap.
+        var success = this.selectedSlotUI.swapItems(slotUIToSwap, false);
+
+        if ( success ) {
+            // Select the slot we moved to
+            game.playerInventoryUI.clickedSlot(slotUIToSwap);
+        }
+    };
+
     /**
      * Exit USE mode. This will hide the instructions that show up.
      */
