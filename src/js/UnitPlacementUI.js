@@ -322,6 +322,9 @@
                 game.UnitManager.placeAllPlayerUnits(tileOfLastMap.x, tileOfLastMap.y, game.MovementAI.WANDER_UNFOGGY_WALKABLE);
             }
 
+            // Now that you've bought a unit, perhaps you can buy an item.
+            game.ShopUI.updateBuyButton();
+
             return true;
         },
 
