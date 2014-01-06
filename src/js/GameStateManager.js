@@ -233,19 +233,16 @@
             var $goToOverworldButton = $('#goToOverworldButton');
             var $retryButton = $('#retryButton');
 
-            $retryButton.button( 'option' ,'icons', {
-                secondary: 'diamond'
-                });
-
             var cost = this.getRetryCost();
-            $retryButton.html('<span class="ui-button-text">Retry for ' + cost + 
-            '<span class="ui-button ui-icon diamond"></span>');
+            $retryButton.html('<span class="ui-button-text">Retry for ' + cost + ' ' +
+            	game.util.makeTransparentImgTag('icon-sprite diamond-icon'));
             this.setRetryButtonState();
 
             // To get the same height as the retry button, put a hidden diamond
             // icon in the button. This is a hack, but it works.
-            $goToOverworldButton.html('<span class="ui-button-text">Go to overworld' + 
-            '<span style="display:none" class="ui-button ui-icon diamond"></span>');
+            $goToOverworldButton.html('<span class="ui-button-text">Go to overworld' +
+            	game.util.makeTransparentImgTag('icon-sprite diamond-icon', 'hideTheDiamond'));
+            $('#hideTheDiamond').hide();
 
             var retryWidth = parseInt($retryButton.css('width'));
             var goToOverworldWidth = parseInt($goToOverworldButton.css('width'));

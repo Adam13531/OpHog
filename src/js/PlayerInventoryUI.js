@@ -31,9 +31,9 @@
          */
         this.usingItem = null;
 
-        $('#war-section').append('<img id="warSectionImage" src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite war-alt-0-png' + '"/>');
-        $('#wiz-section').append('<img id="wizSectionImage"  src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite wiz-alt-0-png' + '"/>');
-        $('#arch-section').append('<img id="archSectionImage"  src="'+game.imagePath+'/img_trans.png" class="' + 'char-sprite arch-alt-0-png' + '"/>');
+        $('#war-section').append(game.util.makeTransparentImgTag('char-sprite war-alt-0-png', 'warSectionImage'));
+        $('#wiz-section').append(game.util.makeTransparentImgTag('char-sprite wiz-alt-0-png', 'wizSectionImage'));
+        $('#arch-section').append(game.util.makeTransparentImgTag('char-sprite arch-alt-0-png', 'archSectionImage'));
 
         // Clicking the character images will act as an equip/unequip button in
         // case drag doesn't work on their device for some reason (I'M LOOKING
@@ -506,7 +506,7 @@
         var sellPrice = this.getSellPrice(item);
         this.$sellItemButton.html('<span class="ui-button-text" style="font-size:.75em">Sell</span><span style="font-size:.6em">' + 
             sellPrice + ' </span>' + 
-            '<span class="ui-button ui-icon diamond"></span>');
+            game.util.makeTransparentImgTag('icon-sprite diamond-icon'));
     };
 
     /**

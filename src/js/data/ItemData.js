@@ -128,6 +128,7 @@
         SWORD: {
             id: 2,
             itemLevel:1,
+            atk: 10,
             name:'Skull Stab',
             htmlDescription:'<font color="#660000"><b>This sword can actually only pierce hearts.<b/></font>',
             equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
@@ -234,6 +235,22 @@
             var item = game.ItemType[key];
             item.htmlDescription = item.name + '<br/>' + item.htmlDescription;
             game.util.useDefaultIfUndefined(item, 'usable', false);
+
+            // Equippable items
+            if ( item.usable == false || item.usable === undefined ) {
+                game.util.useDefaultIfUndefined(item, 'atk', 0);
+                game.util.useDefaultIfUndefined(item, 'def', 0);
+                game.util.useDefaultIfUndefined(item, 'life', 0);
+
+                if ( item.atk > 0 || item.def > 0 || item.life > 0 ) {
+                    item.htmlDescription += '<br/>';
+
+                    if ( item.atk > 0 ) item.htmlDescription += game.util.makeTransparentImgTag('icon-sprite dagger-icon') + '+' + item.atk + ' ';
+                    if ( item.def > 0 ) item.htmlDescription += game.util.makeTransparentImgTag('icon-sprite shield-icon') + '+' + item.def + ' ';
+                    if ( item.life > 0 ) item.htmlDescription += game.util.makeTransparentImgTag('icon-sprite heart-icon') + '+' + item.life;
+                }
+            }
+
             // Add mods to the item's description.
             if ( item.mods !== undefined ) {
                 if ( item.usable ) {
@@ -245,19 +262,6 @@
                 };
             }
 
-            // Equippable items
-            if ( item.usable == false || item.usable === undefined ) {
-                game.util.useDefaultIfUndefined(item, 'atk', 0);
-                game.util.useDefaultIfUndefined(item, 'def', 0);
-                game.util.useDefaultIfUndefined(item, 'life', 0);
-
-                if ( item.atk > 0 || item.def > 0 || item.life > 0 ) {
-                    item.htmlDescription += '<br/>';
-                    if ( item.atk > 0 ) item.htmlDescription += '+' + item.atk + ' atk ';
-                    if ( item.def > 0 ) item.htmlDescription += '+' + item.def + ' def ';
-                    if ( item.life > 0 ) item.htmlDescription += '+' + item.life + ' life';
-                }
-            }
         };
     }());
 

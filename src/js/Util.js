@@ -14,6 +14,25 @@
     };
 
     /**
+     * Creates an <img/> tag whose src is img_trans.png. This is simply meant to
+     * make calling code look cleaner; the caller can accomplish this with one
+     * line of code.
+     * @param  {String} cssClass - the CSS class string to apply
+     * @param  {String} id       - an ID, or undefined if you don't want one
+     * @return {String}          - an <img/> tag
+     */
+    window.game.util.makeTransparentImgTag = function(cssClass, id) {
+        var tag = '<img ';
+
+        if ( id !== undefined ) {
+            tag += 'id="' + id + '" ';
+        }
+
+        tag += 'src="'+game.imagePath+'/img_trans.png" class="' + cssClass + '"/>';
+        return tag;
+    };
+
+    /**
      * This is easiest to show using an example. Suppose you have this CSS class:
      *
      * .potion {

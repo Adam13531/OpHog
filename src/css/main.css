@@ -152,6 +152,24 @@ textarea {
     user-select: text;
 }
 
+.icon-sprite {
+    width: 16px;
+    height: 16px;
+    background: url(../../res/img/icon_16.png) 0 0 no-repeat;
+}
+.diamond-icon {
+    background-position: -0px -0px;
+}
+.dagger-icon {
+    background-position: -32px -0px;
+}
+.shield-icon {
+    background-position: -48px -0px;
+}
+.heart-icon {
+    background-position: -64px -0px;
+}
+
 /*Using a sprite creator might be nice (we could also make our own): http://draeton.github.com/stitches/*/
 /*I'm not sure how to prevent having to hard-code the image path*/
 .char-sprite {
