@@ -923,6 +923,37 @@
     };
 
     /**
+     * Summons a unit into the current battle.
+     */
+    window.game.Unit.prototype.summonUnitViaCurrentAbility = function() {
+        var battle = this.battleData.battle;
+        var flags = game.PlayerFlags.ENEMY;
+        if ( this.isPlayer() ) {
+            flags = game.PlayerFlags.PLAYER;
+        }
+        flags |= game.PlayerFlags.SUMMON;
+        var summonedUnitID = this.currentAbility.summonedUnitID;
+
+        // Determine the level of the summoned unit
+        var summonedUnitLevel = this.currentAbility.summonedUnitLevel;
+        if ( summonedUnitLevel == game.SUMMON_AT_LEVEL_OF_SUMMONER ) {
+            summonedUnitLevel = this.level;
+        } else if ( summonedUnitLevel == game.SUMMON_AT_HALF_LEVEL_OF_SUMMONER ) {
+            summonedUnitLevel = Math.ceil(this.level / 2.0);
+        }
+
+        var newUnit = new game.Unit(summonedUnitID, flags, summonedUnitLevel);
+
+        newUnit.placeUnitAtPixelCoords(this.getCenterX(), this.getCenterY(),this.movementAI);
+        game.UnitManager.addUnit(newUnit);
+
+        // Force the unit to join this battle. We pass coordinates so that
+        // the unit can go back to the summoner's original position when the
+        // battle ends.
+        battle.summonedUnit(this, newUnit);
+    };
+
+    /**
      * Attack, cast a spell, etc.
      */
     window.game.Unit.prototype.takeBattleTurn = function() {
@@ -955,26 +986,10 @@
                 break;
         }
 
-        // Handle the case for summoning. For now, after a unit is summoned,
-        // this code returns in order to not create a projectile. In the future,
-        // we might want to create projectiles.
+        // Handle the case for summoning. After a unit is summoned, this code
+        // returns in order to not create a projectile.
         if ( this.currentAbility.type == game.AbilityType.SUMMON ) {
-            var flags = game.PlayerFlags.ENEMY;
-            if ( this.isPlayer() ) {
-                flags = game.PlayerFlags.PLAYER;
-            }
-            flags |= game.PlayerFlags.SUMMON;
-            var summonedUnitID = this.currentAbility.summonedUnitID;
-            var summonedUnitLevel = this.currentAbility.summonedUnitLevel;
-            var newUnit = new game.Unit(summonedUnitID, flags, summonedUnitLevel);
-
-            newUnit.placeUnitAtPixelCoords(this.getCenterX(), this.getCenterY(),this.movementAI);
-            game.UnitManager.addUnit(newUnit);
-
-            // Force the unit to join this battle. We pass coordinates so that
-            // the unit can go back to the summoner's original position when the
-            // battle ends.
-            battle.summonedUnit(this, newUnit);
+            this.summonUnitViaCurrentAbility();
             return;
         }
 

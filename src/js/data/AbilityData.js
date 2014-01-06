@@ -82,7 +82,8 @@
      *                                     or heal amounts that will be done 
      * 
      * summonedUnitLevel: Number - this is required if type === game.AbilityType.SUMMON. 
-     *     It represents the level of the summoned unit.
+     *     It represents the level of the summoned unit. It can also be 
+     *     game.SUMMON_AT_LEVEL_OF_SUMMONER or game.SUMMON_AT_HALF_LEVEL_OF_SUMMONER.
      * summonedUnitID: String - this is required if type === game.AbilityType.SUMMON. 
      *     It is a key into game.UnitType. See fillInSummonData for more info.
      * Optional properties:
@@ -229,7 +230,7 @@
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF,
-            summonedUnitLevel: 2,
+            summonedUnitLevel: game.SUMMON_AT_LEVEL_OF_SUMMONER,
             summonedUnitID: 'TREE',
         },
 

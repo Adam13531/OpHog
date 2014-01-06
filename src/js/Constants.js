@@ -269,4 +269,19 @@
         BLUE_SMOKE_CLOUD: 6,
     };
 
+    /**
+     * When specifying a summonedUnitLevel, you can provide this, and the
+     * summoned unit will be the level of the summoner.
+     * @type {Number}
+     */
+    window.game.SUMMON_AT_LEVEL_OF_SUMMONER = -1;
+
+
+    /**
+     * When specifying a summonedUnitLevel, you can provide this, and the
+     * summoned unit will be half the level of the summoner.
+     * @type {Number}
+     */
+    window.game.SUMMON_AT_HALF_LEVEL_OF_SUMMONER = -2;
+
 }());
