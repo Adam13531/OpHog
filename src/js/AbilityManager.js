@@ -20,7 +20,7 @@
 	            var abilityData = this.getAbilityDataFromID(unitAbility.id);
 
                 game.util.copyPropsIfUndefined(abilityData, abilitiesList[i]);
-                game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', 1000);
+                game.util.useDefaultIfUndefined(abilitiesList[i], 'relativeWeight', game.DEFAULT_ABILITY_RELATIVE_WEIGHT);
 	            game.util.useDefaultIfUndefined(abilitiesList[i], 'particleSystemOptions', {});
 	        }
 	    },

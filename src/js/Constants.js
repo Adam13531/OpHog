@@ -276,12 +276,25 @@
      */
     window.game.SUMMON_AT_LEVEL_OF_SUMMONER = -1;
 
-
     /**
      * When specifying a summonedUnitLevel, you can provide this, and the
      * summoned unit will be half the level of the summoner.
      * @type {Number}
      */
     window.game.SUMMON_AT_HALF_LEVEL_OF_SUMMONER = -2;
+
+    /**
+     * The relative weight used if an ability doesn't have one specified.
+     * @type {Number}
+     */
+    window.game.DEFAULT_ABILITY_RELATIVE_WEIGHT = 1000;
+
+    /**
+     * The levels at which archers learn their special skills.
+     * @type {Number}
+     */
+    window.game.ARCHER_SKILL_1_REQUIRED_LVL = 5;
+    window.game.ARCHER_SKILL_2_REQUIRED_LVL = 20;
+    window.game.ARCHER_SKILL_3_REQUIRED_LVL = 50;
 
 }());

@@ -242,7 +242,40 @@
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE | game.RandomUnitFlags.IS_MISSING_LIFE,
             actionOnHit: game.ActionOnHit.HEAL,
             damageFormula: game.DamageFormula.USE_ATK_VALUE
-        }
+        },
+
+        SUMMON_WOLF: {
+            id: 14,
+            graphicIndex: 1, // Blank graphic. Summon is special-cased to not have a projectile anyway.
+            type: game.AbilityType.SUMMON,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF,
+            summonedUnitLevel: game.SUMMON_AT_HALF_LEVEL_OF_SUMMONER,
+            summonedUnitID: 'WOLF_SUMMON',
+        },
+
+        SUMMON_RAVEN: {
+            id: 15,
+            graphicIndex: 1, // Blank graphic. Summon is special-cased to not have a projectile anyway.
+            type: game.AbilityType.SUMMON,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF,
+            summonedUnitLevel: game.SUMMON_AT_LEVEL_OF_SUMMONER,
+            summonedUnitID: 'RAVEN_SUMMON',
+        },
+
+        SUMMON_DRAGON: {
+            id: 16,
+            graphicIndex: 1, // Blank graphic. Summon is special-cased to not have a projectile anyway.
+            type: game.AbilityType.SUMMON,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF,
+            summonedUnitLevel: game.SUMMON_AT_LEVEL_OF_SUMMONER,
+            summonedUnitID: 'DRAGON_SUMMON',
+        },
 
     };
 

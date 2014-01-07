@@ -93,6 +93,9 @@
                     if ( unit.isPlayer() && unit.isPlaceableUnit() ) {
                         unit.unplaceUnit();
                     } else {
+                        if ( unit.summoner !== undefined ) {
+                            unit.summoner.summonedUnitCount--;
+                        }
                         this.gameUnits.splice(i, 1);
                         i--;
                     }

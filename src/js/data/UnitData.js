@@ -76,7 +76,8 @@
     //      need to fill in the ID and any parameters you want to override. 
     //      For example, if you want the ATTACK ability but with a different 
     //      graphic, you can specify game.Ability.ATTACK.id and a graphicIndex.
-    //      Default relativeWeight is 1000 and is set in AbilityManager.js.
+    //      Default relativeWeight is game.DEFAULT_ABILITY_RELATIVE_WEIGHT and 
+    //      is set in AbilityManager.js.
     window.game.UnitType = {
         ORC: {
             id:0,
@@ -320,10 +321,6 @@
                 {
                     id: game.Ability.ATTACK.id,
                     graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
-                },
-                {
-                    id: game.Ability.SUMMON.id,
-                    relativeWeight: 100,
                 }
             ],
             
@@ -355,7 +352,7 @@
 
             abilities: [
                 {
-                    id: game.Ability.THROWING_KNIVES.id
+                    id: game.Ability.ATTACK.id
                 },
                 {
                     id: game.Ability.REVIVE.id
@@ -392,7 +389,7 @@
 
             abilities: [
                 {
-                    id: game.Ability.FIREBALL.id
+                    id: game.Ability.ATTACK.id
                 },
                 {
                     id: game.Ability.HEAL.id
@@ -476,7 +473,89 @@
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
-        }
+        },
+
+        // PLAYER_ARCHER's summon
+        WOLF_SUMMON: {
+            id: 13,
+            graphicIndexes:[game.Graphic.BLACK_WOLF],
+            atk: {
+                start: 10,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            def: {
+                start: 0,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            life: {
+                start: 50,
+                minGrowth: 5,
+                maxGrowth: 10
+            },
+
+            abilities: [
+                {
+                    id: game.Ability.BOULDER_DROP.id
+                }
+            ],
+        },
+
+        // PLAYER_ARCHER's summon
+        RAVEN_SUMMON: {
+            id: 14,
+            graphicIndexes:[game.Graphic.CROW_RAVEN],
+            atk: {
+                start: 10,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            def: {
+                start: 0,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            life: {
+                start: 50,
+                minGrowth: 5,
+                maxGrowth: 10
+            },
+
+            abilities: [
+                {
+                    id: game.Ability.BOULDER_DROP.id
+                }
+            ],
+        },
+
+        // PLAYER_ARCHER's summon
+        DRAGON_SUMMON: {
+            id: 15,
+            graphicIndexes:[game.Graphic.GREEN_DRAGON],
+            atk: {
+                start: 10,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            def: {
+                start: 0,
+                minGrowth: 1,
+                maxGrowth: 1
+            },
+            life: {
+                start: 50,
+                minGrowth: 5,
+                maxGrowth: 10
+            },
+
+            abilities: [
+                {
+                    id: game.Ability.BOULDER_DROP.id
+                }
+            ],
+        },
+
     };
 
     /**

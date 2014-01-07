@@ -135,7 +135,6 @@
         this.chanceToDropItem = unitData.chanceToDropItem;
         this.itemsDropped = unitData.itemsDropped;
 
-        // this.abilities = unitData.abilities;
         this.unitDefinedAbilities = unitData.abilities;
         // Set a default ability for now
         this.currentAbility = this.unitDefinedAbilities[0];
@@ -147,6 +146,11 @@
         this.height = game.TILESIZE * this.heightInTiles;
 
         this.areaInTiles = this.widthInTiles * this.heightInTiles;
+
+        // The number of existing units that this player has summoned. They may
+        // be alive or dead, but once they're removed from the game, this number
+        // will be decremented.
+        this.summonedUnitCount = 0;
 
         this.playerFlags = playerFlags;
 
@@ -327,6 +331,8 @@
         // modify the original list.
         this.allAbilities = game.AbilityManager.copyAbilitiesList(this.unitDefinedAbilities);
 
+        this.grantClassAbilitiesBasedOnLevel();
+
         // Remove battle data just in case. There was a bug where you would join
         // a battle, win the map, then place this unit again, and it would think
         // it's still in the battle.
@@ -346,6 +352,69 @@
 
         if ( this.isPlayer() ) {
             game.QuestManager.placedAUnit(this.unitType);
+        }
+    };
+
+    /**
+     * Modifies the relative weight of the specified ability (if the ability
+     * exists in this unit).
+     * @param  {Number} abilityID         - the ID of the ability
+     * @param  {Number} newRelativeWeight - the relative weight to assign
+     */
+    window.game.Unit.prototype.modifyAbilityRelativeWeight = function(abilityID, newRelativeWeight) {
+        var abilityIndex = this.hasAbility(abilityID);
+        if ( abilityIndex == -1 ) return;
+        this.allAbilities[abilityIndex].relativeWeight = newRelativeWeight;
+    };
+
+    /**
+     * See comments in AbilityManager. This only exists to make code more
+     * readable.
+     */
+    window.game.Unit.prototype.hasAbility = function(abilityID) {
+        return game.AbilityManager.hasAbility(abilityID, this.allAbilities);
+    };
+
+    /**
+     * Every time this unit is placed or levels up, this is called. I did it
+     * this way so that saved games don't need to store/restore the abilities;
+     * it would be less straightforward.
+     */
+    window.game.Unit.prototype.grantClassAbilitiesBasedOnLevel = function() {
+        if ( !this.isPlayer() ) return;
+
+        var grantedAbilities = false;
+
+        if ( this.unitType == game.PlaceableUnitType.ARCHER ) {
+
+            if ( this.level >= game.ARCHER_SKILL_1_REQUIRED_LVL && 
+                    this.hasAbility(game.Ability.SUMMON_WOLF.id) == -1 ) {
+                this.allAbilities.push({id: game.Ability.SUMMON_WOLF.id});
+
+                grantedAbilities = true;
+            }
+
+            if ( this.level >= game.ARCHER_SKILL_2_REQUIRED_LVL && 
+                    this.hasAbility(game.Ability.SUMMON_RAVEN.id) == -1 ) {
+                this.allAbilities.push({id: game.Ability.SUMMON_RAVEN.id});
+                this.modifyAbilityRelativeWeight(game.Ability.SUMMON_WOLF.id, game.DEFAULT_ABILITY_RELATIVE_WEIGHT / 2);
+
+                grantedAbilities = true;
+            }
+
+            if ( this.level >= game.ARCHER_SKILL_3_REQUIRED_LVL && 
+                    this.hasAbility(game.Ability.SUMMON_DRAGON.id) == -1 ) {
+                this.allAbilities.push({id: game.Ability.SUMMON_DRAGON.id});
+
+                this.modifyAbilityRelativeWeight(game.Ability.SUMMON_WOLF.id, game.DEFAULT_ABILITY_RELATIVE_WEIGHT / 4);
+                this.modifyAbilityRelativeWeight(game.Ability.SUMMON_RAVEN.id, game.DEFAULT_ABILITY_RELATIVE_WEIGHT / 2);
+
+                grantedAbilities = true;
+            }
+        }
+
+        if ( grantedAbilities ) {
+            this.finalizeAbilities();
         }
     };
 
@@ -625,7 +694,7 @@
         this.destY = nextTile.getPixelCenterY();
 
         this.previousTile = tile;
-    }
+    };
 
     /**
      * Updates this unit, moving it, making it execute its battle turn, etc.
@@ -798,7 +867,7 @@
             if ( equippedItem.addsAbilities !== undefined ) {
                 for (var j = 0; j < equippedItem.addsAbilities.length; j++) {
                     var itemAbility = equippedItem.addsAbilities[j];
-                    var abilityIndex = game.AbilityManager.hasAbility(itemAbility.id, this.allAbilities);
+                    var abilityIndex = this.hasAbility(itemAbility.id);
 
                     if ( abilityIndex != -1 ) {
                         // The ability exists, so update it.
@@ -820,7 +889,7 @@
                 for (var j = 0; j < equippedItem.removesAbilities.length; j++) {
                     var removeAbilityID = equippedItem.removesAbilities[j];
 
-                    var abilityIndex = game.AbilityManager.hasAbility(removeAbilityID, this.allAbilities);
+                    var abilityIndex = this.hasAbility(removeAbilityID);
 
                     if ( abilityIndex != -1 ) {
                         this.allAbilities.splice(abilityIndex, 1);
@@ -906,6 +975,12 @@
             
             ability = game.util.randomFromWeights(abilititesOfSameType);
             targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
+
+            // Player units can only have one summon out at a time.
+            if ( ability.type == game.AbilityType.SUMMON && this.isPlayer() && this.summonedUnitCount > 0 ) {
+                targetUnit = null;
+            }
+
             if ( targetUnit != null ) {
                 this.currentAbility = ability;
                 return targetUnit;
@@ -943,6 +1018,8 @@
         }
 
         var newUnit = new game.Unit(summonedUnitID, flags, summonedUnitLevel);
+        newUnit.summoner = this;
+        this.summonedUnitCount++;
 
         newUnit.placeUnitAtPixelCoords(this.getCenterX(), this.getCenterY(),this.movementAI);
         game.UnitManager.addUnit(newUnit);
@@ -1050,7 +1127,16 @@
             case game.DamageFormula.ATK_MINUS_DEF:
                 // Prevent healing an enemy with an attack
                 if ( targetDef > userAtk ) return 0;
-                return userAtk - targetDef;
+
+                var damage = userAtk - targetDef;
+
+                // Add up to 10% more damage for some variance.
+                var bonusDamage = Math.floor(Math.random() * damage * .1);
+
+                damage += bonusDamage;
+                damage = Math.max(0, damage);
+
+                return damage;
             case game.DamageFormula.USE_ATK_VALUE:
                 return userAtk;
             case game.DamageFormula.GET_HALF_OF_MISSING_LIFE:
@@ -1075,15 +1161,6 @@
 
         switch ( actionOnHit ) {
             case game.ActionOnHit.DO_DAMAGE:
-                var myAtk = this.getAtk();
-                var targetDef = targetUnit.getDef();
-
-                // Compute damage very simply
-                var bonusDamage = Math.floor(Math.random() * myAtk * .5);
-
-                damage += bonusDamage;
-                damage = Math.max(0, damage);
-
                 // Run target's mods to possibly reduce the damage toward that
                 // specific target.
                 for (var i = 0; i < targetUnit.mods.length; i++) {
@@ -1395,6 +1472,8 @@
         this.def += 1;
         this.maxLife += 10;
         this.restoreLife();
+
+        this.grantClassAbilitiesBasedOnLevel();
     };    
 
     /**
