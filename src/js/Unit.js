@@ -1209,7 +1209,7 @@
                 };
 
                 // Player warriors above a certain level can crit.
-                if ( this.isPlayer() && this.unitType == game.PlaceableUnitType.WARRIOR && this.level >= game.WARRIOR_SKILL_2_REQUIRED_LVL ) {
+                if ( this.isPlayer() && this.unitType == game.PlaceableUnitType.WARRIOR && this.level >= game.WARRIOR_SKILL_3_REQUIRED_LVL ) {
                     if ( game.util.percentChance(game.WARRIOR_CRIT_CHANCE) ) {
                         damage = Math.ceil(damage * game.WARRIOR_CRIT_DAMAGE_MULT);
                     }
