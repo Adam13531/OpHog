@@ -29,7 +29,7 @@
             flags |= game.RandomUnitFlags.ALLY;
         }
 
-        var possibleTargets = battle.getUnitsMatchingFlags(attacker.isPlayer(), flags);
+        var possibleTargets = battle.getUnitsMatchingFlags(attacker, flags);
         var actualTargets = [];
 
         for (var i = 0; i < this.numberOfProjectiles; i++) {

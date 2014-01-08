@@ -150,14 +150,22 @@
 
     /**
      * Gets a random unit from either the player's team or the enemy's team.
-     * @param {Boolean} isPlayerUnit - True if the unit is a player unit.
+     * @param {game.Unit} attacker - the user of an ability where you need
+     * targets
      * @param {RandomUnitFlags} flags A bitwise-or'd set of flags representing
      * the units you're interested in choosing from.
      * @return {Array:Unit} All units matching the flags (or an empty array if
      * there are none).
      */
-    window.game.Battle.prototype.getUnitsMatchingFlags = function(isPlayerUnit, flags) {
+    window.game.Battle.prototype.getUnitsMatchingFlags = function(attacker, flags) {
         var unitsToChooseFrom = new Array();
+        var isPlayerUnit = attacker.isPlayer();
+
+        // Easy case: targeting SELF, just return the unit passed in.
+        if ( flags & game.RandomUnitFlags.SELF ) {
+            unitsToChooseFrom.push(attacker);
+            return unitsToChooseFrom;
+        }
 
         if ( flags & game.RandomUnitFlags.ALLY ) {
             if ( isPlayerUnit ) {
@@ -199,8 +207,8 @@
      * Note: this can also return null if there is no such unit (e.g. no
      * living enemies).
      */
-    window.game.Battle.prototype.getRandomUnitMatchingFlags = function(isPlayerUnit, flags) {
-        var unitsToChooseFrom = this.getUnitsMatchingFlags(isPlayerUnit, flags);
+    window.game.Battle.prototype.getRandomUnitMatchingFlags = function(attacker, flags) {
+        var unitsToChooseFrom = this.getUnitsMatchingFlags(attacker, flags);
 
         return game.util.randomArrayElement(unitsToChooseFrom);
     };

@@ -5,9 +5,10 @@
      * hard-coding these values. The way this works may eventually change.
      */
     window.game.EffectType = {
-        STAT_BOOST: 0,
+        STAT_BOOST: 0, // red aura, should be used when boosting all stats
         REGEN: 1,
-        POISON: 2
+        POISON: 2,
+        DEFENSE_BOOST: 3, // blue aura, should be used when boosting just def
     };
 
     /**
@@ -90,6 +91,15 @@
                 }
 
                 this.drawColor = '255,0,0'; //red
+                break;
+            case game.EffectType.DEFENSE_BOOST:
+                // If the caller didn't define stat bonuses, then we'll define
+                // them here based on the level of the target.
+                if ( this.atkModifier == 0 && this.defModifier == 0 && this.maxLifeModifier == 0 ) {
+                    this.defModifier = Math.ceil(target.level / 2);
+                }
+
+                this.drawColor = '0,0,255'; //blue
                 break;
             case game.EffectType.REGEN:
                 // If the caller didn't specify the amount, then we define it

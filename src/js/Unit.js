@@ -442,14 +442,11 @@
                 grantedAbilities = true;
             }
 
-            if ( this.level >= game.WARRIOR_SKILL_2_REQUIRED_LVL ) {
+            if ( this.level >= game.WARRIOR_SKILL_2_REQUIRED_LVL &&
+                    this.hasAbility(game.Ability.BUFF_DEFENSE.id) == -1 ) {
+                this.allAbilities.push({id: game.Ability.BUFF_DEFENSE.id, relativeWeight:500});
+
                 this.modifyAbilityRelativeWeight(game.Ability.QUICK_ATTACK.id, game.DEFAULT_ABILITY_RELATIVE_WEIGHT * 2);
-
-                grantedAbilities = true;
-            }
-
-            if ( this.level >= game.WARRIOR_SKILL_2_REQUIRED_LVL ) {
-                this.modifyAbilityRelativeWeight(game.Ability.QUICK_ATTACK.id, game.DEFAULT_ABILITY_RELATIVE_WEIGHT * 4);
 
                 grantedAbilities = true;
             }
@@ -1016,7 +1013,7 @@
             var abilititesOfSameType = game.AbilityManager.getAbilitiesOfType(abilityType, this.allAbilities);
             
             ability = game.util.randomFromWeights(abilititesOfSameType);
-            targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), ability.allowedTargets);
+            targetUnit = battle.getRandomUnitMatchingFlags(this, ability.allowedTargets);
 
             // Player units can only have one summon out at a time.
             if ( ability.type == game.AbilityType.SUMMON && this.isPlayer() && this.summonedUnitCount > 0 ) {
@@ -1095,7 +1092,7 @@
 
             case game.AbilityAI.USE_ABILITY_0_WHENEVER_POSSIBLE:
             default:
-                targetUnit = battle.getRandomUnitMatchingFlags(this.isPlayer(), this.allAbilities[0].allowedTargets);
+                targetUnit = battle.getRandomUnitMatchingFlags(this, this.allAbilities[0].allowedTargets);
                 if ( targetUnit == null ) {
                     game.AbilityManager.removeAbilitiesOfType(this.allAbilities[0].abilityType, this.allAbilities);
 
@@ -1211,6 +1208,13 @@
                     damage = targetUnit.mods[i].beforeReceiveDamage(this, targetUnit, damage);
                 };
 
+                // Player warriors above a certain level can crit.
+                if ( this.isPlayer() && this.unitType == game.PlaceableUnitType.WARRIOR && this.level >= game.WARRIOR_SKILL_2_REQUIRED_LVL ) {
+                    if ( game.util.percentChance(game.WARRIOR_CRIT_CHANCE) ) {
+                        damage = Math.ceil(damage * game.WARRIOR_CRIT_DAMAGE_MULT);
+                    }
+                }
+
                 // Apply the damage
                 var actualDamage = -targetUnit.modifyLife(-damage, true, false);
 
@@ -1231,7 +1235,15 @@
                 var statusEffect = new game.StatusEffect(targetUnit, game.EffectType.STAT_BOOST);
                 targetUnit.addStatusEffect(statusEffect);
                 break;
-                
+
+            case game.ActionOnHit.BUFF_DEFENSE:
+                var options = {
+                    defModifier: targetUnit.level
+                };
+                var statusEffect = new game.StatusEffect(targetUnit, game.EffectType.DEFENSE_BOOST, options);
+                targetUnit.addStatusEffect(statusEffect);
+                break;
+
             case game.ActionOnHit.REVIVE:
                 // If the target is already alive, then we don't do anything here.
                 // This is better than just killing the projectile as soon as the

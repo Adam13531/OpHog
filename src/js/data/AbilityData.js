@@ -19,7 +19,15 @@
         // Units that DO specify this flag can ONLY work on units who are not at
         // maximum (which means they could be at 0 life, so don't forget to
         // specify ALIVE if you don't want that).
-        IS_MISSING_LIFE: 32
+        IS_MISSING_LIFE: 32,
+
+        // As with IS_MISSING_LIFE, there is no "OTHER" flag, so only specify
+        // this if an ability MUST target the user.
+        //
+        // "SELF" implies that the user is an ally and is alive (because those
+        // are prerequisites for a unit using an ability), so you don't need to
+        // specify those.
+        SELF: 64,
     };
 
     /**
@@ -42,6 +50,7 @@
         HEAL: 'heal',
         REVIVE: 'revive',
         BUFF_STATS: 'buff stats',
+        BUFF_DEFENSE: 'buff defense',
     };
 
     /**
@@ -284,6 +293,15 @@
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF,
             divideCooldownBy: 4,
+        },
+
+        BUFF_DEFENSE: {
+            id: 19,
+            graphicIndex: game.Graphic.MEDIUM_BLUE_CIRCLE_2,
+            type: game.AbilityType.BUFF,
+            allowedTargets: game.RandomUnitFlags.SELF,
+            actionOnHit: game.ActionOnHit.BUFF_DEFENSE,
+            damageFormula: game.DamageFormula.USE_ATK_VALUE,
         },
 
     };
