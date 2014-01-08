@@ -40,7 +40,8 @@
     window.game.ActionOnHit = {
         DO_DAMAGE: 'do damage',
         HEAL: 'heal',
-        REVIVE: 'revive'
+        REVIVE: 'revive',
+        BUFF_STATS: 'buff stats',
     };
 
     /**
@@ -91,6 +92,9 @@
      * particleSystemOptions: Object - see ParticleSystem.js for full details.
      * explosionEffectID: game.AnimatedSpriteID. If specified, this animated 
      *     sprite will be produced when the projectile hits.
+     * divideCooldownBy: Number - after using this ability, your resulting 
+     *     battle cooldown will be divided by this number. This defaults to 1.
+     *     Higher numbers mean shorter cooldown.
      * 
      * @type {Object}
      */
@@ -99,7 +103,6 @@
             id: 0,
             graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
@@ -109,7 +112,6 @@
             id: 1,
             graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
@@ -119,7 +121,6 @@
             id: 2,
             graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
@@ -129,7 +130,6 @@
             id: 3,
             graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
@@ -139,7 +139,6 @@
             id: 4,
             graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
@@ -149,7 +148,6 @@
             id: 5,
             graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
@@ -159,7 +157,6 @@
             id: 6,
             graphicIndex: game.Graphic.SMALL_PURPLE_BUBBLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF,
@@ -174,7 +171,6 @@
             id: 7,
             graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
@@ -184,7 +180,6 @@
             id: 8,
             graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             explosionEffectID: game.AnimatedSpriteID.BLUE_SMOKE_CLOUD,
@@ -195,7 +190,6 @@
             id: 9,
             graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             explosionEffectID: game.AnimatedSpriteID.YELLOW_BURST,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
@@ -206,7 +200,6 @@
             id: 10,
             graphicIndex: game.Graphic.HORIZONTAL_NEEDLE,
             type: game.AbilityType.ATTACK,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF
@@ -216,7 +209,6 @@
             id: 11,
             graphicIndex: game.Graphic.SMALL_YELLOW_STAR,
             type: game.AbilityType.REVIVE,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.DEAD,
             actionOnHit: game.ActionOnHit.REVIVE,
             damageFormula: game.DamageFormula.REVIVE
@@ -226,7 +218,6 @@
             id: 12,
             graphicIndex: 1, // Blank graphic. Summon is special-cased to not have a projectile anyway.
             type: game.AbilityType.SUMMON,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
             actionOnHit: game.ActionOnHit.DO_DAMAGE,
             damageFormula: game.DamageFormula.ATK_MINUS_DEF,
@@ -238,7 +229,6 @@
             id: 13,
             type: game.AbilityType.HEAL,
             graphicIndex: game.Graphic.MEDIUM_BLUE_CIRCLE_1,
-            relativeWeight: 1000,
             allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE | game.RandomUnitFlags.IS_MISSING_LIFE,
             actionOnHit: game.ActionOnHit.HEAL,
             damageFormula: game.DamageFormula.USE_ATK_VALUE
@@ -275,6 +265,25 @@
             damageFormula: game.DamageFormula.ATK_MINUS_DEF,
             summonedUnitLevel: game.SUMMON_AT_LEVEL_OF_SUMMONER,
             summonedUnitID: 'DRAGON_SUMMON',
+        },
+
+        BUFF_STATS: {
+            id: 17,
+            graphicIndex: game.Graphic.MEDIUM_PURPLE_CIRCLE_2,
+            type: game.AbilityType.BUFF,
+            allowedTargets: game.RandomUnitFlags.ALLY | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.BUFF_STATS,
+            damageFormula: game.DamageFormula.USE_ATK_VALUE,
+        },
+
+        QUICK_ATTACK: {
+            id: 18,
+            graphicIndex: game.Graphic.MEDIUM_GRAY_CIRCLE_1,
+            type: game.AbilityType.ATTACK,
+            allowedTargets: game.RandomUnitFlags.FOE | game.RandomUnitFlags.ALIVE,
+            actionOnHit: game.ActionOnHit.DO_DAMAGE,
+            damageFormula: game.DamageFormula.ATK_MINUS_DEF,
+            divideCooldownBy: 4,
         },
 
     };
@@ -327,6 +336,11 @@
             for (var i = 0; i < necessaryProperties.length; i++) {
                 displayUndefinedAbilityError(ability, necessaryProperties[i]);
             };
+
+            // Define optional parameters
+            game.util.useDefaultIfUndefined(ability, 'relativeWeight', game.DEFAULT_ABILITY_RELATIVE_WEIGHT);
+            game.util.useDefaultIfUndefined(ability, 'particleSystemOptions', {});
+            game.util.useDefaultIfUndefined(ability, 'divideCooldownBy', 1);
 
             if ( ability.type == game.AbilityType.SUMMON ) {
                 // There are two more necessary properties if you're specifying

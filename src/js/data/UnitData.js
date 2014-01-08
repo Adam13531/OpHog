@@ -353,9 +353,6 @@
             abilities: [
                 {
                     id: game.Ability.ATTACK.id
-                },
-                {
-                    id: game.Ability.REVIVE.id
                 }
             ],
 
@@ -390,9 +387,6 @@
             abilities: [
                 {
                     id: game.Ability.ATTACK.id
-                },
-                {
-                    id: game.Ability.HEAL.id
                 }
             ],
 

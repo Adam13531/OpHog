@@ -411,6 +411,48 @@
 
                 grantedAbilities = true;
             }
+        } else if ( this.unitType == game.PlaceableUnitType.WIZARD ) {
+
+            if ( this.level >= game.WIZARD_SKILL_1_REQUIRED_LVL && 
+                    this.hasAbility(game.Ability.HEAL.id) == -1 ) {
+                this.allAbilities.push({id: game.Ability.HEAL.id});
+
+                grantedAbilities = true;
+            }
+
+            if ( this.level >= game.WIZARD_SKILL_2_REQUIRED_LVL && 
+                    this.hasAbility(game.Ability.BUFF_STATS.id) == -1 ) {
+                this.allAbilities.push({id: game.Ability.BUFF_STATS.id});
+
+                grantedAbilities = true;
+            }
+
+            if ( this.level >= game.WIZARD_SKILL_3_REQUIRED_LVL && 
+                    this.hasAbility(game.Ability.REVIVE.id) == -1 ) {
+                this.allAbilities.push({id: game.Ability.REVIVE.id});
+
+                grantedAbilities = true;
+            }
+        } else if ( this.unitType == game.PlaceableUnitType.WARRIOR ) {
+
+            if ( this.level >= game.WARRIOR_SKILL_1_REQUIRED_LVL && 
+                    this.hasAbility(game.Ability.QUICK_ATTACK.id) == -1 ) {
+                this.allAbilities.push({id: game.Ability.QUICK_ATTACK.id});
+
+                grantedAbilities = true;
+            }
+
+            if ( this.level >= game.WARRIOR_SKILL_2_REQUIRED_LVL ) {
+                this.modifyAbilityRelativeWeight(game.Ability.QUICK_ATTACK.id, game.DEFAULT_ABILITY_RELATIVE_WEIGHT * 2);
+
+                grantedAbilities = true;
+            }
+
+            if ( this.level >= game.WARRIOR_SKILL_2_REQUIRED_LVL ) {
+                this.modifyAbilityRelativeWeight(game.Ability.QUICK_ATTACK.id, game.DEFAULT_ABILITY_RELATIVE_WEIGHT * 4);
+
+                grantedAbilities = true;
+            }
         }
 
         if ( grantedAbilities ) {
@@ -1063,6 +1105,8 @@
                 break;
         }
 
+        this.battleData.cooldown /= this.currentAbility.divideCooldownBy;
+
         // Handle the case for summoning. After a unit is summoned, this code
         // returns in order to not create a projectile.
         if ( this.currentAbility.type == game.AbilityType.SUMMON ) {
@@ -1182,6 +1226,12 @@
             case game.ActionOnHit.HEAL:
                 targetUnit.modifyLife(damage, true, false);
                 break;
+
+            case game.ActionOnHit.BUFF_STATS:
+                var statusEffect = new game.StatusEffect(targetUnit, game.EffectType.STAT_BOOST);
+                targetUnit.addStatusEffect(statusEffect);
+                break;
+                
             case game.ActionOnHit.REVIVE:
                 // If the target is already alive, then we don't do anything here.
                 // This is better than just killing the projectile as soon as the

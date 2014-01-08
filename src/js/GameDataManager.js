@@ -354,7 +354,7 @@
                 // Change statusEffects from Objects into StatusEffects
                 for (var j = 0; j < parsedUnit.statusEffects.length; j++) {
                     var effect = parsedUnit.statusEffects[j];
-                    var finalEffect = new game.StatusEffect(finalUnit, effect.type);
+                    var finalEffect = new game.StatusEffect(finalUnit, effect.type, effect.options);
 
                     // Ignore 'target' because we just set it using the
                     // constructor

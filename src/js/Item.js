@@ -78,7 +78,6 @@
      * Uses an item on a unit. The caller must know whether this item is usable
      * on a unit (so that he can pass the correct argument (a unit) in)
      * @param  {Unit} unit - the target
-     * @return {null}
      */
     window.game.Item.prototype.useOnUnit = function(unit) {
         this.quantity--;

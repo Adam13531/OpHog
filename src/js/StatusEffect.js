@@ -19,18 +19,36 @@
 
     /**
      * StatusEffect affect units, and are typically buffs or debuffs.
-     *
      * @param {Unit} target - the target of this status effect
      * @param {game.EffectType} type   - the type of this status effect
+     * @param {Object} options - an optional object containing any of the
+     * following:
+     *     atkModifier - Number
+     *     defModifier - Number
+     *     maxLifeModifier - Number
+     *     modifyLifeOnProc - Number
+     *
+     *     See comments below for more information on each.
      */
-    window.game.StatusEffect = function StatusEffect(target, type) {
+    window.game.StatusEffect = function StatusEffect(target, type, options) {
+        if ( options === undefined ) options = {};
+
+        // Save these on the off-chance that the GameDataManager ever has to
+        // restore them.
+        this.options = options;
+
+        var atkModifier = (options.atkModifier === undefined ? 0 : options.atkModifier);
+        var defModifier = (options.defModifier === undefined ? 0 : options.defModifier);
+        var maxLifeModifier = (options.maxLifeModifier === undefined ? 0 : options.maxLifeModifier);
+        var modifyLifeOnProc = (options.modifyLifeOnProc === undefined ? 0 : options.modifyLifeOnProc);
+
         this.target = target;
         this.type = type;
 
         // If any of these are non-zero, it will be applied to the target for
         // the duration of this effect's life.
-        this.atkModifier = 0;
-        this.defModifier = 0;
+        this.atkModifier = atkModifier;
+        this.defModifier = defModifier;
 
         // maxLifeModifier in particular will ONLY modify maxLife; it will not
         // also heal the unit for some amount of life (although you can write
@@ -38,7 +56,11 @@
         // if a unit's life is restored while its maxLife is elevated, nothing
         // will be done when the StatusEffect wears off, so it will have
         // life>maxLife at that point.
-        this.maxLifeModifier = 0;
+        this.maxLifeModifier = maxLifeModifier;
+
+        // Every time this effect procs, the target's life will be modified by
+        // this much (negative is damage).
+        this.modifyLifeOnProc = modifyLifeOnProc;
 
         /**
          * If this is non-zero, then this effect will "proc" every time this
@@ -59,16 +81,31 @@
 
         switch(this.type) {
             case game.EffectType.STAT_BOOST:
-                this.atkModifier = 500;
-                this.defModifier = 500;
-                this.maxLifeModifier = 500;
+                // If the caller didn't define stat bonuses, then we'll define
+                // them here based on the level of the target.
+                if ( this.atkModifier == 0 && this.defModifier == 0 && this.maxLifeModifier == 0 ) {
+                    this.atkModifier = target.level * 5;
+                    this.defModifier = Math.ceil(target.level / 2);
+                    this.maxLifeModifier = target.level * 5;
+                }
+
                 this.drawColor = '255,0,0'; //red
                 break;
             case game.EffectType.REGEN:
+                // If the caller didn't specify the amount, then we define it
+                // here based on the level of the target.
+                if ( this.modifyLifeOnProc == 0 ) {
+                    this.modifyLifeOnProc = target.level * 10;
+                }
                 this.procEvery = 1;
                 this.drawColor = '255,0,255'; // pink
                 break;
             case game.EffectType.POISON:
+                // If the caller didn't specify the amount, then we define it
+                // here based on the level of the target.
+                if ( this.modifyLifeOnProc == 0 ) {
+                    this.modifyLifeOnProc = target.level * -10;
+                }
                 this.procEvery = 3;
                 this.drawColor = '0,128,0'; // dark green
                 break;
@@ -103,7 +140,6 @@
     /**
      * Draws the StatusEffect.
      * @param  {Object} ctx - canvas context
-     * @return {null}
      */
     window.game.StatusEffect.prototype.draw = function(ctx) {
         var target = this.target;
@@ -127,7 +163,6 @@
     /**
      * Updates this status effect, possibly proc-ing it.
      * @param  {Number} delta - time since this was last called, in ms
-     * @return {null}
      */
     window.game.StatusEffect.prototype.update = function(delta) {
         var deltaAsSec = delta / 1000;
@@ -147,16 +182,16 @@
 
     /**
      * This is called when the effect is proc'd.
-     * @return {null}
      */
     window.game.StatusEffect.prototype.proc = function() {
+        if ( this.modifyLifeOnProc != 0 ) {
+            this.target.modifyLife(this.modifyLifeOnProc, true, false);
+        }
+
         switch(this.type) {
             case game.EffectType.REGEN:
-                this.target.modifyLife(50, true, false);
                 break;
             case game.EffectType.POISON:
-                this.target.modifyLife(-50, true, false);
-
                 // Spawn a particle system too
 
                 var options = {

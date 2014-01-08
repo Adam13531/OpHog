@@ -290,11 +290,17 @@
     window.game.DEFAULT_ABILITY_RELATIVE_WEIGHT = 1000;
 
     /**
-     * The levels at which archers learn their special skills.
+     * The levels at which classes learn their special skills.
      * @type {Number}
      */
     window.game.ARCHER_SKILL_1_REQUIRED_LVL = 5;
     window.game.ARCHER_SKILL_2_REQUIRED_LVL = 20;
     window.game.ARCHER_SKILL_3_REQUIRED_LVL = 50;
+    window.game.WIZARD_SKILL_1_REQUIRED_LVL = 5;
+    window.game.WIZARD_SKILL_2_REQUIRED_LVL = 20;
+    window.game.WIZARD_SKILL_3_REQUIRED_LVL = 50;
+    window.game.WARRIOR_SKILL_1_REQUIRED_LVL = 5;
+    window.game.WARRIOR_SKILL_2_REQUIRED_LVL = 20;
+    window.game.WARRIOR_SKILL_3_REQUIRED_LVL = 50;
 
 }());
