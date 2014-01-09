@@ -371,6 +371,31 @@
             var tileX = Math.floor(worldX / game.TILESIZE);
             var tileY = Math.floor(worldY / game.TILESIZE);
 
+            // This is a debug function that we should really take out.
+            //
+            // Ctrl+click will display the tile number, and if it's an overworld
+            // map node, it will reveal fog as though you beat that map.
+            if ( keysDown[game.Key.DOM_VK_CONTROL] ) {
+                var tileStr = 'Tile: (' + tileX + ', ' + tileY + ')';
+                var textObj = new game.TextObj(worldX, worldY, tileStr, true, '#0f0', true);
+                game.TextManager.addTextObj(textObj);
+
+
+                var nodeOfMap = game.OverworldMapData.getOverworldNode(tileX, tileY);
+                if ( nodeOfMap != null ) {
+                    var fogToClear = nodeOfMap.clearFog;
+                    if ( fogToClear !== undefined ) {
+                        for (var i = 0; i < fogToClear.length; i++) {
+                            var fogData = fogToClear[i];
+                            var drawCircular = fogData[3] !== undefined ? fogData[3] : false;
+                            game.overworldMap.setFog(fogData[0], fogData[1], fogData[2], false, drawCircular);
+                        };
+                    }
+                }
+
+                return;
+            }
+
             if ( game.Minimap.pointInMinimap(offsetX, offsetY) ) {
                 game.Minimap.centerMinimapOn(offsetX, offsetY);
                 return;
