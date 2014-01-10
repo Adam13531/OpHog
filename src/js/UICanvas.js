@@ -370,9 +370,18 @@
                 this.uictx.fillRect(this.drawX, this.drawY, game.TILESIZE, game.TILESIZE);
                 this.uictx.restore();
             }
-            game.TextManager.drawTextImmediate(this.uictx, cost, this.drawX, this.drawY + 25, {screenCoords:true, fontSize:12, baseline:'top', treatXAsCenter:false, color:fontColor});
 
-            iconSheet.drawSprite(this.uictx, game.Graphic.BLUE_DIAMOND, this.drawX + 3, this.drawY + 38);
+            // If the cost isn't 3 digits, then we need to center the text.
+            var offsetX = 0;
+            var costAsString = '' + cost;
+            if ( costAsString.length == 4 ) {
+                offsetX = -3;
+            } else if ( costAsString.length == 2 ) {
+                offsetX = 5;
+            }
+            game.TextManager.drawTextImmediate(this.uictx, cost, this.drawX + offsetX, this.drawY + 25, {screenCoords:true, fontSize:12, baseline:'top', treatXAsCenter:false, color:fontColor});
+
+            iconSheet.drawSprite(this.uictx, game.Graphic.BLUE_DIAMOND, this.drawX + 4, this.drawY + 38);
             this.drawX += game.TILESIZE + this.xPadding;
         },
 
