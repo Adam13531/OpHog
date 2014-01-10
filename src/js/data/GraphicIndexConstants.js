@@ -232,8 +232,8 @@
         DWARF_PRIEST: 133,
         DWARF_ALT: 134,
         DWARF: 135,
-        BANDIT_3: 137,
-        ASSASSIN: 138,
+        BANDIT_3: 136,
+        ASSASSIN: 137,
 
         GNOME_WIZARD_ALT: 160,
         GNOME_WIZARD: 161,
