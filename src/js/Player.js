@@ -18,7 +18,7 @@
          * The number of diamonds you have.
          * @type {Number}
          */
-        diamonds: 100,
+        diamonds: 50,
 
         /**
          * After your cooldown hits 0, this is the number that it will be set

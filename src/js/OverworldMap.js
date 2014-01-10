@@ -309,23 +309,23 @@
         overworldMapNodes: [
 
         // Forest nodes
-        {
+        { 
+        // This node is the first map in the whole game. It's harder to lose
+        // than it is to win.
             x: 1, y: 1,
             description: 'Forest node 1',
-            startingCoins: game.UNIT_PLACEMENT_COST * 5,
+
+            // You have way more coins than you'll ever use.
+            startingCoins: game.UNIT_PLACEMENT_COST * 20,
             difficulty: 1,
             dimensions: [5,2],
             clearFog: [[1,5,3, true], [0,2,3]],
 
             enemies: [
                 {
-                    id: game.UnitType.ORC.id,
+                    id: game.UnitType.TURNIP.id,
                     levelRange: [1,1],
                 },
-                {
-                    id: game.UnitType.SPIDER.id,
-                    levelRange: [1,1],
-                }
             ],
 
             generators: {
@@ -337,7 +337,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.TURNIP_BOSS.id,
                 level: 2
             },
 
@@ -345,7 +345,7 @@
                 baseDiamonds: 10,
                 diamondsPerLevel: 2,
                 minEnemies: [1,2,3,4,5],
-                maxEnemies: [3,5,7,9,11],
+                maxEnemies: [1,2,3,6,8],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -354,31 +354,20 @@
         {
             x: 1, y: 5,
             description: 'Forest node 2',
+            startingCoins: game.UNIT_PLACEMENT_COST * 20,
             difficulty: 2,
-            dimensions: [5,3],
+            dimensions: [7,3],
             clearFog: [[1,7,3,true]],
 
             enemies: [
                 {
-                    id: game.UnitType.ORC.id,
+                    id: game.UnitType.TURNIP.id,
                     levelRange: [1,2],
                 },
-                {
-                    id: game.UnitType.SPIDER.id,
-                    levelRange: [1,2],
-                },
-                {
-                    id: game.UnitType.SCORPION.id,
-                    levelRange: [4,6],
-                    relativeWeight: 250
-                }
             ],
 
-            npcs: {
-                absoluteChance: 1,
-            },
-
             generators: {
+                maxEnemiesToSpawn: 2,
                 chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
@@ -386,17 +375,19 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
-                level: 20
+                id: game.UnitType.TREANT_BOSS.id,
+                level: 2
             },
 
             minigame: {
                 baseDiamonds: 10,
                 diamondsPerLevel: 2,
+                minEnemies: [2,3,4,5,6],
+                maxEnemies: [2,3,4,6,7],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.LAVA_TILESET_ID
+            tilesetID: game.TilesetManager.FOREST_TILESET_ID
         },
         {
             x: 1, y: 9,
@@ -428,8 +419,8 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
-                level: 20
+                id: game.UnitType.RED_SPIDER_BOSS.id,
+                level: 3
             },
 
             minigame: {
@@ -441,6 +432,7 @@
             tilesetID: game.TilesetManager.DESERT_TILESET_ID
         },
         {
+        // This node is only two away from the desert.
             x: 3, y: 8,
             description: 'Forest node 4',
             difficulty: 4,
@@ -470,8 +462,8 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
-                level: 20
+                id: game.UnitType.GNOME_WIZARD_ALT_BOSS.id,
+                level: 6
             },
 
             minigame: {
@@ -512,8 +504,8 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
-                level: 20
+                id: game.UnitType.BROWN_WOLF_BOSS.id,
+                level: 5
             },
 
             minigame: {
@@ -550,8 +542,8 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
-                level: 40
+                id: game.UnitType.TROLL_BOSS.id,
+                level: 6
             },
 
             minigame: {
@@ -588,8 +580,8 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
-                level: 40
+                id: game.UnitType.BANDIT_3_BOSS.id,
+                level: 7
             },
 
             minigame: {

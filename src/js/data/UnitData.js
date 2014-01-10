@@ -46,6 +46,54 @@
         }
     }());
 
+    /**
+     * Basic stat growths.
+     *
+     * See 'statClass' comment above the definition for game.UnitType.
+     * @type {Object}
+     */
+    var basicStats = {
+        atk: {
+            start: 10,
+            minGrowth: 1,
+            maxGrowth: 1
+        },
+        def: {
+            start: 0,
+            minGrowth: 1,
+            maxGrowth: 1
+        },
+        life: {
+            start: 50,
+            minGrowth: 5,
+            maxGrowth: 10
+        },
+    };
+
+    /**
+     * Boss stat growths.
+     *
+     * See 'statClass' comment above the definition for game.UnitType.
+     * @type {Object}
+     */
+    var bossStats = {
+        atk: {
+            start: 10,
+            minGrowth: 2,
+            maxGrowth: 12
+        },
+        def: {
+            start: 0,
+            minGrowth: 0,
+            maxGrowth: 2
+        },
+        life: {
+            start: 50,
+            minGrowth: 50,
+            maxGrowth: 120
+        },
+    };
+
     var DEFAULT_UNIT_WIDTH = 1;
     var DEFAULT_UNIT_HEIGHT = 1;
 
@@ -63,13 +111,21 @@
     //  height - Number - the height, in tiles, of the unit
     //  name - String - the name of the unit
     //  graphicIndexes - Array:Number - see Unit
-    //  shadowGraphic - Number - a graphic index to draw for the shadow
+    //  shadowGraphic - Number - a graphic index to draw for the shadow. Defaults 
+    //      to game.Graphic.MED_SHADOW_LOW.
     //  atk - Object containing the below:
     //      start - Number - the starting value for this stat
     //      minGrowth - Number - when this unit levels, this is the minimum value that will be added to the stat
     //      maxGrowth - Number - when this unit levels, this is the maximum value that will be added to the stat
     //  def - see atk
     //  life - see atk
+    //  Note: instead of providing atk, def, and life explicitly, you can bundle
+    //      them all into an object and provide that object as 'statClass'. That
+    //      way, multiple units can share the same stat growths without duplicating
+    //      their definitions.
+    //      
+    //      If you do this, you can override the statClass's stats by explicitly
+    //      including atk or def or life (or any combination).
     //  chanceToDropItem - Number - the chance to drop any item
     //  itemsDropped - Array:LootTableEntry
     //  abilities - Array:Object - abilities that this unit will have. You only 
@@ -80,25 +136,10 @@
     //      is set in AbilityManager.js.
     window.game.UnitType = {
         ORC: {
-            id:0,
+            id: 0,
             graphicIndexes:[game.Graphic.ORC_FIGHTER],
-            shadowGraphic: game.Graphic.MED_SHADOW_LOW,
 
-            atk: {
-                start: 10,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            def: {
-                start: 0,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            life: {
-                start: 50,
-                minGrowth: 5,
-                maxGrowth: 10
-            },
+            statClass: basicStats,
 
             abilities: [
                 {
@@ -115,21 +156,7 @@
             graphicIndexes:[game.Graphic.BLACK_SPIDER],
             shadowGraphic: game.Graphic.SMALL_SHADOW_LOW,
 
-            atk: {
-                start: 10,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            def: {
-                start: 0,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            life: {
-                start: 50,
-                minGrowth: 5,
-                maxGrowth: 10
-            },
+            statClass: basicStats,
 
             abilities: [
                 {
@@ -145,21 +172,7 @@
             id: 2,
             graphicIndexes:[game.Graphic.GIANT_BLACK_SCORPION],
 
-            atk: {
-                start: 10,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            def: {
-                start: 0,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            life: {
-                start: 50,
-                minGrowth: 5,
-                maxGrowth: 10
-            },
+            statClass: basicStats,
 
             abilities: [
                 {
@@ -180,21 +193,7 @@
             id: 3,
             graphicIndexes:[game.Graphic.COBRA],
 
-            atk: {
-                start: 10,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            def: {
-                start: 0,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            life: {
-                start: 50,
-                minGrowth: 5,
-                maxGrowth: 10
-            },
+            statClass: basicStats,
 
             abilities: [
                 {
@@ -425,21 +424,7 @@
             id: 11,
             graphicIndexes:[game.Graphic.YETI],
 
-            atk: {
-                start: 10,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            def: {
-                start: 0,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            life: {
-                start: 50,
-                minGrowth: 5,
-                maxGrowth: 10
-            },
+            statClass: basicStats,
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -449,21 +434,7 @@
             id: 12,
             graphicIndexes:[game.Graphic.ICE_WATER_ELEMENTAL],
 
-            atk: {
-                start: 10,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            def: {
-                start: 0,
-                minGrowth: 1,
-                maxGrowth: 1
-            },
-            life: {
-                start: 50,
-                minGrowth: 5,
-                maxGrowth: 10
-            },
+            statClass: basicStats,
             
             chanceToDropItem: .1,
             itemsDropped: higherChanceForUsableItems
@@ -549,7 +520,75 @@
                 }
             ],
         },
+        TURNIP_BOSS: {
+            id: 16,
+            graphicIndexes:[game.Graphic.ROTTEN_TURNIP],
 
+            statClass: bossStats,
+
+            abilities: [
+            ],
+        },
+        GNOME_WIZARD_ALT_BOSS: {
+            id: 17,
+            graphicIndexes:[game.Graphic.GNOME_WIZARD_ALT],
+
+            statClass: bossStats,
+
+            abilities: [
+            ],
+        },
+        TROLL_BOSS: {
+            id: 18,
+            graphicIndexes:[game.Graphic.TROLL],
+
+            statClass: bossStats,
+
+            abilities: [
+            ],
+        },
+        TREANT_BOSS: {
+            id: 19,
+            graphicIndexes:[game.Graphic.TREANT],
+
+            statClass: bossStats,
+
+            abilities: [
+            ],
+        },
+        BANDIT_3_BOSS: {
+            id: 20,
+            graphicIndexes:[game.Graphic.BANDIT_3],
+
+            statClass: bossStats,
+
+            abilities: [
+            ],
+        },
+        RED_SPIDER_BOSS: {
+            id: 21,
+            graphicIndexes:[game.Graphic.RED_SPIDER],
+
+            statClass: bossStats,
+
+            abilities: [
+            ],
+        },
+        BROWN_WOLF_BOSS: {
+            id: 22,
+            graphicIndexes:[game.Graphic.BROWN_WOLF],
+
+            statClass: bossStats,
+
+            abilities: [
+            ],
+        },
+        TURNIP: {
+            id: 23,
+            graphicIndexes:[game.Graphic.TURNIP],
+
+            statClass: basicStats,
+        },
     };
 
     /**
@@ -669,6 +708,23 @@
                 } else {
                     unitType.name = key;
                 }
+            }
+
+            if ( unitType.statClass !== undefined ) {
+                game.util.copyPropsIfUndefined(unitType.statClass, unitType);
+                delete unitType.statClass;
+            }
+
+            if ( unitType.atk === undefined ) {
+                game.util.debugDisplayText('Atk not defined for ' + unitType.name, 'no atk' + unitType.id);
+            }
+
+            if ( unitType.def === undefined ) {
+                game.util.debugDisplayText('Def not defined for ' + unitType.name, 'no def' + unitType.id);
+            }
+
+            if ( unitType.life === undefined ) {
+                game.util.debugDisplayText('Life not defined for ' + unitType.name, 'no life' + unitType.id);
             }
 
             // If absolutely no abilities are defined, give this unit an empty
