@@ -287,8 +287,8 @@
      *
      * YOUR TEAM               ENEMY TEAM                 EXP GIVEN
      * 5000                    1,1,1,1,1                      1
-     * 5000,1                  100                          0,100
-     * 5000,1                  100                     1,0 if your lv. 1 dies
+     * 5000,1                  100                          0,100 <-- it all goes to the level 1
+     * 5000,1                  100                     1,0 if your lv. 1 dies (i.e. the lv. 1 is dead so it needs to go to the lv. 5000)
      * 100,100                 1                       1,0 or 0,1 (doesn't matter)
      * 
      * The algorithm works something like this:
@@ -312,6 +312,9 @@
      * even get a point though, so we give it all to the lv. 1.
      *
      * 5. Give experience based on how many enemies there were.
+     *
+     * Special accommodations are made for low level units since percentages 
+     * don't work too well at low levels.
      */
     window.game.Battle.prototype.generateExperience = function() {
         var logging = false;
@@ -340,7 +343,7 @@
          * to be placed in the corresponding bucket.
          *
          * The percents should always go up since rewards go up as you go
-         * further ni the array.
+         * further in the array.
          * @type {Array:Number}
          */
         var percentLevel = [];
@@ -405,9 +408,10 @@
                 percentLevel[i] = .1 + i * percentIncrement;
             };
 
-            // This eliminates the chance of you getting just 1 exp. because it
-            // says that an enemy's level would need to be closer to -10 (or
-            // lower) than the next increment to give you 1 exp.
+            // The lowest bucket always gives 1 exp., but by setting the level
+            // difference to -1000%, it eliminates the chance of you getting to
+            // the lowest bucket because an enemy's level would need to be
+            // closer to -10 (or lower) than the next increment.
             percentLevel[0] = -10;
         } else if ( highestPlayerLevel < 10 ) {
             var percentIncrement = 1.5 / (numBuckets - 1);
