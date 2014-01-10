@@ -568,10 +568,6 @@
     window.game.Unit.prototype.removeUnitFromMap = function() {
         this.removeFromMap = true;
         this.hasBeenPlaced = false;
-
-        if ( this.generator !== undefined ) {
-            this.generator.unitDied(this);
-        }
     };
 
     /**
@@ -1171,8 +1167,9 @@
 
                 var damage = userAtk - targetDef;
 
-                // Add up to 10% more damage for some variance.
-                var bonusDamage = Math.floor(Math.random() * damage * .1);
+                // Add or subtract up to 12% damage for some variance.
+                var bonusDamage = Math.floor(Math.random() * damage * .12);
+                if ( game.util.randomInteger(0,2) == 1 ) bonusDamage *= -1;
 
                 damage += bonusDamage;
                 damage = Math.max(0, damage);

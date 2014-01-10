@@ -88,6 +88,11 @@
                 // Remove units that died in battle
                 if (unit.removeFromMap) {
 
+                    // If the unit was spawned from a generator, then alert it.
+                    if ( unit.generator !== undefined ) {
+                        unit.generator.unitWasRemovedFromMap(unit);
+                    }
+
                     // Only "unplace" the player's placeable units. Remove
                     // any other types from the game.
                     if ( unit.isPlayer() && unit.isPlaceableUnit() ) {

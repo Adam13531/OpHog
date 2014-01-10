@@ -70,7 +70,7 @@
         };
     };
 
-    window.game.Generator.prototype.unitDied = function(unit) {
+    window.game.Generator.prototype.unitWasRemovedFromMap = function(unit) {
         // Checking to see if 'unit' was actually produced by this generator is
         // unnecessary since the generator is only ever set in produceEnemy.
         this.numGeneratedEnemies--;
