@@ -597,7 +597,7 @@
 
             // Overworld --> reading a book
             if ( this.previousState == game.GameStates.OVERWORLD && this.isReadingABook() ) {
-                var textBox = new game.TextBox(300, 200, 'This book will eventually tell you some more about the game. I haven\'t finished coding this yet. Tap anywhere to continue.', false);
+                var textBox = new game.TextBox(50, 50, 'This book will eventually tell you some more about the game. I haven\'t finished coding this yet. Tap anywhere to continue.', 800);
                 game.TextManager.addTextBox(textBox, 'book1');
                 console.log('Transitioned from overworld to reading a book. xxx')
             }

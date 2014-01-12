@@ -42,10 +42,9 @@
          * @param {Item} item                  - the item you got
          * @param {Boolean} didItemFitInInventory - if false, a message will be
          * displayed about how there isn't enough room
-         * @param {Number} originalQuantity      - for stackable items, this is
-         * the quantity of the item when the enemy dropped it. This is needed
-         * because of how stackable items are added to the inventory right now.
-         * If this isn't supplied, the quantity is pulled from the item.
+         * @param {Number} originalQuantity      - this is the quantity of the
+         * item when the enemy dropped it (as opposed to the quantity that will
+         * fit in the inventory).
          */
         addItemNotification: function(item, didItemFitInInventory, originalQuantity) {
             if ( item == null || !this.showLootNotifications) return;
@@ -92,7 +91,8 @@
                 // fading to .15 very quickly.
                 opacity = (3 * ratio * ratio) + (2 * ratio) + .15;
                 opacity = Math.min(1, opacity);
-                lootObject.opacity = opacity;
+                lootObject.backgroundOpacity = opacity / 2;
+                lootObject.foregroundOpacity = opacity;
                 if ( lootObject.ttl <= 0 ) {
                     this.lootObjects.splice(i, 1);
                     i--;
@@ -108,7 +108,9 @@
             var y = game.Minimap.height + 10;
             var padding = 4;
             for (var i = 0; i < this.lootObjects.length; i++) {
-                this.lootObjects[i].draw(x, y, ctx);
+                this.lootObjects[i].x = x;
+                this.lootObjects[i].y = y;
+                this.lootObjects[i].draw(ctx);
                 y += this.lootObjects[i].height + padding;
             };
         }

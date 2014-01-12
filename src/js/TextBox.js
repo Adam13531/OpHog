@@ -1,21 +1,20 @@
 ( function() {
 
-    window.game.TextBox = function TextBox(centerX, centerY, text, useWorldCoordinates) {
+    window.game.TextBox = function TextBox(x, y, text, maxWidth) {
         this.text = text;
-
-        this.useWorldCoordinates = useWorldCoordinates;
 
         // Text objects require a canvas in order to figure out their metrics,
         // so we can't actually position anything here.
         this.hasBeenPositioned = false;
-        this.x = centerX;
-        this.y = centerY;
+        this.x = x;
+        this.y = y;
 
-        this.opacity = 1;
+        this.backgroundOpacity = 1;
+        this.foregroundOpacity = 1;
 
-        // These dimensions will be computed later when we have a canvas context
-        this.height = 100;
-        this.width = 400;
+        // Height will be computed later when we have a canvas context
+        this.height = 0;
+        this.width = maxWidth;
         this.computedMetrics = false;
 
         this.padding = 5;
@@ -23,7 +22,21 @@
         this.textColor = '#fff';
         this.borderColor = 'rgba(0,200,0,.75)';
 
+        /**
+         * Subclasses can use this to push the dedicated text area to the right.
+         * @type {Number}
+         */
         this.leftPaddingBeforeText = this.padding;
+
+        /**
+         * The minimum height of this textbox. If the textbox doesn't reach the
+         * minimum height due to the text alone, then blank space is added to
+         * the bottom (as opposed to reflowing the text to take up more vertical
+         * space). This is useful for things like the loot notifications where
+         * you want the textboxes to be at least the height of the item icon
+         * that they show.
+         * @type {Number}
+         */
         this.minHeight = 0;
     };
 
@@ -32,10 +45,12 @@
         var change = this.speed * deltaAsSec;
     };
 
-    window.game.TextBox.prototype.isDead = function() {
-        return false;
-    };
-
+    /**
+     * This function figures out how to break up the text so that it fits in the
+     * width set in the constructor. This requires the canvas context so that we
+     * can measure the text (so it can't be called from the constructor), but
+     * this function only needs to be called once.
+     */
     window.game.TextBox.prototype.computeMetrics = function(ctx) {
         if ( this.computedMetrics ) {
             return;
@@ -45,9 +60,6 @@
         this.padding = 5;
         this.fontHeight = 20;
         this.computedMetrics = true;
-        // var itemSize = this.padding * 2 + game.ITEM_SPRITE_SIZE;
-        // this.leftPaddingBeforeText = itemSize;
-        // this.minHeight = itemSize;
 
         this.fontDrawX = this.leftPaddingBeforeText;
         ctx.font = game.MediumFont;
@@ -97,7 +109,11 @@
         this.height = Math.max(this.minHeight, this.heightNeededForLines);
     };
 
-    window.game.TextBox.prototype.preRender = function(ctx) {  };
+    /**
+     * This is a function to be overridden so that subclasses can add their own
+     * draw code for the foreground.
+     */
+    window.game.TextBox.prototype.drawForeground = function(ctx) {  };
 
     window.game.TextBox.prototype.draw = function(ctx) {
         ctx.save();
@@ -108,16 +124,13 @@
             this.computeMetrics(ctx);
         }
 
-
-        var x = this.x - this.width / 2;
-        var y = this.y - this.height / 2;
-        
         // Draw the background
         ctx.fillStyle = '#373737';
-        // ctx.globalAlpha = this.opacity / 2;
-        ctx.fillRect(x, y, this.width, this.height);
+        ctx.globalAlpha = this.backgroundOpacity;
+        ctx.fillRect(this.x, this.y, this.width, this.height);
 
-        this.preRender(ctx);
+        ctx.globalAlpha = this.foregroundOpacity;
+        this.drawForeground(ctx);
 
         // Draw the line(s) of text
         ctx.font = game.MediumFont;
@@ -136,9 +149,9 @@
             for (var i = 0; i < this.lines.length; i++) {
                 var line = this.lines[i];
                 if ( pass == 0 ) {
-                    ctx.strokeText(line, x + this.fontDrawX, y + textY);
+                    ctx.strokeText(line, this.x + this.fontDrawX, this.y + textY);
                 } else {
-                    ctx.fillText(line, x + this.fontDrawX, y + textY);
+                    ctx.fillText(line, this.x + this.fontDrawX, this.y + textY);
                 }
                 textY += this.fontHeight;
             };
@@ -147,7 +160,7 @@
         // Draw border
         ctx.lineWidth = 3;
         ctx.strokeStyle = this.borderColor;
-        ctx.strokeRect(x, y, this.width, this.height);
+        ctx.strokeRect(this.x, this.y, this.width, this.height);
 
         ctx.restore();
     
