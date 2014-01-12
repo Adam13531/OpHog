@@ -34,7 +34,7 @@
     // This is global.
     game.$canvas = null;
 
-    $(document).ready(function() {
+    $(window).load(function() {
         init();
     });
 
@@ -425,8 +425,7 @@
             }
 
             // Check to see if you opened a book.
-            if ( game.GameStateManager.inOverworldMap() && tileX == 0 && tileY == 0 ) {
-                game.GameStateManager.enterReadingABookState();
+            if ( game.GameStateManager.inOverworldMap() && game.BookManager.openBookIfOneExistsHere(tileX, tileY) ) {
                 return;
             }
 
@@ -452,6 +451,7 @@
             game.Camera.browserSizeChanged();
             game.DialogManager.browserSizeChanged();
             game.Minimap.browserSizeChanged();
+            game.BookManager.browserSizeChanged();
         });
 
         game.$canvas.mousewheel(game.Camera.getMouseWheelEventHandler());
@@ -805,8 +805,8 @@
         // areas.
         game.GameStateManager.draw(ctx);
 
-        // Text boxes won't be frosted over by the GameStateManager.
-        game.TextManager.drawTextBoxes(ctx);
+        // Book contents won't be frosted over by the GameStateManager.
+        game.BookManager.draw(ctx);
         game.Player.drawCurrencyTotal(ctx);
         game.Minimap.draw(ctx);
 

@@ -12,15 +12,22 @@
         this.backgroundOpacity = 1;
         this.foregroundOpacity = 1;
 
-        // Height will be computed later when we have a canvas context
-        this.height = 0;
-        this.width = maxWidth;
-        this.computedMetrics = false;
-
         this.padding = 5;
         this.textOutlineColor = '#000';
         this.textColor = '#fff';
         this.borderColor = 'rgba(0,200,0,.75)';
+
+        // Height will be computed later when we have a canvas context
+        this.height = 0;
+
+        // Keep track of the maxWidth that the caller intends for this textbox
+        // so have. Even if it can never be set, we remember it so that if the
+        // browser ever gets larger, we can try setting it (otherwise, you might
+        // make a textbox that is squished due to the size of the browser, and
+        // it would never expand).
+        this.initialMaxWidth = maxWidth;
+        this.setMaxWidth(maxWidth);
+        this.computedMetrics = false;
 
         /**
          * Subclasses can use this to push the dedicated text area to the right.
@@ -38,6 +45,19 @@
          * @type {Number}
          */
         this.minHeight = 0;
+    };
+
+    /**
+     * This will also reflow all of the next on the next redraw.
+     */
+    window.game.TextBox.prototype.setMaxWidth = function(maxWidth) {
+        this.width = maxWidth;
+        this.computedMetrics = false;
+        
+        var browserWidth = $(window).width();
+        if ( this.x + this.width > browserWidth ) {
+            this.width = browserWidth - this.x - this.padding;
+        }
     };
 
     window.game.TextBox.prototype.update = function(delta) {

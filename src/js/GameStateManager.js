@@ -597,16 +597,12 @@
 
             // Overworld --> reading a book
             if ( this.previousState == game.GameStates.OVERWORLD && this.isReadingABook() ) {
-                var textBox = new game.TextBox(50, 50, 'This book will eventually tell you some more about the game. I haven\'t finished coding this yet. Tap anywhere to continue.', 800);
-                game.TextManager.addTextBox(textBox, 'book1');
-                console.log('Transitioned from overworld to reading a book. xxx')
+                // The book manager handled this already.
             }
 
             // Reading a book --> overworld
             if ( this.previousState == game.GameStates.READING_A_BOOK && this.inOverworldMap() ) {
-                console.log('Transitioned from reading a book to overworld. yyy')
-
-                game.TextManager.removeTextBox('book1');
+                game.BookManager.stopReadingBook();
             }
         },
 
