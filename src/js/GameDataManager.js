@@ -118,6 +118,8 @@
             this.saveInventory();
             this.log('Saving the player');
             this.savePlayer();
+            this.log('Saving books read');
+            this.saveBookStates();
             this.log('Saving game state');
             this.saveGameState();
 
@@ -238,6 +240,9 @@
 
             this.log('Loading the player');
             this.loadPlayer();
+
+            this.log('Loading books read');
+            this.loadBookStates();
 
             // If you had enough coins in your current game to buy a new slot,
             // then you loaded a game where you didn't have enough coins, this
@@ -662,6 +667,15 @@
             } else {
                 game.currentMap = game.overworldMap;
             }
+        },
+
+        saveBookStates: function() {
+            localStorage.booksRead = JSON.stringify(game.BookManager.booksRead);
+        },
+
+        loadBookStates: function() {
+            game.BookManager.booksRead = JSON.parse(localStorage.booksRead);
+            game.BookManager.loadedGameSave();
         },
 
         /**

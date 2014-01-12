@@ -10,7 +10,6 @@
         /**
          * Which book you're currently reading. This points to an object in
          * bookInfo.
-         * @type {[type]}
          */
         readingBook: null,
 
@@ -35,8 +34,21 @@
                 id: 0,
                 tileX: 0,
                 tileY: 0,
+
+                // This is so that we don't try to "close" a book twice.
+                changedGraphicAlready: false,
             }
         ],
+
+        /**
+         * Tells which books you've already read so that we can modify their
+         * graphics accordingly.
+         * 
+         * Key: bookID (Number)
+         * Value: true (Boolean, constant)
+         * @type {Object}
+         */
+        booksRead: {},
 
         /**
          * If a book exists at the specified tile coordinates, then this will
@@ -57,6 +69,9 @@
             var foundABook = this.readingBook != null;
 
             if ( foundABook ) {
+                var id = this.readingBook.id;
+                this.changeBookGraphic(id);
+
                 var html = 'No content set';
                 var title = 'No title set';
                 game.GameStateManager.enterReadingABookState();
@@ -72,7 +87,7 @@
                     }
                 };
 
-                if ( this.readingBook.id == 0 ) {
+                if ( id == 0 ) {
                     var spawnerImgTag = 
                         '<img src="' + envSheet.get1x1Sprite(game.Graphic.SPAWNER, true) + '" style="vertical-align:bottom"/>';
                     var diamondImgTag = 
@@ -112,6 +127,31 @@
         },
 
         /**
+         * This will "close" a book by changing its graphic. We exploit the
+         * positioning of books on the spritesheet to accomplish this; the open
+         * book is always one row above the closed book.
+         * @param  {Number} bookID - the ID of the book in bookInfo.
+         */
+        changeBookGraphic: function(bookID) {
+            var bookInfo = null;
+            for (var i = 0; i < this.bookInfo.length; i++) {
+                if ( this.bookInfo[i].id == bookID ) {
+                    bookInfo = this.bookInfo[i];
+                    break;
+                }
+            };
+
+            if ( bookInfo == null || bookInfo.changedGraphicAlready ) return;
+
+            this.booksRead[bookID] = true;
+            bookInfo.changedGraphicAlready = true;
+
+            var tileX = bookInfo.tileX;
+            var tileY = bookInfo.tileY;
+            game.overworldMap.extraLayer[tileY * game.overworldMap.numCols + tileX] -= envSheet.getNumSpritesPerRow();
+        },
+
+        /**
          * Call this when the browser size changes.
          */
         browserSizeChanged: function() {
@@ -127,6 +167,16 @@
         draw: function(ctx) {
             for (var i = 0; i < this.textBoxes.length; i++) {
                 this.textBoxes[i].draw(ctx);
+            };
+        },
+
+        /**
+         * Call this when you've loaded a game save. It'll set the correct book
+         * graphics.
+         */
+        loadedGameSave: function() {
+            for(key in this.booksRead) {
+                this.changeBookGraphic(key);
             };
         },
 
