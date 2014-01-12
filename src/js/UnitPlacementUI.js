@@ -317,7 +317,7 @@
 
             // If you're looking at the overworld, add that unit to the
             // overworld now.
-            if ( game.GameStateManager.inOverworldMap() ) {
+            if ( game.GameStateManager.inStateToPlaceUnitsOnOverworld() ) {
                 var tileOfLastMap = game.currentMap.getTileOfLastMap();
                 game.UnitManager.placeAllPlayerUnits(tileOfLastMap.x, tileOfLastMap.y, game.MovementAI.WANDER_UNFOGGY_WALKABLE);
             }

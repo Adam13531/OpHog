@@ -3,10 +3,14 @@
     // Falls back to Helvetica if Futura doesn't exist
     window.game.FuturaFont = 'Futura, Helvetica, sans-serif';
 
-    // There's only one text manager, so we'll define everything in a single
-    // object.
+    // The TextManager keeps track of various text objets.
     window.game.TextManager = {
+
+        // Array:game.TextObj (i.e. movable, single-line text)
         textObjs: new Array(),
+
+        // Array:game.TextBox (i.e. stationary, multi-line text)
+        textBoxes: new Array(),
 
         /**
          * Adds a text object for this to keep track of.
@@ -14,6 +18,28 @@
          */
         addTextObj: function(textObj) {
             this.textObjs.push(textObj);
+        },
+
+        /**
+         * Adds a text box with an identifier. You can later call removeTextBox
+         * with the same identifier to get rid of the one you created.
+         */
+        addTextBox: function(textBox, strIdentifier) {
+            this.textBoxes.push(textBox);
+            textBox.identifier = strIdentifier;
+        },
+
+        /**
+         * Removes a text box based on the given string identifier. See
+         * addTextBox.
+         */
+        removeTextBox: function(strIdentifier) {
+            for (var i = 0; i < this.textBoxes.length; i++) {
+                if ( this.textBoxes[i].identifier == strIdentifier ) {
+                    this.textBoxes.splice(i, 1);
+                    break;
+                }
+            };
         },
 
         /**
@@ -29,6 +55,16 @@
                 }
 
                 this.textObjs[i].update(delta);
+            };
+
+            for (var i = 0; i < this.textBoxes.length; i++) {
+                if ( this.textBoxes[i].isDead() ) {
+                    this.textBoxes.splice(i, 1);
+                    i--;
+                    continue;
+                }
+
+                this.textBoxes[i].update(delta);
             };
         },
 
@@ -139,6 +175,15 @@
                     this.textObjs[i].draw(ctx);
                 }
             };
+        },
+
+        /**
+         * Draws all TextBoxes.
+         */
+        drawTextBoxes: function(ctx) {
+            for (var i = 0; i < this.textBoxes.length; i++) {
+                this.textBoxes[i].draw(ctx);
+            };  
         }
     };
 }()); 

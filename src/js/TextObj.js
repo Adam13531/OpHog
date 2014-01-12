@@ -12,9 +12,10 @@
     window.game.BigFont = '40px Futura, Helvetica, sans-serif';
 
     /**
-     * A text object. A nearly infinite amount of polish can go into this class
-     * to get it to be much, much flashier, so I'm going to make it as basic as
-     * possible and leave it for now.
+     * A TextObj is single-line text that displays for a certain amount of time
+     * and can have velocity. A nearly infinite amount of polish can go into
+     * this class to get it to be much, much flashier, so I'm going to make it
+     * as basic as possible and leave it for now.
      * @param {Number} centerX The center X coordinate (in pixels)
      * @param {Number} centerY The center Y coordinate (in pixels)
      * @param {String} text    The text to display
@@ -82,7 +83,6 @@
     /**
      * Draws this text object.
      * @param  {Object} ctx The canvas.
-     * @return {null}
      */
     window.game.TextObj.prototype.draw = function(ctx) {
         ctx.save();

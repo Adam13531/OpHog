@@ -12,7 +12,8 @@
         MINIGAME_WIN_SCREEN: 'minigame win screen',
         MINIGAME_LOSE_SCREEN: 'minigame lose screen',
         OVERWORLD: 'overworld',
-        MOVING_TO_NORMAL_MAP: 'moving to normal map'
+        MOVING_TO_NORMAL_MAP: 'moving to normal map',
+        READING_A_BOOK: 'on overworld reading a book',
     };
 
     /**
@@ -85,6 +86,16 @@
         isMovingToNormalMap: function() {
             return this.currentState == game.GameStates.MOVING_TO_NORMAL_MAP;
         },
+        isReadingABook: function() {
+            return this.currentState == game.GameStates.READING_A_BOOK;
+        },
+
+        /**
+         * Returns true if buying a unit should place it on the overworld map.
+         */
+        inStateToPlaceUnitsOnOverworld: function() {
+            return this.inOverworldMap() || this.isReadingABook();
+        },
 
         /**
          * These functions simply attempt to set the state (I say "attempt"
@@ -114,6 +125,9 @@
         },
         transitionToNormalMap: function() {
             this.setState(game.GameStates.MOVING_TO_NORMAL_MAP);
+        },
+        enterReadingABookState: function() {
+            this.setState(game.GameStates.READING_A_BOOK);
         },
 
         /**
@@ -454,6 +468,12 @@
             // Moving to normal map --> normal gameplay
             if ( this.isMovingToNormalMap() && newState == game.GameStates.NORMAL_GAMEPLAY ) return true;
 
+            // Overworld --> reading a book
+            if ( this.inOverworldMap() && newState == game.GameStates.READING_A_BOOK ) return true;
+
+            // Reading a book --> overworld
+            if ( this.isReadingABook() && newState == game.GameStates.OVERWORLD ) return true;
+
             // Moving to normal map --> overworld
             // 
             // This is only to account for a problem where you could reveal part
@@ -574,6 +594,20 @@
                 // Make all units move to the tile you tapped
                 game.UnitManager.makeAllPlayerUnitsMoveToTile(game.overworldMap.tileOfLastMap);
             }
+
+            // Overworld --> reading a book
+            if ( this.previousState == game.GameStates.OVERWORLD && this.isReadingABook() ) {
+                var textBox = new game.TextBox(300, 200, 'This book will eventually tell you some more about the game. I haven\'t finished coding this yet. Tap anywhere to continue.', false);
+                game.TextManager.addTextBox(textBox, 'book1');
+                console.log('Transitioned from overworld to reading a book. xxx')
+            }
+
+            // Reading a book --> overworld
+            if ( this.previousState == game.GameStates.READING_A_BOOK && this.inOverworldMap() ) {
+                console.log('Transitioned from reading a book to overworld. yyy')
+
+                game.TextManager.removeTextBox('book1');
+            }
         },
 
         /**
@@ -616,7 +650,9 @@
             var inWinState = (this.inWinState() || this.inMinigameWinState());
             var inLoseState = (this.inLoseState() || this.inMinigameLoseState());
 
-            if ( inWinState || inLoseState ) {
+            var frostTheScreen = inWinState || inLoseState || this.isReadingABook();
+
+            if ( frostTheScreen ) {
                 // "Frost" the screen so that you know you can't interact with
                 // "anything.
                 ctx.save();

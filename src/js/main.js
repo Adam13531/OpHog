@@ -396,6 +396,12 @@
                 return;
             }
 
+            // Tapping anywhere with a book open will close the book.
+            if ( game.GameStateManager.isReadingABook() ) {
+                game.GameStateManager.enterOverworldState();
+                return;
+            }
+
             if ( game.Minimap.pointInMinimap(offsetX, offsetY) ) {
                 game.Minimap.centerMinimapOn(offsetX, offsetY);
                 return;
@@ -415,6 +421,12 @@
                 // (perhaps you were targeting a unit on your spawner, or you
                 // were targeting the spawner itself - you wouldn't want to open
                 // the placement UI).
+                return;
+            }
+
+            // Check to see if you opened a book.
+            if ( game.GameStateManager.inOverworldMap() && tileX == 0 && tileY == 0 ) {
+                game.GameStateManager.enterReadingABookState();
                 return;
             }
 
@@ -792,6 +804,9 @@
         // The stuff that is drawn now will show up even over the "concealed"
         // areas.
         game.GameStateManager.draw(ctx);
+
+        // Text boxes won't be frosted over by the GameStateManager.
+        game.TextManager.drawTextBoxes(ctx);
         game.Player.drawCurrencyTotal(ctx);
         game.Minimap.draw(ctx);
 
