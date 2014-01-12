@@ -467,6 +467,7 @@
 
         game.UnitPlacementUI.setupUI();
         game.QuestUI.setupUI();
+        game.BookDialog.setupUI();
         game.ShopUI = new game.ShopUI();
         game.ShopInventory = new game.ShopInventory();
 

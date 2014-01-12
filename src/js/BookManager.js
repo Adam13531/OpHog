@@ -57,12 +57,55 @@
             var foundABook = this.readingBook != null;
 
             if ( foundABook ) {
+                var html = 'No content set';
+                var title = 'No title set';
                 game.GameStateManager.enterReadingABookState();
 
+                var types = [game.PlaceableUnitType.ARCHER, game.PlaceableUnitType.WARRIOR, game.PlaceableUnitType.WIZARD];
+                var imgTags = ['','',''];
+                var numNonBlankCharImages = 0;
+                for (var i = 0; i < types.length; i++) {
+                    var graphicIndexes = game.UnitManager.getUnitCostume(types[i], -1);
+                    if ( graphicIndexes != null ) {
+                        imgTags[i] = '<img src="' + charSheet.get1x1Sprite(graphicIndexes[0], true) + '" style="vertical-align:bottom"/>';
+                        numNonBlankCharImages++;
+                    }
+                };
+
                 if ( this.readingBook.id == 0 ) {
-                    var textBox = new game.TextBox(50, 50, 'This book will eventually tell you some more about the game. I haven\'t finished coding this yet. Tap anywhere to continue.', 800);
-                    this.textBoxes.push(textBox);
+                    var spawnerImgTag = 
+                        '<img src="' + envSheet.get1x1Sprite(game.Graphic.SPAWNER, true) + '" style="vertical-align:bottom"/>';
+                    var diamondImgTag = 
+                        '<img src="' + iconSheet.get1x1Sprite(game.Graphic.BLUE_DIAMOND, true) + '" style="vertical-align:baseline"/>';
+
+                    var purchaseString = '';
+                    if ( numNonBlankCharImages ) {
+                        purchaseString += ' (';
+                        var didFirst = false;
+                        if ( imgTags[0] != '' ) {
+                            purchaseString += imgTags[0];
+                            if ( numNonBlankCharImages == 2 ) purchaseString += ' or ';
+                            if ( numNonBlankCharImages == 3 ) purchaseString += ', ';
+                            didFirst = true;
+                        }
+                        if ( imgTags[1] != '' ) {
+                            purchaseString += imgTags[1];
+                            if ( numNonBlankCharImages == 2 && !didFirst ) purchaseString += ' or ';
+                            if ( numNonBlankCharImages == 3 ) purchaseString += ', or ';
+                        }
+                        if ( imgTags[2] != '' ) purchaseString += imgTags[2];
+                        purchaseString += ')';
+                    }
+                    var diamondsString = '<span style="color:#00bbbb">diamonds</span>';
+
+                    html = '<div>Use ' + diamondsString + ' ' + diamondImgTag + ' to purchase units' + purchaseString + ', then click the ' + spawnerImgTag + ' to enter a world.' +
+                        '</div><br/><div>These books can provide valuable information; make sure to read them all!</div>';
+                    title = 'The Book of Beginnings';
                 }
+
+                game.BookDialog.setHtml(html);
+                game.BookDialog.setTitle(title);
+                game.BookDialog.show();
             }
 
             return foundABook;
@@ -92,6 +135,7 @@
          * contents of the book can be cleaned up.
          */
         stopReadingBook: function() {
+            game.BookDialog.hide();
             this.readingBook = null;
             this.textBoxes = [];
         }

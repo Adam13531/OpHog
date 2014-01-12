@@ -120,6 +120,34 @@
     };
 
     /**
+     * This is very similar to getSpriteDataFromSingleIndex, but the resulting
+     * image is exactly the size that it needs to be instead of minimally 2x2
+     * tiles.
+     *
+     * This and getSpriteData can probably be refactored into a single function.
+     */
+    window.game.SpriteSheet.prototype.get1x1Sprite = function(graphicIndex, hFlip) {
+        // Create an empty canvas element. This is a virtual element and does
+        // not exist in the DOM yet.
+        var canvas = document.createElement("canvas");
+        canvas.width = this.tileSize;
+        canvas.height = this.tileSize;
+
+        // Copy the image contents to the canvas
+        var ctx = canvas.getContext("2d");
+
+        if ( hFlip ) {
+            ctx.translate(canvas.width,0);
+            ctx.scale(-1,1);
+        }
+
+        this.drawSprite(ctx, graphicIndex, 0, 0, true);
+
+        var dataURL = canvas.toDataURL("image/png");
+        return dataURL;
+    };
+
+    /**
      * Returns base64-encoded image data for a set of up to four graphic
      * indexes.
      *
@@ -166,7 +194,7 @@
 
         var dataURL = canvas.toDataURL("image/png");
         return dataURL;
-    }
+    };
 
     /**
      * Draws a sprite from this sheet

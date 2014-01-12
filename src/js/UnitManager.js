@@ -158,6 +158,8 @@
                 costumeNumber = numUnits;
             }
 
+            if ( costumeNumber >= extraCostumesArray.length ) return null;
+
             return extraCostumesArray[costumeNumber];
         },
 

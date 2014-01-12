@@ -90,6 +90,7 @@
 
         <div id="quest-ui" title="Quests"></div>
         <div id="minigame-ui" title="Minigame" class="no-text-select"></div>
+        <div id="book-ui" title="Book"></div>
 
         <!-- This is used for styling the quest UI -->
         <span style="opacity:.95" class="le-frog" id="questUIDialogThemeSpan"></span>
@@ -103,6 +104,8 @@
         <span style="opacity:.95;" class="le-frog" id="shopDialogThemeSpan"></span>
         <!-- This is used for styling the minigame UI -->
         <span style="opacity:.95" class="le-frog" id="minigameUIThemeSpan"></span>
+        <!-- This is used for styling the book dialog -->
+        <span style="opacity:.95" class="le-frog" id="bookUIDialogThemeSpan"></span>
 
         <!-- The button to open the settings UI -->
         <span class="le-frog">
@@ -142,7 +145,7 @@
             <input type="checkbox" id="showLootNotifications"/><label for="showLootNotifications">Show loot notifications</label><br/>
         </div>
 
-        <div id='useItemInstructions' style="background-color:#22a050;color:white;text-align:center;"></div>
+        <div id="useItemInstructions" style="background-color:#22a050;color:white;text-align:center;"></div>
 
         <!-- Make sure this shows above everything else -->
         <div class="le-frog" id="loadingDiv" style="z-index:99999; left:0; top:0; width:100%; height:100%; position:absolute; background-color:#373737">
@@ -246,6 +249,7 @@
         <script src="js/Map.js"></script>
         <script src="js/GameDataManager.js"></script>
         <script src="js/BookManager.js"></script>
+        <script src="js/BookDialog.js"></script>
         <script src="js/FramerateLimiter.js"></script>
         <script src="js/DialogManager.js"></script>
         <script src="js/AudioDescriptor.js"></script>

@@ -353,8 +353,6 @@
          * button to draw.
          */
         drawBuyButton: function(unitType) {
-            var numUnits = game.UnitManager.getNumOfPlayerUnits(unitType);
-
             var graphicIndexes = game.UnitManager.getUnitCostume(unitType, -1);
             charSheet.drawSprite(this.uictx, graphicIndexes[0], this.drawX, this.drawY, false);
 
