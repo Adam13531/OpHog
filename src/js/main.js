@@ -548,6 +548,14 @@
                 game.UnitPlacementUI.selectSpawner(true);
             }
 
+            // 'Enter' or 'numpad enter' - select "return to overworld" on the
+            // 'minigame-win screen.
+            if ( evt.keyCode == game.Key.DOM_VK_RETURN || evt.keyCode == game.Key.DOM_VK_ENTER ) {
+                if ( game.GameStateManager.inMinigameWinState() ) {
+                    game.GameStateManager.enterOverworldState();
+                }
+            }
+
         });
 
         $(document).keyup(function(evt) {
