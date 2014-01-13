@@ -413,6 +413,7 @@
             }
 
             var tile = game.currentMap.getTile(tileX, tileY);
+            var isFoggy = game.currentMap.isFoggy(tileX, tileY);
             
             // If you're currently trying to use an item, then check to see if
             // the user clicked a valid target
@@ -425,7 +426,7 @@
             }
 
             // Check to see if you opened a book.
-            if ( game.GameStateManager.inOverworldMap() && game.BookManager.openBookIfOneExistsHere(tileX, tileY) ) {
+            if ( game.GameStateManager.inOverworldMap() && !isFoggy && game.BookManager.openBookIfOneExistsHere(tileX, tileY) ) {
                 return;
             }
 
@@ -433,7 +434,7 @@
 
             // Clicking a "spawner" in the overworld will take you to a map to
             // play normally on.
-            if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !game.currentMap.isFoggy(tileX, tileY)) {
+            if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !isFoggy) {
                 game.overworldMap.tileOfLastMap = tile;
                 game.GameStateManager.transitionToNormalMap();
                 game.AudioManager.playAudio(game.Audio.BLIP_1);

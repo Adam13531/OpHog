@@ -1363,6 +1363,11 @@
                     // Draw the tile
                     envSheet.drawSprite(ctx, graphic, drawX,drawY);
 
+                    // For the overworld, draw the 'extra' layer
+                    if ( this.isOverworldMap && this.extraLayer[index] !== undefined ) {
+                        envSheet.drawSprite(ctx, this.extraLayer[index], drawX, drawY);
+                    }
+
                     // For the overworld, draw the path
                     if ( this.isOverworldMap && this.pathLayer[index] !== undefined ) {
                         envSheet.drawSprite(ctx, this.pathLayer[index], drawX, drawY);
@@ -1371,11 +1376,6 @@
                     // Draw the doodad
                     if ( doodadGraphic != null ) {
                         envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
-                    }
-
-                    // For the overworld, draw the 'extra' layer
-                    if ( this.isOverworldMap && this.extraLayer[index] !== undefined ) {
-                        envSheet.drawSprite(ctx, this.extraLayer[index], drawX, drawY);
                     }
 
                     // If you're in USE mode, highlight valid target tiles.
