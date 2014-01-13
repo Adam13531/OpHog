@@ -45,6 +45,10 @@
                     at: 'center',
                     of: game.$canvas
                 },
+
+                close: function( event, ui ) {
+                    game.BookManager.stopReadingBook();
+                },
     
             });
             

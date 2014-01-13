@@ -239,10 +239,13 @@
         },
 
         /**
-         * Call this when you exit the "reading a book" state so that the
-         * contents of the book can be cleaned up.
+         * Call this to exit the "reading a book" state.
          */
         stopReadingBook: function() {
+            if ( game.GameStateManager.isReadingABook() ) {
+                game.GameStateManager.enterOverworldState();
+            }
+            
             game.BookDialog.hide();
             this.readingBook = null;
             this.textBoxes = [];

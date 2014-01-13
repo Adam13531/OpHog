@@ -597,12 +597,12 @@
 
             // Overworld --> reading a book
             if ( this.previousState == game.GameStates.OVERWORLD && this.isReadingABook() ) {
-                // The book manager handled this already.
+                // The BookManager handled this already.
             }
 
             // Reading a book --> overworld
             if ( this.previousState == game.GameStates.READING_A_BOOK && this.inOverworldMap() ) {
-                game.BookManager.stopReadingBook();
+                // The BookManager handled this already.
             }
         },
 

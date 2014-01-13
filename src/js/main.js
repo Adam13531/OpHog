@@ -398,7 +398,7 @@
 
             // Tapping anywhere with a book open will close the book.
             if ( game.GameStateManager.isReadingABook() ) {
-                game.GameStateManager.enterOverworldState();
+                game.BookManager.stopReadingBook();
                 return;
             }
 
