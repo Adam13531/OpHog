@@ -34,10 +34,37 @@
                 id: 0,
                 tileX: 0,
                 tileY: 0,
-
-                // This is so that we don't try to "close" a book twice.
-                changedGraphicAlready: false,
-            }
+            },
+            {
+                id: 1,
+                tileX: 2,
+                tileY: 4,
+            },
+            {
+                id: 2,
+                tileX: 4,
+                tileY: 7,
+            },
+            {
+                id: 3,
+                tileX: 0,
+                tileY: 9,
+            },
+            {
+                id: 4,
+                tileX: 3,
+                tileY: 13,
+            },
+            {
+                id: 5,
+                tileX: 7,
+                tileY: 12,
+            },
+            {
+                id: 6,
+                tileX: 7,
+                tileY: 3,
+            },
         ],
 
         /**
@@ -116,6 +143,35 @@
                     html = '<div>Use ' + diamondsString + ' ' + diamondImgTag + ' to purchase units' + purchaseString + ', then click the ' + spawnerImgTag + ' to enter a world.' +
                         '</div><br/><div>These books can provide valuable information; make sure to read them all!</div>';
                     title = 'The Book of Beginnings';
+                } else if ( id == 1 ) {
+                    var coinImgTag = 
+                        '<img src="' + iconSheet.get1x1Sprite(game.Graphic.GOLD_COIN, true) + '" style="vertical-align:baseline"/>';
+                    title = 'Paperback of Placement';
+                    html = '<div>You\'re given coins ' + coinImgTag + ' at the beginning of each world so that you can place your units. After placing a unit, it will move and attack on its own.<br/><br/>Choose its location wisely! </div>';
+                } else if ( id == 2 ) {
+                    title = 'Vision Volume';
+                    html = '<div>The black shroud you see is fog; you can see the terrain beneath it, but not enemies, treasure, or any other mysteries.<br/><br/>It helps to explore it quickly!</div>';
+                } else if ( id == 3 ) {
+                    title = 'Minigame Manuscript';
+                    html = '<div>After beating a world, you can choose to fight groups of enemies. The harder the enemies, the more diamonds you\'ll get!</div>';
+                } else if ( id == 4 ) {
+                    var extraInstructions = '';
+                    if ( game.playerUsedKeyboard ) {
+                        extraInstructions = '(by presing "I" on your keyboard) ';
+                    }
+                    title = 'Inventory Album';
+                    html = '<div>Open your inventory ' + extraInstructions + ' to see your items.<br/><br/>Here, you can equip items (like swords or shields) to an entire <i>class</i> of units at a time. You can also use items like potions and gems.</div>';
+                } else if ( id == 5 ) {
+                    title = 'Scroll of Skills';
+                    html = '<div>Units gain abilities as they level up. They use these abilities randomly in battles. <ul><li>Archers can summon pets</li><li>Warriors get new combat skills</li><li>Wizards gain support abilities</li></ul></div>';
+                } else if ( id == 6 ) {
+                    title = 'Quest Quarto';
+                    var extraInstructions = '';
+                    var oldManImg = '<img src="' + charSheet.get1x1Sprite(game.Graphic.KING_1, false) + '" style="vertical-align:bottom"/>';
+                    if ( game.playerUsedKeyboard ) {
+                        extraInstructions = '(by presing "Q" on your keyboard) ';
+                    }
+                    html = '<div>Open your quest log ' + extraInstructions + ' to see any quests you were given.<br/><br/>Helpful people (' + oldManImg + ') will give you quests, and when you complete them, you\'ll be rewarded!</div>';
                 }
 
                 game.BookDialog.setHtml(html);
@@ -141,6 +197,8 @@
                 }
             };
 
+            // 'changedGraphicAlready' is only injected in this function; it
+            // 'will be undefined otherwise.
             if ( bookInfo == null || bookInfo.changedGraphicAlready ) return;
 
             this.booksRead[bookID] = true;
