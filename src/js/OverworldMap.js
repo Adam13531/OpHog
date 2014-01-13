@@ -342,7 +342,7 @@
             },
 
             minigame: {
-                baseDiamonds: 10,
+                baseDiamonds: 12,
                 diamondsPerLevel: 2,
                 minEnemies: [1,2,3,4,5],
                 maxEnemies: [1,2,3,6,8],
@@ -380,7 +380,7 @@
             },
 
             minigame: {
-                baseDiamonds: 10,
+                baseDiamonds: 14,
                 diamondsPerLevel: 2,
                 minEnemies: [2,3,4,5,6],
                 maxEnemies: [2,3,4,6,7],
@@ -392,26 +392,24 @@
         {
             x: 1, y: 9,
             description: 'Forest node 3',
-            difficulty: 3,
-            dimensions: [10,5],
+            difficulty: 2,
+            dimensions: [7,3],
             clearFog: [[1,11,2]],
 
             enemies: [
                 {
-                    id: game.UnitType.ORC.id,
-                    levelRange: [4,6],
+                    id: game.UnitType.TURNIP.id,
+                    levelRange: [3,4],
                 },
                 {
                     id: game.UnitType.SPIDER.id,
-                    levelRange: [4,6],
+                    levelRange: [3,5],
+                    relativeWeight: 2000,
                 }
             ],
 
-            npcs: {
-                absoluteChance: .75,
-            },
-
             generators: {
+                maxEnemiesToSpawn: 3,
                 chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
@@ -420,33 +418,35 @@
 
             boss: {
                 id: game.UnitType.RED_SPIDER_BOSS.id,
-                level: 3
+                level: 5
             },
 
             minigame: {
-                baseDiamonds: 12,
+                baseDiamonds: 16,
                 diamondsPerLevel: 2,
+                minEnemies: [2,3,4,5,6],
+                maxEnemies: [3,3,4,6,7],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.DESERT_TILESET_ID
+            tilesetID: game.TilesetManager.FOREST_TILESET_ID
         },
         {
         // This node is only two away from the desert.
             x: 3, y: 8,
             description: 'Forest node 4',
-            difficulty: 4,
-            dimensions: [10,5],
+            difficulty: 2,
+            dimensions: [10,3],
             clearFog: [[4,5,5]],
 
             enemies: [
                 {
-                    id: game.UnitType.ORC.id,
-                    levelRange: [8,10],
+                    id: game.UnitType.BLACK_BAT.id,
+                    levelRange: [6,10],
                 },
                 {
-                    id: game.UnitType.SPIDER.id,
-                    levelRange: [8,10],
+                    id: game.UnitType.WOLF.id,
+                    levelRange: [7,10],
                 }
             ],
 
@@ -455,6 +455,7 @@
             },
 
             generators: {
+                maxEnemiesToSpawn: 3,
                 chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
@@ -463,32 +464,34 @@
 
             boss: {
                 id: game.UnitType.GNOME_WIZARD_ALT_BOSS.id,
-                level: 6
+                level: 7
             },
 
             minigame: {
-                baseDiamonds: 10,
+                baseDiamonds: 22,
                 diamondsPerLevel: 3,
+                minEnemies: [2,3,4,5,6],
+                maxEnemies: [4,5,6,7,8],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.FOREST_TILESET_ID
         },
         {
             x: 3, y: 11,
             description: 'Forest node 5',
-            difficulty: 5,
-            dimensions: [10,5],
+            difficulty: 2,
+            dimensions: [10,3],
             clearFog: [[5,10,4]],
 
             enemies: [
                 {
-                    id: game.UnitType.ICE_WATER_ELEMENTAL.id,
-                    levelRange: [10,15],
+                    id: game.UnitType.ORC.id,
+                    levelRange: [4,6],
                 },
                 {
-                    id: game.UnitType.YETI.id,
-                    levelRange: [10,15],
+                    id: game.UnitType.SPIDER.id,
+                    levelRange: [3,5],
                 }
             ],
             
@@ -497,6 +500,7 @@
             },
 
             generators: {
+                maxEnemiesToSpawn: 3,
                 chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
@@ -505,36 +509,39 @@
 
             boss: {
                 id: game.UnitType.BROWN_WOLF_BOSS.id,
-                level: 5
+                level: 6
             },
 
             minigame: {
-                baseDiamonds: 12,
+                baseDiamonds: 20,
                 diamondsPerLevel: 3,
+                minEnemies: [2,3,4,5,6],
+                maxEnemies: [4,5,4,6,10],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.SNOW_TILESET_ID
+            tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
             x: 5, y: 10,
             description: 'Forest node 6',
-            difficulty: 6,
-            dimensions: [10,5],
+            difficulty: 2,
+            dimensions: [11,3],
             clearFog: [[4,5,5],[3,11,3]],
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
-                    levelRange: [20,25],
+                    id: game.UnitType.ORC.id,
+                    levelRange: [4,7],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
-                    levelRange: [20,25],
-                }
+                    id: game.UnitType.BLACK_BAT.id,
+                    levelRange: [6,10],
+                },
             ],
 
             generators: {
+                maxEnemiesToSpawn: 3,
                 chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
@@ -543,11 +550,11 @@
 
             boss: {
                 id: game.UnitType.TROLL_BOSS.id,
-                level: 6
+                level: 7
             },
 
             minigame: {
-                baseDiamonds: 12,
+                baseDiamonds: 22,
                 diamondsPerLevel: 4,
                 spread: game.MinigameEnemySpread.RANDOM
             },
@@ -557,35 +564,44 @@
         {
             x: 8, y: 4,
             description: 'Forest node 7',
-            difficulty: 6,
-            dimensions: [10,5],
+            difficulty: 2,
+            dimensions: [12,3],
             clearFog: [[12,4,5,true]],
 
             enemies: [
                 {
                     id: game.UnitType.WOLF.id,
-                    levelRange: [20,25],
+                    levelRange: [7,11],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
-                    levelRange: [20,25],
-                }
+                    id: game.UnitType.ORC.id,
+                    levelRange: [4,8],
+                },
+                {
+                    id: game.UnitType.BLACK_BAT.id,
+                    levelRange: [6,11],
+                },
             ],
 
             generators: {
+                maxEnemiesToSpawn: 3,
                 chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
             },
 
+            npcs: {
+                absoluteChance: .75,
+            },
+
             boss: {
                 id: game.UnitType.BANDIT_3_BOSS.id,
-                level: 7
+                level: 9
             },
 
             minigame: {
-                baseDiamonds: 12,
+                baseDiamonds: 25,
                 diamondsPerLevel: 4,
                 spread: game.MinigameEnemySpread.RANDOM
             },

@@ -55,18 +55,18 @@
     var basicStats = {
         atk: {
             start: 10,
-            minGrowth: 1,
-            maxGrowth: 1
+            minGrowth: 2,
+            maxGrowth: 4
         },
         def: {
             start: 0,
             minGrowth: 1,
-            maxGrowth: 1
+            maxGrowth: 2
         },
         life: {
             start: 50,
             minGrowth: 5,
-            maxGrowth: 10
+            maxGrowth: 15
         },
     };
 
@@ -586,6 +586,12 @@
         TURNIP: {
             id: 23,
             graphicIndexes:[game.Graphic.TURNIP],
+
+            statClass: basicStats,
+        },
+        BLACK_BAT: {
+            id: 24,
+            graphicIndexes:[game.Graphic.BLACK_BAT],
 
             statClass: basicStats,
         },
