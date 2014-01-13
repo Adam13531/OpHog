@@ -140,8 +140,14 @@
                     }
                     var diamondsString = '<span style="color:#00bbbb">diamonds</span>';
 
-                    html = '<div>Use ' + diamondsString + ' ' + diamondImgTag + ' to purchase units' + purchaseString + ', then click the ' + spawnerImgTag + ' to enter a world.' +
-                        '</div><br/><div>These books can provide valuable information; make sure to read them all!</div>';
+                    var warningString = '';
+                    if ( !game.UnitPlacementUI.purchasedAtLeastOneUnit() ) {
+                        warningString += '<div style="color:#550000">You need to purchase a unit before you can enter the world!</div><br/>';
+                    }
+
+                    html = warningString + 
+                    '<div>Use ' + diamondsString + ' ' + diamondImgTag + ' to purchase units' + purchaseString + ', then tap the ' + spawnerImgTag + ' to enter a world.</div><br/>' + 
+                    '<div>These books can provide valuable information; make sure to read them all!</div>';
                     title = 'The Book of Beginnings';
                 } else if ( id == 1 ) {
                     var coinImgTag = 
@@ -183,19 +189,31 @@
         },
 
         /**
+         * @return {Object} - an object from bookInfo
+         */
+        getBookByID: function(bookID) {
+            return game.util.getItemInContainerByProperty(this.bookInfo, 'id', bookID);
+        },
+
+        /**
+         * Opens a book for you whether you clicked it or not.
+         * @param  {Number} bookID - the ID of the book (see bookInfo).
+         */
+        forceBookToOpen: function(bookID) {
+            var bookInfo = this.getBookByID(bookID);
+            if ( bookInfo == null ) return;
+
+            this.openBookIfOneExistsHere(bookInfo.tileX, bookInfo.tileY);
+        },
+
+        /**
          * This will "close" a book by changing its graphic. We exploit the
          * positioning of books on the spritesheet to accomplish this; the open
          * book is always one row above the closed book.
          * @param  {Number} bookID - the ID of the book in bookInfo.
          */
         changeBookGraphic: function(bookID) {
-            var bookInfo = null;
-            for (var i = 0; i < this.bookInfo.length; i++) {
-                if ( this.bookInfo[i].id == bookID ) {
-                    bookInfo = this.bookInfo[i];
-                    break;
-                }
-            };
+            var bookInfo = this.getBookByID(bookID);
 
             // 'changedGraphicAlready' is only injected in this function; it
             // 'will be undefined otherwise.
@@ -222,7 +240,26 @@
             };
         },
 
+        highlightTheBookYoureReading: function(ctx) {
+            if ( this.readingBook == null ) return;
+
+            var blink = Math.sin(game.alphaBlink * 4);
+            var alpha = blink * .1 + .3;
+            var greenFillStyle = 'rgba(0, 255, 0, ' + alpha + ')';
+            var drawX = this.readingBook.tileX * game.TILESIZE;
+            var drawY = this.readingBook.tileY * game.TILESIZE;
+
+            ctx.save();
+            game.Camera.scaleAndTranslate(ctx);
+            ctx.fillStyle = greenFillStyle;
+            ctx.fillRect(drawX,drawY,game.TILESIZE,game.TILESIZE);
+            game.Camera.resetScaleAndTranslate(ctx);
+            ctx.restore();
+        },
+
         draw: function(ctx) {
+            this.highlightTheBookYoureReading(ctx);
+
             for (var i = 0; i < this.textBoxes.length; i++) {
                 this.textBoxes[i].draw(ctx);
             };
@@ -245,7 +282,7 @@
             if ( game.GameStateManager.isReadingABook() ) {
                 game.GameStateManager.enterOverworldState();
             }
-            
+
             game.BookDialog.hide();
             this.readingBook = null;
             this.textBoxes = [];

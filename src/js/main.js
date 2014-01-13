@@ -435,6 +435,13 @@
             // Clicking a "spawner" in the overworld will take you to a map to
             // play normally on.
             if ( game.GameStateManager.inOverworldMap() && tileIsSpawnPoint && !isFoggy) {
+                // If you haven't purchased a unit when you tried to enter the
+                // map, then you should be told how the game works.
+                if ( !game.UnitPlacementUI.purchasedAtLeastOneUnit() ) {
+                    game.BookManager.forceBookToOpen(0);
+                    return;
+                }
+
                 game.overworldMap.tileOfLastMap = tile;
                 game.GameStateManager.transitionToNormalMap();
                 game.AudioManager.playAudio(game.Audio.BLIP_1);

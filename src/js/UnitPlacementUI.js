@@ -138,6 +138,15 @@
         },
 
         /**
+         * @return {Boolean} true if you've purchased at least one unit.
+         */
+        purchasedAtLeastOneUnit: function() {
+            return game.UnitManager.getNumOfPlayerUnits(game.PlaceableUnitType.ARCHER) > 0 ||
+                game.UnitManager.getNumOfPlayerUnits(game.PlaceableUnitType.WARRIOR) > 0 || 
+                game.UnitManager.getNumOfPlayerUnits(game.PlaceableUnitType.WIZARD) > 0;
+        },
+
+        /**
          * Sets the spawn location to the first visible spawner in the map. That
          * way, you don't have to click a spawner when the map begins if you
          * want to start spawning units right away.

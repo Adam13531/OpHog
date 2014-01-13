@@ -194,9 +194,7 @@
     window.game.ShopUI.prototype.itemIsBuyable = function() {
         // You can't buy items before you've bought your first unit, otherwise
         // you may make it impossible to beat even the first map.
-        if ( game.UnitManager.getNumOfPlayerUnits(game.PlaceableUnitType.ARCHER) == 0 &&
-            game.UnitManager.getNumOfPlayerUnits(game.PlaceableUnitType.WARRIOR) == 0 && 
-            game.UnitManager.getNumOfPlayerUnits(game.PlaceableUnitType.WIZARD) == 0 ) {
+        if ( !game.UnitPlacementUI.purchasedAtLeastOneUnit() ) {
             return false;
         }
 
