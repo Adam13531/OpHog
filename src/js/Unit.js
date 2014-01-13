@@ -1578,6 +1578,11 @@
         // If you're using an item and this unit is a target
         if (game.playerInventoryUI.isUnitAUseTarget(this)) return true;
 
+        // At the end of the minigame, all lifebars should show since it's
+        // interesting to see how much you lost/won by and performance matters
+        // less.
+        if ( game.GameStateManager.inMinigameWinState() || game.GameStateManager.inMinigameLoseState() ) return true;
+
         return false;
     }
 
