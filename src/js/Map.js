@@ -1373,6 +1373,18 @@
                         envSheet.drawSprite(ctx, this.pathLayer[index], drawX, drawY);
                     }
 
+                    // Draw castles
+                    if ( tile.isCastle() ) {
+                        envSheet.drawSprite(ctx, game.Graphic.GENERATOR, drawX,drawY);
+                    }
+
+                    // Draw spawners. On the overworld, they're actually
+                    // represented by doodads since the graphics vary based on
+                    // difficulty.
+                    if ( !this.isOverworldMap && tile.isSpawnerPoint() ) {
+                        envSheet.drawSprite(ctx, game.Graphic.SPAWNER, drawX,drawY);
+                    }
+
                     // Draw the doodad
                     if ( doodadGraphic != null ) {
                         envSheet.drawSprite(ctx, doodadGraphic, drawX,drawY);
@@ -1383,14 +1395,6 @@
                         ctx.fillStyle = greenFillStyle;
                         ctx.fillRect(drawX,drawY,game.TILESIZE,game.TILESIZE);
                         ctx.fillStyle = regularFillStyle;
-                    }
-
-                    // Draw castles and spawners.
-                    if ( tile.isCastle() ) {
-                        envSheet.drawSprite(ctx, game.Graphic.GENERATOR, drawX,drawY);
-                    }
-                    if ( tile.isSpawnerPoint() ) {
-                        envSheet.drawSprite(ctx, game.Graphic.SPAWNER, drawX,drawY);
                     }
                 }
 
