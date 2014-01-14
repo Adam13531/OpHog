@@ -161,7 +161,13 @@
          * Gets the cost of retrying a map.
          */
         getRetryCost: function() {
-            return 10;
+            var minigameData = game.currentMap.nodeOfMap.minigame;
+            var baseDiamonds = minigameData.baseDiamonds;
+            var diamondsPerLevel = minigameData.diamondsPerLevel;
+
+            // The cost is the same as the reward for the middle minigame tier.
+            // That way it's roughly balanced for each map.
+            return baseDiamonds + diamondsPerLevel * Math.floor(game.NUM_MINIGAME_DIFFICULTIES / 2);
         },
 
         /**
