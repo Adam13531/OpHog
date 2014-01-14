@@ -583,6 +583,8 @@
             this.acquireNewDestinationWanderWalkable();
         } else if ( this.movementAI == game.MovementAI.MOVE_TO_SPECIFIC_TILE ) {
             this.acquireNewDestinationMoveSpecificTile();
+        } else if ( this.movementAI == game.MovementAI.NONE ) {
+            // do nothing (this is only here so an error doesn't print)
         } else {
             console.log('Unreconized movement AI: ' + this.movementAI);
         }
@@ -591,45 +593,53 @@
     /**
      * Sets the movement AI MOVE_TO_SPECIFIC_TILE and immediately start moving
      * toward the tile you specify.
+     *
+     * WARNING: THE UNIT IS GIVEN A PATH WHEN THIS IS CALLED, AND THAT PATH
+     * DOESN'T CHANGE! The path doesn't involve fog, but you may reveal a
+     * shorter path along the way by clearing some fog, but too bad, it won't be
+     * recomputed.
      * @param  {Tile} tile - a tile to move to
      */
     window.game.Unit.prototype.moveToSpecificTile = function(tile) {
         this.movementAI = game.MovementAI.MOVE_TO_SPECIFIC_TILE;
-        this.specificTile = tile;
+
+        var startTile = this.getCenterTile();
+        this.path = game.currentMap.findPathWithoutFog(startTile, tile);
+
+        if ( this.path == null ) {
+            // Given the current scenarios where this movement AI is used, this
+            // represents a programming error, so we'll print something, but
+            // we'll fail gracefully.
+            console.log('Could not find a path from ' + startTile.x + ' ' + startTile.y + ' to ' + tile.x + ' ' + tile.y);
+            this.movementAI = game.MovementAI.NONE;
+            delete this.path;
+            return;
+        }
+
+        // Cut out the start tile since we're on that
+        if ( this.path.length > 1 ) {
+            this.path.splice(0, 1);
+        }
 
         // Make them immediately stop with their current destination
         this.acquireNewDestination();
     };
     
     /**
-     * This is for the MOVE_TO_SPECIFIC_TILE movement AI. It will move toward
-     * this.specificTile.
+     * This is for the MOVE_TO_SPECIFIC_TILE movement AI.
      */
     window.game.Unit.prototype.acquireNewDestinationMoveSpecificTile = function() {
-        var startTile = this.getCenterTile();
+        var nextTile = this.path[0];
 
-        var path = game.currentMap.findPathWithoutFog(startTile, this.specificTile);
+        this.destX = nextTile.x * game.TILESIZE + game.TILESIZE / 2;
+        this.destY = nextTile.y * game.TILESIZE + game.TILESIZE / 2;
 
-        // This is possible if you somehow uncovered fog far away and it's not
-        // connected.
-        // 
-        // At this point though, you'll already be in the wrong game
-        // state, so we need to revert it.
-        if ( path == null ) {
-            this.movementAI = game.MovementAI.WANDER_UNFOGGY_WALKABLE;
-            game.GameStateManager.enterOverworldState();
-            return;
+        this.path.splice(0, 1);
+
+        if ( this.path.length == 0 ) {
+            delete this.path;
+            this.movementAI = game.MovementAI.NONE;
         }
-
-        var destTile;
-        if ( path.length == 1 ) {
-            destTile = path[0];
-        } else {
-            destTile = path[1];
-        }
-
-        this.destX = destTile.x * game.TILESIZE + game.TILESIZE / 2;
-        this.destY = destTile.y * game.TILESIZE + game.TILESIZE / 2;
     };
 
     /**

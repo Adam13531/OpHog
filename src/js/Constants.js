@@ -250,7 +250,9 @@
         // Backtracking is allowed.
         // 
         // This is intended for the overworld for now.
-        MOVE_TO_SPECIFIC_TILE: 'move to specific point'
+        MOVE_TO_SPECIFIC_TILE: 'move to specific point',
+
+        NONE: 'this unit will not move',
     };
 
     /**

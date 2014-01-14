@@ -807,7 +807,7 @@
      * @param  {Tile} endTile   - the end tile
      * @return {Array:Tile} - the path from start to end. This path will include
      * both startTile and endTile (unless they're the same, in which case that
-     * tile will only appear once).
+     * tile will only appear once). Returns null if no path is found.
      */
     window.game.Map.prototype.findPathWithoutFog = function(startTile, endTile) {
         /**
