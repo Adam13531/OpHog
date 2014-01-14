@@ -131,7 +131,7 @@
             if ( used ) {
                 // For now, the only effect is to clear fog, so we'll hard-code that
                 // here. Eventually, it should check item type or effect.
-                game.currentMap.setFog(tileX, tileY, 4, false, true);
+                game.currentMap.setFog(tileX, tileY, 6, false, true);
             }
         }
 
