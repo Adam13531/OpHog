@@ -8,6 +8,15 @@
     game.NUM_SEC_TO_SHOW_OBTAINED_ITEMS = 5;
 
     /**
+     * Loot notifications will show up at this X coordinate. The X coordinate is
+     * important because loot notifications are just textboxes, and texboxes can
+     * be reflowed if their width would make them go off the screen, so the X
+     * coordinates shouldn't change.
+     * @type {Number}
+     */
+    game.LOOT_NOTIFICATION_X = 50;
+
+    /**
      * The loot UI shows you which items you recently obtained.
      */
     window.game.LootUI = {
@@ -101,14 +110,11 @@
         },
 
         draw: function(ctx) {
-            var x = 50;
-
             // Even if the minimap isn't showing at the upper left, we'll still
             // push this down.
             var y = game.Minimap.height + 10;
             var padding = 4;
             for (var i = 0; i < this.lootObjects.length; i++) {
-                this.lootObjects[i].x = x;
                 this.lootObjects[i].y = y;
                 this.lootObjects[i].draw(ctx);
                 y += this.lootObjects[i].height + padding;

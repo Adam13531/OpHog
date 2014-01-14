@@ -17,9 +17,9 @@
         if ( this.item.stackable ) this.text += ' (' + originalQuantity + ')';
         if ( !didFit ) this.text += ' - not enough room in inventory!';
 
-        // The x and y coordinates don't matter; the LootUI will set them to
-        // where they should be.
-        this.base(0, 0, this.text, 400);
+        // The LootUI will change the Y-coordinate according to how many other
+        // notifications there are, so the '0' is essentially ignored.
+        this.base(game.LOOT_NOTIFICATION_X, 0, this.text, 400);
 
         // Now modify the default colors if the item didn't fit.
         if ( !didFit ) {
