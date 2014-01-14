@@ -161,6 +161,8 @@
          * Gets the cost of retrying a map.
          */
         getRetryCost: function() {
+            if ( game.currentMap == game.overworldMap ) return;
+            
             var minigameData = game.currentMap.nodeOfMap.minigame;
             var baseDiamonds = minigameData.baseDiamonds;
             var diamondsPerLevel = minigameData.diamondsPerLevel;

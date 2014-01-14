@@ -2035,7 +2035,7 @@
                 if ( this.overworldExtra[i] == -1 ) this.overworldExtra[i] = undefined;
             };
 
-            game.overworldMap = new game.Map(tiles, this.overworldDoodadIndices, tilesetID, this.overworldMapWidth, 1, true, this.overworldPaths, this.overworldExtra);
+            game.overworldMap = new game.Map(tiles, this.overworldDoodadIndices, tilesetID, this.overworldMapWidth, null, true, this.overworldPaths, this.overworldExtra);
 
             // Put each node into the map
             for (var i = 0; i < this.overworldMapNodes.length; i++) {
