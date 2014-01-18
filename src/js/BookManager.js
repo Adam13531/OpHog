@@ -78,6 +78,21 @@
         booksRead: {},
 
         /**
+         * Returns the book at these tile coordinates.
+         * @return {Object} - object from bookInfo
+         */
+        getBookAtTileCoordinates: function(tileX, tileY) {
+            for (var i = 0; i < this.bookInfo.length; i++) {
+                var info = this.bookInfo[i];
+                if ( tileX == info.tileX && tileY == info.tileY ) {
+                    return info;
+                }
+            };
+
+            return null;
+        },
+
+        /**
          * If a book exists at the specified tile coordinates, then this will
          * open that book.
          * @param  {Number} tileX - the tile X
@@ -85,15 +100,9 @@
          * @return {Boolean}       - true if you did indeed find a book
          */
         openBookIfOneExistsHere: function(tileX, tileY) {
-            for (var i = 0; i < this.bookInfo.length; i++) {
-                var info = this.bookInfo[i];
-                if ( tileX == info.tileX && tileY == info.tileY ) {
-                    this.readingBook = info;
-                    break;
-                }
-            };
+            this.readingBook = this.getBookAtTileCoordinates(tileX, tileY);
 
-            var foundABook = this.readingBook != null;
+            var foundABook = (this.readingBook != null);
 
             if ( foundABook ) {
                 var id = this.readingBook.id;

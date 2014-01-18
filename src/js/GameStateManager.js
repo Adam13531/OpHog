@@ -556,8 +556,7 @@
                 game.Player.resetCastleLife();
                 game.currentMap.clearAllFog();
 
-                // Clear fog on the overworld map too
-                game.OverworldMapData.clearFog();
+                game.OverworldMapData.mapWasBeaten(game.currentMap.nodeOfMap.id);
 
                 game.MinigameUI.populateUI();
                 game.MinigameUI.show();

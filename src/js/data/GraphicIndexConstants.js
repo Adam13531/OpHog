@@ -39,6 +39,9 @@
         EVERGREEN_FOREST_PATCH_2: 281, // the upper middle portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_3: 282, // the upper right portion of the evergreen forest
         CAULDRON: 315, // cauldron with purple liquid coming out
+        WIZARD_STATUE: 317,
+        ARCHER_STATUE: 319,
+        WARRIOR_STATUE: 320,
         EVERGREEN_FOREST_PATCH_4: 337, // the middle left portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_5: 338, // the middle portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_6: 339, // the middle right portion of the evergreen forest

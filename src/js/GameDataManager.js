@@ -628,6 +628,7 @@
             }
             localStorage.lookingAtOverworld = lookingAtOverworld;
             localStorage.overworldFog = JSON.stringify(game.overworldMap.fog);
+            localStorage.mapsBeaten = JSON.stringify(game.OverworldMapData.mapsBeaten);
         },
 
         /**
@@ -637,10 +638,19 @@
             // Good ol' JavaScript... Boolean('false') == true.
             var lookingAtOverworld = localStorage.lookingAtOverworld === 'true' ? true : false;
             var overworldFog = JSON.parse(localStorage.overworldFog);
+            var mapsBeaten = JSON.parse(localStorage.mapsBeaten);
 
             // Regardless of whether we're looking at it, restore the overworld
             // fog.
             game.overworldMap.fog = overworldFog;
+
+            // Add statues where needed
+            for (var key in mapsBeaten) {
+                if ( !game.OverworldMapData.mapsBeaten[key] ) {
+                    game.OverworldMapData.erectStatue(key);
+                }
+            }
+            game.OverworldMapData.mapsBeaten = mapsBeaten;
 
             if ( !lookingAtOverworld ) {
 

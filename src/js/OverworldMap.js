@@ -244,6 +244,14 @@
         overworldWalkableTile: 715,
 
         /**
+         * Tells you which maps you've beaten.
+         * Key - Number - id of a map node in overworldMapNodes
+         * Value - Boolean - always the value 'true'
+         * @type {Object}
+         */
+        mapsBeaten: {},
+
+        /**
          * Each node in this array is an Object with the following:
          *     x - Number - x coordinate in tiles
          *     y - Number - y coordinate in tiles
@@ -312,6 +320,7 @@
         { 
         // This node is the first map in the whole game. It's harder to lose
         // than it is to win.
+            id: 0,
             x: 1, y: 1,
             description: 'Forest node 1',
 
@@ -352,6 +361,7 @@
             tilesetID: game.TilesetManager.FOREST_TILESET_ID
         },
         {
+            id: 1,
             x: 1, y: 5,
             description: 'Forest node 2',
             startingCoins: game.UNIT_PLACEMENT_COST * 20,
@@ -390,6 +400,7 @@
             tilesetID: game.TilesetManager.FOREST_TILESET_ID
         },
         {
+            id: 2,
             x: 1, y: 9,
             description: 'Forest node 3',
             difficulty: 2,
@@ -433,6 +444,7 @@
         },
         {
         // This node is only two away from the desert.
+            id: 3,
             x: 3, y: 8,
             description: 'Forest node 4',
             difficulty: 2,
@@ -478,6 +490,7 @@
             tilesetID: game.TilesetManager.FOREST_TILESET_ID
         },
         {
+            id: 4,
             x: 3, y: 11,
             description: 'Forest node 5',
             difficulty: 2,
@@ -523,6 +536,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 5,
             x: 5, y: 10,
             description: 'Forest node 6',
             difficulty: 2,
@@ -562,6 +576,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 6,
             x: 8, y: 4,
             description: 'Forest node 7',
             difficulty: 2,
@@ -611,6 +626,7 @@
 
         // Desert nodes
         {
+            id: 7,
             x: 12, y: 4,
             description: 'Desert node 1',
             difficulty: 6,
@@ -649,6 +665,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 8,
             x: 18, y: 5,
             description: 'Desert node 2',
             difficulty: 6,
@@ -687,6 +704,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 9,
             x: 20, y: 10,
             description: 'Desert node 3',
             difficulty: 6,
@@ -727,6 +745,7 @@
 
         // Lava nodes
         {
+            id: 10,
             x: 24, y: 1,
             description: 'Lava node 1',
             difficulty: 6,
@@ -765,6 +784,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 11,
             x: 31, y: 4,
             description: 'Lava node 2',
             difficulty: 6,
@@ -803,6 +823,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 12,
             x: 36, y: 3,
             description: 'Lava node 3',
             difficulty: 6,
@@ -841,6 +862,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 13,
             x: 26, y: 10,
             description: 'Lava node 4',
             difficulty: 6,
@@ -879,6 +901,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 14,
             x: 32, y: 9,
             description: 'Lava node 5',
             difficulty: 6,
@@ -919,6 +942,7 @@
 
         // Mud nodes
         {
+            id: 15,
             x: 17, y: 17,
             description: 'Mud node 1',
             difficulty: 6,
@@ -957,6 +981,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 16,
             x: 21, y: 17,
             description: 'Mud node 2',
             difficulty: 6,
@@ -995,6 +1020,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 17,
             x: 25, y: 18,
             description: 'Mud node 3',
             difficulty: 6,
@@ -1033,6 +1059,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 18,
             x: 15, y: 21,
             description: 'Mud node 4',
             difficulty: 6,
@@ -1071,6 +1098,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 19,
             x: 21, y: 23,
             description: 'Mud node 5',
             difficulty: 6,
@@ -1109,6 +1137,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 20,
             x: 25, y: 22,
             description: 'Mud node 6',
             difficulty: 6,
@@ -1149,6 +1178,7 @@
 
         // Autumn nodes
         {
+            id: 21,
             x: 41, y: 5,
             description: 'Autumn node 1',
             difficulty: 6,
@@ -1187,6 +1217,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 22,
             x: 39, y: 10,
             description: 'Autumn node 2',
             difficulty: 6,
@@ -1225,6 +1256,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 23,
             x: 39, y: 13,
             description: 'Autumn node 3',
             difficulty: 6,
@@ -1263,6 +1295,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 24,
             x: 40, y: 16,
             description: 'Autumn node 4',
             difficulty: 6,
@@ -1303,6 +1336,7 @@
 
         // Jungle nodes
         {
+            id: 25,
             x: 31, y: 18,
             description: 'Jungle node 1',
             difficulty: 6,
@@ -1341,6 +1375,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 26,
             x: 34, y: 20,
             description: 'Jungle node 2',
             difficulty: 6,
@@ -1379,6 +1414,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 27,
             x: 32, y: 24,
             description: 'Jungle node 3',
             difficulty: 6,
@@ -1417,6 +1453,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 28,
             x: 39, y: 22,
             description: 'Jungle node 4',
             difficulty: 6,
@@ -1455,7 +1492,8 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
-            x: 39, y: 25,
+            id: 29,
+            x: 37, y: 25,
             description: 'Jungle node 5',
             difficulty: 6,
             dimensions: [10,5],
@@ -1495,6 +1533,7 @@
 
         // Salt nodes
         {
+            id: 30,
             x: 40, y: 29,
             description: 'Salt node 1',
             difficulty: 6,
@@ -1533,6 +1572,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 31,
             x: 40, y: 35,
             description: 'Salt node 2',
             difficulty: 6,
@@ -1571,6 +1611,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 32,
             x: 37, y: 33,
             description: 'Salt node 3',
             difficulty: 6,
@@ -1609,6 +1650,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 33,
             x: 37, y: 31,
             description: 'Salt node 4',
             difficulty: 6,
@@ -1647,6 +1689,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 34,
             x: 33, y: 33,
             description: 'Salt node 5',
             difficulty: 6,
@@ -1687,6 +1730,7 @@
 
         // Snow nodes
         {
+            id: 35,
             x: 23, y: 34,
             description: 'Snow node 1',
             difficulty: 6,
@@ -1725,6 +1769,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 36,
             x: 21, y: 31,
             description: 'Snow node 2',
             difficulty: 6,
@@ -1763,6 +1808,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 37,
             x: 18, y: 30,
             description: 'Snow node 3',
             difficulty: 6,
@@ -1801,6 +1847,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 38,
             x: 17, y: 33,
             description: 'Snow node 4',
             difficulty: 6,
@@ -1839,6 +1886,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 39,
             x: 15, y: 31,
             description: 'Snow node 5',
             difficulty: 6,
@@ -1877,6 +1925,7 @@
             tilesetID: game.TilesetManager.MARSH_TILESET_ID
         },
         {
+            id: 40,
             x: 13, y: 35,
             description: 'Snow node 6',
             difficulty: 6,
@@ -1917,6 +1966,7 @@
 
         // Ice nodes
         {
+            id: 41,
             x: 3, y: 28,
             description: 'Ice node 1',
             difficulty: 6,
@@ -1974,6 +2024,10 @@
             return null;
         },
 
+        getOverworldNodeByID: function(nodeID) {
+            return game.util.getItemInContainerByProperty(this.overworldMapNodes, 'id', nodeID);
+        },
+
         /**
          * Calls getOverworldNode on the last tile you clicked on the overworld.
          * If you just clicked it, then it's technically the current map and not
@@ -2013,6 +2067,80 @@
                 var fogData = fogToClear[i];
                 var drawCircular = fogData[3] !== undefined ? fogData[3] : false;
                 game.overworldMap.setFog(fogData[0], fogData[1], fogData[2], false, drawCircular);
+            };
+        },
+
+        /**
+         * Call this when the map is beaten. It will clear fog and erect a
+         * statue.
+         * @param  {Number} nodeID - ID of the node corresponding to the map
+         * beaten. The node is in overworldMapNodes.
+         */
+        mapWasBeaten: function(nodeID) {
+            if ( this.mapsBeaten[nodeID] ) {
+                return;
+            }
+            this.mapsBeaten[nodeID] = true;
+
+            // Clear fog on the overworld map too
+            this.clearFog();
+            this.erectStatue(nodeID);
+        },
+
+        /**
+         * Erects a statue at a blank space adjacent to the node you beat.
+         *
+         * This function isn't coded the best, but it gets the job done.
+         *
+         * Statues are not added randomly, so we don't need to keep track of
+         * WHERE they're added. This was done so that someone can beat a map and
+         * have a statue erected, then if we change the location of the map
+         * node, their statue isn't floating in water somewhere.
+         * @param  {Number} nodeID - ID of the node at which you want to erect
+         * the statue.
+         */
+        erectStatue: function(nodeID) {
+            var nodeOfMap = this.getOverworldNodeByID(nodeID);
+            var overworldMap = game.overworldMap;
+
+            var tX = nodeOfMap.x;
+            var tY = nodeOfMap.y;
+            
+            /**
+             * Array of [tileX, tileY] arrays.
+             * @type {Array:Array}
+             */
+            var attemptTiles = [];
+
+            // Attempt the cardinally adjacent tiles first
+            if ( tX > 0 ) attemptTiles.push([tX - 1, tY]);
+            if ( tX < overworldMap.numCols ) attemptTiles.push([tX + 1, tY]);
+            if ( tY > 0 ) attemptTiles.push([tX, tY - 1]);
+            if ( tY < overworldMap.numRows ) attemptTiles.push([tX, tY + 1]);
+
+            // Push diagonals now
+            if ( tX > 0 && tY > 0 ) attemptTiles.push([tX - 1, tY - 1]);
+            if ( tX > 0 && tY < overworldMap.numRows ) attemptTiles.push([tX - 1, tY + 1]);
+            if ( tX < overworldMap.numCols && tY > 0 ) attemptTiles.push([tX + 1, tY - 1]);
+            if ( tX < overworldMap.numCols && tY < overworldMap.numRows ) attemptTiles.push([tX + 1, tY + 1]);
+
+            // Choose different statues based on the ID of the map so that it's
+            // sort of random to the user.
+            var statues = [game.Graphic.WIZARD_STATUE,game.Graphic.ARCHER_STATUE,game.Graphic.WARRIOR_STATUE];
+            var statue = statues[nodeID % 3];
+            
+            for (var i = 0; i < attemptTiles.length; i++) {
+                var attemptTile = attemptTiles[i];
+                var tileX = attemptTile[0];
+                var tileY = attemptTile[1];
+                var index = tileY * overworldMap.numCols + tileX;
+                var doodad = overworldMap.doodadIndices[index];
+                var walkable = overworldMap.mapTiles[index].isWalkable();
+                var isBookThere = game.BookManager.getBookAtTileCoordinates(tileX, tileY);
+                if ( doodad === undefined && !walkable && !isBookThere ) {
+                    overworldMap.doodadIndices[index] = statue;
+                    break;
+                }
             };
         },
 
@@ -2062,6 +2190,9 @@
 ( function setupOverworldMapNodes() {
     var nodes = game.OverworldMapData.overworldMapNodes;
 
+    // IDs that we've seen will go here
+    var seenIDs = {};
+
     for (var i = 0; i < nodes.length; i++) {
         var node = nodes[i];
         var nodeDescription = (node.description === undefined) ? ('Node #' + i) : ('"' + node.description + '"');
@@ -2073,6 +2204,19 @@
         var generators = node.generators;
         var tilesetID = node.tilesetID;
         var minigame = node.minigame;
+        var id = node.id;
+
+        if ( id === undefined ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' has no ID!', 'no_node_id' + i);
+        }
+
+        if ( seenIDs[id] !== undefined ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' has a duplicated ID: ' + id, 'dupe_node_id' + i);
+        }
+
+        seenIDs[id] = true;
 
         if ( dimensions === undefined || dimensions.length != 2 ) {
             error = true;
