@@ -1482,6 +1482,18 @@
     };
 
     /**
+     * Returns true if this tile contains a statue. Statues are stored in the
+     * doodad layer, so that's where this checks.
+     */
+    window.game.Map.prototype.tileContainsStatue = function(tileX, tileY) {
+        var index = tileY * this.numCols + tileX;
+        var statues = [game.Graphic.WIZARD_STATUE,game.Graphic.ARCHER_STATUE,game.Graphic.WARRIOR_STATUE];
+        var doodad = this.doodadIndices[index];
+
+        return statues.indexOf(doodad) != -1;
+    };
+
+    /**
      * Sets or clears fog in an area.
      * @param {Number} x      - x coordinate in tiles
      * @param {Number} y      - y coordinate in tiles

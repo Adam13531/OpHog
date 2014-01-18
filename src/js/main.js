@@ -430,6 +430,16 @@
                 return;
             }
 
+            // Check to see if you clicked a statue.
+            if ( game.GameStateManager.inOverworldMap() && game.overworldMap.tileContainsStatue(tileX, tileY) ) {
+                var textX = Math.min(game.canvasWidth - 200, offsetX);
+                var textY = Math.min(game.canvasHeight - 75, offsetY);
+                var textBox = new game.TextBox(textX, textY, 'This statue indicates that you\'ve beaten the adjacent world.', 400);
+                textBox.ttl /= 2;
+                game.TextManager.textBoxes.push(textBox);
+                return;
+            }
+
             var tileIsSpawnPoint = game.currentMap.isSpawnerPoint(tileX, tileY);
 
             // Clicking a "spawner" in the overworld will take you to a map to
@@ -821,6 +831,8 @@
         // The stuff that is drawn now will show up even over the "concealed"
         // areas.
         game.GameStateManager.draw(ctx);
+
+        game.TextManager.drawTextBoxes(ctx, false);
 
         // Book contents won't be frosted over by the GameStateManager.
         game.BookManager.draw(ctx);

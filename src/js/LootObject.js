@@ -5,12 +5,6 @@
      */
     window.game.LootObject = function LootObject(item, originalQuantity, didFit) {
         this.base = game.TextBox;
-
-        /**
-         * Time to live in seconds.
-         * @type {Number}
-         */
-        this.ttl = game.NUM_SEC_TO_SHOW_OBTAINED_ITEMS;
         this.item = item;
 
         this.text = 'Obtained ' + this.item.name;
@@ -28,6 +22,7 @@
             this.borderColor = 'rgba(200,0,0,.75)';
         }
 
+        this.ttl = game.NUM_SEC_TO_SHOW_OBTAINED_ITEMS;
         var itemSize = this.padding * 2 + game.ITEM_SPRITE_SIZE;
 
         // Accommodate the item both horizontally and vertically.

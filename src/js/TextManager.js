@@ -9,6 +9,9 @@
         // Array:game.TextObj (i.e. movable, single-line text)
         textObjs: new Array(),
 
+        // Array:game.TextBox (i.e. stationary, multi-line text)
+        textBoxes: new Array(),
+
         /**
          * Adds a text object for this to keep track of.
          * @param {TextObj} textObj The object to add.
@@ -30,6 +33,16 @@
                 }
 
                 this.textObjs[i].update(delta);
+            };
+
+            for (var i = 0; i < this.textBoxes.length; i++) {
+                if ( this.textBoxes[i].ttl <= 0 ) {
+                    this.textBoxes.splice(i, 1);
+                    i--;
+                    continue;
+                }
+
+                this.textBoxes[i].update(delta);
             };
         },
 
@@ -141,6 +154,15 @@
                 }
             };
         },
+
+        /**
+         * Draws all TextBoxes.
+         */
+        drawTextBoxes: function(ctx) {
+            for (var i = 0; i < this.textBoxes.length; i++) {
+                this.textBoxes[i].draw(ctx);
+            };  
+        }
 
     };
 }()); 

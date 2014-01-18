@@ -9,6 +9,12 @@
         this.x = x;
         this.y = y;
 
+        /**
+         * Time to live in seconds.
+         * @type {Number}
+         */
+        this.ttl = game.NUM_SEC_TO_SHOW_OBTAINED_ITEMS;
+
         this.backgroundOpacity = 1;
         this.foregroundOpacity = 1;
 
@@ -62,7 +68,7 @@
 
     window.game.TextBox.prototype.update = function(delta) {
         var deltaAsSec = delta / 1000;
-        var change = this.speed * deltaAsSec;
+        this.ttl -= deltaAsSec;
     };
 
     /**
