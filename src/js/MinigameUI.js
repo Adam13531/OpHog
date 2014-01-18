@@ -253,6 +253,14 @@
         },
 
         /**
+         * @return {Number} - returns how many diamonds you get for skipping the
+         * minigame.
+         */
+        getSkipReward: function() {
+            return Math.floor(this.minigameData[0].moneyGiven / 3);
+        },
+
+        /**
          * Adds the "skip minigame" button to the UI.
          */
         addSkipButton: function() {
@@ -268,13 +276,17 @@
                 'text-align': 'center'
             });
 
-            $('#minigame-cancel-div').append('<button id="minigame-cancel-button">'+ 
-                                                'Skip minigame' +
-                                                '</button>');
+            $('#minigame-cancel-div').append('<button id="minigame-cancel-button"></button>');
             $('#minigame-cancel-button').button();
+
+            var diamondImgTag = 
+                '<img src="' + iconSheet.get1x1Sprite(game.Graphic.BLUE_DIAMOND, true) + '" style="vertical-align:middle"/>';
+            var reward = this.getSkipReward();
+            $('#minigame-cancel-button > .ui-button-text').html('Skip minigame (rewards ' + reward + ' ' + diamondImgTag + ')');
 
             $('#minigame-cancel-button').click(function(minigameUI) {
                 return function() {
+                    game.Player.modifyDiamonds(reward);
                     game.GameStateManager.enterOverworldState();
                 }
             }(this));
