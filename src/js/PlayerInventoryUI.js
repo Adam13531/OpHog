@@ -486,7 +486,13 @@
             return 0;
         }
 
-        return item.itemID;
+        var price = item.itemID;
+
+        if ( item.usable ) {
+            price *= item.quantity;
+        }
+
+        return price;
     };
 
     /**

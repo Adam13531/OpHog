@@ -111,11 +111,7 @@
         }
 
         var item = this.getSelectedSlot().slot.item;
-        if ( item == null ) {
-            return 0;
-        }
-
-        return item.itemID * 10;
+        return game.playerInventoryUI.getSellPrice(item) * 10;
     };
 
     /**
@@ -199,7 +195,7 @@
         }
 
         var cost = this.getBuyPrice();
-        if (  !game.Player.hasThisManyDiamonds(cost) ||
+        if ( !game.Player.hasThisManyDiamonds(cost) ||
               this.getSelectedSlot() == null ||
               this.getSelectedSlot().isEmpty() ) {
             return false;
