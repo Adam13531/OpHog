@@ -635,11 +635,11 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.LIZARDMAN_ARCHER.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.LIZARDMAN_WARRIOR.id,
                     levelRange: [20,25],
                 }
             ],
@@ -652,7 +652,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.HOODED_HUMAN_1_BOSS.id,
                 level: 40
             },
 
@@ -662,7 +662,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.DESERT_TILESET_ID
         },
         {
             id: 8,
@@ -674,11 +674,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.LIZARDMAN_ARCHER.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.LIZARDMAN_SHAMAN.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.FLAME.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.LIZARDMAN_WARRIOR.id,
                     levelRange: [20,25],
                 }
             ],
@@ -691,7 +699,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.DEATH_KNIGHT_ALT_1_BOSS.id,
                 level: 40
             },
 
@@ -701,7 +709,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.DESERT_TILESET_ID
         },
         {
             id: 9,
@@ -713,11 +721,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.LIZARDMAN_ARCHER.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.LIZARDMAN_CAPTAIN.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.GIANT_WORM.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.LIZARDMAN_WARRIOR.id,
                     levelRange: [20,25],
                 }
             ],
@@ -730,7 +746,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.HORNED_DEMON_BOSS.id,
                 level: 40
             },
 
@@ -740,7 +756,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.DESERT_TILESET_ID
         },
 
         // Lava nodes
@@ -754,11 +770,11 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.IMP_DEMON_DEVIL.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.FIRE_MINION.id,
                     levelRange: [20,25],
                 }
             ],
@@ -771,7 +787,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.RED_SPECTER_BOSS.id,
                 level: 40
             },
 
@@ -781,7 +797,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.LAVA_TILESET_ID
         },
         {
             id: 11,
@@ -793,11 +809,15 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.IMP_DEMON_DEVIL.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.GIANT_SCORPION.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.FIRE_MINION.id,
                     levelRange: [20,25],
                 }
             ],
@@ -810,7 +830,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.LAVA_GOLEM_BOSS.id,
                 level: 40
             },
 
@@ -820,7 +840,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.LAVA_TILESET_ID
         },
         {
             id: 12,
@@ -832,11 +852,15 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.ORC_MYSTIC.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.ORC_CAPTAIN.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.ORC_FIGHTER.id,
                     levelRange: [20,25],
                 }
             ],
@@ -849,7 +873,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.FIRE_DEMON_BOSS.id,
                 level: 40
             },
 
@@ -859,7 +883,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.LAVA_TILESET_ID
         },
         {
             id: 13,
@@ -871,11 +895,11 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.ORC_FIGHTER.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.RED_BAT.id,
                     levelRange: [20,25],
                 }
             ],
@@ -888,7 +912,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.RED_DRAGON_BOSS.id,
                 level: 40
             },
 
@@ -898,7 +922,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.LAVA_TILESET_ID
         },
         {
             id: 14,
@@ -910,11 +934,11 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.ORC_MYSTIC.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.ORC_FIGHTER.id,
                     levelRange: [20,25],
                 }
             ],
@@ -927,7 +951,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.DEATH_KNIGHT_BOSS.id,
                 level: 40
             },
 
@@ -937,7 +961,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.LAVA_TILESET_ID
         },
 
         // Mud nodes
@@ -951,11 +975,11 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.SKELETON.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.MUMMY.id,
                     levelRange: [20,25],
                 }
             ],
@@ -968,7 +992,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.WITCH_BOSS.id,
                 level: 40
             },
 
@@ -990,11 +1014,15 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.SKELETON_WARRIOR.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.MUMMY.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.VAMPIRE.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1007,7 +1035,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.VAMPIRE_LORD_BOSS.id,
                 level: 40
             },
 
@@ -1029,11 +1057,15 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.SKELETON_WARRIOR.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.ZOMBIE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.VAMPIRE.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1046,7 +1078,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.DEATH_BOSS.id,
                 level: 40
             },
 
@@ -1068,11 +1100,15 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.SKELETON.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.MUMMY.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.GHOST.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1085,7 +1121,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.PHAROAH_BOSS.id,
                 level: 40
             },
 
@@ -1107,11 +1143,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.SKELETON_ARCHER.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.MUMMY.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.HEADLESS_ZOMBIE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.GHOST.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1124,7 +1168,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.SHADOW_BOSS.id,
                 level: 40
             },
 
@@ -1146,11 +1190,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.SKELETON_ARCHER.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.MUMMY.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.GHOST.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.HEADLESS_ZOMBIE.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1163,7 +1215,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.DARK_WIZARD_BOSS.id,
                 level: 40
             },
 
@@ -1187,11 +1239,11 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.TREE.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.GNOME_FIGHTER.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1204,7 +1256,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.BROWN_BEAR_BOSS.id,
                 level: 40
             },
 
@@ -1226,11 +1278,11 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.GNOME_FIGHTER_ALT_2.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.GNOME_FIGHTER.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1243,7 +1295,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.YETI_ALT_BOSS.id,
                 level: 40
             },
 
@@ -1265,11 +1317,15 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.GNOME_FIGHTER_ALT_1.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.GNOME_FIGHTER_ALT_2.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.GNOME_FIGHTER.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1282,7 +1338,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.TROLL_CAPTAIN_BOSS.id,
                 level: 40
             },
 
@@ -1304,11 +1360,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.GNOME_WIZARD.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.GNOME_FIGHTER_ALT_1.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.GNOME_FIGHTER_ALT_2.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.GNOME_FIGHTER.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1321,7 +1385,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.GNOME_WIZARD_ALT_BOSS.id,
                 level: 40
             },
 
@@ -1345,11 +1409,11 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.COBRA.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.GREEN_SLIME.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1362,7 +1426,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.PURPLE_SLIME_BOSS.id,
                 level: 40
             },
 
@@ -1384,11 +1448,15 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.GOBLIN_FIGHTER.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.COBRA.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.GREEN_SLIME.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1401,7 +1469,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.GREEN_DRAGON_BOSS.id,
                 level: 40
             },
 
@@ -1423,11 +1491,15 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.GOBLIN_ARCHER.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.COBRA.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.GREEN_SLIME.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1440,7 +1512,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.GREEN_WITCH_BOSS.id,
                 level: 40
             },
 
@@ -1462,13 +1534,17 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.GOBLIN_ARCHER.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.GOBLIN_FIGHTER.id,
                     levelRange: [20,25],
-                }
+                },
+                {
+                    id: game.UnitType.GOBLIN_CAPTAIN.id,
+                    levelRange: [20,25],
+                },
             ],
 
             generators: {
@@ -1479,7 +1555,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.GOBLIN_KING_BOSS.id,
                 level: 40
             },
 
@@ -1501,13 +1577,17 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.GOBLIN_ARCHER.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.GOBLIN_FIGHTER.id,
                     levelRange: [20,25],
-                }
+                },
+                {
+                    id: game.UnitType.GOBLIN_MYSTIC.id,
+                    levelRange: [20,25],
+                },
             ],
 
             generators: {
@@ -1518,7 +1598,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.TROLL_BOSS.id,
                 level: 40
             },
 
@@ -1542,11 +1622,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.EYE.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.DOVE_PIGEON.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.BEETLE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.MUD_MINION.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1559,7 +1647,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.WISP_BOSS.id,
                 level: 40
             },
 
@@ -1581,11 +1669,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.EYE.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.DOVE_PIGEON.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.BEETLE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.MUD_MINION.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1598,7 +1694,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.PURPLE_DRAGON_BOSS.id,
                 level: 40
             },
 
@@ -1620,11 +1716,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.EYE.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.DOVE_PIGEON.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.BEETLE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.MUD_MINION.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1637,7 +1741,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.PIXIE_FAIRY_SPRITE_BOSS.id,
                 level: 40
             },
 
@@ -1659,11 +1763,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.EYE.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.DOVE_PIGEON.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.BEETLE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.MUD_MINION.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1676,7 +1788,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.MIMIC_BOSS.id,
                 level: 40
             },
 
@@ -1698,11 +1810,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.EYE.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.DOVE_PIGEON.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.BEETLE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.MUD_MINION.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1715,7 +1835,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.EYES_BOSS.id,
                 level: 40
             },
 
@@ -1739,11 +1859,11 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.BLUE_BIRD.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.AIR_ELEMENTAL.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1756,7 +1876,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.BLUE_SPECTER_BOSS.id,
                 level: 40
             },
 
@@ -1778,11 +1898,15 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.BLUE_BIRD.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.ZOMBIE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.AIR_ELEMENTAL.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1795,7 +1919,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.VAMPIRE_ALT_BOSS.id,
                 level: 40
             },
 
@@ -1817,11 +1941,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.BLUE_BIRD.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.ZOMBIE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.COLD_FLAME.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.AIR_ELEMENTAL.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1834,7 +1966,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.ICE_WATER_ELEMENTAL_BOSS.id,
                 level: 40
             },
 
@@ -1856,11 +1988,19 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.BLUE_BIRD.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.ZOMBIE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.POLAR_BEAR.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.AIR_ELEMENTAL.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1873,7 +2013,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.DEATH_KNIGHT_ALT_2_BOSS.id,
                 level: 40
             },
 
@@ -1895,11 +2035,23 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.BLUE_BIRD.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.ZOMBIE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.POLAR_BEAR.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.COLD_FLAME.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.AIR_ELEMENTAL.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1912,7 +2064,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.FROST_WITCH_BOSS.id,
                 level: 40
             },
 
@@ -1934,11 +2086,27 @@
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
+                    id: game.UnitType.BLUE_BIRD.id,
                     levelRange: [20,25],
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
+                    id: game.UnitType.ZOMBIE.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.POLAR_BEAR.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.ICE_MINION.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.COLD_FLAME.id,
+                    levelRange: [20,25],
+                },
+                {
+                    id: game.UnitType.AIR_ELEMENTAL.id,
                     levelRange: [20,25],
                 }
             ],
@@ -1951,7 +2119,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.ELDER_DEMON_BOSS.id,
                 level: 40
             },
 
@@ -1992,7 +2160,7 @@
             },
 
             boss: {
-                id: game.UnitType.TREE.id,
+                id: game.UnitType.HOODED_HUMAN_1_BOSS.id,
                 level: 40
             },
 
