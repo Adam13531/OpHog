@@ -595,6 +595,450 @@
 
             statClass: basicStats,
         },
+        LIZARDMAN_SHAMAN: {
+            id: 25,
+            graphicIndexes:[game.Graphic.LIZARDMAN_SHAMAN],
+
+            statClass: basicStats,
+        },
+        LIZARDMAN_CAPTAIN: {
+            id: 26,
+            graphicIndexes:[game.Graphic.LIZARDMAN_CAPTAIN],
+
+            statClass: basicStats,
+        },
+        LIZARDMAN_ARCHER: {
+            id: 27,
+            graphicIndexes:[game.Graphic.LIZARDMAN_ARCHER],
+
+            statClass: basicStats,
+        },
+        LIZARDMAN_WARRIOR: {
+            id: 28,
+            graphicIndexes:[game.Graphic.LIZARDMAN_WARRIOR],
+
+            statClass: basicStats,
+        },
+        GIANT_WORM: {
+            id: 29,
+            graphicIndexes:[game.Graphic.GIANT_WORM],
+
+            statClass: basicStats,
+        },
+        FLAME: {
+            id: 30,
+            graphicIndexes:[game.Graphic.FLAME],
+
+            statClass: basicStats,
+        },
+        IMP_DEMON_DEVIL: {
+            id: 31,
+            graphicIndexes:[game.Graphic.IMP_DEMON_DEVIL],
+
+            statClass: basicStats,
+        },
+        RED_BAT: {
+            id: 32,
+            graphicIndexes:[game.Graphic.RED_BAT],
+
+            statClass: basicStats,
+        },
+        FIRE_MINION: {
+            id: 33,
+            graphicIndexes:[game.Graphic.FIRE_MINION],
+
+            statClass: basicStats,
+        },
+        GIANT_SCORPION: {
+            id: 34,
+            graphicIndexes:[game.Graphic.GIANT_SCORPION],
+
+            statClass: basicStats,
+        },
+        ORC_MYSTIC: {
+            id: 35,
+            graphicIndexes:[game.Graphic.ORC_MYSTIC],
+
+            statClass: basicStats,
+        },
+        ORC_CAPTAIN: {
+            id: 36,
+            graphicIndexes:[game.Graphic.ORC_CAPTAIN],
+
+            statClass: basicStats,
+        },
+        ORC_FIGHTER: {
+            id: 37,
+            graphicIndexes:[game.Graphic.ORC_FIGHTER],
+
+            statClass: basicStats,
+        },
+        VAMPIRE: {
+            id: 38,
+            graphicIndexes:[game.Graphic.VAMPIRE],
+
+            statClass: basicStats,
+        },
+        MUMMY: {
+            id: 39,
+            graphicIndexes:[game.Graphic.MUMMY],
+
+            statClass: basicStats,
+        },
+        GHOST: {
+            id: 40,
+            graphicIndexes:[game.Graphic.GHOST],
+
+            statClass: basicStats,
+        },
+        SKELETON_WARRIOR: {
+            id: 41,
+            graphicIndexes:[game.Graphic.SKELETON_WARRIOR],
+
+            statClass: basicStats,
+        },
+        SKELETON_ARCHER: {
+            id: 42,
+            graphicIndexes:[game.Graphic.SKELETON_ARCHER],
+
+            statClass: basicStats,
+        },
+        SKELETON: {
+            id: 43,
+            graphicIndexes:[game.Graphic.SKELETON],
+
+            statClass: basicStats,
+        },
+        HEADLESS_ZOMBIE: {
+            id: 44,
+            graphicIndexes:[game.Graphic.HEADLESS_ZOMBIE],
+
+            statClass: basicStats,
+        },
+        ZOMBIE: {
+            id: 45,
+            graphicIndexes:[game.Graphic.ZOMBIE],
+
+            statClass: basicStats,
+        },
+        GNOME_WIZARD: {
+            id: 46,
+            graphicIndexes:[game.Graphic.GNOME_WIZARD],
+
+            statClass: basicStats,
+        },
+        GNOME_FIGHTER_ALT_1: {
+            id: 47,
+            graphicIndexes:[game.Graphic.GNOME_FIGHTER_ALT_1],
+
+            statClass: basicStats,
+        },
+        GNOME_FIGHTER_ALT_2: {
+            id: 48,
+            graphicIndexes:[game.Graphic.GNOME_FIGHTER_ALT_2],
+
+            statClass: basicStats,
+        },
+        GNOME_FIGHTER: {
+            id: 49,
+            graphicIndexes:[game.Graphic.GNOME_FIGHTER],
+
+            statClass: basicStats,
+        },
+        GOBLIN_MYSTIC: {
+            id: 50,
+            graphicIndexes:[game.Graphic.GOBLIN_MYSTIC],
+
+            statClass: basicStats,
+        },
+        GOBLIN_CAPTAIN: {
+            id: 51,
+            graphicIndexes:[game.Graphic.GOBLIN_CAPTAIN],
+
+            statClass: basicStats,
+        },
+        GOBLIN_ARCHER: {
+            id: 52,
+            graphicIndexes:[game.Graphic.GOBLIN_ARCHER],
+
+            statClass: basicStats,
+        },
+        GOBLIN_FIGHTER: {
+            id: 53,
+            graphicIndexes:[game.Graphic.GOBLIN_FIGHTER],
+
+            statClass: basicStats,
+        },
+        GREEN_SLIME: {
+            id: 54,
+            graphicIndexes:[game.Graphic.GREEN_SLIME],
+
+            statClass: basicStats,
+        },
+        COBRA: {
+            id: 55,
+            graphicIndexes:[game.Graphic.COBRA],
+
+            statClass: basicStats,
+        },
+        EYE: {
+            id: 56,
+            graphicIndexes:[game.Graphic.EYE],
+
+            statClass: basicStats,
+        },
+        DOVE_PIGEON: {
+            id: 57,
+            graphicIndexes:[game.Graphic.DOVE_PIGEON],
+
+            statClass: basicStats,
+        },
+        BEETLE: {
+            id: 58,
+            graphicIndexes:[game.Graphic.BEETLE],
+
+            statClass: basicStats,
+        },
+        MUD_MINION: {
+            id: 59,
+            graphicIndexes:[game.Graphic.MUD_MINION],
+
+            statClass: basicStats,
+        },
+        COLD_FLAME: {
+            id: 60,
+            graphicIndexes:[game.Graphic.COLD_FLAME],
+
+            statClass: basicStats,
+        },
+        ICE_MINION: {
+            id: 61,
+            graphicIndexes:[game.Graphic.ICE_MINION],
+
+            statClass: basicStats,
+        },
+        AIR_ELEMENTAL: {
+            id: 62,
+            graphicIndexes:[game.Graphic.AIR_ELEMENTAL],
+
+            statClass: basicStats,
+        },
+        POLAR_BEAR: {
+            id: 63,
+            graphicIndexes:[game.Graphic.POLAR_BEAR],
+
+            statClass: basicStats,
+        },
+        BLUE_BIRD: {
+            id: 64,
+            graphicIndexes:[game.Graphic.BLUE_BIRD],
+
+            statClass: basicStats,
+        },
+        HOODED_HUMAN_1_BOSS: {
+            id: 65,
+            graphicIndexes:[game.Graphic.HOODED_HUMAN_1],
+
+            statClass: bossStats,
+        },
+        HORNED_DEMON_BOSS: {
+            id: 66,
+            graphicIndexes:[game.Graphic.HORNED_DEMON],
+
+            statClass: bossStats,
+        },
+        DEATH_KNIGHT_ALT_1_BOSS: {
+            id: 67,
+            graphicIndexes:[game.Graphic.DEATH_KNIGHT_ALT_1],
+
+            statClass: bossStats,
+        },
+        RED_DRAGON_BOSS: {
+            id: 68,
+            graphicIndexes:[game.Graphic.RED_DRAGON],
+
+            statClass: bossStats,
+        },
+        FIRE_DEMON_BOSS: {
+            id: 69,
+            graphicIndexes:[game.Graphic.FIRE_DEMON],
+
+            statClass: bossStats,
+        },
+        LAVA_GOLEM_BOSS: {
+            id: 70,
+            graphicIndexes:[game.Graphic.LAVA_GOLEM],
+
+            statClass: bossStats,
+        },
+        DEATH_KNIGHT_BOSS: {
+            id: 71,
+            graphicIndexes:[game.Graphic.DEATH_KNIGHT],
+
+            statClass: bossStats,
+        },
+        RED_SPECTER_BOSS: {
+            id: 72,
+            graphicIndexes:[game.Graphic.RED_SPECTER],
+
+            statClass: bossStats,
+        },
+        VAMPIRE_LORD_BOSS: {
+            id: 73,
+            graphicIndexes:[game.Graphic.VAMPIRE_LORD],
+
+            statClass: bossStats,
+        },
+        DEATH_BOSS: {
+            id: 74,
+            graphicIndexes:[game.Graphic.DEATH],
+
+            statClass: bossStats,
+        },
+        DARK_WIZARD_BOSS: {
+            id: 75,
+            graphicIndexes:[game.Graphic.DARK_WIZARD],
+
+            statClass: bossStats,
+        },
+        PHAROAH_BOSS: {
+            id: 76,
+            graphicIndexes:[game.Graphic.PHAROAH],
+
+            statClass: bossStats,
+        },
+        SHADOW_BOSS: {
+            id: 77,
+            graphicIndexes:[game.Graphic.SHADOW],
+
+            statClass: bossStats,
+        },
+        WITCH_BOSS: {
+            id: 78,
+            graphicIndexes:[game.Graphic.WITCH],
+
+            statClass: bossStats,
+        },
+        GNOME_WIZARD_ALT_BOSS: {
+            id: 79,
+            graphicIndexes:[game.Graphic.GNOME_WIZARD_ALT],
+
+            statClass: bossStats,
+        },
+        TROLL_CAPTAIN_BOSS: {
+            id: 80,
+            graphicIndexes:[game.Graphic.TROLL_CAPTAIN],
+
+            statClass: bossStats,
+        },
+        BROWN_BEAR_BOSS: {
+            id: 81,
+            graphicIndexes:[game.Graphic.BROWN_BEAR],
+
+            statClass: bossStats,
+        },
+        YETI_ALT_BOSS: {
+            id: 82,
+            graphicIndexes:[game.Graphic.YETI_ALT],
+
+            statClass: bossStats,
+        },
+        GOBLIN_KING_BOSS: {
+            id: 83,
+            graphicIndexes:[game.Graphic.GOBLIN_KING],
+
+            statClass: bossStats,
+        },
+        GREEN_WITCH_BOSS: {
+            id: 84,
+            graphicIndexes:[game.Graphic.GREEN_WITCH],
+
+            statClass: bossStats,
+        },
+        GREEN_DRAGON_BOSS: {
+            id: 85,
+            graphicIndexes:[game.Graphic.GREEN_DRAGON],
+
+            statClass: bossStats,
+        },
+        TROLL_BOSS: {
+            id: 86,
+            graphicIndexes:[game.Graphic.TROLL],
+
+            statClass: bossStats,
+        },
+        PURPLE_SLIME_BOSS: {
+            id: 87,
+            graphicIndexes:[game.Graphic.PURPLE_SLIME],
+
+            statClass: bossStats,
+        },
+        EYES_BOSS: {
+            id: 88,
+            graphicIndexes:[game.Graphic.EYES],
+
+            statClass: bossStats,
+        },
+        MIMIC_BOSS: {
+            id: 89,
+            graphicIndexes:[game.Graphic.MIMIC],
+
+            statClass: bossStats,
+        },
+        WISP_BOSS: {
+            id: 90,
+            graphicIndexes:[game.Graphic.WISP],
+
+            statClass: bossStats,
+        },
+        PURPLE_DRAGON_BOSS: {
+            id: 91,
+            graphicIndexes:[game.Graphic.PURPLE_DRAGON],
+
+            statClass: bossStats,
+        },
+        PIXIE_FAIRY_SPRITE_BOSS: {
+            id: 92,
+            graphicIndexes:[game.Graphic.PIXIE_FAIRY_SPRITE],
+
+            statClass: bossStats,
+        },
+        ELDER_DEMON_BOSS: {
+            id: 93,
+            graphicIndexes:[game.Graphic.ELDER_DEMON],
+
+            statClass: bossStats,
+        },
+        BLUE_SPECTER_BOSS: {
+            id: 94,
+            graphicIndexes:[game.Graphic.BLUE_SPECTER],
+
+            statClass: bossStats,
+        },
+        FROST_WITCH_BOSS: {
+            id: 95,
+            graphicIndexes:[game.Graphic.FROST_WITCH],
+
+            statClass: bossStats,
+        },
+        VAMPIRE_ALT_BOSS: {
+            id: 96,
+            graphicIndexes:[game.Graphic.VAMPIRE_ALT],
+
+            statClass: bossStats,
+        },
+        DEATH_KNIGHT_ALT_2_BOSS: {
+            id: 97,
+            graphicIndexes:[game.Graphic.DEATH_KNIGHT_ALT_2],
+
+            statClass: bossStats,
+        },
+        ICE_WATER_ELEMENTAL_BOSS: {
+            id: 98,
+            graphicIndexes:[game.Graphic.ICE_WATER_ELEMENTAL],
+
+            statClass: bossStats,
+        },
     };
 
     /**
@@ -715,6 +1159,12 @@
                     unitType.name = key;
                 }
             }
+
+            for (var i = 0; i < unitType.graphicIndexes.length; i++) {
+                if ( unitType.graphicIndexes[i] === undefined ) {
+                    game.util.debugDisplayText('Invalid graphic index(es) chosen for ' + unitType.name, 'invalid graphic' + unitType.id);
+                }
+            };
 
             if ( unitType.statClass !== undefined ) {
                 game.util.copyPropsIfUndefined(unitType.statClass, unitType);
