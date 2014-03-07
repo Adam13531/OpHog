@@ -13,11 +13,25 @@
         //----------------------------------------------------------------------
         // Graphics for env_24.png
         //----------------------------------------------------------------------
-        BONES: 31, // a large bone, two skulls, medium coverage on the tile
+        RIP_TOMBSTONE: 28,
+        CRACKED_TOMBSTONE: 29,
+        ERODED_TOMBSTONE: 30,
+        BONES_1: 31, // a large bone, two skulls, medium coverage on the tile
+        BONES_2: 32,
+        BONES_3: 33,
+        BONES_4: 34,
+        BONES_5: 35,
+        BONES_6: 36,
+        BONES_7: 37,
         FIRE_1: 38, // a large fireball, first frame
         FIRE_2: 39, // a large fireball, second frame
         BIG_GREEN_BUSH: 43, // a green bush covering almost the entire tile
         MEDIUM_GREEN_BUSH: 44, // a green bush covering about 75% of the tile
+        BIG_AUTUMN_BUSH: 48,
+        MEDIUM_AUTUMN_BUSH: 49,
+        TWO_AUTUMN_BUSHES_1: 50,
+        TWO_AUTUMN_BUSHES_2: 51,
+        SMALL_AUTUMN_BUSH: 52,
         THREE_FLOWERS: 100, // three flowers arranged in a triangle at the outer edge of the tile
         TWO_FLOWERS: 101, // two flowers arranged at NW and SE corners of the tile
         ONE_FLOWER: 102, // one flower in the center of the tile
@@ -33,8 +47,13 @@
         BARREL: 209, // fully intact barrel
         GREEN_TREE: 214, // a healthy oak tree
         GREEN_TREE_WITH_FRUIT: 215, // a healthy oak tree with three red fruits
+        AUTUMN_TREE: 216,
+        TREE_STUMP: 218,
         EVERGREEN_TREE: 219, // a healthy, large evergreen
         SNOWY_EVERGREEN_TREE: 220, // a healthy, large evergreen with snow on it
+        AUTUMN_FOREST_PATCH_1: 274,
+        AUTUMN_FOREST_PATCH_2: 275,
+        AUTUMN_FOREST_PATCH_3: 276,
         EVERGREEN_FOREST_PATCH_1: 280, // the upper left portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_2: 281, // the upper middle portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_3: 282, // the upper right portion of the evergreen forest
@@ -42,19 +61,32 @@
         WIZARD_STATUE: 317,
         ARCHER_STATUE: 319,
         WARRIOR_STATUE: 320,
+        AUTUMN_FOREST_PATCH_4: 331,
+        AUTUMN_FOREST_PATCH_5: 332,
+        AUTUMN_FOREST_PATCH_6: 333,
         EVERGREEN_FOREST_PATCH_4: 337, // the middle left portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_5: 338, // the middle portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_6: 339, // the middle right portion of the evergreen forest
         SPAWNER: 371, // concentric cirles (yellow on outside)
+        AUTUMN_FOREST_PATCH_7: 388,
+        AUTUMN_FOREST_PATCH_8: 389,
+        AUTUMN_FOREST_PATCH_9: 390,
         EVERGREEN_FOREST_PATCH_7: 394, // the lower left portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_8: 395, // the lower middle portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_9: 396, // the lower right portion of the evergreen forest
+        AUTUMN_DUO_1: 445,
+        AUTUMN_DUO_2: 446,
+        AUTUMN_DUO_3: 447,
         EVERGREEN_DUO_1: 451, // the upper left of a 3-wide, 2-tall duo of evergreen trees
         EVERGREEN_DUO_2: 452, // the upper middle of a 3-wide, 2-tall duo of evergreen trees
         EVERGREEN_DUO_3: 453, // the upper right of a 3-wide, 2-tall duo of evergreen trees
         WELL_WITH_BROWN_WATER: 488, // well with brown water in it
+        BALE_OF_HAY: 490,
         PILE_OF_STONE: 491, // grey pile of stone
         ANIMAL_SKULL: 497, // an animal skull with two horns (one is broken)
+        AUTUMN_DUO_4: 502,
+        AUTUMN_DUO_5: 503,
+        AUTUMN_DUO_6: 504,
         EVERGREEN_DUO_4: 508, // the lower left of a 3-wide, 2-tall duo of evergreen trees
         EVERGREEN_DUO_5: 509, // the lower middle of a 3-wide, 2-tall duo of evergreen trees
         EVERGREEN_DUO_6: 510, // the lower right of a 3-wide, 2-tall duo of evergreen trees
@@ -76,6 +108,7 @@
         SNOWY_EVERGREEN_DUO_3: 729, // the upper right of a 3-wide, 2-tall duo of snowy evergreen trees
         LIGHT_GREEN_BRUSH: 769, // light green flowers/grass/greenery
         LUSH_GREEN_BRUSH: 773, // bright green flowers/grass/greenery     
+        AUTUMN_BRUSH: 774,
         SNOWY_EVERGREEN_DUO_4: 784, // the lower left of a 3-wide, 2-tall duo of snowy evergreen trees
         SNOWY_EVERGREEN_DUO_5: 785, // the lower middle of a 3-wide, 2-tall duo of snowy evergreen trees
         SNOWY_EVERGREEN_DUO_6: 786, // the lower right of a 3-wide, 2-tall duo of snowy evergreen trees
@@ -95,6 +128,7 @@
         PATH_TILE_DARK_DIRT: 1339, // dark brown tile with specks. This marks the start of one of our "auto tiles".
         DARK_MUD_PATH_FULL_TEXTURE: 1340, // dark mud path, takes up full tile, has some bubbles in it
         PATH_TILE_MUD: 1453, // mud-colored tile with specks. This marks the start of one of our "auto tiles".
+        MUD_PATH: 1454,
         BLUE_WATER_EDGE_LARGE_SQUARE_1: 1543, // the top left of a 3-wide, 3-tall square of water only on the edges
         BLUE_WATER_EDGE_LARGE_SQUARE_2: 1544, // the top middle of a 3-wide, 3-tall square of water only on the edges
         BLUE_WATER_EDGE_LARGE_SQUARE_3: 1545, // the top right of a 3-wide, 3-tall square of water only on the edges

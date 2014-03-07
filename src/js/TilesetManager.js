@@ -13,6 +13,8 @@
         DESERT_TILESET_ID: 2,
         FOREST_TILESET_ID: 3,
         SNOW_TILESET_ID: 4,
+        AUTUMN_TILESET_ID: 5,
+        MUD_TILESET_ID: 6,
 
         /**
          * The available tilesets.
@@ -39,6 +41,8 @@
             this.constructMarshTileset();
             this.constructForestTileset();
             this.constructSnowTileset();
+            this.constructAutumnTileset();
+            this.constructMudTileset();
             this.initialized = true;
         },
 
@@ -82,7 +86,7 @@
             tileset.addDoodad(new game.Doodad([game.Graphic.CACTUS_3], 1, 1));
             tileset.addDoodad(new game.Doodad([game.Graphic.BIG_BLUE_POND], 1, 50));
             tileset.addDoodad(new game.Doodad([game.Graphic.SMALL_BLUE_POND], 1, 50));
-            tileset.addDoodad(new game.Doodad([game.Graphic.BONES], 1, 5));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES_1], 1, 5));
             tileset.addDoodad(new game.Doodad([game.Graphic.ANIMAL_SKULL], 1, 20));
 
             this.addTileset(tileset);
@@ -123,7 +127,7 @@
 
             // Single-tile doodads
             tileset.addDoodad(new game.Doodad([game.Graphic.CRACKED_RED_BLOCK], 1, 5));
-            tileset.addDoodad(new game.Doodad([game.Graphic.BONES], 1, 5));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES_1], 1, 5));
             tileset.addDoodad(new game.Doodad([game.Graphic.FIRE_1], 1, 5));
             tileset.addDoodad(new game.Doodad([game.Graphic.RED_STONE_PATH_1], 1, 1));
             tileset.addDoodad(new game.Doodad([game.Graphic.RED_STONE_PATH_2], 1, 1));
@@ -250,7 +254,7 @@
                 ));
 
             // Single-tile doodads
-            tileset.addDoodad(new game.Doodad([game.Graphic.EVERGREEN_TREE], 1, 1)); // evergreen
+            tileset.addDoodad(new game.Doodad([game.Graphic.EVERGREEN_TREE], 1, 1));
             tileset.addDoodad(new game.Doodad([game.Graphic.BIG_GREEN_BUSH], 1, 3));
             tileset.addDoodad(new game.Doodad([game.Graphic.MEDIUM_GREEN_BUSH], 1, 3));
             tileset.addDoodad(new game.Doodad([game.Graphic.SMALL_GRAY_ROCKS], 1, 3));
@@ -303,7 +307,104 @@
             tileset.addDoodad(new game.Doodad([game.Graphic.PILE_OF_STONE], 1, 10));
  
             this.addTileset(tileset);
-        }
+        },
+
+        constructAutumnTileset: function() {
+            // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
+            var tileset = new game.Tileset(this.AUTUMN_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.AUTUMN_BRUSH, game.Graphic.PATH_TILE_DIRT);
+
+            var f1 = game.Graphic.AUTUMN_FOREST_PATCH_1;
+            var f2 = game.Graphic.AUTUMN_FOREST_PATCH_2;
+            var f3 = game.Graphic.AUTUMN_FOREST_PATCH_3;
+            var f4 = game.Graphic.AUTUMN_FOREST_PATCH_4;
+            var f5 = game.Graphic.AUTUMN_FOREST_PATCH_5;
+            var f6 = game.Graphic.AUTUMN_FOREST_PATCH_6;
+            var f7 = game.Graphic.AUTUMN_FOREST_PATCH_7;
+            var f8 = game.Graphic.AUTUMN_FOREST_PATCH_8;
+            var f9 = game.Graphic.AUTUMN_FOREST_PATCH_9;
+
+            var d1 = game.Graphic.AUTUMN_DUO_1;
+            var d2 = game.Graphic.AUTUMN_DUO_2;
+            var d3 = game.Graphic.AUTUMN_DUO_3;
+            var d4 = game.Graphic.AUTUMN_DUO_4;
+            var d5 = game.Graphic.AUTUMN_DUO_5;
+            var d6 = game.Graphic.AUTUMN_DUO_6;
+
+            // Lots of doodads
+            tileset.doodadDensity = 1;
+
+            tileset.addDoodad(new game.Doodad(
+                [
+                d1,d2,d3,
+                d4,d5,d6,
+                ], 3, 5
+                ));
+
+            tileset.addDoodad(new game.Doodad(
+                [
+                f1,f2,f3,
+                f4,f5,f6,
+                f7,f8,f9,
+                ], 3, 3
+                ));
+            tileset.addDoodad(new game.Doodad(
+                [
+                f1,f2,f2,f3,
+                f4,f5,f5,f6,
+                f4,f5,f5,f6,
+                f7,f8,f8,f9,
+                ], 4, 3
+                ));
+            tileset.addDoodad(new game.Doodad(
+                [
+                f1,f2,f2,f2,f3,
+                f4,f5,f5,f5,f6,
+                f4,f5,f5,f5,f6,
+                f4,f5,f5,f5,f6,
+                f7,f8,f8,f8,f9,
+                ], 4, 3
+                ));
+            tileset.addDoodad(new game.Doodad(
+                [
+                f1,f2,f2,f2,f2,f3,
+                f4,f5,f5,f5,f5,f6,
+                f4,f5,f5,f5,f5,f6,
+                f4,f5,f5,f5,f5,f6,
+                f7,f8,f8,f8,f8,f9,
+                ], 6, 3
+                ));
+
+            // Single-tile doodads
+            tileset.addDoodad(new game.Doodad([game.Graphic.AUTUMN_TREE], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BIG_AUTUMN_BUSH], 1, 3));
+            tileset.addDoodad(new game.Doodad([game.Graphic.MEDIUM_AUTUMN_BUSH], 1, 3));
+            tileset.addDoodad(new game.Doodad([game.Graphic.TWO_AUTUMN_BUSHES_2], 1, 3));
+            tileset.addDoodad(new game.Doodad([game.Graphic.TWO_AUTUMN_BUSHES_2], 1, 3));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BALE_OF_HAY], 1, 20));
+            tileset.addDoodad(new game.Doodad([game.Graphic.SMALL_AUTUMN_BUSH], 1, 3));
+            tileset.addDoodad(new game.Doodad([game.Graphic.TREE_STUMP], 1, 10));
+
+            this.addTileset(tileset);
+        },
+
+        constructMudTileset: function() {
+            // spawnTileGraphic, nonwalkableTileGraphic, walkableTileGraphic
+            var tileset = new game.Tileset(this.MUD_TILESET_ID, game.Graphic.SPAWNER, game.Graphic.MUD_PATH, game.Graphic.PATH_TILE_DIRT);
+
+            // Single-tile doodads
+            tileset.addDoodad(new game.Doodad([game.Graphic.RIP_TOMBSTONE], 1, 2));
+            tileset.addDoodad(new game.Doodad([game.Graphic.CRACKED_TOMBSTONE], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.ERODED_TOMBSTONE], 1, 1));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES_1], 1, 15));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES_2], 1, 15));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES_3], 1, 15));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES_4], 1, 15));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES_5], 1, 15));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES_6], 1, 15));
+            tileset.addDoodad(new game.Doodad([game.Graphic.BONES_7], 1, 15));
+
+            this.addTileset(tileset);
+        },
 
     };
 }()); 

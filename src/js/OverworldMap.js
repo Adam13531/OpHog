@@ -268,9 +268,6 @@
          *     enemies - Array:Object - an array of objects with the following:
          *         id - Number - the ID of the enemy (see UnitData.js)
          *         levelRange - Array[2] - an array of [minLevel, maxLevel].
-         *             OR
-         *             You could specify minLevel (Number) and maxLevel (Number)
-         *             if you want
          *         relativeWeight - Number - optional (defaults to 1000). The 
          *             relative weight that this enemy will spawn.
          *     generators - Object - an object with the following;
@@ -329,11 +326,11 @@
             difficulty: 1,
             dimensions: [5,2],
             clearFog: [[1,5,3, true], [0,2,3]],
+            levelRange: [1,1],
 
             enemies: [
                 {
                     id: game.UnitType.TURNIP.id,
-                    levelRange: [1,1],
                 },
             ],
 
@@ -347,7 +344,6 @@
 
             boss: {
                 id: game.UnitType.TURNIP_BOSS.id,
-                level: 2
             },
 
             minigame: {
@@ -368,11 +364,11 @@
             difficulty: 2,
             dimensions: [7,3],
             clearFog: [[1,7,3,true]],
+            levelRange: [1,2],
 
             enemies: [
                 {
                     id: game.UnitType.TURNIP.id,
-                    levelRange: [1,2],
                 },
             ],
 
@@ -386,7 +382,6 @@
 
             boss: {
                 id: game.UnitType.TREANT_BOSS.id,
-                level: 2
             },
 
             minigame: {
@@ -406,6 +401,7 @@
             difficulty: 2,
             dimensions: [7,3],
             clearFog: [[1,11,2]],
+            levelRange: [3,4],
 
             enemies: [
                 {
@@ -429,7 +425,6 @@
 
             boss: {
                 id: game.UnitType.RED_SPIDER_BOSS.id,
-                level: 5
             },
 
             minigame: {
@@ -450,6 +445,7 @@
             difficulty: 2,
             dimensions: [10,3],
             clearFog: [[4,5,5]],
+            levelRange: [6,10],
 
             enemies: [
                 {
@@ -476,7 +472,6 @@
 
             boss: {
                 id: game.UnitType.GNOME_WIZARD_ALT_BOSS.id,
-                level: 7
             },
 
             minigame: {
@@ -496,6 +491,7 @@
             difficulty: 2,
             dimensions: [10,3],
             clearFog: [[5,10,4]],
+            levelRange: [4,6],
 
             enemies: [
                 {
@@ -522,7 +518,6 @@
 
             boss: {
                 id: game.UnitType.BROWN_WOLF_BOSS.id,
-                level: 6
             },
 
             minigame: {
@@ -542,6 +537,7 @@
             difficulty: 2,
             dimensions: [11,3],
             clearFog: [[4,5,5],[3,11,3]],
+            levelRange: [6,10],
 
             enemies: [
                 {
@@ -564,7 +560,6 @@
 
             boss: {
                 id: game.UnitType.TROLL_BOSS.id,
-                level: 7
             },
 
             minigame: {
@@ -582,6 +577,7 @@
             difficulty: 2,
             dimensions: [12,3],
             clearFog: [[12,4,5,true]],
+            levelRange: [6,11],
 
             enemies: [
                 {
@@ -612,7 +608,6 @@
 
             boss: {
                 id: game.UnitType.BANDIT_3_BOSS.id,
-                level: 9
             },
 
             minigame: {
@@ -632,15 +627,14 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[18,5,4,true],[12,4,7,true],[20,10,2,true]],
+            levelRange: [8,12],
 
             enemies: [
                 {
                     id: game.UnitType.LIZARDMAN_ARCHER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.LIZARDMAN_WARRIOR.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -653,7 +647,6 @@
 
             boss: {
                 id: game.UnitType.HOODED_HUMAN_1_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -671,23 +664,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[24,1,5,true]],
+            levelRange: [9,14],
 
             enemies: [
                 {
                     id: game.UnitType.LIZARDMAN_ARCHER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.LIZARDMAN_SHAMAN.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.FLAME.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.LIZARDMAN_WARRIOR.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -700,7 +690,6 @@
 
             boss: {
                 id: game.UnitType.DEATH_KNIGHT_ALT_1_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -718,23 +707,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[16,12,4,true],[17,17,2],[26,10,5,true]],
+            levelRange: [11,14],
 
             enemies: [
                 {
                     id: game.UnitType.LIZARDMAN_ARCHER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.LIZARDMAN_CAPTAIN.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GIANT_WORM.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.LIZARDMAN_WARRIOR.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -747,7 +733,6 @@
 
             boss: {
                 id: game.UnitType.HORNED_DEMON_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -767,15 +752,14 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[29,1,6,true],[23,4,2]],
+            levelRange: [11,15],
 
             enemies: [
                 {
                     id: game.UnitType.IMP_DEMON_DEVIL.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.FIRE_MINION.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -788,7 +772,6 @@
 
             boss: {
                 id: game.UnitType.RED_SPECTER_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -806,19 +789,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[31,4,5],[23,1,4,true]],
+            levelRange: [12,16],
 
             enemies: [
                 {
                     id: game.UnitType.IMP_DEMON_DEVIL.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GIANT_SCORPION.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.FIRE_MINION.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -831,7 +812,6 @@
 
             boss: {
                 id: game.UnitType.LAVA_GOLEM_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -849,19 +829,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[41,4,6,true],[31,4,5]],
+            levelRange: [15,19],
 
             enemies: [
                 {
                     id: game.UnitType.ORC_MYSTIC.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.ORC_CAPTAIN.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.ORC_FIGHTER.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -874,7 +852,6 @@
 
             boss: {
                 id: game.UnitType.FIRE_DEMON_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -892,15 +869,14 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[30,9,4,true],[23,10,3,true]],
+            levelRange: [12,14],
 
             enemies: [
                 {
                     id: game.UnitType.ORC_FIGHTER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.RED_BAT.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -913,7 +889,6 @@
 
             boss: {
                 id: game.UnitType.RED_DRAGON_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -931,15 +906,14 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[31,4,5],[29,10,3,true]],
+            levelRange: [13,16],
 
             enemies: [
                 {
                     id: game.UnitType.ORC_MYSTIC.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.ORC_FIGHTER.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -952,7 +926,6 @@
 
             boss: {
                 id: game.UnitType.DEATH_KNIGHT_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -972,15 +945,14 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,17,2],[15,21,2],[14,17,2,true],[17,12,5,true],[17,17,2]],
+            levelRange: [12,15],
 
             enemies: [
                 {
                     id: game.UnitType.SKELETON.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.MUMMY.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -993,7 +965,6 @@
 
             boss: {
                 id: game.UnitType.WITCH_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1002,7 +973,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.MUD_TILESET_ID
         },
         {
             id: 16,
@@ -1011,19 +982,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,17,4,true],[25,18,2],[21,23,2]],
+            levelRange: [16,19],
 
             enemies: [
                 {
                     id: game.UnitType.SKELETON_WARRIOR.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.MUMMY.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.VAMPIRE.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1036,7 +1005,6 @@
 
             boss: {
                 id: game.UnitType.VAMPIRE_LORD_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1045,7 +1013,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.MUD_TILESET_ID
         },
         {
             id: 17,
@@ -1054,19 +1022,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,17,2],[25,18,2],[25,22,2],[28,18,3,true]],
+            levelRange: [15,22],
 
             enemies: [
                 {
                     id: game.UnitType.SKELETON_WARRIOR.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.ZOMBIE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.VAMPIRE.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1079,7 +1045,6 @@
 
             boss: {
                 id: game.UnitType.DEATH_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1088,7 +1053,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.MUD_TILESET_ID
         },
         {
             id: 18,
@@ -1097,19 +1062,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[14,17,3,true],[15,21,2,true],[18,22,3,true],[21,23,2]],
+            levelRange: [12,17],
 
             enemies: [
                 {
                     id: game.UnitType.SKELETON.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.MUMMY.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GHOST.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1122,7 +1085,6 @@
 
             boss: {
                 id: game.UnitType.PHAROAH_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1131,7 +1093,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.MUD_TILESET_ID
         },
         {
             id: 19,
@@ -1140,23 +1102,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,20,3,true],[21,23,2,true],[25,22,2],[15,21,3,true],[18,23,2]],
+            levelRange: [12,19],
 
             enemies: [
                 {
                     id: game.UnitType.SKELETON_ARCHER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.MUMMY.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.HEADLESS_ZOMBIE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GHOST.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1169,7 +1128,6 @@
 
             boss: {
                 id: game.UnitType.SHADOW_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1178,7 +1136,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.MUD_TILESET_ID
         },
         {
             id: 20,
@@ -1187,23 +1145,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[25,22,2,true],[21,23,2,true],[25,18,2,true]],
+            levelRange: [15,19],
 
             enemies: [
                 {
                     id: game.UnitType.SKELETON_ARCHER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.MUMMY.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GHOST.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.HEADLESS_ZOMBIE.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1216,7 +1171,6 @@
 
             boss: {
                 id: game.UnitType.DARK_WIZARD_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1225,7 +1179,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.MUD_TILESET_ID
         },
 
         // Autumn nodes
@@ -1236,15 +1190,14 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,10,2,true],[36,3,4,true]],
+            levelRange: [15,19],
 
             enemies: [
                 {
                     id: game.UnitType.TREE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GNOME_FIGHTER.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1257,7 +1210,6 @@
 
             boss: {
                 id: game.UnitType.BROWN_BEAR_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1266,7 +1218,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.AUTUMN_TILESET_ID
         },
         {
             id: 22,
@@ -1275,15 +1227,14 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,13,2,true],[41,5,3]],
+            levelRange: [16,20],
 
             enemies: [
                 {
                     id: game.UnitType.GNOME_FIGHTER_ALT_2.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GNOME_FIGHTER.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1296,7 +1247,6 @@
 
             boss: {
                 id: game.UnitType.YETI_ALT_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1305,7 +1255,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.AUTUMN_TILESET_ID
         },
         {
             id: 23,
@@ -1314,19 +1264,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[40,16,3,true],[39,10,2]],
+            levelRange: [17,21],
 
             enemies: [
                 {
                     id: game.UnitType.GNOME_FIGHTER_ALT_1.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GNOME_FIGHTER_ALT_2.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GNOME_FIGHTER.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1339,7 +1287,6 @@
 
             boss: {
                 id: game.UnitType.TROLL_CAPTAIN_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1348,7 +1295,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.AUTUMN_TILESET_ID
         },
         {
             id: 24,
@@ -1357,23 +1304,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[36,15,5,true],[31,18,2]],
+            levelRange: [18,22],
 
             enemies: [
                 {
                     id: game.UnitType.GNOME_WIZARD.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GNOME_FIGHTER_ALT_1.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GNOME_FIGHTER_ALT_2.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GNOME_FIGHTER.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1386,7 +1330,6 @@
 
             boss: {
                 id: game.UnitType.GNOME_WIZARD_ALT_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1395,7 +1338,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.AUTUMN_TILESET_ID
         },
 
         // Jungle nodes
@@ -1406,15 +1349,14 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[28,18,3,true],[31,18,2],[34,20,2],[37,17,4,true],[32,24,5,true]],
+            levelRange: [18,22],
 
             enemies: [
                 {
                     id: game.UnitType.COBRA.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GREEN_SLIME.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1427,7 +1369,6 @@
 
             boss: {
                 id: game.UnitType.PURPLE_SLIME_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1445,19 +1386,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,22,2]],
+            levelRange: [22,22],
 
             enemies: [
                 {
                     id: game.UnitType.GOBLIN_FIGHTER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.COBRA.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GREEN_SLIME.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1470,7 +1409,6 @@
 
             boss: {
                 id: game.UnitType.GREEN_DRAGON_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1488,19 +1426,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,25,2]],
+            levelRange: [22,22],
 
             enemies: [
                 {
                     id: game.UnitType.GOBLIN_ARCHER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.COBRA.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GREEN_SLIME.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1513,7 +1449,6 @@
 
             boss: {
                 id: game.UnitType.GREEN_WITCH_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1531,19 +1466,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,25,2],[40,29,2]],
+            levelRange: [22,25],
 
             enemies: [
                 {
                     id: game.UnitType.GOBLIN_ARCHER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GOBLIN_FIGHTER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GOBLIN_CAPTAIN.id,
-                    levelRange: [20,25],
                 },
             ],
 
@@ -1556,7 +1489,6 @@
 
             boss: {
                 id: game.UnitType.GOBLIN_KING_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1574,19 +1506,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,22,2],[40,29,2]],
+            levelRange: [22,26],
 
             enemies: [
                 {
                     id: game.UnitType.GOBLIN_ARCHER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GOBLIN_FIGHTER.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.GOBLIN_MYSTIC.id,
-                    levelRange: [20,25],
                 },
             ],
 
@@ -1599,7 +1529,6 @@
 
             boss: {
                 id: game.UnitType.TROLL_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1619,23 +1548,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[37,31,1,true],[40,31,2,true],[40,35,2],[40,32,2,true]],
+            levelRange: [23,26],
 
             enemies: [
                 {
                     id: game.UnitType.EYE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.DOVE_PIGEON.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.BEETLE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.MUD_MINION.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1648,7 +1574,6 @@
 
             boss: {
                 id: game.UnitType.WISP_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1666,23 +1591,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[37,35,2]],
+            levelRange: [23,28],
 
             enemies: [
                 {
                     id: game.UnitType.EYE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.DOVE_PIGEON.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.BEETLE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.MUD_MINION.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1695,7 +1617,6 @@
 
             boss: {
                 id: game.UnitType.PURPLE_DRAGON_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1713,23 +1634,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[37,33,3,true]],
+            levelRange: [25,28],
 
             enemies: [
                 {
                     id: game.UnitType.EYE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.DOVE_PIGEON.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.BEETLE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.MUD_MINION.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1742,7 +1660,6 @@
 
             boss: {
                 id: game.UnitType.PIXIE_FAIRY_SPRITE_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1760,23 +1677,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[35,33,3,true]],
+            levelRange: [26,30],
 
             enemies: [
                 {
                     id: game.UnitType.EYE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.DOVE_PIGEON.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.BEETLE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.MUD_MINION.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1789,7 +1703,6 @@
 
             boss: {
                 id: game.UnitType.MIMIC_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1807,23 +1720,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[37,33,6,true],[28,34,5,true]],
+            levelRange: [26,33],
 
             enemies: [
                 {
                     id: game.UnitType.EYE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.DOVE_PIGEON.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.BEETLE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.MUD_MINION.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1836,7 +1746,6 @@
 
             boss: {
                 id: game.UnitType.EYES_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1856,15 +1765,14 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,31,2,true],[17,33,2,true],[13,35,2,true],[20,36,3],[16,36,3]],
+            levelRange: [28,30],
 
             enemies: [
                 {
                     id: game.UnitType.BLUE_BIRD.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.AIR_ELEMENTAL.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1877,7 +1785,6 @@
 
             boss: {
                 id: game.UnitType.BLUE_SPECTER_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1895,19 +1802,17 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[18,30,3,true]],
+            levelRange: [29,31],
 
             enemies: [
                 {
                     id: game.UnitType.BLUE_BIRD.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.ZOMBIE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.AIR_ELEMENTAL.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1920,7 +1825,6 @@
 
             boss: {
                 id: game.UnitType.VAMPIRE_ALT_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1938,23 +1842,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[15,31,3,true]],
+            levelRange: [29,32],
 
             enemies: [
                 {
                     id: game.UnitType.BLUE_BIRD.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.ZOMBIE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.COLD_FLAME.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.AIR_ELEMENTAL.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -1967,7 +1868,6 @@
 
             boss: {
                 id: game.UnitType.ICE_WATER_ELEMENTAL_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -1985,23 +1885,20 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[15,31,3,true]],
+            levelRange: [30,33],
 
             enemies: [
                 {
                     id: game.UnitType.BLUE_BIRD.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.ZOMBIE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.POLAR_BEAR.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.AIR_ELEMENTAL.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -2014,7 +1911,6 @@
 
             boss: {
                 id: game.UnitType.DEATH_KNIGHT_ALT_2_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -2032,27 +1928,23 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[17,36,6]],
+            levelRange: [32,35],
 
             enemies: [
                 {
                     id: game.UnitType.BLUE_BIRD.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.ZOMBIE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.POLAR_BEAR.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.COLD_FLAME.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.AIR_ELEMENTAL.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -2065,7 +1957,6 @@
 
             boss: {
                 id: game.UnitType.FROST_WITCH_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -2083,31 +1974,26 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[3,36,8,true],[4,30,2,true],[8,30,2,true],[13,34,4,true]],
+            levelRange: [35,38],
 
             enemies: [
                 {
                     id: game.UnitType.BLUE_BIRD.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.ZOMBIE.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.POLAR_BEAR.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.ICE_MINION.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.COLD_FLAME.id,
-                    levelRange: [20,25],
                 },
                 {
                     id: game.UnitType.AIR_ELEMENTAL.id,
-                    levelRange: [20,25],
                 }
             ],
 
@@ -2120,7 +2006,6 @@
 
             boss: {
                 id: game.UnitType.ELDER_DEMON_BOSS.id,
-                level: 40
             },
 
             minigame: {
@@ -2140,15 +2025,26 @@
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[1,1,1]],
+            levelRange: [40,50],
 
             enemies: [
                 {
-                    id: game.UnitType.WOLF.id,
-                    levelRange: [20,25],
+                    id: game.UnitType.BLUE_BIRD.id,
                 },
                 {
-                    id: game.UnitType.DRAGON.id,
-                    levelRange: [20,25],
+                    id: game.UnitType.ZOMBIE.id,
+                },
+                {
+                    id: game.UnitType.POLAR_BEAR.id,
+                },
+                {
+                    id: game.UnitType.ICE_MINION.id,
+                },
+                {
+                    id: game.UnitType.COLD_FLAME.id,
+                },
+                {
+                    id: game.UnitType.AIR_ELEMENTAL.id,
                 }
             ],
 
@@ -2160,8 +2056,7 @@
             },
 
             boss: {
-                id: game.UnitType.HOODED_HUMAN_1_BOSS.id,
-                level: 40
+                id: game.UnitType.DARK_WIZARD_BOSS.id,
             },
 
             minigame: {
@@ -2416,6 +2311,11 @@
             game.util.debugDisplayText(nodeDescription + ' does not have a minigame defined!', 'no minigame' + i);
         }
 
+        if ( node.levelRange === undefined ) {
+            error = true;
+            game.util.debugDisplayText(nodeDescription + ' has no level range!', 'no node level range' + i);
+        }
+
         if ( error ) {
             continue;
         }
@@ -2449,30 +2349,18 @@
 
             seenEnemies[enemy.id] = true;
 
-            if ( enemy.levelRange !== undefined ) {
-                if ( enemy.minLevel !== undefined || enemy.maxLevel !== undefined ) {
-                    game.util.debugDisplayText(nodeDescription + ' specifies both a level range AND a min or max level!', 'range AND min or max' + i + j);
-                    continue;
-                }
-
-                if ( enemy.levelRange.length != 2 ) {
-                    game.util.debugDisplayText(nodeDescription + ' specifies a level range whose length is not 2!', 'level range wrong length' + i + j);
-                    continue;   
-                }
-
-                enemy.minLevel = enemy.levelRange[0];
-                enemy.maxLevel = enemy.levelRange[1];
+            if ( enemy.levelRange === undefined ) {
+                // Pull it from the node
+                enemy.levelRange = node.levelRange;
             }
 
-            if ( enemy.minLevel === undefined ) {
-                game.util.debugDisplayText(nodeDescription + ' has an enemy with no minLevel!', 'no minLevel' + i + j);
-                continue;
+            if ( enemy.levelRange.length != 2 ) {
+                game.util.debugDisplayText(nodeDescription + ' specifies a level range whose length is not 2!', 'level range wrong length' + i + j);
+                continue;   
             }
 
-            if ( enemy.maxLevel === undefined ) {
-                game.util.debugDisplayText(nodeDescription + ' has an enemy with no maxLevel!', 'no maxLevel' + i + j);
-                continue;
-            }
+            enemy.minLevel = enemy.levelRange[0];
+            enemy.maxLevel = enemy.levelRange[1];
 
             // Make sure maxLevel is always the bigger of the two values
             if ( enemy.maxLevel < enemy.minLevel ) {
@@ -2532,8 +2420,8 @@
         }
 
         if ( boss.level === undefined ) {
-            game.util.debugDisplayText(nodeDescription + ' has no boss level!', 'no boss level' + i);
-            continue;
+            // Take the level from the level range of the node
+            boss.level = game.util.randomIntegerInRange(node.levelRange);
         }
 
         if ( minigame.spread === undefined ) {
@@ -2549,6 +2437,18 @@
         if ( minigame.diamondsPerLevel === undefined ) {
             game.util.debugDisplayText(nodeDescription + ' has no minigame diamondsPerLevel!', 'no minigame diamondsPerLevel' + i);
             continue;
+        }
+
+        if ( minigame.minEnemies === undefined ) {
+            // game.util.debugDisplayText(nodeDescription + ' has no minigame minEnemies!', 'no minigame minEnemies' + i);
+            // continue;
+            minigame.minEnemies = [2,3,4,5,6];
+        }
+
+        if ( minigame.maxEnemies === undefined ) {
+            // game.util.debugDisplayText(nodeDescription + ' has no minigame maxEnemies!', 'no minigame maxEnemies' + i);
+            // continue;
+            minigame.maxEnemies = [4,5,6,7,8];
         }
 
         if ( node.minigame.minEnemies === undefined ) {
