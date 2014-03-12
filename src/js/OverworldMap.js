@@ -1377,7 +1377,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.JUNGLE_TILESET_ID
         },
         {
             id: 26,
@@ -1417,7 +1417,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.JUNGLE_TILESET_ID
         },
         {
             id: 27,
@@ -1457,7 +1457,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.JUNGLE_TILESET_ID
         },
         {
             id: 28,
@@ -1497,7 +1497,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.JUNGLE_TILESET_ID
         },
         {
             id: 29,
@@ -1537,7 +1537,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.JUNGLE_TILESET_ID
         },
 
         // Salt nodes
@@ -1582,7 +1582,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SALT_TILESET_ID
         },
         {
             id: 31,
@@ -1625,7 +1625,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SALT_TILESET_ID
         },
         {
             id: 32,
@@ -1668,7 +1668,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SALT_TILESET_ID
         },
         {
             id: 33,
@@ -1711,7 +1711,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SALT_TILESET_ID
         },
         {
             id: 34,
@@ -1754,7 +1754,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SALT_TILESET_ID
         },
 
         // Snow nodes
@@ -1793,7 +1793,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SNOW_TILESET_ID
         },
         {
             id: 36,
@@ -1833,7 +1833,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SNOW_TILESET_ID
         },
         {
             id: 37,
@@ -1876,7 +1876,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SNOW_TILESET_ID
         },
         {
             id: 38,
@@ -1919,7 +1919,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SNOW_TILESET_ID
         },
         {
             id: 39,
@@ -1965,7 +1965,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SNOW_TILESET_ID
         },
         {
             id: 40,
@@ -2014,7 +2014,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SNOW_TILESET_ID
         },
 
         // Ice nodes
@@ -2065,7 +2065,7 @@
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
-            tilesetID: game.TilesetManager.MARSH_TILESET_ID
+            tilesetID: game.TilesetManager.SNOW_TILESET_ID
         },
         ],
 

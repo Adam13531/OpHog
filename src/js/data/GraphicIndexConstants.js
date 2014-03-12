@@ -35,7 +35,10 @@
         THREE_FLOWERS: 100, // three flowers arranged in a triangle at the outer edge of the tile
         TWO_FLOWERS: 101, // two flowers arranged at NW and SE corners of the tile
         ONE_FLOWER: 102, // one flower in the center of the tile
+        FOUR_GREEN_STEPS: 103,
         BIG_GRAY_STONE: 105, // a square stone
+        BIG_JUNGLE_PLANT: 106,
+        MEDIUM_JUNGLE_PLANT: 107,
         BIG_BLUE_POND: 108, // blue circular pond that covers most of the tile
         SMALL_BLUE_POND: 109, // blue circular pond that covers about half the tile
         GENERATOR: 155, // swirly pink door
@@ -43,11 +46,14 @@
         CACTUS_1: 162, // cactus with no branches
         CACTUS_2: 163, // cactus with branch on the right
         CACTUS_3: 164, // cactus with branch on each side
+        CRACKED_BROWN_FOUR_POINT_STONE_1: 196,
+        CRACKED_BROWN_FOUR_POINT_STONE_2: 197,
         TREASURE_CHEST: 202, // closed treasure chest, facing left
         BARREL: 209, // fully intact barrel
         GREEN_TREE: 214, // a healthy oak tree
         GREEN_TREE_WITH_FRUIT: 215, // a healthy oak tree with three red fruits
         AUTUMN_TREE: 216,
+        DYING_TREE: 217,
         TREE_STUMP: 218,
         EVERGREEN_TREE: 219, // a healthy, large evergreen
         SNOWY_EVERGREEN_TREE: 220, // a healthy, large evergreen with snow on it
@@ -74,6 +80,12 @@
         EVERGREEN_FOREST_PATCH_7: 394, // the lower left portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_8: 395, // the lower middle portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_9: 396, // the lower right portion of the evergreen forest
+        TOMBSTONE_PURPLE_GEM: 429,
+        TOMBSTONE_TWISTED: 430,
+        TOMBSTONE_PURPLE_FACE: 431,
+        TOMBSTONE_WITH_LOOP: 432,
+        TOMBSTONE_WITH_CROSS: 433,
+        TOMBSTONE_RUBBLE: 434,
         AUTUMN_DUO_1: 445,
         AUTUMN_DUO_2: 446,
         AUTUMN_DUO_3: 447,
@@ -81,6 +93,7 @@
         EVERGREEN_DUO_2: 452, // the upper middle of a 3-wide, 2-tall duo of evergreen trees
         EVERGREEN_DUO_3: 453, // the upper right of a 3-wide, 2-tall duo of evergreen trees
         WELL_WITH_BROWN_WATER: 488, // well with brown water in it
+        WELL_WITH_WOOD_FRAME: 489,
         BALE_OF_HAY: 490,
         PILE_OF_STONE: 491, // grey pile of stone
         ANIMAL_SKULL: 497, // an animal skull with two horns (one is broken)
@@ -108,13 +121,37 @@
         SNOWY_EVERGREEN_DUO_3: 729, // the upper right of a 3-wide, 2-tall duo of snowy evergreen trees
         LIGHT_GREEN_BRUSH: 769, // light green flowers/grass/greenery
         LUSH_GREEN_BRUSH: 773, // bright green flowers/grass/greenery     
+        LUSH_GREEN_BRUSH_2: 776,
         AUTUMN_BRUSH: 774,
         SNOWY_EVERGREEN_DUO_4: 784, // the lower left of a 3-wide, 2-tall duo of snowy evergreen trees
         SNOWY_EVERGREEN_DUO_5: 785, // the lower middle of a 3-wide, 2-tall duo of snowy evergreen trees
         SNOWY_EVERGREEN_DUO_6: 786, // the lower right of a 3-wide, 2-tall duo of snowy evergreen trees
         DARK_COBBLESTONE: 801, // many dark stones covering the entire tile
+        SKULL_HEDGE_LEFT_END: 865,
+        SKULL_HEDGE_MIDDLE_HORIZ: 866,
+        SKULL_HEDGE_RIGHT_END: 867,
+        SKULL_HEDGE_TOP_END: 868,
+        SKULL_HEDGE_MIDDLE_VERT: 869,
+        SKULL_HEDGE_BOTTOM_END: 870,
+        SKULL_HEDGE_UPPER_RIGHT: 872,
+        SKULL_HEDGE_BOTTOM_LEFT: 873,
+        SKULL_HEDGE_LEFT_BOTTOM_RIGHT: 876,
+        FENCE_MIDDLE_HORIZ_PIECE: 921,
+        FENCE_MIDDLE_VERT_PIECE: 926,
+        FENCE_LEFT_CORNER: 932,
+        FENCE_RIGHT_CORNER: 934,
+        LIGHT_GRAY_DOWN_STAIRS: 977,
         PATH_TILE_SAND: 997, // tan tile with specks. This marks the start of one of our "auto tiles".
         PATH_TILE_DIRT: 1111, // brown tile with specks. This marks the start of one of our "auto tiles".
+        TAN_STONE_PATH_1: 1140,
+        TAN_STONE_PATH_2: 1141,
+        TAN_STONE_PATH_3: 1142,
+        TAN_STONE_PATH_4: 1143,
+        TAN_STONE_PATH_5: 1144,
+        TAN_STONE_PATH_6: 1145,
+        CRACKED_TAN_BLOCK_HORIZ_RIDGE_1: 1150,
+        CRACKED_TAN_BLOCK_HORIZ_RIDGE_2: 1151,
+        CRACKED_TAN_BLOCK_HORIZ_RIDGE_3: 1152,
         RED_STONE_PATH_1: 1254, // stones at the NE, SE, and SW corners
         RED_STONE_PATH_2: 1255, // big stone at bottom, stones at NW and NE
         RED_STONE_PATH_3: 1256, // stones at all four corners
@@ -139,17 +176,21 @@
         BLUE_WATER_EDGE_LARGE_SQUARE_7: 1657, // the bottom left of a 3-wide, 3-tall square of water only on the edges
         BLUE_WATER_EDGE_LARGE_SQUARE_8: 1658, // the bottom middle of a 3-wide, 3-tall square of water only on the edges
         BLUE_WATER_EDGE_LARGE_SQUARE_9: 1659, // the bottom right of a 3-wide, 3-tall square of water only on the edges
+        PATH_TILE_SALT_STREAK: 1681,
         BLUE_WATER_1: 1714, // blue-tinted water graphic, first frame
         RED_WATER_1: 1720, // red-tinted water graphic, first frame
         BLUE_WATER_2: 1771, // blue-tinted water graphic, second frame
         RED_WATER_2: 1777, // red-tinted water graphic, second frame
+        PATH_TILE_SALT: 1795,
         BLUE_WATER_EDGE_SMALL_SQUARE_1: 1828, // the top left of a 2-wide, 2-tall square of water only on the edges
         BLUE_WATER_EDGE_SMALL_SQUARE_2: 1829, // the top right of a 2-wide, 2-tall square of water only on the edges
         BLOCK_IN_BLUE_WATER_TOUCHING: 1830, // grey tile that has some blue water touching it
         BLUE_WATER_EDGE_SMALL_SQUARE_3: 1885, // the bottom left of a 2-wide, 2-tall square of water only on the edges
         BLUE_WATER_EDGE_SMALL_SQUARE_4: 1886, // the bottom right of a 2-wide, 2-tall square of water only on the edges
         BLOCK_IN_BLUE_WATER_NOT_TOUCHING: 1887, // grey tile that has some water near it that's not touching it
+        PATH_TILE_JUNGLE: 1909,
         PATH_TILE_SNOW_BLUE: 2137, // blue-colored snow tile. This marks the start of one of our "auto tiles".
+        SMALL_BROWN_POOL: 2191,
 
         //----------------------------------------------------------------------
         // Graphics for eff_24.png
