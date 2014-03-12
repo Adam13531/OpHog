@@ -126,6 +126,9 @@
      * Optional properties:
      * stackable (if this is provided, then startingQuantity can also be provided, otherwise the default is 1)
      * mods - an Array:ItemMod. If this is provided, these mods will be applied to units who equip the items.
+     * atk - Array:Number(2) representing a range for the ATK stat on equippable items.
+     * life - Array:Number(2) see 'atk'
+     * def - Array:Number(2) see 'atk'
      * removesAbilities - an Array:Number, optional. If specified, a unit with 
      *     this item equipped CANNOT have abilities with any of these IDs, even
      *     if they were added by another item.
@@ -153,9 +156,9 @@
         SHIELD: {
             id: 1,
             itemLevel:1,
-            atk: 5,
-            life: 15,
-            def: 5,
+            atk: [5,15],
+            life: [5,15],
+            def: [5,15],
             name:'Grugtham\'s Shield',
             htmlDescription:'<font color="#660000"><b>500000 Dragon Kill Points<b/></font>',
             equippableBy: game.EquippableBy.ALL,
@@ -174,7 +177,9 @@
         SWORD: {
             id: 2,
             itemLevel:1,
-            atk: 10,
+            atk: [5,15],
+            life: [5,15],
+            def: [5,15],
             name:'Skull Stab',
             htmlDescription:'<font color="#660000"><b>This sword can actually only pierce hearts.<b/></font>',
             equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
@@ -284,30 +289,10 @@
 
             // Equippable items
             if ( item.usable == false || item.usable === undefined ) {
-                game.util.useDefaultIfUndefined(item, 'atk', 0);
-                game.util.useDefaultIfUndefined(item, 'def', 0);
-                game.util.useDefaultIfUndefined(item, 'life', 0);
-
-                if ( item.atk > 0 || item.def > 0 || item.life > 0 ) {
-                    item.htmlDescription += '<br/>';
-
-                    if ( item.atk > 0 ) item.htmlDescription += game.util.makeTransparentImgTag('icon-sprite dagger-icon') + '+' + item.atk + ' ';
-                    if ( item.def > 0 ) item.htmlDescription += game.util.makeTransparentImgTag('icon-sprite shield-icon') + '+' + item.def + ' ';
-                    if ( item.life > 0 ) item.htmlDescription += game.util.makeTransparentImgTag('icon-sprite heart-icon') + '+' + item.life;
-                }
+                game.util.useDefaultIfUndefined(item, 'atk', [0,0]);
+                game.util.useDefaultIfUndefined(item, 'def', [0,0]);
+                game.util.useDefaultIfUndefined(item, 'life', [0,0]);
             }
-
-            // Add mods to the item's description.
-            if ( item.mods !== undefined ) {
-                if ( item.usable ) {
-                    console.log('Usable item found with mods! This should be disallowed: ' + item.name);
-                }
-
-                for (var i = 0; i < item.mods.length; i++) {
-                    item.htmlDescription += '<br/>' + item.mods[i].getDescription();
-                };
-            }
-
         };
     }());
 

@@ -32,9 +32,9 @@
             }
         } else {
             this.equippableBy = itemData.equippableBy;
-            this.atk = itemData.atk;
-            this.def = itemData.def;
-            this.life = itemData.life;
+            this.atk = game.util.randomIntegerInRange(itemData.atk);
+            this.def = game.util.randomIntegerInRange(itemData.def);
+            this.life = game.util.randomIntegerInRange(itemData.life);
         }
 
         this.mods = [];
@@ -49,13 +49,48 @@
         }
 
         this.graphicIndex = itemData.graphicIndex;
-        this.htmlDescription = itemData.htmlDescription;
 
         this.removesAbilities = itemData.removesAbilities;
 
         // These don't need to be copies here since they will get copied by the
         // unit.
         this.addsAbilities = itemData.addsAbilities;
+
+        this.updateHtmlDescription();
+    };
+
+    /**
+     * This makes sure that the HTML description that shows up in the inventory
+     * UIs is correct. Originally, this was done directly in ItemData.js because
+     * all items of the same type were exactly the same. Now, stats can differ
+     * on items, so this is dynamic content.
+     */
+    window.game.Item.prototype.updateHtmlDescription = function() {
+        var itemData = game.GetItemDataFromID(this.itemID);
+        var defaultHtmlDescription = itemData.htmlDescription;
+
+        this.htmlDescription = defaultHtmlDescription;
+
+        if ( !this.usable ) {
+            if ( this.atk > 0 || this.def > 0 || this.life > 0 ) {
+                this.htmlDescription += '<br/>';
+
+                if ( this.atk > 0 ) this.htmlDescription += game.util.makeTransparentImgTag('icon-sprite dagger-icon') + '+' + this.atk + ' ';
+                if ( this.def > 0 ) this.htmlDescription += game.util.makeTransparentImgTag('icon-sprite shield-icon') + '+' + this.def + ' ';
+                if ( this.life > 0 ) this.htmlDescription += game.util.makeTransparentImgTag('icon-sprite heart-icon') + '+' + this.life;
+            }
+        }
+
+        // Add mods to the item's description.
+        if ( this.mods.length > 0 ) {
+            if ( this.usable ) {
+                console.log('Usable item found with mods! This should be disallowed: ' + this.name);
+            }
+
+            for (var i = 0; i < this.mods.length; i++) {
+                this.htmlDescription += '<br/>' + this.mods[i].getDescription();
+            };
+        }
     };
 
     /**
