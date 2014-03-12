@@ -86,7 +86,9 @@
             case game.CollectibleType.GOOD_LOOT:
             case game.CollectibleType.GREAT_LOOT:
                 // Randomly grant an item
-                game.Player.inventory.addItem(game.GenerateRandomItem());
+                var minLevel = Math.floor(unit.level * .8);
+                var maxLevel = unit.level;
+                game.Player.inventory.addItem(game.GenerateRandomItem(minLevel, maxLevel));
                 game.AudioManager.playAudio(game.Audio.PICKUP_1);
                 break;
             case game.CollectibleType.BAD_POWERUP:

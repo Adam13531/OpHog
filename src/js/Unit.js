@@ -133,7 +133,23 @@
         this.def = unitData.finalDef;
 
         this.chanceToDropItem = unitData.chanceToDropItem;
-        this.itemsDropped = unitData.itemsDropped;
+        if ( unitData.itemsDropped === undefined ) {
+            this.itemsDropped = [];
+        } else {
+            this.itemsDropped = game.util.shallowCopyArray(unitData.itemsDropped);
+        }
+
+        // Go through the items that this unit can drop and remove any whose
+        // level is higher than this unit's level.
+        for (var i = 0; i < this.itemsDropped.length; i++) {
+            var itemID = this.itemsDropped[i].itemID;
+            var item = game.GetItemDataFromID(itemID);
+            if ( item.itemLevel > this.level ) {
+                this.itemsDropped.splice(i, 1);
+                i--;
+                continue;
+            }
+        };
 
         this.unitDefinedAbilities = unitData.abilities;
         // Set a default ability for now
@@ -483,16 +499,12 @@
      *
      * For now, each unit can only produce at most one type of item, but that
      * item's quantity can be greater than one.
-     * @return {Array:Item} - any items produced
+     * @return {Array:Item} - any items produced (empty array if none are
+     * produced)
      */
     window.game.Unit.prototype.produceLoot = function() {
-        // This can happen right now because there are at least two ways right
-        // now to create invalid enemies (i.e. those without unitData passed
-        // in): summoning, and pressing the number keys on the keyboard.
-        if ( this.itemsDropped === undefined ) {
-            // console.log('Warning: produceLoot was called on a unit that doesn\'t have "itemsDropped": ' + this.);
-            return [];
-        }
+        // If this unit can't drop loot, return immediately.
+        if ( this.itemsDropped.length == 0 ) return [];
 
         var dropRoll = Math.random();
         var droppedItems = [];

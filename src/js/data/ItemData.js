@@ -34,6 +34,7 @@
      * still exist in some capacity in the future, but its contents will be
      * different.
      * @param {Number} itemID - ID of the item whose data you want
+     * @return {Object} an entry in game.ItemType
      */
     window.game.GetItemDataFromID = function(itemID) {
         var item = game.util.getItemInContainerByProperty(game.ItemType, 'id', itemID);
@@ -44,11 +45,56 @@
     };
 
     /**
-     * This is a debug function to generate a random item of any type.
+     * Returns a random item no matter what (even if you pass in garbage data).
+     * If you pass in a level range that doesn't contain items (e.g.
+     * 99999-100000), this function will lower the minLevel until it finds a
+     * suitable item, even if that item happens to be level 1. For this reason,
+     * there must always be both usable and equippable items at level 1.q
+     * @param {Number} minLevel          - minimum allowed level of the item
+     * @param {Number} maxLevel          - maximum allowed level
+     * @param {Boolean} usableAllowed     - if true, allow usable items
+     * @param {Boolean} equippableAllowed - if true, allow equippable items
      * @return {Item} - a random item
      */
-    window.game.GenerateRandomItem = function() {
-        return new game.Item(Math.floor(Math.random() * 8));
+    window.game.GenerateRandomItem = function(minLevel, maxLevel, usableAllowed, equippableAllowed) {
+        if ( maxLevel < minLevel ) {
+            var temp = maxLevel;
+            maxLevel = minLevel;
+            minLevel = temp;
+        }
+
+        maxLevel = Math.max(1, maxLevel);
+
+        if ( usableAllowed === undefined ) {
+            usableAllowed = true;
+        }
+        if ( equippableAllowed === undefined ) {
+            equippableAllowed = true;
+        }
+
+        // You need to specify at least one of these flags!
+        if ( !usableAllowed && !equippableAllowed ) {
+            usableAllowed = true;
+        }
+
+        var possibleItemIDs = [];
+        for(var itemType in game.ItemType ) {
+            var item = game.ItemType[itemType];
+            var itemLevel = item.itemLevel;
+            if ( itemLevel >= minLevel && itemLevel <= maxLevel && ((item.usable && usableAllowed) || (!item.usable && equippableAllowed)) ) {
+                possibleItemIDs.push(item.id);
+            }
+        }
+
+        if ( possibleItemIDs.length == 0 ) {
+            // You passed in a range that can't generate items. Cut the minimum
+            // level in half and recurse. This will eventually make the minimum
+            // level 1, which is guaranteed to generate an item.
+            return game.GenerateRandomItem(Math.floor(minLevel / 2), maxLevel, usableAllowed, equippableAllowed);
+        }
+
+        var itemID = game.util.randomArrayElement(possibleItemIDs);
+        return new game.Item(itemID);
     };
 
     /**

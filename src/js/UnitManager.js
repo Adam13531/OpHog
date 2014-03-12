@@ -277,6 +277,22 @@
         },
 
         /**
+         * @return {Array:Unit} - all units that you've already purchased
+         * whether they're placed or not.
+         */
+        getAllPlayerUnits: function() {
+            var units = [];
+            var types = [game.PlaceableUnitType.ARCHER, game.PlaceableUnitType.WARRIOR, game.PlaceableUnitType.WIZARD];
+            for (var i = 0; i < types.length; i++) {
+                var unitsOfType = this.getUnits(types[i]);
+
+                game.util.pushAllToArray(units, unitsOfType);
+            };
+
+            return units;
+        },
+
+        /**
          * Gets all the unplaced units of the specified type.
          * @param  {Number} unitType - an ID from game.UnitType, e.g.
          * game.UnitType.ORC.id.

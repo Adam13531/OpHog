@@ -44,9 +44,42 @@
      * Randomly generates items and puts them into the shop inventory
      */
     window.game.ShopInventory.prototype.generateItems = function() {
+        var minLevel = 1;
+        var maxLevel = 1;
+
+        // Figure out the level of the items based on your units.
+        var allPlayerUnits = game.UnitManager.getAllPlayerUnits();
+
+        var averageLevel = 0;
+        for (var i = 0; i < allPlayerUnits.length; i++) {
+            var level = allPlayerUnits[i].level;
+            averageLevel += level;
+            maxLevel = Math.max(maxLevel, Math.floor(level * 1.1));
+        };
+
+        // Don't generate items if you don't have units. That way they can't use
+        // their diamonds to buy items instead of their first unit.
+        if ( averageLevel == 0 ) {
+            return;
+        } else {
+            averageLevel = Math.floor(averageLevel / allPlayerUnits.length);
+        }
+
         for (var i = 0; i < this.slots.length; i++) {
             var slot = this.slots[i];
-            slot.setItem(game.GenerateRandomInventoryItem(slot.isUsableSlot()));
+            var allowUsable = slot.isUsableSlot();
+            var allowEquippable = !allowUsable;
+
+            minLevel = averageLevel;
+
+            // 10% chance to make this slot have a minLevel of 1. This still
+            // makes it very unlikely to actually show level 1 items when the
+            // max level is high enough, but this way you will always be able to
+            // find weak usable items.
+            if ( allowUsable && game.util.randomInteger(1,10) == 1 ) {
+                minLevel = 1;
+            }
+            slot.setItem(game.GenerateRandomItem(minLevel, maxLevel, allowUsable, allowEquippable));
         };
     };
 
