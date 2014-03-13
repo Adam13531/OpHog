@@ -180,13 +180,15 @@
                     title = 'Scroll of Skills';
                     html = '<div>Units gain abilities as they level up. They use these abilities randomly in battles. <ul><li>Archers can summon pets</li><li>Warriors get new combat skills</li><li>Wizards gain support abilities</li></ul></div>';
                 } else if ( id == 6 ) {
-                    title = 'Quest Quarto';
-                    var extraInstructions = '';
-                    var oldManImg = '<img src="' + charSheet.get1x1Sprite(game.Graphic.KING_1, false) + '" style="vertical-align:bottom"/>';
-                    if ( game.playerUsedKeyboard ) {
-                        extraInstructions = '(by presing "Q" on your keyboard) ';
-                    }
-                    html = '<div>Open your quest log ' + extraInstructions + ' to see any quests you were given.<br/><br/>Helpful people (' + oldManImg + ') will give you quests, and when you complete them, you\'ll be rewarded!</div>';
+                    title = 'Dictionary of Difficulties';
+                    var easySpawnerImg = '<img src="' + envSheet.get1x1Sprite(game.Graphic.SPAWNER, false) + '" style="vertical-align:bottom"/>';
+                    var mediumSpawnerImg = '<img src="' + envSheet.get1x1Sprite(game.Graphic.SPAWNER_MEDIUM, false) + '" style="vertical-align:bottom"/>';
+                    var hardSpawnerImg = '<img src="' + envSheet.get1x1Sprite(game.Graphic.SPAWNER_HARD, false) + '" style="vertical-align:bottom"/>';
+                    html = '<div>You can gauge the relative difficulty of a world before entering it!<ul>' +
+                        '<li>' + easySpawnerImg + ': easy</li>' +
+                        '<li>' + mediumSpawnerImg + ': medium</li>' +
+                        '<li>' + hardSpawnerImg + ': hard</li>' +
+                        '</ul>Watch out though, these difficulties are relative to the area. A ' + hardSpawnerImg + ' in the forest is probably easier than a ' + mediumSpawnerImg + ' in the desert!</div>';
                 }
 
                 game.BookDialog.setHtml(html);

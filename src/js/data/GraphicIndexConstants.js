@@ -74,6 +74,8 @@
         EVERGREEN_FOREST_PATCH_5: 338, // the middle portion of the evergreen forest
         EVERGREEN_FOREST_PATCH_6: 339, // the middle right portion of the evergreen forest
         SPAWNER: 371, // concentric cirles (yellow on outside)
+        SPAWNER_MEDIUM: 372, // blue spawner
+        SPAWNER_HARD: 373, // red spawner
         AUTUMN_FOREST_PATCH_7: 388,
         AUTUMN_FOREST_PATCH_8: 389,
         AUTUMN_FOREST_PATCH_9: 390,
