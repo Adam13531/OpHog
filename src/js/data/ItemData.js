@@ -151,7 +151,7 @@
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
-            graphicIndex: game.Graphic.RED_GEM,
+            graphicIndex: game.Graphic.RED_DIAMOND,
         },
         SHIELD: {
             id: 1,
@@ -197,7 +197,7 @@
                     relativeWeight: 9000,
                 }
             ],
-            graphicIndex: game.Graphic.GRAY_SWORD,
+            graphicIndex: game.Graphic.SWORD,
             mods: [new game.LifeLeech(.5, .5), new game.MultipleProjectiles(2)]
         },
         HEAL_GEM: {
@@ -209,7 +209,7 @@
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
-            graphicIndex: game.Graphic.CYAN_GEM,
+            graphicIndex: game.Graphic.CYAN_DIAMOND,
         },
         POTION: {
             id: 4,
@@ -220,7 +220,7 @@
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
-            graphicIndex: game.Graphic.THIN_RED_POTION,
+            graphicIndex: game.Graphic.SMALL_RED_POTION,
         },
         REVEALER: {
             id: 5,
@@ -242,7 +242,7 @@
             useTarget: game.UseTarget.LIVING_ENEMY_UNIT,
             stackable:true,
             startingQuantity:3,
-            graphicIndex: game.Graphic.GREEN_GEM,
+            graphicIndex: game.Graphic.GREEN_DIAMOND,
         },
         CREATE_SPAWNER: {
             id: 7,
@@ -275,7 +275,7 @@
             useTarget: game.UseTarget.DEAD_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
-            graphicIndex: game.Graphic.FAT_YELLOW_POTION,
+            graphicIndex: game.Graphic.MEDIUM_YELLOW_POTION,
         },
     };
 
