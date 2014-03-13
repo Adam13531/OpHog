@@ -122,6 +122,7 @@
      * Required properties:
      * id, itemLevel, name, htmlDescription, [usable|equippableBy], graphicIndex
      * If 'usable' is true, then you need to specify 'useTarget'
+     * sellPrice - this is a base sell price. The total sell price is affected by quantity and stats too.
      *
      * Optional properties:
      * stackable (if this is provided, then startingQuantity can also be provided, otherwise the default is 1)
@@ -151,6 +152,7 @@
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
+            sellPrice: .25,
             graphicIndex: game.Graphic.RED_DIAMOND,
         },
         SHIELD: {
@@ -171,6 +173,7 @@
                     relativeWeight: 9000,
                 }
             ],
+            sellPrice: 2,
             graphicIndex: game.Graphic.RED_WHITE_SHIELD,
             mods: [new game.Thorns(5), new game.ReduceDamage(5)]
         },
@@ -189,6 +192,7 @@
             addsAbilities: [
                 {
                     id: game.Ability.ATTACK.id,
+            sellPrice: .25,
                     graphicIndex: game.Graphic.RED_FIREBALL_RIGHT,
                     relativeWeight: 9000,
                 },
@@ -197,6 +201,7 @@
                     relativeWeight: 9000,
                 }
             ],
+            sellPrice: 2,
             graphicIndex: game.Graphic.SWORD,
             mods: [new game.LifeLeech(.5, .5), new game.MultipleProjectiles(2)]
         },
@@ -209,6 +214,7 @@
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
+            sellPrice: .25,
             graphicIndex: game.Graphic.CYAN_DIAMOND,
         },
         POTION: {
@@ -220,6 +226,7 @@
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
+            sellPrice: .25,
             graphicIndex: game.Graphic.SMALL_RED_POTION,
         },
         REVEALER: {
@@ -231,6 +238,7 @@
             useTarget: game.UseTarget.MAP,
             stackable:true,
             startingQuantity:3,
+            sellPrice: .25,
             graphicIndex: game.Graphic.GOLD_EYE_NECKLACE,
         },
         POISON_GEM: {
@@ -242,6 +250,7 @@
             useTarget: game.UseTarget.LIVING_ENEMY_UNIT,
             stackable:true,
             startingQuantity:3,
+            sellPrice: .25,
             graphicIndex: game.Graphic.GREEN_DIAMOND,
         },
         CREATE_SPAWNER: {
@@ -253,6 +262,7 @@
             useTarget: game.UseTarget.MAP_WALKABLE_ONLY,
             stackable:true,
             startingQuantity:3,
+            sellPrice: .25,
             graphicIndex: game.Graphic.SMALL_YELLOW_SQUARE_ITEM,
         },
         MEGA_CREATE_SPAWNER: {
@@ -264,6 +274,7 @@
             useTarget: game.UseTarget.MAP_WALKABLE_ONLY,
             stackable:true,
             startingQuantity:3,
+            sellPrice: .25,
             graphicIndex: game.Graphic.LARGE_YELLOW_SQUARE_ITEM,
         },
         REVIVE_POTION: {
@@ -275,6 +286,7 @@
             useTarget: game.UseTarget.DEAD_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
+            sellPrice: .25,
             graphicIndex: game.Graphic.MEDIUM_YELLOW_POTION,
         },
     };
@@ -292,6 +304,10 @@
                 game.util.useDefaultIfUndefined(item, 'atk', [0,0]);
                 game.util.useDefaultIfUndefined(item, 'def', [0,0]);
                 game.util.useDefaultIfUndefined(item, 'life', [0,0]);
+            }
+
+            if ( item.sellPrice === undefined ) {
+                game.util.debugDisplayText(key + ' has no sell price!');
             }
         };
     }());

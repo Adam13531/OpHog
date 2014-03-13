@@ -486,11 +486,17 @@
             return 0;
         }
 
-        var price = item.itemID;
+        var price = item.sellPrice;
 
         if ( item.usable ) {
             price *= item.quantity;
+        } else {
+            price += item.atk;
+            price += item.def;
+            price += item.life;
         }
+
+        price = Math.floor(price);
 
         return price;
     };

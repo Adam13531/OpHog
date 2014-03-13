@@ -13,6 +13,7 @@
         this.usable = false;
         this.stackable = false;
         this.equippableBy = game.EquippableBy.NONE;
+        this.sellPrice = itemData.sellPrice;
 
         if ( itemData.usable ) {
             this.usable = true;
