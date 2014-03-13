@@ -796,8 +796,6 @@
 
         game.Player.drawCastleLife(ctx);
 
-        game.Camera.concealOutOfBoundsAreas(ctx);
-
         // Draw text that uses screen coordinates now that we've concealed the
         // non-world area.
         game.TextManager.draw(ctx, false);

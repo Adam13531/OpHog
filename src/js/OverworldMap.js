@@ -262,9 +262,6 @@
          *     clearFog - Array:Array - an array of patches of fog to clear. Each array is [tileX, tileY, radius].
          *         There's an optional fourth element, a boolean, representing the 'drawCircular' arg to setFog.
          *         It defaults to false, meaning a square will be drawn.
-         *     npcs - Array:Object - an array of objects with the following:
-         *         absoluteChance - a chance from 0-1 that NPCs will spawn on this map.
-         *             It is called 'absolute' because it's not based on anything else.
          *     enemies - Array:Object - an array of objects with the following:
          *         id - Number - the ID of the enemy (see UnitData.js)
          *         levelRange - Array[2] - an array of [minLevel, maxLevel].
@@ -458,10 +455,6 @@
                 }
             ],
 
-            npcs: {
-                absoluteChance: .5,
-            },
-
             generators: {
                 maxEnemiesToSpawn: 3,
                 chancePerWalkableTile: .02,
@@ -504,10 +497,6 @@
                 }
             ],
             
-            npcs: {
-                absoluteChance: .25,
-            },
-
             generators: {
                 maxEnemiesToSpawn: 3,
                 chancePerWalkableTile: .02,
@@ -600,10 +589,6 @@
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
-            },
-
-            npcs: {
-                absoluteChance: .75,
             },
 
             boss: {
@@ -2262,7 +2247,6 @@
         var error = false;
         var dimensions = node.dimensions;
         var enemies = node.enemies;
-        var npcs = node.npcs;
         var boss = node.boss;
         var generators = node.generators;
         var tilesetID = node.tilesetID;
@@ -2321,14 +2305,6 @@
         }
 
         game.util.useDefaultIfUndefined(node, 'startingCoins', game.UNIT_PLACEMENT_COST * 15);
-
-        // If you didn't specify NPCs then that's fine, you just won't get any
-        // in your map.
-        if ( npcs === undefined ) {
-            node.npcs = {
-                absoluteChance: 0
-            };
-        }
 
         // Keep track of which enemies we've seen so that we warn when you have
         // duplicates.

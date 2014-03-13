@@ -92,8 +92,6 @@
         // Now that we have spawn points, we can place the generators.
         this.placeGenerators();
 
-        this.placeNPCs();
-
         this.addBossUnit();
 
         this.setStartingCoins();
@@ -308,29 +306,6 @@
             
             var generator = new game.Generator(generatorTile.x, generatorTile.y, possibleEnemies, movementAIs, maxEnemiesToSpawn);
             game.GeneratorManager.addGenerator(generator);
-        };
-    };
-
-    /**
-     * Places NPCs randomly on the map.
-     */
-    window.game.Map.prototype.placeNPCs = function() {
-        var chanceForNPC = this.nodeOfMap.npcs.absoluteChance;
-        if ( !game.util.percentChance(chanceForNPC) ) {
-            return;
-        }
-
-        // Get tiles that are minimally 3 away from every spawner        
-        var npcTiles = this.getRandomPlaceableTiles(3, 1);
-
-        for (var i = 0; i < npcTiles.length; i++) {
-            var npcTile = npcTiles[i];
-            var npcUnit = new game.Unit(game.UnitType.NPC_OLD_MAN_WIZARD.id,game.PlayerFlags.NEUTRAL,1);
-            npcUnit.movementAI = game.MovementAI.LEASH_TO_TILE;
-            npcUnit.leashRadius = 1;
-
-            npcUnit.placeUnit(npcTile.x, npcTile.y);
-            game.UnitManager.addUnit(npcUnit);
         };
     };
 

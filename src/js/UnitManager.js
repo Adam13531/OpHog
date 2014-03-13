@@ -79,7 +79,6 @@
          *                        called.
          */
         update: function(delta) {
-            var npcUnits = [];
             var placedPlayerUnits = [];
 
             for (var i = 0; i < this.gameUnits.length; i++) {
@@ -110,10 +109,6 @@
                     }
                     
                     continue;
-                }
-
-                if (unit.isNeutral()) {
-                    npcUnits.push(unit);
                 }
 
                 // Only grab player units that have been placed

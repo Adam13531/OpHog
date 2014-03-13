@@ -421,35 +421,6 @@
         },
 
         /**
-         * When the map is too small to fit the entire canvas size (e.g. you
-         * zoom out on a small map and the browser is big), you'll see gray
-         * areas. That's fine, but sometimes stuff will try to draw itself in
-         * those gray areas, e.g. the '!' from NPCs. To conceal this, we draw
-         * gray rectangles over this area whenever it shows up.
-         *
-         * The map will ALWAYS be drawn so that it touches the bottom and right
-         * edges, so we only need to draw boxes on the top and left edges.
-         * @param  {Object} ctx - the canvas context
-         */
-        concealOutOfBoundsAreas: function(ctx) {
-            var heightDifference = game.canvasHeight - game.currentMap.heightInPixels * this.curZoom;
-            var widthDifference = game.canvasWidth - game.currentMap.widthInPixels * this.curZoom;
-
-            ctx.save();
-            ctx.fillStyle = '#373737';
-
-            if ( heightDifference > 0 ) {
-                ctx.fillRect(0, 0, game.canvasWidth, heightDifference);
-            }
-
-            if ( widthDifference > 0 ) {
-                ctx.fillRect(0, 0, widthDifference, game.canvasHeight);
-            }
-
-            ctx.restore();
-        },
-
-        /**
          * This function prevents scrolling out of bounds. It also makes sure
          * that the pan values are always integers so that you don't get weird
          * graphical glitches (they usually manifest in the form of

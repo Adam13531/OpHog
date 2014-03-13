@@ -526,7 +526,6 @@
                 // that.
                 game.currentMap.setStartingCoins();
                 game.currentMap.addBossUnit();
-                game.currentMap.placeNPCs();
                 game.Player.resetCastleLife();
             }
 
