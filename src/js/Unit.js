@@ -20,12 +20,6 @@
         NEUTRAL: 4,
         BOSS: 8,
         SUMMON: 16,
-
-        // If we ever use this, make sure that mercenaries can't be placed in
-        // the overworld. Right now (Sat 07/06/2013 - 12:58 AM), there's no
-        // restriction on completing quests in the overworld, so just check game
-        // state before placing a mercenary.
-        // MERCENARY: 32
     };
 
     // This represents a 2x1 unit. 496 was chosen because it's the first index
@@ -226,13 +220,6 @@
          * @type {Object}
          */
         this.usableAbilityTypes = {};
-
-        /**
-         * This is only used by NPCs to indicate whether they've already given
-         * out their quest.
-         * @type {Boolean}
-         */
-        this.gaveOutQuest = false;
     };
 
     /**
@@ -365,10 +352,6 @@
         this.populateAbilitiesBasedOnItems();
 
         this.finalizeAbilities();
-
-        if ( this.isPlayer() ) {
-            game.QuestManager.placedAUnit(this.unitType);
-        }
     };
 
     /**
@@ -1697,18 +1680,6 @@
             ctx.fillStyle = 'rgba(0, 255, 0, ' + alpha + ')';
             ctx.fillRect(this.x, this.y, this.width, this.height);
             ctx.restore();
-        }
-
-        // Draws a symbol above an NPC if it didn't give out a quest yet
-        if ( this.playerFlags & game.PlayerFlags.NEUTRAL &&
-             !this.gaveOutQuest) {
-            var x = this.getCenterX();
-            var y = this.y;
-
-            // Size will be in the range [-3,3]. This will make the '!' grow and
-            // shrink.
-            var size = Math.ceil(Math.sin(game.alphaBlink * 4) * 3);
-            game.TextManager.drawTextImmediate(ctx, '!', x, y, {fontSize:23 + size, color:'#ff0', baseline:'bottom', clamp:false});
         }
 
     };

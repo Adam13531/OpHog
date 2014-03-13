@@ -104,8 +104,6 @@
             this.saveMap();
             this.log('Saving generators');
             this.saveGenerators();
-            this.log('Saving quests');
-            this.saveQuests();
             this.log('Saving the camera');
             this.saveCamera();
             this.log('Saving battles');
@@ -218,8 +216,6 @@
             this.loadSettings();
             this.log('Loading generators');
             this.loadGenerators();
-            this.log('Loading quests');
-            this.loadQuests();
             this.log('Loading the camera');
             this.loadCamera();
             this.log('Loading battles');
@@ -460,43 +456,6 @@
                 finalGenerators.push(finalGenerator);
             };
             game.GeneratorManager.generators = finalGenerators;
-        },
-
-        /**
-         * Saves all quests.
-         */
-        saveQuests: function() {
-            var quests = game.QuestManager.quests;
-
-            localStorage.quests = JSON.stringify(quests);
-        },
-
-        /**
-         * Loads quests.
-         */
-        loadQuests: function() {
-            // Wipe out all of the quests so that we can simply add them again.
-            for (var i = 0; i < game.MAX_QUESTS; i++) {
-                game.QuestManager.quests[i] = null;
-            };            
-
-            var parsedQuests = JSON.parse(localStorage.quests);
-            for (var i = 0; i < game.MAX_QUESTS; i++) {
-                var parsedQuest = parsedQuests[i];
-                if ( parsedQuest != null ) {
-                    // If we did addNewQuest, then we might add to the wrong
-                    // slot. Imagine if we saved three quests: NULL, SOMETHING,
-                    // NULL. We would loop through with i==0 and ignore the null
-                    // quest, then at i==1 we would end up adding to slot number
-                    // 0 still. Instead, we set the 'i'th quest directly.
-                    game.QuestManager.quests[i] = game.QuestManager.constructQuest(parsedQuest.type);
-                    game.util.copyProps(parsedQuest, game.QuestManager.quests[i], []);
-                }
-
-            };
-
-            // Update the UI now that we've filled out the progress
-            game.QuestUI.updateQuests();
         },
 
         /**

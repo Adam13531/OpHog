@@ -109,7 +109,6 @@
         var $settingsButton = $('#settingsButton');
         var $toggleMinimapVisibility = $('#toggleMinimapVisibility');
         var $showInventory = $('#showInventory');
-        var $showQuests = $('#showQuests');
         var $showShop = $('#showShop');
         var $createUnits = $('#createUnits');
         var $grantMoney = $('#grantMoney');
@@ -145,12 +144,6 @@
         $showInventory.click(function() {
             $settingsDialog.dialog('close');
             game.playerInventoryUI.show();
-        });
-
-        $showQuests.button();
-        $showQuests.click(function() {
-            $(settingsDialog).dialog('close');
-            $('#quest-ui').dialog('open');
         });
 
         $showShop.button();
@@ -480,11 +473,7 @@
         game.playerInventoryUI = new game.PlayerInventoryUI();
         game.Player.inventory = new game.PlayerInventory();
 
-        // Initialize the quest slots
-        game.QuestManager.initialize();
-
         game.UnitPlacementUI.setupUI();
-        game.QuestUI.setupUI();
         game.BookDialog.setupUI();
         game.ShopUI = new game.ShopUI();
         game.ShopInventory = new game.ShopInventory();
@@ -628,11 +617,6 @@
                 game.Camera.shakeTimer = 20 * game.MS_PER_FRAME;
             }
 
-            // 'K' - add quest
-            if (evt.keyCode == game.Key.DOM_VK_K) {
-                game.QuestManager.addNewQuest();
-            }
-
             // 'C' - generate a collectible on the map
             if (evt.keyCode == game.Key.DOM_VK_C) {
                 game.CollectibleManager.addNewCollectible();
@@ -699,16 +683,6 @@
             // 'I' - toggle the inventory screen
             if (evt.keyCode == game.Key.DOM_VK_I) {
                 game.playerInventoryUI.toggleVisibility();
-            }
-
-            // 'Q' - toggle the quest UI
-            if (evt.keyCode == game.Key.DOM_VK_Q) {
-                var $questUI = $('#quest-ui');
-                if ( $questUI.is(":visible") ) {
-                    $('#quest-ui').dialog('close');
-                } else {
-                    $('#quest-ui').dialog('open');
-                }
             }
 
             // 'E' - play music

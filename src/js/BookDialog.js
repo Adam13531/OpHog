@@ -16,7 +16,7 @@
         $bookDialog : null,
 
         /**
-         * Sets up the entire quest UI.
+         * Sets up the entire book UI.
          */
         setupUI: function() {
             this.$bookDialog = $('#book-ui');

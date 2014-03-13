@@ -675,9 +675,6 @@
             // Generate experience and items
             this.generateExperience();
             this.generateLoot();
-
-            // Let the quest manager know too so that it can update quests
-            game.QuestManager.killedAnEnemyParty();
         }
 
         for (var i = 0; i < this.units.length; i++) {

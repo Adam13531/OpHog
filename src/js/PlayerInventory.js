@@ -130,7 +130,6 @@
 
         var didItemFullyFit = (addedItemState == game.AddedItemToInventoryState.FULLY_ADDED);
         game.LootUI.addItemNotification(item, didItemFullyFit, originalQuantity);
-        game.QuestManager.collectedAnItem();
 
         return addedItemState;
 	};
