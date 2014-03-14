@@ -118,6 +118,13 @@ textarea {
 
 .equip-slot{background-color:#3f48cc;color:white;text-align:center;font-size:80%;}
 .use-slot{background-color:#880015;color:white;text-align:center;font-size:80%;}
+.item-flavor-text {
+    /*font-weight: bold;*/
+}
+
+/*Color for the flavor text depends on whether it's an equip or use slot*/
+.equip-slot .item-flavor-text{color: #c3c3c3;}
+.use-slot .item-flavor-text{color: #a3a3cc;}
 .test3{background-color:white;color:black;}
 
 .ui-button .ui-icon.diamond {

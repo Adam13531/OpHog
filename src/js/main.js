@@ -622,6 +622,17 @@
                 game.CollectibleManager.addNewCollectible();
             }
 
+            // 'K' - create random items for the player
+            if (evt.keyCode == game.Key.DOM_VK_K) {
+                for (var i = 0; i < 10; i++) {
+                    var minLevel = 1;
+                    var maxLevel = 1000;
+                    // Guarantee both usable and equippable over the course of
+                    // this loop.
+                    game.Player.inventory.addItem(game.GenerateRandomItem(minLevel, maxLevel, i <= 4, i >= 4));
+                };
+            }
+
             // 'O' - add equippable item to inventory
             // 'P' - add usable item to inventory
             var itemID = null;

@@ -93,6 +93,8 @@
     /**
      * When your min/max are stored as an array of length 2, use this
      * convenience function. It is only here to improve readability.
+     *
+     * Note: this generates from [min,max) (i.e. max-1).
      */
     window.game.util.randomIntegerInRange = function(arrayOfLength2) {
         return this.randomInteger(arrayOfLength2[0], arrayOfLength2[1]);

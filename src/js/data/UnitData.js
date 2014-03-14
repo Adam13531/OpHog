@@ -19,6 +19,12 @@
     var higherChanceForUsableItems = [];
 
     /**
+     * See higherChanceForUsableItems and setupLootClasses.
+     * @type {Array}
+     */
+    var higherChanceForEquippableItems = [];
+
+    /**
      * There are no items in this array.
      * 
      * See setupLootClasses.
@@ -40,9 +46,11 @@
         for ( var key in game.ItemType ) {
             var item = game.ItemType[key];
             var highUsableWeight = item.usable ? 10 : 1;
+            var highEquippableWeight = item.usable ? 1 : 10;
 
             equalChanceAllLoot.push(new game.LootTableEntry(item.id, 1));
             higherChanceForUsableItems.push(new game.LootTableEntry(item.id, highUsableWeight));
+            higherChanceForEquippableItems.push(new game.LootTableEntry(item.id, highEquippableWeight));
         }
     }());
 
@@ -146,9 +154,6 @@
                     id: game.Ability.SKULL_THROW.id
                 }
             ],
-            
-            chanceToDropItem: .1,
-            itemsDropped: higherChanceForUsableItems
         },
 
         SPIDER: {
@@ -163,9 +168,6 @@
                     id: game.Ability.SPIT_WEB.id
                 }
             ],
-            
-            chanceToDropItem: .1,
-            itemsDropped: higherChanceForUsableItems
         },
 
         SCORPION: {
@@ -184,9 +186,6 @@
             ],
 
             abilityAI: game.AbilityAI.RANDOM,
-            
-            chanceToDropItem: .1,
-            itemsDropped: higherChanceForUsableItems
         },
 
         SNAKE: {
@@ -200,9 +199,6 @@
                     id: game.Ability.SNAKE_VENOM.id
                 }
             ],
-            
-            chanceToDropItem: .1,
-            itemsDropped: higherChanceForUsableItems
         },
 
         TREE: {
@@ -231,9 +227,6 @@
                     id: game.Ability.BRANCH_WHIP.id
                 }
             ],
-            
-            chanceToDropItem: .1,
-            itemsDropped: equalChanceAllLoot
         },
 
         WOLF: {
@@ -260,9 +253,6 @@
                     id: game.Ability.BOULDER_DROP.id
                 }
             ],
-            
-            chanceToDropItem: .1,
-            itemsDropped: higherChanceForUsableItems
         },
 
         DRAGON: {
@@ -289,9 +279,6 @@
                     id: game.Ability.FLAME_THROWER.id
                 }
             ],
-            
-            chanceToDropItem: .1,
-            itemsDropped: higherChanceForUsableItems
         },
 
         PLAYER_ARCHER: {
@@ -324,7 +311,6 @@
             ],
             
             chanceToDropItem: 0,
-            itemsDropped: noItems
         },
 
         PLAYER_WARRIOR: {
@@ -358,7 +344,6 @@
             abilityAI: game.AbilityAI.RANDOM,
             
             chanceToDropItem: 0,
-            itemsDropped: noItems
         },
 
         PLAYER_WIZARD: {
@@ -392,7 +377,6 @@
             abilityAI: game.AbilityAI.RANDOM,
             
             chanceToDropItem: 0,
-            itemsDropped: noItems
         },
 
         NPC_OLD_MAN_WIZARD: {
@@ -417,7 +401,6 @@
             },
             
             chanceToDropItem: 0,
-            itemsDropped: noItems
         },
 
         YETI: {
@@ -425,9 +408,6 @@
             graphicIndexes:[game.Graphic.YETI],
 
             statClass: basicStats,
-            
-            chanceToDropItem: .1,
-            itemsDropped: higherChanceForUsableItems
         },
 
         ICE_WATER_ELEMENTAL: {
@@ -435,9 +415,6 @@
             graphicIndexes:[game.Graphic.ICE_WATER_ELEMENTAL],
 
             statClass: basicStats,
-            
-            chanceToDropItem: .1,
-            itemsDropped: higherChanceForUsableItems
         },
 
         // PLAYER_ARCHER's summon
@@ -588,6 +565,7 @@
             graphicIndexes:[game.Graphic.TURNIP],
 
             statClass: basicStats,
+            chanceToDropItem: 0,
         },
         BLACK_BAT: {
             id: 24,
@@ -1221,6 +1199,16 @@
                     '). Duplicates: ' + first.name + ' and ' + unitType.name);
 
                 game.util.debugDisplayText('Check console log - duplicate unit ID detected.', 'unit');
+            }
+
+            // Default chance to drop item
+            if ( unitType.chanceToDropItem === undefined ) {
+                unitType.chanceToDropItem = .05;
+                unitType.itemsDropped = higherChanceForUsableItems;
+            }
+
+            if ( unitType.chanceToDropItem == 0 ) {
+                unitType.itemsDropped = noItems;
             }
 
             if ( unitType.chanceToDropItem > 0 && 

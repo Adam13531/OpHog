@@ -98,29 +98,8 @@
     };
 
     /**
-     * Generates a random item. If usable is true, a random usable item is returned.
-     * Otherwise, a random equippable item is returned. This function was created so
-     * random items can get placed into inventories.
-     * @param  {Boolean} usable - true if the desired item is usable
-     * @return {Item} - A random item
-     */
-    // TODO: rename this to GenerateRandomItem and get rid of the old one completely
-    window.game.GenerateRandomInventoryItem = function(usable) {
-        var validItemList = [];
-
-        for ( var key in game.ItemType ) {
-            var item = game.ItemType[key];
-            if ( item.usable == usable) {
-                validItemList.push(new game.Item(item.id));
-            }
-        }
-
-        return game.util.randomArrayElement(validItemList);
-    };
-
-    /**
      * Required properties:
-     * id, itemLevel, name, htmlDescription, [usable|equippableBy], graphicIndex
+     * id, itemLevel, name, [usable|equippableBy], graphicIndex
      * If 'usable' is true, then you need to specify 'useTarget'
      * sellPrice - this is a base sell price. The total sell price is affected by quantity and stats too.
      *
@@ -130,6 +109,7 @@
      * atk - Array:Number(2) representing a range for the ATK stat on equippable items.
      * life - Array:Number(2) see 'atk'
      * def - Array:Number(2) see 'atk'
+     * flavorText - flavor or instruction text for the item.
      * removesAbilities - an Array:Number, optional. If specified, a unit with 
      *     this item equipped CANNOT have abilities with any of these IDs, even
      *     if they were added by another item.
@@ -140,14 +120,13 @@
      *      existing ability will be updated. For example, if you want to make 
      *      them attack with a different relative weight, specific 
      *      game.Ability.ATTACK.id and a new relativeWeight.
-     * Note: the htmlDescription will have '[name]<br/>' prepended to it.
      */
     window.game.ItemType = {
         STAT_GEM: {
             id: 0,
             itemLevel:1,
             name:'The Gem of All Knowledge',
-            htmlDescription:'<font color="#a3a3cc"><b>Greatly increases the stats of the target unit.<b/></font>',
+            flavorText:'Boosts the stats of the target unit.',
             usable:true,
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
@@ -157,12 +136,12 @@
         },
         SHIELD: {
             id: 1,
-            itemLevel:1,
-            atk: [5,15],
-            life: [5,15],
-            def: [5,15],
+            itemLevel:999999,
+            atk: [5,150],
+            life: [5,150],
+            def: [5,150],
             name:'Grugtham\'s Shield',
-            htmlDescription:'<font color="#660000"><b>500000 Dragon Kill Points<b/></font>',
+            flavorText:'This shield is not attainable through normal means.',
             equippableBy: game.EquippableBy.ALL,
             removesAbilities: [
                 game.Ability.ATTACK.id
@@ -179,12 +158,12 @@
         },
         SWORD: {
             id: 2,
-            itemLevel:1,
-            atk: [5,15],
-            life: [5,15],
-            def: [5,15],
+            itemLevel:999999,
+            atk: [5,150],
+            life: [5,150],
+            def: [5,150],
             name:'Skull Stab',
-            htmlDescription:'<font color="#660000"><b>This sword can actually only pierce hearts.<b/></font>',
+            flavorText:'This sword can actually only pierce hearts.',
             equippableBy: game.EquippableBy.WAR | game.EquippableBy.ARCH,
             removesAbilities: [
                 game.Ability.ATTACK.id
@@ -209,7 +188,7 @@
             id: 3,
             itemLevel:1,
             name:'Gem of Regen',
-            htmlDescription:'<font color="#a3a3cc"><b>Slowly restores the target unit\'s life.<b/></font>',
+            flavorText:'Slowly restores the target unit\'s life.',
             usable:true,
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
@@ -221,7 +200,7 @@
             id: 4,
             itemLevel:1,
             name:'Joachim\'s Wisdom',
-            htmlDescription:'<font color="#a3a3cc"><b>Drinking this will make you smart.<b/></font>',
+            flavorText:'Drinking this will make you smart.',
             usable:true,
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
@@ -233,19 +212,19 @@
             id: 5,
             itemLevel:1,
             name:'Vizier\'s Vision',
-            htmlDescription:'<font color="#a3a3cc"><b>The vista makes for a great vantage point.<b/></font>',
+            flavorText:'The vista makes for a great vantage point.',
             usable:true,
             useTarget: game.UseTarget.MAP,
             stackable:true,
             startingQuantity:3,
             sellPrice: .25,
-            graphicIndex: game.Graphic.GOLD_EYE_NECKLACE,
+            graphicIndex: game.Graphic.GREEN_BROOCH,
         },
         POISON_GEM: {
             id: 6,
             itemLevel:1,
             name:'Essence of Poison',
-            htmlDescription:'<font color="#a3a3cc"><b>Poisons the target unit, slowly destroying it.<b/></font>',
+            flavorText:'Poisons the target unit, slowly destroying it.',
             usable:true,
             useTarget: game.UseTarget.LIVING_ENEMY_UNIT,
             stackable:true,
@@ -257,7 +236,7 @@
             id: 7,
             itemLevel:1,
             name:'Spawn Creatorizer',
-            htmlDescription:'<font color="#a3a3cc"><b>Creates another spawn point on the map.<b/></font>',
+            flavorText:'Creates another spawn point on the map.',
             usable:true,
             useTarget: game.UseTarget.MAP_WALKABLE_ONLY,
             stackable:true,
@@ -269,7 +248,7 @@
             id: 8,
             itemLevel:1,
             name:'Mega Spawn Creatorizer',
-            htmlDescription:'<font color="#a3a3cc"><b>Creates another spawn point on the map.<b/></font>',
+            flavorText:'Creates another spawn point on the map.',
             usable:true,
             useTarget: game.UseTarget.MAP_WALKABLE_ONLY,
             stackable:true,
@@ -281,7 +260,7 @@
             id: 9,
             itemLevel:1,
             name:'Necromancer\'s Knowledge',
-            htmlDescription:'<font color="#a3a3cc"><b>Brings the dead back to life.<b/></font>',
+            flavorText:'Brings the dead back to life.',
             usable:true,
             useTarget: game.UseTarget.DEAD_PLAYER_UNIT,
             stackable:true,
@@ -289,14 +268,131 @@
             sellPrice: .25,
             graphicIndex: game.Graphic.MEDIUM_YELLOW_POTION,
         },
+        WOOD_BUCKLER_1: {
+            id: 10,
+            itemLevel:1,
+            def: [1,3],
+            name:'Wooden buckler',
+            flavorText:'A cheap, wooden buckler.',
+            graphicIndex: game.Graphic.WOOD_BUCKLER_1,
+            equippableBy: game.EquippableBy.ALL,
+            sellPrice: 1,
+        },
+        DAGGER_1: {
+            id: 11,
+            itemLevel:1,
+            atk: [1,3],
+            name:'Dagger',
+            flavorText:'A common dagger.',
+            graphicIndex: game.Graphic.DAGGER_1,
+            equippableBy: game.EquippableBy.ALL,
+            sellPrice: 1,
+        },
+        WOOD_BUCKLER_2: {
+            id: 12,
+            itemLevel:3,
+            def: [2,5],
+            name:'Reinforced buckler',
+            flavorText:'It\'s still not great.',
+            graphicIndex: game.Graphic.WOOD_BUCKLER_2,
+            equippableBy: game.EquippableBy.ALL,
+            sellPrice: 1,
+        },
+        DAGGER_2: {
+            id: 13,
+            itemLevel:3,
+            atk: [2,5],
+            name:'Sharpened Dagger',
+            flavorText:'Try not to run with it.',
+            graphicIndex: game.Graphic.DAGGER_2,
+            equippableBy: game.EquippableBy.ALL,
+            sellPrice: 1,
+        },
+        RUBY_RING: {
+            id: 14,
+            itemLevel:1,
+            life: [5,20],
+            name:'Minor Ring of Life',
+            flavorText:'Putting this ring on your finger gives you a new outlook on things.',
+            graphicIndex: game.Graphic.RUBY_RING,
+            equippableBy: game.EquippableBy.ALL,
+            sellPrice: 1,
+        },
+        WOOD_STAFF_1: {
+            id: 15,
+            itemLevel:8,
+            atk: [5,10],
+            name:'Plain Staff',
+            flavorText:'Someone must have spent many seconds whittling this.',
+            graphicIndex: game.Graphic.WOOD_STAFF_1,
+            equippableBy: game.EquippableBy.WIZ,
+            sellPrice: 1,
+        },
+        PLAIN_SWORD: {
+            id: 16,
+            itemLevel:8,
+            atk: [7,13],
+            name:'Plain Sword',
+            flavorText:'This sword isn\'t anything to write home about.',
+            graphicIndex: game.Graphic.SWORD,
+            equippableBy: game.EquippableBy.WAR,
+            sellPrice: 1,
+        },
+        WOODEN_BOW: {
+            id: 17,
+            itemLevel:8,
+            atk: [7,10],
+            name:'Bow',
+            flavorText:'This bow feels heavier than it looks.',
+            graphicIndex: game.Graphic.WOODEN_BOW,
+            equippableBy: game.EquippableBy.ARCH,
+            sellPrice: 1,
+        },
+        GOLD_EYE_NECKLACE: {
+            id: 18,
+            itemLevel:8,
+            name:'Thorny Necklace',
+            flavorText:'People no longer want to touch you when you wear this.',
+            graphicIndex: game.Graphic.GOLD_EYE_NECKLACE,
+            equippableBy: game.EquippableBy.ALL,
+            sellPrice: 15,
+            mods: [new game.Thorns(15)]
+        },
+        RED_SCALE: {
+            id: 19,
+            itemLevel:8,
+            name:'Blood Scale',
+            flavorText:'This may make your reflection disappear.',
+            graphicIndex: game.Graphic.RED_SCALE,
+            equippableBy: game.EquippableBy.ALL,
+            sellPrice: 15,
+            mods: [new game.LifeLeech(.1, .1)]
+        },
+
     };
 
     // This is debug code to put the item name in the item's description. It's
     // run directly after defining the items above.
-    ( function verifyAllUnitData() {
+    ( function verifyAllItemData() {
+        var seenIDs = {};
         for ( var key in game.ItemType ) {
             var item = game.ItemType[key];
-            item.htmlDescription = item.name + '<br/>' + item.htmlDescription;
+
+            var id = item.id;
+            if ( seenIDs[id] !== undefined ) {
+                error = true;
+                game.util.debugDisplayText(key + ' has a duplicated ID: ' + id, 'dupe_item_id' + key);
+            }
+
+            seenIDs[id] = true;
+            
+            game.util.useDefaultIfUndefined(item, 'flavorText', '');
+
+            item.htmlDescription = item.name;
+            if ( item.flavorText != '' ) {
+                item.htmlDescription += '<br/><span class="item-flavor-text">' + item.flavorText + '</span>';
+            }
+
             game.util.useDefaultIfUndefined(item, 'usable', false);
 
             // Equippable items
@@ -304,6 +400,13 @@
                 game.util.useDefaultIfUndefined(item, 'atk', [0,0]);
                 game.util.useDefaultIfUndefined(item, 'def', [0,0]);
                 game.util.useDefaultIfUndefined(item, 'life', [0,0]);
+
+                // Ranges are specified as [X, Y], but when that range is passed
+                // to a random function, it can only generate up to Y-1, so we
+                // fix the ranges here.
+                if ( item.atk[1] > 0 ) item.atk[1]++;
+                if ( item.def[1] > 0 ) item.def[1]++;
+                if ( item.life[1] > 0 ) item.life[1]++;
             }
 
             if ( item.sellPrice === undefined ) {
