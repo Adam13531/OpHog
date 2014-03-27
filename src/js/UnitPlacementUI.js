@@ -27,7 +27,7 @@
 	 * The amount each slot costs. The first slot is index 0, second is 1, etc.
 	 * @type {Number}
 	 */
-	window.game.UNIT_PLACEMENT_SLOT_COSTS = [30,200,500,1000,1500];
+	window.game.UNIT_PLACEMENT_SLOT_COSTS = [30,40,50,60,70];
 	/**
 	 * Opacity of the units in the UI that aren't placed
 	 * @type {String}
