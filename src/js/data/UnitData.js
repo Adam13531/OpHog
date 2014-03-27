@@ -206,21 +206,7 @@
             name:'Treant',
             graphicIndexes:[game.Graphic.TREANT],
 
-            atk: {
-                start: 10,
-                minGrowth: 0,
-                maxGrowth: 10
-            },
-            def: {
-                start: 0,
-                minGrowth: 0,
-                maxGrowth: 1
-            },
-            life: {
-                start: 50,
-                minGrowth: 100,
-                maxGrowth: 200
-            },
+            statClass: basicStats,
 
             abilities: [
                 {
@@ -1203,8 +1189,8 @@
 
             // Default chance to drop item
             if ( unitType.chanceToDropItem === undefined ) {
-                unitType.chanceToDropItem = .05;
-                unitType.itemsDropped = higherChanceForUsableItems;
+                unitType.chanceToDropItem = .09;
+                unitType.itemsDropped = equalChanceAllLoot;
             }
 
             if ( unitType.chanceToDropItem == 0 ) {
