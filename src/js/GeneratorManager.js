@@ -13,7 +13,6 @@
         /**
          * Draws each generator.
          * @param  {Object} ctx - canvas context
-         * @return {null}
          */
         draw: function(ctx) {
             for (var i = 0; i < this.generators.length; i++) {
@@ -32,7 +31,6 @@
         /**
          * Updates each generator
          * @param  {Number} delta - time elapsed in ms since last call
-         * @return {null}
          */
         update: function(delta) {
             if ( !this.shouldUpdate() ) return;
@@ -64,7 +62,6 @@
          * Removes all generators at the specified location
          * @param  {Number} tileX - x coordinate
          * @param  {Number} tileY - y coordinate
-         * @return {null}
          */
         removeGeneratorsAtLocation: function(tileX, tileY) {
             var generatorList = this.getGeneratorsAtLocation(tileX, tileY);
@@ -77,7 +74,6 @@
 
         /**
          * Removes all generators.
-         * @return {undefined}
          */
         removeAllGenerators: function() {
             this.generators = [];
@@ -86,12 +82,12 @@
         /**
          * Removes a generator
          * @param  {Generator} generator - the generator to remove
-         * @return {null}
          */
         removeGenerator: function(generator) {
             for (var i = 0; i < this.generators.length; i++) {
                 if (generator === this.generators[i]) {
                     this.generators.splice(i, 1);
+                    game.AudioManager.playAudio(game.Audio.EXPLODE_3);
                     return;
                 }
             }

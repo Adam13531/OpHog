@@ -13,6 +13,7 @@
         BLIP_1: new game.AudioDescriptor(game.SOUND_PATH,'blip1',true,true,true,false),
         POWERUP_1: new game.AudioDescriptor(game.SOUND_PATH,'powerup1',true,true,true,false),
         POWERUP_2: new game.AudioDescriptor(game.SOUND_PATH,'powerup2',true,true,true,false),
+        EXPLODE_3: new game.AudioDescriptor(game.SOUND_PATH,'explode3',false,true,false,false),
     };
 
     /**
