@@ -73,12 +73,25 @@
         this.htmlDescription = defaultHtmlDescription;
 
         if ( !this.usable ) {
-            if ( this.atk > 0 || this.def > 0 || this.life > 0 ) {
+            if ( this.atk != 0 || this.def != 0 || this.life != 0 ) {
                 this.htmlDescription += '<br/>';
 
-                if ( this.atk > 0 ) this.htmlDescription += game.util.makeTransparentImgTag('icon-sprite dagger-icon') + '+' + this.atk + ' ';
-                if ( this.def > 0 ) this.htmlDescription += game.util.makeTransparentImgTag('icon-sprite shield-icon') + '+' + this.def + ' ';
-                if ( this.life > 0 ) this.htmlDescription += game.util.makeTransparentImgTag('icon-sprite heart-icon') + '+' + this.life;
+                if ( this.atk != 0 ) {
+                    var atkText = '<font color="' + (this.atk > 0 ? 'white' : '#ff0000') + '">';
+                    atkText += (this.atk > 0 ? '+' : '') + this.atk + '</font>';
+
+                    this.htmlDescription += game.util.makeTransparentImgTag('icon-sprite dagger-icon') + atkText + ' ';
+                }
+                if ( this.def != 0 ) {
+                    var defText = '<font color="' + (this.def > 0 ? 'white' : '#ff0000') + '">';
+                    defText += (this.def > 0 ? '+' : '') + this.def + '</font>';
+                    this.htmlDescription += game.util.makeTransparentImgTag('icon-sprite shield-icon') + defText + ' ';
+                }
+                if ( this.life != 0 ) {
+                    var lifeText = '<font color="' + (this.life > 0 ? 'white' : '#ff0000') + '">';
+                    lifeText += (this.life > 0 ? '+' : '') + this.life + '</font>';
+                    this.htmlDescription += game.util.makeTransparentImgTag('icon-sprite heart-icon') + lifeText;
+                }
             }
         }
 

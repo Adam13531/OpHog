@@ -491,9 +491,9 @@
         if ( item.usable ) {
             price *= item.quantity;
         } else {
-            price += item.atk;
-            price += item.def;
-            price += item.life;
+            price += Math.max(0, item.atk);
+            price += Math.max(0, item.def);
+            price += Math.max(0, item.life);
         }
 
         price = Math.floor(price);

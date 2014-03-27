@@ -404,9 +404,9 @@
                 // Ranges are specified as [X, Y], but when that range is passed
                 // to a random function, it can only generate up to Y-1, so we
                 // fix the ranges here.
-                if ( item.atk[1] > 0 ) item.atk[1]++;
-                if ( item.def[1] > 0 ) item.def[1]++;
-                if ( item.life[1] > 0 ) item.life[1]++;
+                if ( item.atk[1] != 0 ) item.atk[1]++;
+                if ( item.def[1] != 0 ) item.def[1]++;
+                if ( item.life[1] != 0 ) item.life[1]++;
             }
 
             if ( item.sellPrice === undefined ) {
