@@ -77,6 +77,11 @@
      * various parts of the map will be broken.
      */
     window.game.Map.prototype.initializeNormalMap = function() {
+        // This is required before being able to add the boss unit so that we
+        // can multiply its stats correctly. We never construct a normal map and
+        // then NOT make it the current map, so this is safe.
+        game.currentMap = this;
+
         // The endpoints need to be calculated so that we can figure out the
         // tile lists.
         this.figureOutEndpoints();

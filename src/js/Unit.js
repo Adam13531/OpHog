@@ -122,9 +122,24 @@
         this.heightInTiles = unitData.height;
         this.name = unitData.name;
 
+        this.playerFlags = playerFlags;
+
+        if (!this.areValidPlayerFlags(this.playerFlags)) {
+            console.log('Fatal error: Player flags for unit with ID ' + 
+                this.id + ' are invalid. Flags: ' + this.playerFlags);
+        }
+
         this.maxLife = unitData.finalLife;
         this.atk = unitData.finalAtk;
         this.def = unitData.finalDef;
+
+        // Multiply enemy stats by the map's stat multiplier.
+        if ( this.isEnemy() ) {
+            var statMultiplier = game.currentMap.nodeOfMap.statMultiplier;
+            this.maxLife = Math.floor(this.maxLife * statMultiplier);
+            this.atk = Math.floor(this.atk * statMultiplier);
+            this.def = Math.floor(this.def * statMultiplier);
+        }
 
         this.chanceToDropItem = unitData.chanceToDropItem;
         if ( unitData.itemsDropped === undefined ) {
@@ -161,13 +176,6 @@
         // be alive or dead, but once they're removed from the game, this number
         // will be decremented.
         this.summonedUnitCount = 0;
-
-        this.playerFlags = playerFlags;
-
-        if (!this.areValidPlayerFlags(this.playerFlags)) {
-            console.log('Fatal error: Player flags for unit with ID ' + 
-                this.id + ' are invalid. Flags: ' + this.playerFlags);
-        }
 
         // As soon as this is true, the unit will be removed from the map. For
         // enemy units, this means they're removed from the game. For placeable

@@ -303,6 +303,9 @@
          *         spread - game.MinigameEnemySpread - this tells the minigame 
          *             how to pick enemies
          *     startingCoins - Number - the number of coins you start with
+         *     statMultiplier - Number - all enemy stats will be multiplied by this,
+         *        e.g. if an enemy were to try to spawn with 10 atk and you had
+         *        a multiplier of 2, it would spawn with 20 attack.
          *
          * Error-checking and the insertion of default values are done in 
          * setupOverworldMapNodes.
@@ -609,6 +612,7 @@
             id: 7,
             x: 12, y: 4,
             description: 'Desert node 1',
+            statMultiplier: 1.1,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[18,5,4,true],[12,4,7,true],[20,10,2,true]],
@@ -635,7 +639,7 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
+                baseDiamonds: 24,
                 diamondsPerLevel: 4,
                 spread: game.MinigameEnemySpread.RANDOM
             },
@@ -646,6 +650,7 @@
             id: 8,
             x: 18, y: 5,
             description: 'Desert node 2',
+            statMultiplier: 1.1,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[24,1,5,true]],
@@ -678,7 +683,7 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
+                baseDiamonds: 26,
                 diamondsPerLevel: 4,
                 spread: game.MinigameEnemySpread.RANDOM
             },
@@ -689,6 +694,7 @@
             id: 9,
             x: 20, y: 10,
             description: 'Desert node 3',
+            statMultiplier: 1.1,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[16,12,4,true],[17,17,2],[26,10,5,true]],
@@ -721,7 +727,7 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
+                baseDiamonds: 26,
                 diamondsPerLevel: 4,
                 spread: game.MinigameEnemySpread.RANDOM
             },
@@ -734,6 +740,7 @@
             id: 10,
             x: 24, y: 1,
             description: 'Lava node 1',
+            statMultiplier: 1.2,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[29,1,6,true],[23,4,2]],
@@ -760,7 +767,7 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
+                baseDiamonds: 26,
                 diamondsPerLevel: 4,
                 spread: game.MinigameEnemySpread.RANDOM
             },
@@ -771,6 +778,7 @@
             id: 11,
             x: 31, y: 4,
             description: 'Lava node 2',
+            statMultiplier: 1.2,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[31,4,5],[23,1,4,true]],
@@ -800,8 +808,8 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 5,
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -811,6 +819,7 @@
             id: 12,
             x: 36, y: 3,
             description: 'Lava node 3',
+            statMultiplier: 1.2,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[41,4,6,true],[31,4,5]],
@@ -840,8 +849,8 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 27,
+                diamondsPerLevel: 5,
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -851,6 +860,7 @@
             id: 13,
             x: 26, y: 10,
             description: 'Lava node 4',
+            statMultiplier: 1.2,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[30,9,4,true],[23,10,3,true]],
@@ -877,7 +887,7 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
+                baseDiamonds: 26,
                 diamondsPerLevel: 4,
                 spread: game.MinigameEnemySpread.RANDOM
             },
@@ -888,6 +898,7 @@
             id: 14,
             x: 32, y: 9,
             description: 'Lava node 5',
+            statMultiplier: 1.2,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[31,4,5],[29,10,3,true]],
@@ -914,8 +925,8 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 5,
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -927,6 +938,7 @@
             id: 15,
             x: 17, y: 17,
             description: 'Mud node 1',
+            statMultiplier: 1.3,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,17,2],[15,21,2],[14,17,2,true],[17,12,5,true],[17,17,2]],
@@ -942,7 +954,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -953,8 +965,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 5,
+                minEnemies: [6,8,10,12,14],
+                maxEnemies: [8,10,12,14,16],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -964,6 +978,7 @@
             id: 16,
             x: 21, y: 17,
             description: 'Mud node 2',
+            statMultiplier: 1.3,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,17,4,true],[25,18,2],[21,23,2]],
@@ -982,7 +997,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -993,8 +1008,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 30,
+                diamondsPerLevel: 5,
+                minEnemies: [7,8,10,12,14],
+                maxEnemies: [8,10,12,14,16],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1004,6 +1021,7 @@
             id: 17,
             x: 25, y: 18,
             description: 'Mud node 3',
+            statMultiplier: 1.3,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,17,2],[25,18,2],[25,22,2],[28,18,3,true]],
@@ -1022,7 +1040,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1033,8 +1051,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 6,
+                minEnemies: [6,8,10,12,14],
+                maxEnemies: [8,10,12,14,16],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1044,6 +1064,7 @@
             id: 18,
             x: 15, y: 21,
             description: 'Mud node 4',
+            statMultiplier: 1.3,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[14,17,3,true],[15,21,2,true],[18,22,3,true],[21,23,2]],
@@ -1062,7 +1083,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1073,8 +1094,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 28,
+                diamondsPerLevel: 5,
+                minEnemies: [6,8,10,12,14],
+                maxEnemies: [8,10,12,14,16],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1084,6 +1107,7 @@
             id: 19,
             x: 21, y: 23,
             description: 'Mud node 5',
+            statMultiplier: 1.3,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,20,3,true],[21,23,2,true],[25,22,2],[15,21,3,true],[18,23,2]],
@@ -1105,7 +1129,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1116,8 +1140,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 5,
+                minEnemies: [6,8,10,12,14],
+                maxEnemies: [8,10,12,14,16],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1127,6 +1153,7 @@
             id: 20,
             x: 25, y: 22,
             description: 'Mud node 6',
+            statMultiplier: 1.3,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[25,22,2,true],[21,23,2,true],[25,18,2,true]],
@@ -1148,7 +1175,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1159,8 +1186,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 28,
+                diamondsPerLevel: 5,
+                minEnemies: [6,8,10,12,14],
+                maxEnemies: [8,10,12,14,16],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1172,6 +1201,7 @@
             id: 21,
             x: 41, y: 5,
             description: 'Autumn node 1',
+            statMultiplier: 1.25,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,10,2,true],[36,3,4,true]],
@@ -1187,7 +1217,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1198,8 +1228,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 5,
+                minEnemies: [6,8,10,12,14],
+                maxEnemies: [8,10,12,14,16],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1209,6 +1241,7 @@
             id: 22,
             x: 39, y: 10,
             description: 'Autumn node 2',
+            statMultiplier: 1.25,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,13,2,true],[41,5,3]],
@@ -1224,7 +1257,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1235,8 +1268,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 5,
+                minEnemies: [6,8,10,12,14],
+                maxEnemies: [8,10,12,14,16],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1246,6 +1281,7 @@
             id: 23,
             x: 39, y: 13,
             description: 'Autumn node 3',
+            statMultiplier: 1.25,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[40,16,3,true],[39,10,2]],
@@ -1264,7 +1300,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1275,8 +1311,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 5,
+                minEnemies: [6,8,10,12,14],
+                maxEnemies: [8,10,12,14,16],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1286,6 +1324,7 @@
             id: 24,
             x: 40, y: 16,
             description: 'Autumn node 4',
+            statMultiplier: 1.25,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[36,15,5,true],[31,18,2]],
@@ -1307,7 +1346,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1318,9 +1357,11 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
-                spread: game.MinigameEnemySpread.RANDOM
+                baseDiamonds: 26,
+                diamondsPerLevel: 5,
+                minEnemies: [6,8,10,12,14],
+                maxEnemies: [8,10,12,14,16],
+                spread: game.MinigameEnemySpread.RANDOM,
             },
 
             tilesetID: game.TilesetManager.AUTUMN_TILESET_ID
@@ -1331,6 +1372,7 @@
             id: 25,
             x: 31, y: 18,
             description: 'Jungle node 1',
+            statMultiplier: 1.5,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[28,18,3,true],[31,18,2],[34,20,2],[37,17,4,true],[32,24,5,true]],
@@ -1346,7 +1388,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1357,8 +1399,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 7,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1368,6 +1412,7 @@
             id: 26,
             x: 34, y: 20,
             description: 'Jungle node 2',
+            statMultiplier: 1.5,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,22,2]],
@@ -1386,7 +1431,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1397,8 +1442,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 27,
+                diamondsPerLevel: 7,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1408,6 +1455,7 @@
             id: 27,
             x: 32, y: 24,
             description: 'Jungle node 3',
+            statMultiplier: 1.5,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,25,2]],
@@ -1426,7 +1474,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1437,8 +1485,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 28,
+                diamondsPerLevel: 7,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1448,6 +1498,7 @@
             id: 28,
             x: 39, y: 22,
             description: 'Jungle node 4',
+            statMultiplier: 1.5,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,25,2],[40,29,2]],
@@ -1466,7 +1517,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1477,8 +1528,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 29,
+                diamondsPerLevel: 7,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1488,6 +1541,7 @@
             id: 29,
             x: 37, y: 25,
             description: 'Jungle node 5',
+            statMultiplier: 1.5,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[39,22,2],[40,29,2]],
@@ -1506,7 +1560,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1517,8 +1571,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 30,
+                diamondsPerLevel: 7,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1530,6 +1586,7 @@
             id: 30,
             x: 40, y: 29,
             description: 'Salt node 1',
+            statMultiplier: 1.6,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[37,31,1,true],[40,31,2,true],[40,35,2],[40,32,2,true]],
@@ -1551,7 +1608,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1562,8 +1619,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 31,
+                diamondsPerLevel: 7,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1573,6 +1632,7 @@
             id: 31,
             x: 40, y: 35,
             description: 'Salt node 2',
+            statMultiplier: 1.6,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[37,35,2]],
@@ -1594,7 +1654,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1605,8 +1665,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 32,
+                diamondsPerLevel: 7,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1616,6 +1678,7 @@
             id: 32,
             x: 37, y: 33,
             description: 'Salt node 3',
+            statMultiplier: 1.6,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[37,33,3,true]],
@@ -1637,7 +1700,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1648,8 +1711,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 33,
+                diamondsPerLevel: 7,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1659,6 +1724,7 @@
             id: 33,
             x: 37, y: 31,
             description: 'Salt node 4',
+            statMultiplier: 1.6,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[35,33,3,true]],
@@ -1680,7 +1746,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1691,8 +1757,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 34,
+                diamondsPerLevel: 7,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1702,6 +1770,7 @@
             id: 34,
             x: 33, y: 33,
             description: 'Salt node 5',
+            statMultiplier: 1.6,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[37,33,6,true],[28,34,5,true]],
@@ -1723,7 +1792,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1734,8 +1803,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 8,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1747,6 +1818,7 @@
             id: 35,
             x: 23, y: 34,
             description: 'Snow node 1',
+            statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,31,2,true],[17,33,2,true],[13,35,2,true],[20,36,3],[16,36,3]],
@@ -1762,7 +1834,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1773,8 +1845,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 26,
+                diamondsPerLevel: 10,
+                minEnemies: [15,20,25,30,35],
+                maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1784,6 +1858,7 @@
             id: 36,
             x: 21, y: 31,
             description: 'Snow node 2',
+            statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[18,30,3,true]],
@@ -1802,7 +1877,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1813,8 +1888,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 27,
+                diamondsPerLevel: 10,
+                minEnemies: [15,20,25,30,35],
+                maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1824,6 +1901,7 @@
             id: 37,
             x: 18, y: 30,
             description: 'Snow node 3',
+            statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[15,31,3,true]],
@@ -1845,7 +1923,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1856,8 +1934,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 28,
+                diamondsPerLevel: 10,
+                minEnemies: [15,20,25,30,35],
+                maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1867,6 +1947,7 @@
             id: 38,
             x: 17, y: 33,
             description: 'Snow node 4',
+            statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[15,31,3,true]],
@@ -1888,7 +1969,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1899,8 +1980,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 29,
+                diamondsPerLevel: 10,
+                minEnemies: [15,20,25,30,35],
+                maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1910,6 +1993,7 @@
             id: 39,
             x: 15, y: 31,
             description: 'Snow node 5',
+            statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[17,36,6]],
@@ -1934,7 +2018,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1945,8 +2029,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 30,
+                diamondsPerLevel: 10,
+                minEnemies: [15,20,25,30,35],
+                maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1956,6 +2042,7 @@
             id: 40,
             x: 13, y: 35,
             description: 'Snow node 6',
+            statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[3,36,8,true],[4,30,2,true],[8,30,2,true],[13,34,4,true]],
@@ -1983,7 +2070,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1994,8 +2081,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 31,
+                diamondsPerLevel: 10,
+                minEnemies: [15,20,25,30,35],
+                maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -2007,6 +2096,7 @@
             id: 41,
             x: 3, y: 28,
             description: 'Ice node 1',
+            statMultiplier: 1.8,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[1,1,1]],
@@ -2034,7 +2124,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .02,
+                chancePerWalkableTile: .04,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -2045,8 +2135,10 @@
             },
 
             minigame: {
-                baseDiamonds: 12,
-                diamondsPerLevel: 4,
+                baseDiamonds: 32,
+                diamondsPerLevel: 10,
+                minEnemies: [15,20,25,30,35],
+                maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -2305,6 +2397,7 @@
         }
 
         game.util.useDefaultIfUndefined(node, 'startingCoins', game.UNIT_PLACEMENT_COST * 15);
+        game.util.useDefaultIfUndefined(node, 'statMultiplier', 1);
 
         // Keep track of which enemies we've seen so that we warn when you have
         // duplicates.
