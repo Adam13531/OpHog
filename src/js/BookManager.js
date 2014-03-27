@@ -65,6 +65,11 @@
                 tileX: 7,
                 tileY: 3,
             },
+            {
+                id: 7,
+                tileX: 16,
+                tileY: 6,
+            },
         ],
 
         /**
@@ -189,6 +194,9 @@
                         '<li>' + mediumSpawnerImg + ': medium</li>' +
                         '<li>' + hardSpawnerImg + ': hard</li>' +
                         '</ul>Watch out though, these difficulties are relative to the area. A ' + hardSpawnerImg + ' in the forest is probably easier than a ' + mediumSpawnerImg + ' in the desert!</div>';
+                } else if ( id == 7 ) {
+                    title = 'Codex of Choices';
+                    html = '<div>The harsh fires to the east are still more welcoming than the spirits you\'ll encounter in the cemetery to the south. Should you endure those ghostly trials, you\'ll find a quicker route to the jungle.</div>';
                 }
 
                 game.BookDialog.setHtml(html);
