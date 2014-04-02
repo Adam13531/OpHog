@@ -1405,7 +1405,7 @@
             },
 
             minigame: {
-                baseDiamonds: 26,
+                baseDiamonds: 52,
                 diamondsPerLevel: 7,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
@@ -1450,7 +1450,7 @@
             },
 
             minigame: {
-                baseDiamonds: 27,
+                baseDiamonds: 54,
                 diamondsPerLevel: 8,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
@@ -1495,7 +1495,7 @@
             },
 
             minigame: {
-                baseDiamonds: 28,
+                baseDiamonds: 54,
                 diamondsPerLevel: 9,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
@@ -1540,7 +1540,7 @@
             },
 
             minigame: {
-                baseDiamonds: 29,
+                baseDiamonds: 58,
                 diamondsPerLevel: 10,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
@@ -1585,7 +1585,7 @@
             },
 
             minigame: {
-                baseDiamonds: 30,
+                baseDiamonds: 58,
                 diamondsPerLevel: 11,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
@@ -1635,7 +1635,7 @@
             },
 
             minigame: {
-                baseDiamonds: 31,
+                baseDiamonds: 62,
                 diamondsPerLevel: 12,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
@@ -1683,7 +1683,7 @@
             },
 
             minigame: {
-                baseDiamonds: 32,
+                baseDiamonds: 64,
                 diamondsPerLevel: 13,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
@@ -1731,7 +1731,7 @@
             },
 
             minigame: {
-                baseDiamonds: 33,
+                baseDiamonds: 66,
                 diamondsPerLevel: 14,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
@@ -1779,7 +1779,7 @@
             },
 
             minigame: {
-                baseDiamonds: 34,
+                baseDiamonds: 68,
                 diamondsPerLevel: 15,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
@@ -1827,7 +1827,7 @@
             },
 
             minigame: {
-                baseDiamonds: 26,
+                baseDiamonds: 70,
                 diamondsPerLevel: 16,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
@@ -1871,7 +1871,7 @@
             },
 
             minigame: {
-                baseDiamonds: 26,
+                baseDiamonds: 70,
                 diamondsPerLevel: 17,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
@@ -1916,7 +1916,7 @@
             },
 
             minigame: {
-                baseDiamonds: 27,
+                baseDiamonds: 72,
                 diamondsPerLevel: 18,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
@@ -1964,7 +1964,7 @@
             },
 
             minigame: {
-                baseDiamonds: 28,
+                baseDiamonds: 72,
                 diamondsPerLevel: 19,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
@@ -2012,7 +2012,7 @@
             },
 
             minigame: {
-                baseDiamonds: 29,
+                baseDiamonds: 72,
                 diamondsPerLevel: 20,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
@@ -2063,7 +2063,7 @@
             },
 
             minigame: {
-                baseDiamonds: 30,
+                baseDiamonds: 75,
                 diamondsPerLevel: 21,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
@@ -2117,7 +2117,7 @@
             },
 
             minigame: {
-                baseDiamonds: 31,
+                baseDiamonds: 80,
                 diamondsPerLevel: 22,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
@@ -2173,7 +2173,7 @@
             },
 
             minigame: {
-                baseDiamonds: 32,
+                baseDiamonds: 100,
                 diamondsPerLevel: 25,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
