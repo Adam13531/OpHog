@@ -849,10 +849,11 @@
     };
 
     /**
-     * Adds a status effect to this unit.
-     * @param {StatusEffect} statusEffect - the effect to add
+     * Adds a status effect to this unit. For a description of the arguments,
+     * see StatusEffect's constructor.
      */
-    window.game.Unit.prototype.addStatusEffect = function(statusEffect) {
+    window.game.Unit.prototype.addStatusEffect = function(type, options) {
+        var statusEffect = new game.StatusEffect(this, type, options);
         this.statusEffects.push(statusEffect);
     };
 
@@ -1242,16 +1243,14 @@
                 break;
 
             case game.ActionOnHit.BUFF_STATS:
-                var statusEffect = new game.StatusEffect(targetUnit, game.EffectType.STAT_BOOST);
-                targetUnit.addStatusEffect(statusEffect);
+                targetUnit.addStatusEffect(game.EffectType.STAT_BOOST);
                 break;
 
             case game.ActionOnHit.BUFF_DEFENSE:
                 var options = {
                     defModifier: targetUnit.level
                 };
-                var statusEffect = new game.StatusEffect(targetUnit, game.EffectType.DEFENSE_BOOST, options);
-                targetUnit.addStatusEffect(statusEffect);
+                targetUnit.addStatusEffect(game.EffectType.DEFENSE_BOOST, options);
                 break;
 
             case game.ActionOnHit.REVIVE:

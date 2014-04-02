@@ -20,8 +20,7 @@
         // otherwise the effect will still show on their tombstone.
         if ( !target.isLiving() || !game.util.percentChance(this.chanceToPoison) ) return;
 
-        var statusEffect = new game.StatusEffect(target, game.EffectType.POISON);
-        target.addStatusEffect(statusEffect);
+        target.addStatusEffect(game.EffectType.POISON);
     };
 
     window.game.Poison.prototype.copy = function() {

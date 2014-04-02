@@ -95,8 +95,7 @@
             case game.CollectibleType.GOOD_POWERUP:
             case game.CollectibleType.GREAT_POWERUP:
                 // Give a buff
-                var statusEffect = new game.StatusEffect(unit, game.EffectType.STAT_BOOST);
-                unit.addStatusEffect(statusEffect);
+                unit.addStatusEffect(game.EffectType.STAT_BOOST);
                 game.AudioManager.playAudio(game.Audio.POWERUP_1);
                 break;
             }

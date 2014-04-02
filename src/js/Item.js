@@ -133,16 +133,13 @@
 
         switch(this.itemID) {
             case game.ItemType.STAT_GEM.id:
-                var statusEffect = new game.StatusEffect(unit, game.EffectType.STAT_BOOST);
-                unit.addStatusEffect(statusEffect);
+                unit.addStatusEffect(game.EffectType.STAT_BOOST);
                 break;
             case game.ItemType.HEAL_GEM.id:
-                var statusEffect = new game.StatusEffect(unit, game.EffectType.REGEN);
-                unit.addStatusEffect(statusEffect);
+                unit.addStatusEffect(game.EffectType.REGEN);
                 break;
             case game.ItemType.POISON_GEM.id:
-                var statusEffect = new game.StatusEffect(unit, game.EffectType.POISON);
-                unit.addStatusEffect(statusEffect);
+                unit.addStatusEffect(game.EffectType.POISON);
                 break;
             case game.ItemType.POTION.id:
                 unit.restoreLife();
