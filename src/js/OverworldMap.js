@@ -618,7 +618,7 @@
             description: 'Desert node 1',
             statMultiplier: 1.0,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [10,4],
             clearFog: [[18,5,4,true],[12,4,7,true],[20,10,2,true]],
             levelRange: [8,12],
 
@@ -656,7 +656,7 @@
             description: 'Desert node 2',
             statMultiplier: 1.1,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [10,4],
             clearFog: [[24,1,5,true]],
             levelRange: [9,14],
 
@@ -700,7 +700,7 @@
             description: 'Desert node 3',
             statMultiplier: 1.1,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [10,4],
             clearFog: [[16,12,4,true],[17,17,2],[26,10,5,true]],
             levelRange: [11,14],
 

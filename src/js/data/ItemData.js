@@ -131,7 +131,7 @@
             useTarget: game.UseTarget.LIVING_PLAYER_UNIT,
             stackable:true,
             startingQuantity:3,
-            sellPrice: .25,
+            sellPrice: .35,
             graphicIndex: game.Graphic.RED_DIAMOND,
         },
         SHIELD: {
@@ -241,7 +241,7 @@
             useTarget: game.UseTarget.MAP_WALKABLE_ONLY,
             stackable:true,
             startingQuantity:3,
-            sellPrice: .25,
+            sellPrice: .20,
             graphicIndex: game.Graphic.SMALL_YELLOW_SQUARE_ITEM,
         },
         MEGA_CREATE_SPAWNER: {
@@ -290,7 +290,7 @@
         },
         WOOD_BUCKLER_2: {
             id: 12,
-            itemLevel:3,
+            itemLevel:2,
             def: [2,5],
             name:'Reinforced buckler',
             flavorText:'It\'s still not great.',
@@ -300,7 +300,7 @@
         },
         DAGGER_2: {
             id: 13,
-            itemLevel:3,
+            itemLevel:2,
             atk: [2,5],
             name:'Sharpened Dagger',
             flavorText:'Try not to run with it.',
@@ -320,7 +320,7 @@
         },
         WOOD_STAFF_1: {
             id: 15,
-            itemLevel:8,
+            itemLevel:5,
             atk: [5,10],
             name:'Plain Staff',
             flavorText:'Someone must have spent many seconds whittling this.',
@@ -330,7 +330,7 @@
         },
         PLAIN_SWORD: {
             id: 16,
-            itemLevel:8,
+            itemLevel:5,
             atk: [7,13],
             name:'Plain Sword',
             flavorText:'This sword isn\'t anything to write home about.',
@@ -340,7 +340,7 @@
         },
         WOODEN_BOW: {
             id: 17,
-            itemLevel:8,
+            itemLevel:5,
             atk: [7,10],
             name:'Bow',
             flavorText:'This bow feels heavier than it looks.',
@@ -350,7 +350,7 @@
         },
         GOLD_EYE_NECKLACE: {
             id: 18,
-            itemLevel:8,
+            itemLevel:5,
             name:'Thorny Necklace',
             flavorText:'People no longer want to touch you when you wear this.',
             graphicIndex: game.Graphic.GOLD_EYE_NECKLACE,
@@ -360,17 +360,17 @@
         },
         RED_SCALE: {
             id: 19,
-            itemLevel:8,
+            itemLevel:5,
             name:'Blood Scale',
             flavorText:'This may make your reflection disappear.',
             graphicIndex: game.Graphic.RED_SCALE,
             equippableBy: game.EquippableBy.ALL,
             sellPrice: 15,
-            mods: [new game.LifeLeech(.1, .1)]
+            mods: [new game.LifeLeech(.2, .3)]
         },
         BLUE_BOW: {
             id: 20,
-            itemLevel:13,
+            itemLevel:8,
             atk:[-40,-20],
             name:'Doublestrike',
             flavorText:'You can suddenly nock two arrows at once, but you\'re not very good at it.',
@@ -381,7 +381,7 @@
         },
         SMALL_WOODEN_AXE: {
             id: 21,
-            itemLevel:13,
+            itemLevel:8,
             atk:[-20,-10],
             name:'Throwing Axes',
             flavorText:'These are lots of fun to throw!',
@@ -392,7 +392,7 @@
         },
         WOOD_STAFF_3: {
             id: 22,
-            itemLevel:13,
+            itemLevel:8,
             atk:[-45,-10],
             name:'Forked Staff',
             flavorText:'It shoots a bit wildly...',
@@ -403,7 +403,7 @@
         },
         BLUE_WHITE_SHIELD: {
             id: 23,
-            itemLevel:13,
+            itemLevel:8,
             def: [5,8],
             name:'Moon Shield',
             flavorText:'The moon shines brightly on this shield.',
@@ -413,7 +413,7 @@
         },
         BROWN_ARMOR: {
             id: 24,
-            itemLevel:13,
+            itemLevel:8,
             def: [7,10],
             name:'Leather Breastplate',
             flavorText:'Now you know what it\'s like to be a cow.',
@@ -423,7 +423,7 @@
         },
         RED_BOOT: {
             id: 25,
-            itemLevel:13,
+            itemLevel:8,
             def: [2,4],
             life: [30,50],
             name:'Coward\'s Boots',
@@ -434,7 +434,7 @@
         },
         FIRE_SWORD: {
             id: 26,
-            itemLevel:16,
+            itemLevel:13,
             atk: [10,30],
             def: [-7, -1],
             name:'Flame Sword',
@@ -445,7 +445,7 @@
         },
         BLUE_STAFF: {
             id: 27,
-            itemLevel:16,
+            itemLevel:13,
             atk: [12,25],
             life: [-50,50],
             name:'Ice Staff',
@@ -456,7 +456,7 @@
         },
         STEEL_CROSSBOW: {
             id: 28,
-            itemLevel:16,
+            itemLevel:13,
             atk: [10,20],
             name:'Steel Crossbow',
             flavorText:'It\'s heavy, sure, but you can handle it.',
@@ -466,7 +466,7 @@
         },
         GRAY_PANTS_1: {
             id: 29,
-            itemLevel:19,
+            itemLevel:16,
             def: [12,20],
             name:'Steel Cuisses',
             flavorText:'These accentuate your thighs.',
@@ -476,7 +476,7 @@
         },
         BLACK_GLOVES: {
             id: 30,
-            itemLevel:19,
+            itemLevel:16,
             def: [3,8],
             name:'Death\'s Touch',
             flavorText:'The outside is prickly like a cactus.',
@@ -487,7 +487,7 @@
         },
         GREEN_SABRE: {
             id: 31,
-            itemLevel:19,
+            itemLevel:16,
             name:'Thorn',
             flavorText:'This shall surely sicken your enemy.',
             graphicIndex: game.Graphic.GREEN_SABRE,
