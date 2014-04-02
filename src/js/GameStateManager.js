@@ -44,10 +44,8 @@
 
         /**
          * This counts down when you're in the OVERWORLD state, and when it
-         * reaches zero, it will reset the timer and save the game. That way,
-         * you don't collect a ton of coins on the overworld only to have them
-         * disappear because you didn't leave the overworld and come back (to
-         * cause the game to save).
+         * reaches zero, it will reset the timer and save the game. This exists
+         * so that buying units on the overworld is saved in your game.
          * @type {Number}
          */
         autoSaveOnOverworldCountdown: game.SAVE_GAME_ON_OVERWORLD_INTERVAL,
