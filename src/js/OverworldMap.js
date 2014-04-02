@@ -280,6 +280,8 @@
          *             to lay out generators
          *         minDistanceFromSpawn - Number - optional (defaults to 7). The
          *             minimum distance that generators can appear to spawn points.
+         *         maxEnemiesToSpawn - Number - number of enemies a particular 
+         *             generator can have out at once
          *     boss - Object - an object with the following:
          *         id - Number - the ID of the boss (see UnitData.js)
          *         level - Number - the level of the boss
@@ -614,7 +616,7 @@
             id: 7,
             x: 12, y: 4,
             description: 'Desert node 1',
-            statMultiplier: 1.1,
+            statMultiplier: 1.0,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[18,5,4,true],[12,4,7,true],[20,10,2,true]],
@@ -1374,12 +1376,13 @@
             id: 25,
             x: 31, y: 18,
             description: 'Jungle node 1',
-            castleLife: 15,
-            statMultiplier: 1.5,
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
+            castleLife: 18,
+            statMultiplier: 1.3,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [15,3],
             clearFog: [[28,18,3,true],[31,18,2],[34,20,2],[37,17,4,true],[32,24,5,true]],
-            levelRange: [18,22],
+            levelRange: [18,23],
 
             enemies: [
                 {
@@ -1391,10 +1394,10 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .04,
+                chancePerWalkableTile: .01,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
-                minDistanceFromSpawn: 7
+                minDistanceFromSpawn: 5
             },
 
             boss: {
@@ -1415,12 +1418,13 @@
             id: 26,
             x: 34, y: 20,
             description: 'Jungle node 2',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
-            statMultiplier: 1.5,
+            statMultiplier: 1.4,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [15,3],
             clearFog: [[39,22,2]],
-            levelRange: [22,22],
+            levelRange: [19,25],
 
             enemies: [
                 {
@@ -1447,7 +1451,7 @@
 
             minigame: {
                 baseDiamonds: 27,
-                diamondsPerLevel: 7,
+                diamondsPerLevel: 8,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1459,12 +1463,13 @@
             id: 27,
             x: 32, y: 24,
             description: 'Jungle node 3',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
-            statMultiplier: 1.5,
+            statMultiplier: 1.4,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [15,3],
             clearFog: [[39,25,2]],
-            levelRange: [22,22],
+            levelRange: [20,25],
 
             enemies: [
                 {
@@ -1491,7 +1496,7 @@
 
             minigame: {
                 baseDiamonds: 28,
-                diamondsPerLevel: 7,
+                diamondsPerLevel: 9,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1503,12 +1508,13 @@
             id: 28,
             x: 39, y: 22,
             description: 'Jungle node 4',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
-            statMultiplier: 1.5,
+            statMultiplier: 1.4,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [15,3],
             clearFog: [[39,25,2],[40,29,2]],
-            levelRange: [22,25],
+            levelRange: [20,27],
 
             enemies: [
                 {
@@ -1535,7 +1541,7 @@
 
             minigame: {
                 baseDiamonds: 29,
-                diamondsPerLevel: 7,
+                diamondsPerLevel: 10,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1547,12 +1553,13 @@
             id: 29,
             x: 37, y: 25,
             description: 'Jungle node 5',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
-            statMultiplier: 1.5,
+            statMultiplier: 1.4,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [15,3],
             clearFog: [[39,22,2],[40,29,2]],
-            levelRange: [22,26],
+            levelRange: [21,27],
 
             enemies: [
                 {
@@ -1579,7 +1586,7 @@
 
             minigame: {
                 baseDiamonds: 30,
-                diamondsPerLevel: 7,
+                diamondsPerLevel: 11,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1593,12 +1600,13 @@
             id: 30,
             x: 40, y: 29,
             description: 'Salt node 1',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
-            statMultiplier: 1.6,
+            statMultiplier: 1.5,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [13,4],
             clearFog: [[37,31,1,true],[40,31,2,true],[40,35,2],[40,32,2,true]],
-            levelRange: [23,26],
+            levelRange: [23,27],
 
             enemies: [
                 {
@@ -1628,7 +1636,7 @@
 
             minigame: {
                 baseDiamonds: 31,
-                diamondsPerLevel: 7,
+                diamondsPerLevel: 12,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1640,12 +1648,13 @@
             id: 31,
             x: 40, y: 35,
             description: 'Salt node 2',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
-            statMultiplier: 1.6,
+            statMultiplier: 1.5,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [13,4],
             clearFog: [[37,35,2]],
-            levelRange: [23,28],
+            levelRange: [25,30],
 
             enemies: [
                 {
@@ -1675,7 +1684,7 @@
 
             minigame: {
                 baseDiamonds: 32,
-                diamondsPerLevel: 7,
+                diamondsPerLevel: 13,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1687,12 +1696,13 @@
             id: 32,
             x: 37, y: 33,
             description: 'Salt node 3',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
-            statMultiplier: 1.6,
+            statMultiplier: 1.5,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [13,4],
             clearFog: [[37,33,3,true]],
-            levelRange: [25,28],
+            levelRange: [25,32],
 
             enemies: [
                 {
@@ -1722,7 +1732,7 @@
 
             minigame: {
                 baseDiamonds: 33,
-                diamondsPerLevel: 7,
+                diamondsPerLevel: 14,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1734,12 +1744,13 @@
             id: 33,
             x: 37, y: 31,
             description: 'Salt node 4',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
-            statMultiplier: 1.6,
+            statMultiplier: 1.5,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [13,4],
             clearFog: [[35,33,3,true]],
-            levelRange: [26,30],
+            levelRange: [27,32],
 
             enemies: [
                 {
@@ -1769,7 +1780,7 @@
 
             minigame: {
                 baseDiamonds: 34,
-                diamondsPerLevel: 7,
+                diamondsPerLevel: 15,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1781,12 +1792,13 @@
             id: 34,
             x: 33, y: 33,
             description: 'Salt node 5',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
-            statMultiplier: 1.6,
+            statMultiplier: 1.5,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [13,4],
             clearFog: [[37,33,6,true],[28,34,5,true]],
-            levelRange: [26,33],
+            levelRange: [30,33],
 
             enemies: [
                 {
@@ -1816,7 +1828,7 @@
 
             minigame: {
                 baseDiamonds: 26,
-                diamondsPerLevel: 8,
+                diamondsPerLevel: 16,
                 minEnemies: [10,12,14,16,18],
                 maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1830,12 +1842,13 @@
             id: 35,
             x: 23, y: 34,
             description: 'Snow node 1',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[21,31,2,true],[17,33,2,true],[13,35,2,true],[20,36,3],[16,36,3]],
-            levelRange: [28,30],
+            levelRange: [33,36],
 
             enemies: [
                 {
@@ -1859,7 +1872,7 @@
 
             minigame: {
                 baseDiamonds: 26,
-                diamondsPerLevel: 10,
+                diamondsPerLevel: 17,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1871,12 +1884,13 @@
             id: 36,
             x: 21, y: 31,
             description: 'Snow node 2',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[18,30,3,true]],
-            levelRange: [29,31],
+            levelRange: [34,37],
 
             enemies: [
                 {
@@ -1903,7 +1917,7 @@
 
             minigame: {
                 baseDiamonds: 27,
-                diamondsPerLevel: 10,
+                diamondsPerLevel: 18,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1915,12 +1929,13 @@
             id: 37,
             x: 18, y: 30,
             description: 'Snow node 3',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[15,31,3,true]],
-            levelRange: [29,32],
+            levelRange: [35,38],
 
             enemies: [
                 {
@@ -1950,7 +1965,7 @@
 
             minigame: {
                 baseDiamonds: 28,
-                diamondsPerLevel: 10,
+                diamondsPerLevel: 19,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -1962,12 +1977,13 @@
             id: 38,
             x: 17, y: 33,
             description: 'Snow node 4',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[15,31,3,true]],
-            levelRange: [30,33],
+            levelRange: [36,39],
 
             enemies: [
                 {
@@ -1997,7 +2013,7 @@
 
             minigame: {
                 baseDiamonds: 29,
-                diamondsPerLevel: 10,
+                diamondsPerLevel: 20,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -2009,12 +2025,13 @@
             id: 39,
             x: 15, y: 31,
             description: 'Snow node 5',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[17,36,6]],
-            levelRange: [32,35],
+            levelRange: [38,41],
 
             enemies: [
                 {
@@ -2047,7 +2064,7 @@
 
             minigame: {
                 baseDiamonds: 30,
-                diamondsPerLevel: 10,
+                diamondsPerLevel: 21,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -2059,12 +2076,13 @@
             id: 40,
             x: 13, y: 35,
             description: 'Snow node 6',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
             clearFog: [[3,36,8,true],[4,30,2,true],[8,30,2,true],[13,34,4,true]],
-            levelRange: [35,38],
+            levelRange: [39,42],
 
             enemies: [
                 {
@@ -2100,7 +2118,7 @@
 
             minigame: {
                 baseDiamonds: 31,
-                diamondsPerLevel: 10,
+                diamondsPerLevel: 22,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -2114,12 +2132,13 @@
             id: 41,
             x: 3, y: 28,
             description: 'Ice node 1',
+            startingCoins: game.UNIT_PLACEMENT_COST * 25,
             castleLife: 15,
             statMultiplier: 1.8,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [15,5],
             clearFog: [[1,1,1]],
-            levelRange: [40,50],
+            levelRange: [45,55],
 
             enemies: [
                 {
@@ -2155,7 +2174,7 @@
 
             minigame: {
                 baseDiamonds: 32,
-                diamondsPerLevel: 10,
+                diamondsPerLevel: 25,
                 minEnemies: [15,20,25,30,35],
                 maxEnemies: [20,25,30,35,40],
                 spread: game.MinigameEnemySpread.RANDOM
@@ -2485,7 +2504,7 @@
         }
 
         if ( generators.maxEnemiesToSpawn === undefined ) {
-            generators.maxEnemiesToSpawn = 10;
+            generators.maxEnemiesToSpawn = 5;
         }
 
         var defaultMovementAIID = game.MovementAI.FOLLOW_PATH;

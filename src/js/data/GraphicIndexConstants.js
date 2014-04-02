@@ -651,7 +651,7 @@
         BIG_KNIFE: 223,
         SABRE: 224,
         GREEN_SABRE: 225,
-        GREEN_SABRE: 226,
+        THIN_SWORD: 226,
         SWORD: 227,
         GOLD_HANDLE_SWORD: 228,
         GOLD_SWORD: 229,

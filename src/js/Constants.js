@@ -290,14 +290,14 @@
      * @type {Number}
      */
     window.game.ARCHER_SKILL_1_REQUIRED_LVL = 5;
-    window.game.ARCHER_SKILL_2_REQUIRED_LVL = 20;
-    window.game.ARCHER_SKILL_3_REQUIRED_LVL = 50;
+    window.game.ARCHER_SKILL_2_REQUIRED_LVL = 15;
+    window.game.ARCHER_SKILL_3_REQUIRED_LVL = 25;
     window.game.WIZARD_SKILL_1_REQUIRED_LVL = 5;
-    window.game.WIZARD_SKILL_2_REQUIRED_LVL = 20;
-    window.game.WIZARD_SKILL_3_REQUIRED_LVL = 50;
+    window.game.WIZARD_SKILL_2_REQUIRED_LVL = 15;
+    window.game.WIZARD_SKILL_3_REQUIRED_LVL = 25;
     window.game.WARRIOR_SKILL_1_REQUIRED_LVL = 5;
-    window.game.WARRIOR_SKILL_2_REQUIRED_LVL = 20;
-    window.game.WARRIOR_SKILL_3_REQUIRED_LVL = 50;
+    window.game.WARRIOR_SKILL_2_REQUIRED_LVL = 15;
+    window.game.WARRIOR_SKILL_3_REQUIRED_LVL = 25;
 
     window.game.WARRIOR_CRIT_CHANCE = .25;
     window.game.WARRIOR_CRIT_DAMAGE_MULT = 1.5;
