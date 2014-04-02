@@ -26,13 +26,13 @@
             this.addSlot(newSlot);
         };
 
-        this.generateItems();
-
         /**
         * Time in seconds until the inventory refreshes with new items
         * @type {Number}
         */
         this.timeUntilNewInventoryItems = game.INITIAL_SHOP_INVENTORY_REFRESH_TIME;
+
+        this.generateItems();
 
         // Have the first item show by default by making it selected
         game.ShopUI.clickedSlot(game.ShopUI.slots[0]);
@@ -60,6 +60,8 @@
         // Don't generate items if you don't have units. That way they can't use
         // their diamonds to buy items instead of their first unit.
         if ( averageLevel == 0 ) {
+            // Try again in another two seconds.
+            this.timeUntilNewInventoryItems = 2;
             return;
         } else {
             averageLevel = Math.floor(averageLevel / allPlayerUnits.length);
@@ -107,8 +109,8 @@
 
         // Checks to see if new items need to be generated for the inventory
         if (this.timeUntilNewInventoryItems < 0) {
-            this.generateItems();
             this.timeUntilNewInventoryItems = game.INITIAL_SHOP_INVENTORY_REFRESH_TIME;
+            this.generateItems();
             // Let the UI know that there are new items in the inventory
             game.ShopUI.newItemsInInventory();
         }
