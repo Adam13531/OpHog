@@ -201,18 +201,20 @@
 
     /**
      * Sells the selected item.
-     *
-     * For now, this actually just destroys the item.
      */
     window.game.PlayerInventoryUI.prototype.sellSelectedItem = function() {
-        if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
+        this.sellItemInSlot(this.selectedSlotUI);
+    };
+
+    window.game.PlayerInventoryUI.prototype.sellItemInSlot = function(slotUI) {
+        if ( slotUI == null || slotUI.isEmpty() ) {
             return;
         }
 
-        var sellPrice = this.getSellPrice(this.selectedSlotUI.getItem());
+        var sellPrice = this.getSellPrice(slotUI.getItem());
         game.Player.modifyDiamonds(sellPrice);
 
-        this.selectedSlotUI.slot.setItem(null);
+        slotUI.slot.setItem(null);
     };
 
     /**

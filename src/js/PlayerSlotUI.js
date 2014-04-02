@@ -144,9 +144,14 @@
             }
         });
 
-		// For usable slots, double-clicking will enter USE mode.
+        // For usable slots, double-clicking will enter USE mode.
         if ( this.slot.isUsableSlot() ) {
             game.HammerHelper.registerDoubleClickAndDoubleTap($(this.$spanSelector), this.useItem(this));
+        }
+
+        // For equippable slots, double-clicking will sell the item.
+        if ( this.slot.isEquipSlot() ) {
+            game.HammerHelper.registerDoubleClickAndDoubleTap($(this.$spanSelector), this.sellItem(this));
         }
 	}; 
 
@@ -163,13 +168,26 @@
 
     /**
      * Gets a dblclick function to enter USE mode.
-     * @param  {Slot} slot - the slot you double-clicked
+     * @param  {SlotUI} slot - the slot you double-clicked
      * @return {Object} the dblclick function
      */
     window.game.PlayerSlotUI.prototype.useItem = function(slotUI) {
         return function() {
             if (!slotUI.isEmpty()) {
                 game.playerInventoryUI.enterUseMode();
+            }
+        };
+    };
+
+    /**
+     * Gets a dblclick function to sell an item.
+     * @param  {SlotUI} slotUI - the slot you double-clicked
+     * @return {Object}        - the dblclick function
+     */
+    window.game.PlayerSlotUI.prototype.sellItem = function(slotUI) {
+        return function() {
+            if (!slotUI.isEmpty()) {
+                game.playerInventoryUI.sellItemInSlot(slotUI);
             }
         };
     };
