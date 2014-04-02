@@ -485,6 +485,16 @@
             sellPrice: 20,
             mods:[new game.Thorns(30)]
         },
+        GREEN_SABRE: {
+            id: 31,
+            itemLevel:19,
+            name:'Thorn',
+            flavorText:'This shall surely sicken your enemy.',
+            graphicIndex: game.Graphic.GREEN_SABRE,
+            equippableBy: game.EquippableBy.WAR,
+            sellPrice: 60,
+            mods:[new game.Poison(.25)]
+        },
     };
 
     // This is debug code to put the item name in the item's description. It's

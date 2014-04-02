@@ -7,6 +7,7 @@
         LIFE_LEECH: 'life leech',
         THORNS: 'thorns',
         REDUCE_DAMAGE: 'reduce damage',
+        POISON: 'poison',
         MULTIPLE_PROJECTILES: 'multiple projectiles'
     };
   
@@ -109,6 +110,9 @@
                     break;
                 case game.ItemModType.MULTIPLE_PROJECTILES: 
                     finalMod = new game.MultipleProjectiles(modObject.numberOfProjectiles);
+                    break;
+                case game.ItemModType.POISON: 
+                    finalMod = new game.Poison(modObject.chanceToPoison);
                     break;
                 default:
                     finalMod = null;
