@@ -111,7 +111,14 @@
         }
 
         var item = this.getSelectedSlot().slot.item;
-        return game.playerInventoryUI.getSellPrice(item) * 10;
+        if ( item == null ) return 0;
+
+        var sellPrice = game.playerInventoryUI.getSellPrice(item);
+        if ( item.usable ) {
+            return Math.floor(item.sellPrice * item.quantity * 20);
+        } else {
+            return sellPrice * 10;
+        }
     };
 
     /**
