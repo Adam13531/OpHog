@@ -381,6 +381,7 @@
             var width = nodeOfMap.dimensions[0] * game.PUZZLE_PIECE_SIZE;
             var height = nodeOfMap.dimensions[1] * game.PUZZLE_PIECE_SIZE;
             game.currentMap = game.MapGenerator.generateRandomMap(width, height, nodeOfMap);
+            game.Player.resetCastleLife(nodeOfMap.castleLife);
             game.UnitPlacementUI.initializeSpawnPoint();
 
             game.Minimap.initialize();

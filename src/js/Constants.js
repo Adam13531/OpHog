@@ -65,12 +65,6 @@
     window.game.maxSlotQuantity = 99;
 
     /**
-     * The amount of life that the castles start with.
-     * @type {Number}
-     */
-    window.game.FULL_CASTLE_LIFE = 20;
-
-    /**
      * The default font size, in pixels.
      * @type {Number}
      */

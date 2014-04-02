@@ -43,10 +43,18 @@
 
         /**
          * The amount of life that all castles share. There can be multiple
-         * castles on the screen, but they all share this life. 
+         * castles on the screen, but they all share this life.
+         *
+         * The value hard-coded below is never used. Map nodes set the max life
+         * (see castleLifeMax) and then castleLife starts at the max.
          * @type {Number}
          */
-        castleLife: game.FULL_CASTLE_LIFE,
+        castleLife: 100,
+
+        /**
+         * The max of 'castleLife' (see 'castleLife').
+         */
+        castleLifeMax: 100,
 
         /**
          * The player's inventory
@@ -82,7 +90,7 @@
                     var h = 7;
                     var x = castleTile.x * game.TILESIZE;
                     var y = (castleTile.y * game.TILESIZE) + game.TILESIZE - h;
-                    var percentLife = Math.min(1, Math.max(0, game.Player.castleLife / game.FULL_CASTLE_LIFE));
+                    var percentLife = Math.min(1, Math.max(0, this.castleLife / this.castleLifeMax));
 
                     game.graphicsUtil.drawBar(ctx, x,y,w,h, percentLife, {barR:200, borderR:255});
                 };
@@ -92,9 +100,12 @@
 
         /**
          * Sets castle life to full.
+         * @param {Number} newMax - if defined, castleLifeMax is set to this
+         * value before resetting the life to max.
          */
-        resetCastleLife: function() {
-            this.castleLife = game.FULL_CASTLE_LIFE;
+        resetCastleLife: function(newMax) {
+            if ( newMax !== undefined ) this.castleLifeMax = newMax;
+            this.castleLife = this.castleLifeMax;
         },
 
         /**

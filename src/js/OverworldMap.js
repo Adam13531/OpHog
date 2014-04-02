@@ -255,6 +255,7 @@
          * Each node in this array is an Object with the following:
          *     x - Number - x coordinate in tiles
          *     y - Number - y coordinate in tiles
+         *     castleLife - Number - the max castle life
          *     description - String - this will show verbatim over the node
          *     difficulty - Number - difficulty of the map that will be generated
          *     dimensions - Array:Number - an array of size 2 representing size
@@ -320,6 +321,7 @@
             id: 0,
             x: 1, y: 1,
             description: 'Forest node 1',
+            castleLife: 100,
 
             // You have way more coins than you'll ever use.
             startingCoins: game.UNIT_PLACEMENT_COST * 20,
@@ -1372,6 +1374,7 @@
             id: 25,
             x: 31, y: 18,
             description: 'Jungle node 1',
+            castleLife: 15,
             statMultiplier: 1.5,
             difficulty: 6,
             dimensions: [10,5],
@@ -1412,6 +1415,7 @@
             id: 26,
             x: 34, y: 20,
             description: 'Jungle node 2',
+            castleLife: 15,
             statMultiplier: 1.5,
             difficulty: 6,
             dimensions: [10,5],
@@ -1455,6 +1459,7 @@
             id: 27,
             x: 32, y: 24,
             description: 'Jungle node 3',
+            castleLife: 15,
             statMultiplier: 1.5,
             difficulty: 6,
             dimensions: [10,5],
@@ -1498,6 +1503,7 @@
             id: 28,
             x: 39, y: 22,
             description: 'Jungle node 4',
+            castleLife: 15,
             statMultiplier: 1.5,
             difficulty: 6,
             dimensions: [10,5],
@@ -1541,6 +1547,7 @@
             id: 29,
             x: 37, y: 25,
             description: 'Jungle node 5',
+            castleLife: 15,
             statMultiplier: 1.5,
             difficulty: 6,
             dimensions: [10,5],
@@ -1586,6 +1593,7 @@
             id: 30,
             x: 40, y: 29,
             description: 'Salt node 1',
+            castleLife: 15,
             statMultiplier: 1.6,
             difficulty: 6,
             dimensions: [10,5],
@@ -1632,6 +1640,7 @@
             id: 31,
             x: 40, y: 35,
             description: 'Salt node 2',
+            castleLife: 15,
             statMultiplier: 1.6,
             difficulty: 6,
             dimensions: [10,5],
@@ -1678,6 +1687,7 @@
             id: 32,
             x: 37, y: 33,
             description: 'Salt node 3',
+            castleLife: 15,
             statMultiplier: 1.6,
             difficulty: 6,
             dimensions: [10,5],
@@ -1724,6 +1734,7 @@
             id: 33,
             x: 37, y: 31,
             description: 'Salt node 4',
+            castleLife: 15,
             statMultiplier: 1.6,
             difficulty: 6,
             dimensions: [10,5],
@@ -1770,6 +1781,7 @@
             id: 34,
             x: 33, y: 33,
             description: 'Salt node 5',
+            castleLife: 15,
             statMultiplier: 1.6,
             difficulty: 6,
             dimensions: [10,5],
@@ -1818,6 +1830,7 @@
             id: 35,
             x: 23, y: 34,
             description: 'Snow node 1',
+            castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
@@ -1858,6 +1871,7 @@
             id: 36,
             x: 21, y: 31,
             description: 'Snow node 2',
+            castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
@@ -1901,6 +1915,7 @@
             id: 37,
             x: 18, y: 30,
             description: 'Snow node 3',
+            castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
@@ -1947,6 +1962,7 @@
             id: 38,
             x: 17, y: 33,
             description: 'Snow node 4',
+            castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
@@ -1993,6 +2009,7 @@
             id: 39,
             x: 15, y: 31,
             description: 'Snow node 5',
+            castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
@@ -2042,6 +2059,7 @@
             id: 40,
             x: 13, y: 35,
             description: 'Snow node 6',
+            castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
             dimensions: [10,5],
@@ -2096,6 +2114,7 @@
             id: 41,
             x: 3, y: 28,
             description: 'Ice node 1',
+            castleLife: 15,
             statMultiplier: 1.8,
             difficulty: 6,
             dimensions: [10,5],
@@ -2398,6 +2417,7 @@
 
         game.util.useDefaultIfUndefined(node, 'startingCoins', game.UNIT_PLACEMENT_COST * 15);
         game.util.useDefaultIfUndefined(node, 'statMultiplier', 1);
+        game.util.useDefaultIfUndefined(node, 'castleLife', 20);
 
         // Keep track of which enemies we've seen so that we warn when you have
         // duplicates.
