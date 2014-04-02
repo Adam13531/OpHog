@@ -168,6 +168,12 @@
          * Loads everything in the game.
          */
         loadGame: function() {
+            // Try loading the settings even if we don't have a fully saved
+            // game. It's possible to hit this code-path right now by pressing
+            // F7 to delete just your saved game.
+            this.log('Loading the settings');
+            this.loadSettings();
+
             if ( !this.hasSavedGame() ) {
                 return;
             }
@@ -212,8 +218,6 @@
             this.loadGameState();
             this.log('Loading the map');
             this.loadMap();
-            this.log('Loading the settings');
-            this.loadSettings();
             this.log('Loading generators');
             this.loadGenerators();
             this.log('Loading the camera');

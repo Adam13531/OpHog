@@ -72,14 +72,10 @@
     function setStartingGameState() {
         game.GameStateManager.switchToOverworldMap();
 
-        // Now that the overworld map is setup, check to see if we have a saved
-        // game to load.
-        if ( game.GameDataManager.hasSavedGame() ) {
-            // Autoload a saved game. If, as a programmer, you don't want this
-            // here because you're testing something, then instead put
-            // "game.GameDataManager.loadSettings()".
-            game.GameDataManager.loadGame();
-        }
+        // Now that the overworld map is setup autoload a saved game. If, as a
+        // programmer, you don't want this here because you're testing
+        // something, then instead put "game.GameDataManager.loadSettings()".
+        game.GameDataManager.loadGame();
 
         // Uncomment this if you want to jump directly to normal gameplay when
         // you first start the game.
