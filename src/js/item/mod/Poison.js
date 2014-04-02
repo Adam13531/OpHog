@@ -18,7 +18,14 @@
     window.game.Poison.prototype.onDamageDealt = function(attacker, target, damageDealt) {
         // Targets must be living in order to afflict them with poison,
         // otherwise the effect will still show on their tombstone.
-        if ( !target.isLiving() || !game.util.percentChance(this.chanceToPoison) ) return;
+        if ( !target.isLiving() ) return;
+
+        var effectivePoisonChance = this.chanceToPoison;
+
+        // Poison is very effective on bosses, so lower the chance by a lot.
+        if ( target.isBoss() ) effectivePoisonChance /= 1000.0;
+
+        if ( !game.util.percentChance(this.chanceToPoison) ) return;
 
         target.addStatusEffect(game.EffectType.POISON);
     };
