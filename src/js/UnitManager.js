@@ -248,6 +248,30 @@
         },
 
         /**
+         * Returns average and max level of all player units (regardless of
+         * whether they're placed, living, dead, etc.).
+         * @return {Object} - an object with averageLevel and maxLevel in it.
+         */
+        getLevelStatsOfPlayerUnits: function() {
+            var allPlayerUnits = this.getAllPlayerUnits();
+
+            var averageLevel = 0;
+            var maxLevel = 0;
+            for (var i = 0; i < allPlayerUnits.length; i++) {
+                var level = allPlayerUnits[i].level;
+                averageLevel += level;
+                maxLevel = Math.max(maxLevel, level);
+            };
+
+            if ( allPlayerUnits.length > 0 ) averageLevel /= allPlayerUnits.length;
+
+            return {
+                averageLevel: averageLevel,
+                maxLevel: maxLevel
+            };
+        },
+
+        /**
          * Gets all the unplaced units of the specified type.
          * @param  {Number} unitType - an ID from game.UnitType, e.g.
          * game.UnitType.ORC.id.

@@ -44,18 +44,12 @@
      * Randomly generates items and puts them into the shop inventory
      */
     window.game.ShopInventory.prototype.generateItems = function() {
-        var minLevel = 1;
-        var maxLevel = 1;
-
         // Figure out the level of the items based on your units.
-        var allPlayerUnits = game.UnitManager.getAllPlayerUnits();
+        var playerLevelStats = game.UnitManager.getLevelStatsOfPlayerUnits();
 
-        var averageLevel = 0;
-        for (var i = 0; i < allPlayerUnits.length; i++) {
-            var level = allPlayerUnits[i].level;
-            averageLevel += level;
-            maxLevel = Math.max(maxLevel, Math.floor(level * 1.1));
-        };
+        var minItemLevel = 1;
+        var averageLevel = playerLevelStats.averageLevel;
+        var maxItemLevel = Math.max(1, Math.floor(playerLevelStats.maxLevel * 1.1));
 
         // Don't generate items if you don't have units. That way they can't use
         // their diamonds to buy items instead of their first unit.
@@ -63,8 +57,6 @@
             // Try again in another two seconds.
             this.timeUntilNewInventoryItems = 2;
             return;
-        } else {
-            averageLevel = Math.floor(averageLevel / allPlayerUnits.length);
         }
 
         for (var i = 0; i < this.slots.length; i++) {
@@ -72,16 +64,23 @@
             var allowUsable = slot.isUsableSlot();
             var allowEquippable = !allowUsable;
 
-            minLevel = averageLevel;
+            minItemLevel = averageLevel;
 
-            // 10% chance to make this slot have a minLevel of 1. This still
+            // 10% chance to make this slot have a minItemLevel of 1. This still
             // makes it very unlikely to actually show level 1 items when the
             // max level is high enough, but this way you will always be able to
             // find weak usable items.
             if ( allowUsable && game.util.randomInteger(1,10) == 1 ) {
-                minLevel = 1;
+                minItemLevel = 1;
             }
-            slot.setItem(game.GenerateRandomItem(minLevel, maxLevel, allowUsable, allowEquippable));
+            var item = game.GenerateRandomItem(minItemLevel, maxItemLevel, allowUsable, allowEquippable);
+
+            // There's a chance to raise the quantity of usable items so that
+            // you're not always buying 'startingQuantity'.
+            if ( item.usable && game.util.randomInteger(1,25) <= averageLevel ) {
+                item.quantity = Math.min(99, item.quantity + game.util.randomInteger(0, averageLevel));
+            }
+            slot.setItem(item);
         };
     };
 
