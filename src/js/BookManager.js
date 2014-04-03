@@ -182,8 +182,47 @@
                     title = 'Inventory Album';
                     html = '<div>Open your inventory ' + extraInstructions + ' to see your items.<br/><br/>Here, you can equip items (like swords or shields) to an entire <i>class</i> of units at a time. You can also use items like potions and gems.</div>';
                 } else if ( id == 5 ) {
+                    var wolfImg = '<img src="' + charSheet.get1x1Sprite(game.Graphic.BLACK_WOLF, true) + '" style="vertical-align:bottom"/>';
+                    var ravenImg = '<img src="' + charSheet.get1x1Sprite(game.Graphic.CROW_RAVEN, true) + '" style="vertical-align:bottom"/>';
+                    var dragonImg = '<img src="' + charSheet.get1x1Sprite(game.Graphic.GREEN_DRAGON, true) + '" style="vertical-align:bottom"/>';
+                    var archImg = '<img src="' + charSheet.get1x1Sprite(game.UnitType.PLAYER_ARCHER.graphicIndexes[0], true) + '" style="vertical-align:bottom"/>';
+                    var warImg = '<img src="' + charSheet.get1x1Sprite(game.UnitType.PLAYER_WARRIOR.graphicIndexes[0], true) + '" style="vertical-align:bottom"/>';
+                    var warFaceLeftImg = '<img src="' + charSheet.get1x1Sprite(game.UnitType.PLAYER_WARRIOR.graphicIndexes[0], false) + '" style="vertical-align:bottom"/>';
+                    var warImgBlueBg = '<img style="background-color:#0000ff" src="' + charSheet.get1x1Sprite(game.UnitType.PLAYER_WARRIOR.graphicIndexes[0], true) + '" style="vertical-align:bottom"/>';
+                    var wizImg = '<img src="' + charSheet.get1x1Sprite(game.UnitType.PLAYER_WIZARD.graphicIndexes[0], true) + '" style="vertical-align:bottom"/>';
+                    var warImgRedBg = '<img style="background-color:#ff0000" src="' + charSheet.get1x1Sprite(game.UnitType.PLAYER_WARRIOR.graphicIndexes[0], false) + '" style="vertical-align:bottom"/>';
+                    var quickAtkImg = '<img src="' + eff24Sheet.get1x1Sprite(game.Graphic.MEDIUM_GRAY_CIRCLE_1, true) + '" style="vertical-align:bottom"/>';
+                    var healImg = '<img src="' + eff24Sheet.get1x1Sprite(game.Graphic.MEDIUM_BLUE_CIRCLE_1, true) + '" style="vertical-align:bottom"/>';
+                    var reviveImg = '<img src="' + eff24Sheet.get1x1Sprite(game.Graphic.SMALL_YELLOW_STAR, true) + '" style="vertical-align:bottom"/>';
+                    var buffStatsImg = '<img src="' + eff24Sheet.get1x1Sprite(game.Graphic.MEDIUM_PURPLE_CIRCLE_2, true) + '" style="vertical-align:bottom"/>';
+                    var tombstoneImg = '<img src="' + envSheet.get1x1Sprite(game.Graphic.RIP_TOMBSTONE, true) + '" style="vertical-align:bottom"/>';
                     title = 'Scroll of Skills';
-                    html = '<div>Units gain abilities as they level up. They use these abilities randomly in battles. <ul><li>Archers can summon pets</li><li>Warriors get new combat skills</li><li>Wizards gain support abilities</li></ul></div>';
+                    var critText = 'Critical hit (' + (game.WARRIOR_CRIT_CHANCE * 100) + '% chance to do ' + (game.WARRIOR_CRIT_DAMAGE_MULT * 100) + '% damage)';
+                    html = '<div>Units gain abilities as they level up. They use these abilities randomly in battles. ' +
+                    '<ul>' +
+                        '<li>Archers can summon pets' + 
+                            '<ul style="margin:0em">' + 
+                                '<li>Lv. ' + game.ARCHER_SKILL_1_REQUIRED_LVL + ': Wolf ' + archImg + ' ' + wolfImg + '</li>' + 
+                                '<li>Lv. ' + game.ARCHER_SKILL_2_REQUIRED_LVL + ': Raven ' + archImg + ' ' + ravenImg + '</li>' + 
+                                '<li>Lv. ' + game.ARCHER_SKILL_3_REQUIRED_LVL + ': Dragon ' + archImg + ' ' + dragonImg + '</li>' + 
+                            '</ul>' +
+                        '</li>' +
+                        '<li>Warriors get new combat skills' + 
+                            '<ul style="margin:0em">' + 
+                                '<li>Lv. ' + game.WARRIOR_SKILL_1_REQUIRED_LVL + ': Quick Attack (attack with low cooldown) ' + warImg + quickAtkImg + '</li>' + 
+                                '<li>Lv. ' + game.WARRIOR_SKILL_2_REQUIRED_LVL + ': Self-defense buff ' + warImgBlueBg + '</li>' + 
+                                '<li>Lv. ' + game.WARRIOR_SKILL_3_REQUIRED_LVL + ': ' + critText + '</li>' + 
+                            '</ul>' +
+                        '</li>' +
+                        '<li>Wizards gain support abilities' + 
+                            '<ul style="margin:0em">' + 
+                                '<li>Lv. ' + game.WIZARD_SKILL_1_REQUIRED_LVL + ': Heal ' + wizImg + healImg + warFaceLeftImg + '</li>' + 
+                                '<li>Lv. ' + game.WIZARD_SKILL_2_REQUIRED_LVL + ': Buff stats' + wizImg + buffStatsImg + warImgRedBg + '</li>' + 
+                                '<li>Lv. ' + game.WIZARD_SKILL_3_REQUIRED_LVL + ': Revive ' + wizImg + reviveImg + tombstoneImg + '</li>' + 
+                            '</ul>' +
+                        '</li>' +
+                    '</ul></div>';
+
                 } else if ( id == 6 ) {
                     title = 'Dictionary of Difficulties';
                     var easySpawnerImg = '<img src="' + envSheet.get1x1Sprite(game.Graphic.SPAWNER, false) + '" style="vertical-align:bottom"/>';

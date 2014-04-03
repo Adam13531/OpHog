@@ -1615,7 +1615,7 @@
             // for big units.
             // 
             // Also, now that it says "RIP", we never hflip it.
-            envSheet.drawSprite(ctx, 28, this.getCenterX() - game.TILESIZE / 2, this.getCenterY() - game.TILESIZE / 2, false);              
+            envSheet.drawSprite(ctx, game.Graphic.RIP_TOMBSTONE, this.getCenterX() - game.TILESIZE / 2, this.getCenterY() - game.TILESIZE / 2, false);              
         } else {
 
             // Draw all status effects
