@@ -14,7 +14,7 @@
     var browserKeysToStop = new Array(game.Key.DOM_VK_PAGE_UP, game.Key.DOM_VK_PAGE_DOWN, 
         game.Key.DOM_VK_END, game.Key.DOM_VK_HOME, game.Key.DOM_VK_LEFT, game.Key.DOM_VK_UP, 
         game.Key.DOM_VK_RIGHT, game.Key.DOM_VK_DOWN, game.Key.DOM_VK_SPACE, 
-        game.Key.DOM_VK_F7/*I don't even think F7 does anything*/);
+        game.Key.DOM_VK_F7/*I don't even think F7 does anything*/, game.Key.DOM_VK_F10);
 
     // This is a dictionary of keycode --> boolean representing whether it is held.
     var keysDown = {};
@@ -33,6 +33,15 @@
 
     // This is global.
     game.$canvas = null;
+
+    /**
+     * I plan on releasing this game with the full source code, so I don't
+     * really care if people cheat, but I don't want them to accidentally ruin
+     * their experience by pressing a "dev" button like "H" to automatically win
+     * a map, so they first need to press F10 to be able to "cheat".
+     * @type {Boolean}
+     */
+    game.devModeEnabled = false;
 
     $(window).load(function() {
         init();
@@ -550,14 +559,14 @@
             }
 
             // 'Z' - save game
-            if ( evt.keyCode == game.Key.DOM_VK_Z ) {
+            if ( evt.keyCode == game.Key.DOM_VK_Z && game.devModeEnabled) {
                 game.GameDataManager.saveGame();
                 var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'SAVING', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
             }
 
             // 'X' - load game
-            if ( evt.keyCode == game.Key.DOM_VK_X ) {
+            if ( evt.keyCode == game.Key.DOM_VK_X && game.devModeEnabled) {
                 game.GameDataManager.loadGame();
                 var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, 'LOADING', true, '#0f0', false);
                 game.TextManager.addTextObj(textObj);
@@ -570,28 +579,38 @@
             }
 
             // 'F' - Clears all fog from current map
-            if ( evt.keyCode == game.Key.DOM_VK_F) {
+            if ( evt.keyCode == game.Key.DOM_VK_F && game.devModeEnabled ) {
                 game.currentMap.clearAllFog();
             }
 
             // 'F7' - delete the save file
-            if ( evt.keyCode == game.Key.DOM_VK_F7) {
+            if ( evt.keyCode == game.Key.DOM_VK_F7 && game.devModeEnabled ) {
                 game.GameDataManager.deleteSavedGame();
             }
 
+            // 'F10' - toggle dev mode
+            if ( evt.keyCode == game.Key.DOM_VK_F10) {
+                game.devModeEnabled = !game.devModeEnabled;
+                var text = 'Dev mode is ' + (game.devModeEnabled ? 'enabled' : 'disabled') + '! (F10)';
+                var color = game.devModeEnabled ? '#0f0' : '#f00';
+
+                var textObj = new game.TextObj(game.canvasWidth / 2, game.canvasHeight / 2, text, true, color, false);
+                game.TextManager.addTextObj(textObj);
+            }
+
             // 'U' - shake the camera
-            if (evt.keyCode == game.Key.DOM_VK_U) {
+            if (evt.keyCode == game.Key.DOM_VK_U && game.devModeEnabled ) {
                 // Shake the camera for approximately 20 game loops
                 game.Camera.shakeTimer = 20 * game.MS_PER_FRAME;
             }
 
             // 'C' - generate a collectible on the map
-            if (evt.keyCode == game.Key.DOM_VK_C) {
+            if (evt.keyCode == game.Key.DOM_VK_C && game.devModeEnabled ) {
                 game.CollectibleManager.addNewCollectible();
             }
 
             // 'K' - create random items for the player
-            if (evt.keyCode == game.Key.DOM_VK_K) {
+            if (evt.keyCode == game.Key.DOM_VK_K && game.devModeEnabled ) {
                 for (var i = 0; i < 10; i++) {
                     var minLevel = 1;
                     var maxLevel = 1000;
@@ -604,10 +623,10 @@
             // 'O' - add equippable item to inventory
             // 'P' - add usable item to inventory
             var itemID = null;
-            if (evt.keyCode == game.Key.DOM_VK_O) {
+            if (evt.keyCode == game.Key.DOM_VK_O && game.devModeEnabled ) {
                 itemID = game.ItemType.SHIELD.id;
             }
-            if (evt.keyCode == game.Key.DOM_VK_P) {
+            if (evt.keyCode == game.Key.DOM_VK_P && game.devModeEnabled ) {
                 itemID = game.ItemType.MEGA_CREATE_SPAWNER.id;
             }
 
@@ -617,7 +636,7 @@
 
             // 'M' - if not positive, bring money to 1000. Otherwise, double it.
             // Same for diamonds.
-            if (evt.keyCode == game.Key.DOM_VK_M) {
+            if (evt.keyCode == game.Key.DOM_VK_M && game.devModeEnabled ) {
                 var coins = game.Player.coins;
                 coins = coins <= 0 ? (-coins + 1000) : coins;
                 game.Player.modifyCoins(coins);
@@ -638,24 +657,24 @@
             }
 
             // 'N' - add 3 of each unit type to the unit placement UI
-            if (evt.keyCode == game.Key.DOM_VK_N) {
+            if (evt.keyCode == game.Key.DOM_VK_N && game.devModeEnabled ) {
                 game.UnitPlacementUI.debugAddUnits();
             }
 
             // 'R' - place all unplaced units for free
-            if (evt.keyCode == game.Key.DOM_VK_R) {
+            if (evt.keyCode == game.Key.DOM_VK_R && game.devModeEnabled ) {
                 var tileX = game.UnitPlacementUI.spawnPointX;
                 var tileY = game.UnitPlacementUI.spawnPointY;
                 game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
             }
 
             // 'H' - win the game.
-            if (evt.keyCode == game.Key.DOM_VK_H) {
+            if (evt.keyCode == game.Key.DOM_VK_H && game.devModeEnabled ) {
                 game.GameStateManager.enterWinState();
             }
 
             // 'J' - lose the game.
-            if (evt.keyCode == game.Key.DOM_VK_J) {
+            if (evt.keyCode == game.Key.DOM_VK_J && game.devModeEnabled ) {
                 game.GameStateManager.enterLoseState();
             }
 
