@@ -70,6 +70,11 @@
                 tileX: 16,
                 tileY: 6,
             },
+            {
+                id: 8,
+                tileX: 11,
+                tileY: 3,
+            },
         ],
 
         /**
@@ -236,6 +241,19 @@
                 } else if ( id == 7 ) {
                     title = 'Codex of Choices';
                     html = '<div>The harsh fires to the east are still more welcoming than the spirits you\'ll encounter in the cemetery to the south. Should you endure those ghostly trials, you\'ll find a quicker route to the jungle.</div>';
+                } else if ( id == 8 ) {
+                    title = 'Hardcover of Hotkeys';
+                    html = '<div>There are many shortcuts to help you. Try some out now!' + 
+                        '<ul>' +
+                            '<li>WASD: scroll the map (hold shift to scroll faster)</li>' +
+                            '<li>Arrows+space: select units to buy/place on the lower bar</li>' +
+                            '<li>I: open/close the inventory</li>' +
+                            '<li>Y: open/close the shop</li>' +
+                            '<li>Q: sell selected inventory item</li>' +
+                            '<li>E: play music</li>' +
+                            '<li>R (only in-world): place all units you can afford</li>' +
+                        '</ul>' +
+                    '</div>';
                 }
 
                 game.BookDialog.setHtml(html);
