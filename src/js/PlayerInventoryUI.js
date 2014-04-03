@@ -101,7 +101,7 @@
             // I sometimes check in this code with this set to 'false' but
             // with this comment still)
             autoOpen: false, 
-            width:360,
+            width:385,
             height:342,
             resizable:false,
 
@@ -207,7 +207,8 @@
     };
 
     window.game.PlayerInventoryUI.prototype.sellItemInSlot = function(slotUI) {
-        if ( slotUI == null || slotUI.isEmpty() ) {
+        // The dialog needs to be visible for this to work.
+        if ( slotUI == null || slotUI.isEmpty() || !this.$inventoryDialog.is(":visible")) {
             return;
         }
 
@@ -508,17 +509,21 @@
      * enables/disables the button.
      */
     window.game.PlayerInventoryUI.prototype.updateSellButton = function() {
+        var fontSize = game.playerUsedKeyboard ? '.75em' : '.75em';
+        var sellText = 'Sell' + (game.playerUsedKeyboard ? ' (Q)' : '');
+        var sellSpan = '<span class="ui-button-text" style="font-size:' + fontSize + '">' + sellText + '</span>';
+
         if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
             this.$sellItemButton.button('disable');
-            this.$sellItemButton.html('<span class="ui-button-text" style="font-size:.75em">Sell</span>');
+            this.$sellItemButton.html(sellSpan);
             return;
         }
 
         var item = this.selectedSlotUI.getItem();
+        var sellPrice = this.getSellPrice(item);
 
         this.$sellItemButton.button('enable');
-        var sellPrice = this.getSellPrice(item);
-        this.$sellItemButton.html('<span class="ui-button-text" style="font-size:.75em">Sell</span><span style="font-size:.6em">' + 
+        this.$sellItemButton.html(sellSpan + '<span style="font-size:.75em">' + 
             sellPrice + ' </span>' + 
             game.util.makeTransparentImgTag('icon-sprite diamond-icon'));
     };

@@ -478,7 +478,14 @@
         // Pixels/second
         speed = 150;
         $(document).keydown(function(evt) {
-            game.playerUsedKeyboard = true;
+            if ( !game.playerUsedKeyboard ) {
+                // The player used the keyboard for the first time. This means
+                // we know they have a keyboard! We can change certain logic to
+                // accommodate this.
+                game.playerUsedKeyboard = true;
+
+                game.playerInventoryUI.updateSellButton();
+            }
             keysDown[evt.keyCode] = true;
 
             if ($.inArray(evt.keyCode, browserKeysToStop) > -1) {
@@ -543,6 +550,11 @@
             // Spacebar
             if ( evt.keyCode == game.Key.DOM_VK_SPACE ) {
                 game.UICanvas.buyCurrentUnit();
+            }
+
+            // 'Q' - sell selected item
+            if ( evt.keyCode == game.Key.DOM_VK_Q ) {
+                game.playerInventoryUI.sellSelectedItem();
             }
 
             // Pressing 'L' will toggle life bars between the following:

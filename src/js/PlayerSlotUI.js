@@ -150,9 +150,9 @@
         }
 
         // For equippable slots, double-clicking will sell the item.
-        if ( this.slot.isEquipSlot() ) {
-            game.HammerHelper.registerDoubleClickAndDoubleTap($(this.$spanSelector), this.sellItem(this));
-        }
+        // if ( this.slot.isEquipSlot() ) {
+        //     game.HammerHelper.registerDoubleClickAndDoubleTap($(this.$spanSelector), this.sellItem(this));
+        // }
 	}; 
 
 	window.game.PlayerSlotUI.prototype = new game.SlotUI;
