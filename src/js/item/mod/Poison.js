@@ -22,8 +22,8 @@
 
         var effectivePoisonChance = this.chanceToPoison;
 
-        // Poison is very effective on bosses, so lower the chance by a lot.
-        if ( target.isBoss() ) effectivePoisonChance /= 1000.0;
+        // Lower the chance against bosses.
+        if ( target.isBoss() ) effectivePoisonChance /= 10.0;
 
         if ( !game.util.percentChance(this.chanceToPoison) ) return;
 

@@ -139,6 +139,12 @@
             }
         }
 
+        // Poison shouldn't be a guaranteed win against bosses; reduce damage by
+        // 95%.
+        if ( this.modifyLifeOnProc < 0 && target.isBoss() ) {
+            this.modifyLifeOnProc = Math.floor(this.modifyLifeOnProc / 20.0);
+        }
+
         /**
          * This keeps track of when the effect should proc next, if ever. It's
          * like "cooldown".
