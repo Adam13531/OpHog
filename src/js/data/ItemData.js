@@ -271,7 +271,7 @@
         WOOD_BUCKLER_1: {
             id: 10,
             itemLevel:1,
-            def: [1,3],
+            def: [1,4],
             name:'Wooden buckler',
             flavorText:'A cheap, wooden buckler.',
             graphicIndex: game.Graphic.WOOD_BUCKLER_1,
@@ -281,7 +281,7 @@
         DAGGER_1: {
             id: 11,
             itemLevel:1,
-            atk: [1,3],
+            atk: [1,4],
             name:'Dagger',
             flavorText:'A common dagger.',
             graphicIndex: game.Graphic.DAGGER_1,
@@ -291,7 +291,7 @@
         WOOD_BUCKLER_2: {
             id: 12,
             itemLevel:2,
-            def: [2,5],
+            def: [2,7],
             name:'Reinforced buckler',
             flavorText:'It\'s still not great.',
             graphicIndex: game.Graphic.WOOD_BUCKLER_2,
@@ -301,7 +301,7 @@
         DAGGER_2: {
             id: 13,
             itemLevel:2,
-            atk: [2,5],
+            atk: [2,7],
             name:'Sharpened Dagger',
             flavorText:'Try not to run with it.',
             graphicIndex: game.Graphic.DAGGER_2,
@@ -311,7 +311,7 @@
         RUBY_RING: {
             id: 14,
             itemLevel:1,
-            life: [5,20],
+            life: [5,40],
             name:'Minor Ring of Life',
             flavorText:'Putting this ring on your finger gives you a new outlook on things.',
             graphicIndex: game.Graphic.RUBY_RING,
@@ -321,7 +321,7 @@
         WOOD_STAFF_1: {
             id: 15,
             itemLevel:5,
-            atk: [5,10],
+            atk: [5,15],
             name:'Plain Staff',
             flavorText:'Someone must have spent many seconds whittling this.',
             graphicIndex: game.Graphic.WOOD_STAFF_1,
@@ -331,7 +331,7 @@
         PLAIN_SWORD: {
             id: 16,
             itemLevel:5,
-            atk: [7,13],
+            atk: [7,17],
             name:'Plain Sword',
             flavorText:'This sword isn\'t anything to write home about.',
             graphicIndex: game.Graphic.SWORD,
@@ -341,7 +341,7 @@
         WOODEN_BOW: {
             id: 17,
             itemLevel:5,
-            atk: [7,10],
+            atk: [7,13],
             name:'Bow',
             flavorText:'This bow feels heavier than it looks.',
             graphicIndex: game.Graphic.WOODEN_BOW,
@@ -356,7 +356,7 @@
             graphicIndex: game.Graphic.GOLD_EYE_NECKLACE,
             equippableBy: game.EquippableBy.ALL,
             sellPrice: 15,
-            mods: [new game.Thorns(15)]
+            mods: [new game.Thorns(30)]
         },
         RED_SCALE: {
             id: 19,
@@ -404,7 +404,7 @@
         BLUE_WHITE_SHIELD: {
             id: 23,
             itemLevel:8,
-            def: [5,8],
+            def: [5,15],
             name:'Moon Shield',
             flavorText:'The moon shines brightly on this shield.',
             graphicIndex: game.Graphic.BLUE_WHITE_SHIELD,
@@ -414,7 +414,7 @@
         BROWN_ARMOR: {
             id: 24,
             itemLevel:8,
-            def: [7,10],
+            def: [7,18],
             name:'Leather Breastplate',
             flavorText:'Now you know what it\'s like to be a cow.',
             graphicIndex: game.Graphic.BROWN_ARMOR,
@@ -424,8 +424,8 @@
         RED_BOOT: {
             id: 25,
             itemLevel:8,
-            def: [2,4],
-            life: [30,50],
+            def: [5,10],
+            life: [50,80],
             name:'Coward\'s Boots',
             flavorText:'When the going gets tough, the tough get going.',
             graphicIndex: game.Graphic.RED_BOOT,
@@ -457,7 +457,7 @@
         STEEL_CROSSBOW: {
             id: 28,
             itemLevel:13,
-            atk: [10,20],
+            atk: [10,40],
             name:'Steel Crossbow',
             flavorText:'It\'s heavy, sure, but you can handle it.',
             graphicIndex: game.Graphic.STEEL_CROSSBOW,
@@ -467,7 +467,7 @@
         GRAY_PANTS_1: {
             id: 29,
             itemLevel:16,
-            def: [12,20],
+            def: [16,30],
             name:'Steel Cuisses',
             flavorText:'These accentuate your thighs.',
             graphicIndex: game.Graphic.GRAY_PANTS_1,
@@ -483,7 +483,7 @@
             graphicIndex: game.Graphic.BLACK_GLOVES,
             equippableBy: game.EquippableBy.ALL,
             sellPrice: 20,
-            mods:[new game.Thorns(30)]
+            mods:[new game.Thorns(50)]
         },
         GREEN_SABRE: {
             id: 31,
@@ -494,6 +494,102 @@
             equippableBy: game.EquippableBy.WAR,
             sellPrice: 60,
             mods:[new game.Poison(.25)]
+        },
+        BIG_RED_GEM: {
+            id: 32,
+            itemLevel:19,
+            atk:[1,15],
+            def:[1,15],
+            life:[1,150],
+            name:'Crimson Guard',
+            flavorText:'"Piece 1 of 3" is inscribed on the back.',
+            graphicIndex: game.Graphic.BIG_RED_GEM,
+            equippableBy: game.EquippableBy.WIZ,
+            sellPrice: 10,
+        },
+        BIG_GREEN_GEM: {
+            id: 33,
+            itemLevel:19,
+            life:[1,400],
+            name:'Jade Guard',
+            flavorText:'"Piece 2 of 3" is inscribed on the back.',
+            graphicIndex: game.Graphic.BIG_GREEN_GEM,
+            equippableBy: game.EquippableBy.ARCH,
+            sellPrice: 10,
+        },
+        BIG_BLUE_GEM: {
+            id: 34,
+            itemLevel:19,
+            def:[1,30],
+            name:'Azure Guard',
+            flavorText:'"Piece 3 of 3" is inscribed on the back.',
+            graphicIndex: game.Graphic.BIG_BLUE_GEM,
+            equippableBy: game.EquippableBy.WAR,
+            sellPrice: 50,
+            mods: [new game.Thorns(75)]
+        },
+        AMETHYST_RING: {
+            id: 35,
+            itemLevel:22,
+            name:'Vampiric Ring',
+            flavorText:'There is a bat faintly visible in the gemstone.',
+            graphicIndex: game.Graphic.AMETHYST_RING,
+            equippableBy: game.EquippableBy.ALL,
+            sellPrice: 70,
+            mods: [new game.LifeLeech(.4, .5)]
+        },
+        SAPPHIRE_RING: {
+            id: 36,
+            itemLevel:22,
+            name:'Cleric\'s Ring',
+            flavorText:'No pain, no gain.',
+            graphicIndex: game.Graphic.SAPPHIRE_RING,
+            equippableBy: game.EquippableBy.ALL,
+            sellPrice: 70,
+            mods: [new game.Regen(.05)]
+        },
+        PURPLE_ARMOR: {
+            id: 37,
+            itemLevel:25,
+            def:[25,50],
+            life:[-40,-150],
+            name:'Gaudy Armor',
+            flavorText:'This makes you stand out on the battlefield.',
+            graphicIndex: game.Graphic.PURPLE_ARMOR,
+            equippableBy: game.EquippableBy.ALL,
+            sellPrice: 10,
+        },
+        YELLOW_CROSS_STAFF: {
+            id: 38,
+            itemLevel:31,
+            life:[1,500],
+            name:'Cross of Light',
+            flavorText:'The center of the cross is too bright to look at.',
+            graphicIndex: game.Graphic.YELLOW_CROSS_STAFF,
+            equippableBy: game.EquippableBy.WIZ,
+            sellPrice: 10,
+            mods: [new game.LifeLeech(.1, 1), new game.Regen(.01), ]
+        },
+        YELLOW_BOW: {
+            id: 39,
+            itemLevel:31,
+            name:'Bow of Many Arrows',
+            flavorText:'You wonder why you don\'t run out.',
+            graphicIndex: game.Graphic.YELLOW_BOW,
+            equippableBy: game.EquippableBy.ARCH,
+            sellPrice: 130,
+            mods: [new game.MultipleProjectiles(3)]
+        },
+        BLOOD_SWORD: {
+            id: 40,
+            itemLevel:31,
+            atk:[10,50],
+            name:'Blood Sword',
+            flavorText:'Each hit makes you stronger.',
+            graphicIndex: game.Graphic.BLOOD_SWORD,
+            equippableBy: game.EquippableBy.WAR,
+            sellPrice: 80,
+            mods: [new game.LifeLeech(.5, .5)]
         },
     };
 

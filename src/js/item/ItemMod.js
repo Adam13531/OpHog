@@ -8,6 +8,7 @@
         THORNS: 'thorns',
         REDUCE_DAMAGE: 'reduce damage',
         POISON: 'poison',
+        REGEN: 'regen',
         MULTIPLE_PROJECTILES: 'multiple projectiles'
     };
   
@@ -113,6 +114,9 @@
                     break;
                 case game.ItemModType.POISON: 
                     finalMod = new game.Poison(modObject.chanceToPoison);
+                    break;
+                case game.ItemModType.REGEN: 
+                    finalMod = new game.Regen(modObject.chanceToRegen);
                     break;
                 default:
                     finalMod = null;
