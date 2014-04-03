@@ -673,11 +673,11 @@
                 game.UnitPlacementUI.debugAddUnits();
             }
 
-            // 'R' - place all unplaced units for free
-            if (evt.keyCode == game.Key.DOM_VK_R && game.devModeEnabled ) {
+            // 'R' - place all unplaced units
+            if (evt.keyCode == game.Key.DOM_VK_R ) {
                 var tileX = game.UnitPlacementUI.spawnPointX;
                 var tileY = game.UnitPlacementUI.spawnPointY;
-                game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH);
+                game.UnitManager.placeAllPlayerUnits(tileX, tileY, game.MovementAI.FOLLOW_PATH, !game.devModeEnabled);
             }
 
             // 'H' - win the game.

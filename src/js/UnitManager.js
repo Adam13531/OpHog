@@ -160,15 +160,22 @@
          * Calls placeUnit on every unplaced player unit.
          * @param  {Number} tileX - tile X to place at
          * @param  {Number} tileY - tile Y to place at
-         * @param  {game.MovementAI} movementAI - a movement AI to apply, or null if
-         * you don't want to change whatever the current one is.
+         * @param  {game.MovementAI} movementAI - a movement AI to apply, or
+         * null if you don't want to change whatever the current one is.
+         * @param {Boolean} chargeMoneyToPlaceUnits - if true, every unit placed
+         * will cost the normal amount of money.
          */
-        placeAllPlayerUnits: function(tileX, tileY, movementAI) {
+        placeAllPlayerUnits: function(tileX, tileY, movementAI, chargeMoneyToPlaceUnits) {
             for (var i = 0; i < this.gameUnits.length; i++) {
                 var unit = this.gameUnits[i];
                 if ( unit.isPlayer() && !unit.hasBeenPlaced ) {
-                    unit.placeUnit(tileX, tileY, movementAI);
-                    game.UnitPlacementUI.updateUnit(unit);
+
+                    if ( chargeMoneyToPlaceUnits ) {
+                        game.UnitPlacementUI.placeUnit(unit);
+                    } else {
+                        unit.placeUnit(tileX, tileY, movementAI);
+                        game.UnitPlacementUI.updateUnit(unit);
+                    }
                 }
             };
         },
