@@ -6,13 +6,13 @@
      */
     window.game.Audio = {
         NEW_3: new game.AudioDescriptor(game.MUSIC_PATH,'new3',false,true,false,true),
-        HIT_1: new game.AudioDescriptor(game.SOUND_PATH,'hit1',true,true,true,false),
-        EXPLODE_1: new game.AudioDescriptor(game.SOUND_PATH,'explode1',true,true,true,false),
-        EXPLODE_2: new game.AudioDescriptor(game.SOUND_PATH,'explode2',true,true,true,false),
-        PICKUP_1: new game.AudioDescriptor(game.SOUND_PATH,'pickup1',true,true,true,false),
-        BLIP_1: new game.AudioDescriptor(game.SOUND_PATH,'blip1',true,true,true,false),
-        POWERUP_1: new game.AudioDescriptor(game.SOUND_PATH,'powerup1',true,true,true,false),
-        POWERUP_2: new game.AudioDescriptor(game.SOUND_PATH,'powerup2',true,true,true,false),
+        HIT_1: new game.AudioDescriptor(game.SOUND_PATH,'hit1',false,true,false,false),
+        EXPLODE_1: new game.AudioDescriptor(game.SOUND_PATH,'explode1',false,true,false,false),
+        EXPLODE_2: new game.AudioDescriptor(game.SOUND_PATH,'explode2',false,true,false,false),
+        PICKUP_1: new game.AudioDescriptor(game.SOUND_PATH,'pickup1',false,true,false,false),
+        BLIP_1: new game.AudioDescriptor(game.SOUND_PATH,'blip1',false,true,false,false),
+        POWERUP_1: new game.AudioDescriptor(game.SOUND_PATH,'powerup1',false,true,false,false),
+        POWERUP_2: new game.AudioDescriptor(game.SOUND_PATH,'powerup2',false,true,false,false),
         EXPLODE_3: new game.AudioDescriptor(game.SOUND_PATH,'explode3',false,true,false,false),
     };
 
