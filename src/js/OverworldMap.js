@@ -2164,7 +2164,7 @@
             statMultiplier: 1.8,
             difficulty: 6,
             dimensions: [15,5],
-            clearFog: [[1,1,1]],
+            clearFog: [[1,1,10000]],
             levelRange: [45,55],
 
             enemies: [
