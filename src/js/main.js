@@ -102,9 +102,8 @@
         var $toggleMinimapVisibility = $('#toggleMinimapVisibility');
         var $showInventory = $('#showInventory');
         var $showShop = $('#showShop');
-        var $createUnits = $('#createUnits');
         var $grantMoney = $('#grantMoney');
-        var $goToOverworld = $('#goToOverworld');
+        var $forfeit = $('#forfeit');
 
         $settingsButton.button({
             icons: {
@@ -144,29 +143,6 @@
             $('#shop-screen').dialog('open');
         });
 
-        // This button is here for a couple of reasons:
-        // 
-        // 1. There are some pretty good bugs that've been found by spawning
-        // multiple units at the same time or having units stacked on top of
-        // each other.
-        // 
-        // 2. There's no other way on an iPad or something to spawn units
-        // quickly.
-        $createUnits.button();
-        $createUnits.click(function() {
-            $settingsDialog.dialog('close');
-            for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.PLAYER,1);
-                newUnit.placeUnit(1,9,game.MovementAI.FOLLOW_PATH);
-                game.UnitManager.addUnit(newUnit);
-            };
-            for (var i = 0; i < 30; i++) {
-                var newUnit = new game.Unit(game.UnitType.ORC.id,game.PlayerFlags.ENEMY,1);
-                newUnit.placeUnit(23,9,game.MovementAI.FOLLOW_PATH);
-                game.UnitManager.addUnit(newUnit);
-            };
-        });
-
         $grantMoney.button();
         $grantMoney.click(function() {
             $settingsDialog.dialog('close');
@@ -174,16 +150,16 @@
             game.Player.modifyDiamonds(99999);
         });
 
-        $goToOverworld.button();
-        $goToOverworld.click(function() {
+        // Remove the grantMoney button and its corresponding <br/> for now. You
+        // can still press 'M' to get all the money you want.
+        $grantMoney.hide();
+        $('#grantMoney ~ br')[0].remove();
+
+        $forfeit.button();
+        $forfeit.click(function() {
             $settingsDialog.dialog('close');
 
-            // Set the game state to something that has a valid transition to
-            // the overworld state. We may not have a valid transition to the
-            // win state, so we manually set it here instead of going through
-            // setState.
-            game.GameStateManager.currentState = game.GameStates.NORMAL_WIN_SCREEN;
-            game.GameStateManager.enterOverworldState();
+            game.GameStateManager.enterLoseState();
         });
 
         var $settingsDialog = $('#settingsDialog');

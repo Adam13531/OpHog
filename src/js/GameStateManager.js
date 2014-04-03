@@ -493,6 +493,14 @@
         },
 
         /**
+         * Sets the state of the Forfeit button, which is the only "normal" way
+         * to leave a map when you have no way of winning/losing.
+         */
+        setForfeitButtonState: function() {
+            $('#forfeit').button(this.isNormalGameplay() ? 'enable' : 'disable');
+        },
+
+        /**
          * Sets the state of the game.
          * @param  {game.GameStates} newState - the new state
          */
@@ -508,9 +516,10 @@
             this.previousState = this.currentState;
             this.currentState = newState;
 
-            // Regardless of how we transitioned, setting the state of this
-            // button shouldn't hurt.
+            // Regardless of how we transitioned, setting the state of these
+            // buttons shouldn't hurt.
             game.playerInventoryUI.setUseItemButtonState();
+            this.setForfeitButtonState();
 
             // Same thing with these buttons
             this.hideTransitionButtons();
