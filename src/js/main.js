@@ -450,7 +450,6 @@
         game.playerInventoryUI = new game.PlayerInventoryUI();
         game.Player.inventory = new game.PlayerInventory();
 
-        game.UnitPlacementUI.setupUI();
         game.BookDialog.setupUI();
         game.ShopUI = new game.ShopUI();
         game.ShopInventory = new game.ShopInventory();
@@ -666,11 +665,6 @@
                 } else {
                     game.ShopUI.show();
                 }
-            }
-
-            // 'N' - add 3 of each unit type to the unit placement UI
-            if (evt.keyCode == game.Key.DOM_VK_N && game.devModeEnabled ) {
-                game.UnitPlacementUI.debugAddUnits();
             }
 
             // 'R' - place all unplaced units

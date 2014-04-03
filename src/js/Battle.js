@@ -565,9 +565,6 @@
 
             // This will also level up the unit if appropriate
             unit.gainExperience(expForThisUnit);
-
-            // Update the unit placement UI
-            game.UnitPlacementUI.updateUnit(unit);
         };
     };
 

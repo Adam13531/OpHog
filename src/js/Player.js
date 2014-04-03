@@ -197,7 +197,6 @@
         modifyDiamonds: function(amount) {
             this.diamonds += amount;
 
-            game.UnitPlacementUI.playerDiamondsChanged();
             game.ShopUI.playerDiamondsChanged();
             game.GameStateManager.playerDiamondsChanged();
         },

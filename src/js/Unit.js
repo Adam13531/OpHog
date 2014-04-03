@@ -541,8 +541,6 @@
         this.removeStatusEffects();
         this.hasBeenPlaced = false;
         this.removeFromMap = false;
-
-        game.UnitPlacementUI.updateUnit(this);
     };
 
     /**

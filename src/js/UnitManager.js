@@ -174,7 +174,6 @@
                         game.UnitPlacementUI.placeUnit(unit);
                     } else {
                         unit.placeUnit(tileX, tileY, movementAI);
-                        game.UnitPlacementUI.updateUnit(unit);
                     }
                 }
             };

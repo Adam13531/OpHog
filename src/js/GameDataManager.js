@@ -244,11 +244,6 @@
             this.log('Loading books read');
             this.loadBookStates();
 
-            // If you had enough coins in your current game to buy a new slot,
-            // then you loaded a game where you didn't have enough coins, this
-            // would cover the state-change that would disable the "buy" button.
-            game.UnitPlacementUI.playerDiamondsChanged();
-
             this.loadingGame = false;
         },
 
@@ -402,10 +397,6 @@
             };
             game.UnitManager.gameUnits = finalUnits;
             game.unitID = Number(localStorage.lastUnitID);
-
-            // Set the unit placement UI's page to the current one so that it
-            // refreshes
-            game.UnitPlacementUI.navigateToPage(game.UnitPlacementUI.unitType);
         },
 
         /**

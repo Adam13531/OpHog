@@ -18,19 +18,6 @@
 		
 		// Tell the UI that we updated this slot.
         game.playerInventoryUI.updatedSlot(this.slotIndex);
-
-        // If this is an equip slot, update the units
-        if ( this.isClassSlot() ) {
-            var unitTypeToUpdate = null;
-            if (this.slotType == game.SlotTypes.WAR) unitTypeToUpdate = game.PlaceableUnitType.WARRIOR;
-            if (this.slotType == game.SlotTypes.WIZ) unitTypeToUpdate = game.PlaceableUnitType.WIZARD;
-            if (this.slotType == game.SlotTypes.ARCH) unitTypeToUpdate = game.PlaceableUnitType.ARCHER;
-
-            var unitsOfThisType = game.UnitManager.getUnits(unitTypeToUpdate);
-            for (var i = 0; i < unitsOfThisType.length; i++) {
-                game.UnitPlacementUI.updateUnit(unitsOfThisType[i]);
-            };
-        }
 	};
 
 }());
