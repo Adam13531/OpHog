@@ -190,6 +190,9 @@
         
         // See the other call to this where 'false' is specified.
         game.DialogManager.setCloseOnEscape(true);
+
+        // Enable the sell button
+        this.updateSellButton();
     };
 
     /**
@@ -208,7 +211,7 @@
 
     window.game.PlayerInventoryUI.prototype.sellItemInSlot = function(slotUI) {
         // The dialog needs to be visible for this to work.
-        if ( slotUI == null || slotUI.isEmpty() || !this.$inventoryDialog.is(":visible")) {
+        if ( slotUI == null || slotUI.isEmpty() || !this.$inventoryDialog.is(":visible") || this.isInUseMode() ) {
             return;
         }
 
@@ -477,6 +480,9 @@
 
         this.hide();
         this.$useItemInstructions.show();
+
+        // Disable the sell button
+        this.updateSellButton();
     };
 
     /**
@@ -513,7 +519,7 @@
         var sellText = 'Sell' + (game.playerUsedKeyboard ? ' (Q)' : '');
         var sellSpan = '<span class="ui-button-text" style="font-size:' + fontSize + '">' + sellText + '</span>';
 
-        if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() ) {
+        if ( this.selectedSlotUI == null || this.selectedSlotUI.isEmpty() || this.isInUseMode() ) {
             this.$sellItemButton.button('disable');
             this.$sellItemButton.html(sellSpan);
             return;
