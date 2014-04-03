@@ -1189,7 +1189,7 @@
 
             // Default chance to drop item
             if ( unitType.chanceToDropItem === undefined ) {
-                unitType.chanceToDropItem = .09;
+                unitType.chanceToDropItem = .02;
                 unitType.itemsDropped = equalChanceAllLoot;
             }
 

@@ -268,6 +268,8 @@
          *         levelRange - Array[2] - an array of [minLevel, maxLevel].
          *         relativeWeight - Number - optional (defaults to 1000). The 
          *             relative weight that this enemy will spawn.
+         *     itemDropChanceMultiplier - Number - if specified, ALL enemies in this level
+         *         will have their chanceToDropItem multiplied by this
          *     generators - Object - an object with the following;
          *         chancePerWalkableTile - Number - this is a way to specify the
          *             number of generators that will show on a map. This is the
@@ -366,6 +368,7 @@
             description: 'Forest node 2',
             startingCoins: game.UNIT_PLACEMENT_COST * 20,
             difficulty: 2,
+            itemDropChanceMultiplier: 4,
             dimensions: [7,3],
             clearFog: [[1,7,3,true]],
             levelRange: [1,2],
@@ -403,6 +406,7 @@
             x: 1, y: 9,
             description: 'Forest node 3',
             difficulty: 2,
+            itemDropChanceMultiplier: 4,
             dimensions: [7,3],
             clearFog: [[1,11,2]],
             levelRange: [3,4],
@@ -447,6 +451,7 @@
             x: 3, y: 8,
             description: 'Forest node 4',
             difficulty: 2,
+            itemDropChanceMultiplier: 4,
             dimensions: [10,3],
             clearFog: [[4,5,5]],
             levelRange: [6,10],
@@ -489,6 +494,7 @@
             x: 3, y: 11,
             description: 'Forest node 5',
             difficulty: 2,
+            itemDropChanceMultiplier: 4,
             dimensions: [10,3],
             clearFog: [[5,10,4]],
             levelRange: [4,6],
@@ -531,6 +537,7 @@
             x: 5, y: 10,
             description: 'Forest node 6',
             difficulty: 2,
+            itemDropChanceMultiplier: 4,
             dimensions: [11,3],
             clearFog: [[4,5,5],[3,11,3]],
             levelRange: [6,10],
@@ -571,6 +578,7 @@
             x: 8, y: 4,
             description: 'Forest node 7',
             difficulty: 2,
+            itemDropChanceMultiplier: 4,
             dimensions: [12,3],
             clearFog: [[12,4,5,true]],
             levelRange: [6,11],
@@ -618,6 +626,7 @@
             description: 'Desert node 1',
             statMultiplier: 1.0,
             difficulty: 6,
+            itemDropChanceMultiplier: 4,
             dimensions: [10,4],
             clearFog: [[18,5,4,true],[12,4,7,true],[20,10,2,true]],
             levelRange: [8,12],
@@ -645,6 +654,8 @@
             minigame: {
                 baseDiamonds: 24,
                 diamondsPerLevel: 4,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -656,6 +667,7 @@
             description: 'Desert node 2',
             statMultiplier: 1.1,
             difficulty: 6,
+            itemDropChanceMultiplier: 4,
             dimensions: [10,4],
             clearFog: [[24,1,5,true]],
             levelRange: [9,14],
@@ -689,6 +701,8 @@
             minigame: {
                 baseDiamonds: 26,
                 diamondsPerLevel: 4,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -700,6 +714,7 @@
             description: 'Desert node 3',
             statMultiplier: 1.1,
             difficulty: 6,
+            itemDropChanceMultiplier: 4,
             dimensions: [10,4],
             clearFog: [[16,12,4,true],[17,17,2],[26,10,5,true]],
             levelRange: [11,14],
@@ -733,6 +748,8 @@
             minigame: {
                 baseDiamonds: 26,
                 diamondsPerLevel: 4,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -773,6 +790,8 @@
             minigame: {
                 baseDiamonds: 26,
                 diamondsPerLevel: 4,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -814,6 +833,8 @@
             minigame: {
                 baseDiamonds: 26,
                 diamondsPerLevel: 5,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -855,6 +876,8 @@
             minigame: {
                 baseDiamonds: 27,
                 diamondsPerLevel: 5,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -893,6 +916,8 @@
             minigame: {
                 baseDiamonds: 26,
                 diamondsPerLevel: 4,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -931,6 +956,8 @@
             minigame: {
                 baseDiamonds: 26,
                 diamondsPerLevel: 5,
+                minEnemies: [10,12,14,16,18],
+                maxEnemies: [12,14,16,18,20],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -984,7 +1011,7 @@
             description: 'Mud node 2',
             statMultiplier: 1.3,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [15,4],
             clearFog: [[21,17,4,true],[25,18,2],[21,23,2]],
             levelRange: [16,19],
 
@@ -1027,7 +1054,7 @@
             description: 'Mud node 3',
             statMultiplier: 1.3,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [17,4],
             clearFog: [[21,17,2],[25,18,2],[25,22,2],[28,18,3,true]],
             levelRange: [15,22],
 
@@ -1044,7 +1071,7 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .03,
+                chancePerWalkableTile: .02,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
                 minDistanceFromSpawn: 7
@@ -1113,7 +1140,7 @@
             description: 'Mud node 5',
             statMultiplier: 1.3,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [15,4],
             clearFog: [[21,20,3,true],[21,23,2,true],[25,22,2],[15,21,3,true],[18,23,2]],
             levelRange: [12,19],
 
@@ -1159,7 +1186,7 @@
             description: 'Mud node 6',
             statMultiplier: 1.3,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [15,4],
             clearFog: [[25,22,2,true],[21,23,2,true],[25,18,2,true]],
             levelRange: [15,19],
 
@@ -1287,7 +1314,7 @@
             description: 'Autumn node 3',
             statMultiplier: 1.25,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [14,5],
             clearFog: [[40,16,3,true],[39,10,2]],
             levelRange: [17,21],
 
@@ -1407,8 +1434,8 @@
             minigame: {
                 baseDiamonds: 52,
                 diamondsPerLevel: 7,
-                minEnemies: [10,12,14,16,18],
-                maxEnemies: [12,14,16,18,20],
+                minEnemies: [14,16,18,20,22],
+                maxEnemies: [16,18,20,22,24],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1452,8 +1479,8 @@
             minigame: {
                 baseDiamonds: 54,
                 diamondsPerLevel: 8,
-                minEnemies: [10,12,14,16,18],
-                maxEnemies: [12,14,16,18,20],
+                minEnemies: [14,16,18,20,22],
+                maxEnemies: [16,18,20,22,24],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1497,8 +1524,8 @@
             minigame: {
                 baseDiamonds: 54,
                 diamondsPerLevel: 9,
-                minEnemies: [10,12,14,16,18],
-                maxEnemies: [12,14,16,18,20],
+                minEnemies: [14,16,18,20,22],
+                maxEnemies: [16,18,20,22,24],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1542,8 +1569,8 @@
             minigame: {
                 baseDiamonds: 58,
                 diamondsPerLevel: 10,
-                minEnemies: [10,12,14,16,18],
-                maxEnemies: [12,14,16,18,20],
+                minEnemies: [14,16,18,20,22],
+                maxEnemies: [16,18,20,22,24],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -1587,8 +1614,8 @@
             minigame: {
                 baseDiamonds: 58,
                 diamondsPerLevel: 11,
-                minEnemies: [10,12,14,16,18],
-                maxEnemies: [12,14,16,18,20],
+                minEnemies: [14,16,18,20,22],
+                maxEnemies: [16,18,20,22,24],
                 spread: game.MinigameEnemySpread.RANDOM
             },
 
@@ -2080,7 +2107,7 @@
             castleLife: 15,
             statMultiplier: 1.7,
             difficulty: 6,
-            dimensions: [10,5],
+            dimensions: [20,4],
             clearFog: [[3,36,8,true],[4,30,2,true],[8,30,2,true],[13,34,4,true]],
             levelRange: [39,42],
 
@@ -2106,10 +2133,10 @@
             ],
 
             generators: {
-                chancePerWalkableTile: .04,
+                chancePerWalkableTile: .03,
                 spread: game.GeneratorEnemySpread.ALL,
                 placement: game.GeneratorPlacement.RANDOM,
-                minDistanceFromSpawn: 7
+                minDistanceFromSpawn: 3
             },
 
             boss: {
@@ -2437,6 +2464,7 @@
         game.util.useDefaultIfUndefined(node, 'startingCoins', game.UNIT_PLACEMENT_COST * 15);
         game.util.useDefaultIfUndefined(node, 'statMultiplier', 1);
         game.util.useDefaultIfUndefined(node, 'castleLife', 20);
+        game.util.useDefaultIfUndefined(node, 'itemDropChanceMultiplier', 1);
 
         // Keep track of which enemies we've seen so that we warn when you have
         // duplicates.

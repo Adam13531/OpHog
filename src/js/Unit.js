@@ -141,11 +141,14 @@
             this.def = Math.floor(this.def * statMultiplier);
         }
 
-        this.chanceToDropItem = unitData.chanceToDropItem;
-        if ( unitData.itemsDropped === undefined ) {
-            this.itemsDropped = [];
-        } else {
-            this.itemsDropped = game.util.shallowCopyArray(unitData.itemsDropped);
+        this.chanceToDropItem = 0;
+        this.itemsDropped = [];
+
+        if ( game.currentMap.nodeOfMap != null ) {
+            this.chanceToDropItem = unitData.chanceToDropItem * game.currentMap.nodeOfMap.itemDropChanceMultiplier;
+            if ( unitData.itemsDropped !== undefined ) {
+                this.itemsDropped = game.util.shallowCopyArray(unitData.itemsDropped);
+            }
         }
 
         // Go through the items that this unit can drop and remove any whose
