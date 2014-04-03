@@ -5,7 +5,7 @@
      * inventory is refreshed with new items.
      * @type {Number}
      */
-    window.game.INITIAL_SHOP_INVENTORY_REFRESH_TIME = 20;
+    window.game.INITIAL_SHOP_INVENTORY_REFRESH_TIME = 30;
 
 	/**
 	 * Inventory for the shop. This inherits from game.Inventory
@@ -54,12 +54,18 @@
         // Don't generate items if you don't have units. That way they can't use
         // their diamonds to buy items instead of their first unit.
         if ( averageLevel == 0 ) {
-            // Try again in another two seconds.
-            this.timeUntilNewInventoryItems = 2;
+            // Try again in another second
+            this.timeUntilNewInventoryItems = 1;
             return;
         }
 
         for (var i = 0; i < this.slots.length; i++) {
+            // There's only a small chance per slot that a new item is
+            // generated. There's no need to make this number too small since
+            // people could just go AFK and wait for items or they could refresh
+            // the tab to get new ones. I think 25% is good.
+            if ( game.util.randomInteger(1,4) != 1 ) continue;
+
             var slot = this.slots[i];
             var allowUsable = slot.isUsableSlot();
             var allowEquippable = !allowUsable;

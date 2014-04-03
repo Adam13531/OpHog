@@ -495,7 +495,7 @@
         } else {
             price += Math.max(0, item.atk);
             price += Math.max(0, item.def);
-            price += Math.max(0, item.life);
+            price += Math.max(0, Math.floor(item.life / 2.0));
         }
 
         price = Math.floor(price);
