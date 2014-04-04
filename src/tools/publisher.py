@@ -12,6 +12,9 @@
 #       in this script to point directly to node.js on your computer.
 #       http://nodejs.org/
 #   UglifyJS - https://github.com/mishoo/UglifyJS
+#   Java - must be in your PATH
+#   yuicompressor-2.4.8.jar - must be in your PATH. I hard-coded the script to 
+#       use this version because I'm lazy.
 
 import os
 import sys
@@ -20,6 +23,9 @@ import subprocess
 
 # The name that appears in each <script> tag in the html file.
 JS_DIRECTORY_NAME = 'js'
+
+
+CSS_DIRECTORY_NAME = 'css'
 
 # The name of the minified output of this script.
 MINIFIED_JS_NAME = 'min.js'
@@ -40,6 +46,11 @@ jsDir = None
 # The path to UglifyJS. It is assumed that 
 uglifyJsPath = None
 
+# I put the "minified" output HTML in a "game" folder, so to get from my output
+# folder ("game") to the original index.html, I need to provide "../src/" to
+# this script, that way all of the scripts/css files will still resolve.
+pathFromOutputToInput = ''
+
 # Concatenates the contents of each file.
 # jsFiles - an array of paths (they can be relative) to each JavaScript file.
 def concatenateAllFiles(jsFiles) :
@@ -51,12 +62,18 @@ def concatenateAllFiles(jsFiles) :
             for line in lines :
                 concatFile.write(line)
 
+# Same as os.path.join, but instead of using os.sep, it will always use forward
+# slashes.
+def pathJoin(*args) :
+    joined = os.path.join(*args)
+    return joined.replace("\\","/")
+
 def verifyArgs() :
-    global inputHtml, outputHtmlFilePath, jsDir, minifiedJsFilePath, uglifyJsPath
+    global inputHtml, outputHtmlFilePath, jsDir, minifiedJsFilePath, uglifyJsPath, pathFromOutputToInput, inputDir
 
     args = sys.argv
-    if len(args) is not 4 :
-        print 'Usage: %s <path to index.html> <path to output file> <path to uglifyjs>' % (args[0])
+    if len(args) < 4 :
+        print 'Usage: %s <path to index.html> <path to output HTML file> <path to uglifyjs> [path from output HTML to input HTML]' % (args[0])
         return False
 
     # It would be better to check for path equality, but it's better to have
@@ -68,6 +85,9 @@ def verifyArgs() :
     inputHtml = args[1]
     outputHtmlFilePath = args[2]
     uglifyJsPath = args[3]
+
+    if len(args) >= 5 :
+        pathFromOutputToInput = args[4]
 
     inputDir = os.path.dirname(inputHtml)
     jsDir = os.path.join(inputDir, JS_DIRECTORY_NAME)
@@ -98,23 +118,44 @@ def findJsFilesToConsolidate() :
 
     outputHtmlFile = open(outputHtmlFilePath, 'w')
 
-    foundBody = False
     wroteMinifiedJsLine = False
     for line in lines :
+        # Ignore blank lines
+        if line.strip() == '' : continue
+
         writeLine = True
 
-        # Ignore any <script> tags until we've found the <body> tag. This way,
-        # scripts in the <head> will still be executed. It's possible that I
-        # don't need to do this and I can minify the <head> scripts too, but I
-        # want to be safe.
-        if not foundBody :
-            if re.match(".*<body>.*", line, re.IGNORECASE) :
-                foundBody = True
-        else :
-            # Find only <script> tags whose src starts with JS_DIRECTORY_NAME.
-            match = re.match('.*<script\s+src="' + JS_DIRECTORY_NAME + '/(?P<filename>.*)"', line, re.IGNORECASE)
-            if match :
-                jsFile = jsDir + '/' + match.groups('filename')[0]
+        match = re.match('.*stylesheet.*"' + CSS_DIRECTORY_NAME + '/(?P<filename>.*)"', line, re.IGNORECASE)
+        if match :
+            filename = match.groups('filename')[0]
+            writeLine = False
+
+            minify = True
+            if filename.lower().find('min.css') is not -1 :
+                minFilename = filename
+                minify = False
+            else :
+                minFilename = filename.replace('.css', '.min.css');
+            newCssDir = pathJoin(pathFromOutputToInput, CSS_DIRECTORY_NAME)
+            text = line.replace(filename, minFilename).replace(CSS_DIRECTORY_NAME + '/', newCssDir + '/')
+            outputHtmlFile.write(text)
+
+            # Minify the CSS right away
+            inputCss = os.path.join(inputDir, CSS_DIRECTORY_NAME, filename)
+            minFilename = os.path.basename(minFilename)
+            if minify :
+                subprocess.call(['java', '-jar', 'yuicompressor-2.4.8.jar', inputCss, '-o', minFilename])
+
+        # Find only <script> tags whose src starts with JS_DIRECTORY_NAME.
+        match = re.match('.*<script\s+src="' + JS_DIRECTORY_NAME + '/(?P<filename>.*)"', line, re.IGNORECASE)
+        if match :
+            filename = match.groups('filename')[0]
+
+            # If this was already minified, then just output it as-is.
+            if filename.lower().find('min.js') is not -1 :
+                pass
+            else :
+                jsFile = os.path.join(jsDir, filename)
                 jsFiles.append(jsFile)
                 print '[' + jsFile + ']'
 
@@ -124,7 +165,8 @@ def findJsFilesToConsolidate() :
                 # the scripts we found.
                 if not wroteMinifiedJsLine :
                     wroteMinifiedJsLine = True
-                    outputHtmlFile.write('\t\t<script src="%s/%s"></script>\n' % (JS_DIRECTORY_NAME, MINIFIED_JS_NAME))
+                    writeDir = pathJoin(pathFromOutputToInput, JS_DIRECTORY_NAME, MINIFIED_JS_NAME)
+                    outputHtmlFile.write('\t\t<script src="%s"></script>\n' % (writeDir))
 
         if writeLine :
             outputHtmlFile.write(line)
@@ -153,6 +195,7 @@ def main() :
     print "Done. Paths:"
     print "\tMinified JavaScript file: %s" % (minifiedJsFilePath)
     print "\tModified index.html: %s" % (outputHtmlFilePath)
+    print "\Modified CSS files: this directory (*.min.css)"
 
 if __name__ == '__main__':
     main()
