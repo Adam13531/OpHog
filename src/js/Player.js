@@ -80,7 +80,7 @@
             // Switch from screen coordinates to camera coordinates
             game.Camera.scaleAndTranslate(ctx);
             // Draw castle's life over them for the user to see
-            if ( game.keyPressedToDisplayLifeBars ) {
+            if ( game.keyPressedToDisplayLifeBars || (game.displayLifeBarForPlayer & game.DisplayLifeBarFor.CASTLE) ) {
 
                 var castleTiles = game.currentMap.getAllTiles(game.TileFlags.CASTLE);
                 for (var i = 0; i < castleTiles.length; i++) {
@@ -215,6 +215,30 @@
                 game.castleFlashScreenTimer = 255;
                 game.AudioManager.playAudio(game.Audio.EXPLODE_1);
             }
+        },
+
+        /**
+         * Sets what you want to show lifebars for and makes the checkboxes in
+         * the settings menu reflect your choices.
+         *
+         * For all of the parameters below, explicitly pass false if you want to
+         * disable it, explicitly pass true if you want to enable it, and pass
+         * undefined if you don't want to change the value.
+         */
+        setShowLifebars: function(showForPlayer, showForEnemy, showForCastle) {
+            if ( showForPlayer === true ) game.displayLifeBarForPlayer |= game.DisplayLifeBarFor.PLAYER;
+            if ( showForPlayer === false ) game.displayLifeBarForPlayer &= ~game.DisplayLifeBarFor.PLAYER;
+            if ( showForEnemy === true ) game.displayLifeBarForPlayer |= game.DisplayLifeBarFor.ENEMY;
+            if ( showForEnemy === false ) game.displayLifeBarForPlayer &= ~game.DisplayLifeBarFor.ENEMY;
+            if ( showForCastle === true ) game.displayLifeBarForPlayer |= game.DisplayLifeBarFor.CASTLE;
+            if ( showForCastle === false ) game.displayLifeBarForPlayer &= ~game.DisplayLifeBarFor.CASTLE;
+
+            $('#showLifebarPlayer').prop('checked', ((game.displayLifeBarForPlayer & game.DisplayLifeBarFor.PLAYER) != 0));
+            $('#showLifebarPlayer').button('refresh');
+            $('#showLifebarEnemy').prop('checked', ((game.displayLifeBarForPlayer & game.DisplayLifeBarFor.ENEMY) != 0));
+            $('#showLifebarEnemy').button('refresh');
+            $('#showLifebarCastle').prop('checked', ((game.displayLifeBarForPlayer & game.DisplayLifeBarFor.CASTLE) != 0));
+            $('#showLifebarCastle').button('refresh');
         },
 
         /**

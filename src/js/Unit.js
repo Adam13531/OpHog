@@ -7,7 +7,8 @@
     window.game.DisplayLifeBarFor = {
         PLAYER:1,
         ENEMY:2,
-        PLAYER_AND_ENEMY:3
+        PLAYER_AND_ENEMY:3,
+        CASTLE:4
     };
 
     /**

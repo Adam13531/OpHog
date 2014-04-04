@@ -106,6 +106,9 @@
         var $minimapDownLeftButton = $('#minimapDownLeft');
         var $minimapDownRightButton = $('#minimapDownRight');
         var $showLootNotifications = $('#showLootNotifications');
+        var $showLifebarPlayer = $('#showLifebarPlayer');
+        var $showLifebarEnemy = $('#showLifebarEnemy');
+        var $showLifebarCastle = $('#showLifebarCastle');
 
         var $settingsButton = $('#settingsButton');
         var $toggleMinimapVisibility = $('#toggleMinimapVisibility');
@@ -219,11 +222,9 @@
         $highGraphicsButton.button();
 
         $lowGraphicsButton.click(function() {
-            $settingsDialog.dialog('close');
             game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.LOW);
         });
         $highGraphicsButton.click(function() {
-            $settingsDialog.dialog('close');
             game.graphicsUtil.setGraphicsSettings(game.GraphicsSettings.HIGH);
         });
 
@@ -231,11 +232,9 @@
         $audioOnButton.button();
 
         $audioOffButton.click(function() {
-            $settingsDialog.dialog('close');
             game.AudioManager.setAudioEnabled(false);
         });
         $audioOnButton.click(function() {
-            $settingsDialog.dialog('close');
             game.AudioManager.setAudioEnabled(true);
         });
 
@@ -265,26 +264,36 @@
         });
 
         $minimapUpLeftButton.click(function() {
-            $settingsDialog.dialog('close');
             game.Minimap.setPanelPosition(game.DirectionFlags.UP | game.DirectionFlags.LEFT, true);
         });
         $minimapUpRightButton.click(function() {
-            $settingsDialog.dialog('close');
             game.Minimap.setPanelPosition(game.DirectionFlags.UP | game.DirectionFlags.RIGHT, true);
         });
         $minimapDownLeftButton.click(function() {
-            $settingsDialog.dialog('close');
             game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.LEFT, true);
         });
         $minimapDownRightButton.click(function() {
-            $settingsDialog.dialog('close');
             game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.RIGHT, true);
         });
 
         $showLootNotifications.button();
         $showLootNotifications.click(function() {
             game.LootUI.setShowLootNotifications();
-            $settingsDialog.dialog('close');
+        });
+
+        $showLifebarPlayer.button();
+        $showLifebarPlayer.click(function() {
+            game.Player.setShowLifebars($showLifebarPlayer.prop('checked'), undefined, undefined);
+        });
+
+        $showLifebarEnemy.button();
+        $showLifebarEnemy.click(function() {
+            game.Player.setShowLifebars(undefined, $showLifebarEnemy.prop('checked'), undefined);
+        });
+
+        $showLifebarCastle.button();
+        $showLifebarCastle.click(function() {
+            game.Player.setShowLifebars(undefined, undefined, $showLifebarCastle.prop('checked'));
         });
 
         // Set up the audio volume sliders
@@ -554,19 +563,6 @@
             // 'Q' - sell selected item
             if ( evt.keyCode == game.Key.DOM_VK_Q ) {
                 game.playerInventoryUI.sellSelectedItem();
-            }
-
-            // Pressing 'L' will toggle life bars between the following:
-            // * Display for player
-            // * Display for enemy
-            // * Display for both
-            // * Don't display
-            if ( evt.keyCode == game.Key.DOM_VK_L ) {
-                if ( game.displayLifeBarForPlayer == game.DisplayLifeBarFor.PLAYER_AND_ENEMY ) {
-                    game.displayLifeBarForPlayer = 0;
-                } else {
-                    game.displayLifeBarForPlayer++;
-                }
             }
 
             // 'Z' - save game

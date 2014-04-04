@@ -527,6 +527,9 @@
             game.Minimap.setPanelPosition(minimapPositionSetting, minimapIsVisible);
             game.Minimap.setVisible(minimapIsVisible);
             game.LootUI.setShowLootNotifications(showLootNotifications);
+            
+            game.displayLifeBarForPlayer = uiSettings.displayLifeBarForPlayer;
+            game.Player.setShowLifebars(undefined, undefined, undefined);
         },
 
         saveSettings: function() {
@@ -539,6 +542,7 @@
             uiSettings.minimapIsVisible = game.Minimap.visible;
             uiSettings.alreadyComputedGraphicsScore = !game.FramerateLimiter.calculatingScore;
             uiSettings.showLootNotifications = game.LootUI.showLootNotifications;
+            uiSettings.displayLifeBarForPlayer = game.displayLifeBarForPlayer;
             localStorage.uiSettings = JSON.stringify(uiSettings);
         },
 
