@@ -75,6 +75,11 @@
                 tileX: 11,
                 tileY: 3,
             },
+            {
+                id: 9,
+                tileX: 2,
+                tileY: 27,
+            },
         ],
 
         /**
@@ -254,7 +259,10 @@
                             '<li>R (only in-world): place all units you can afford</li>' +
                         '</ul>' +
                     '</div>';
-                }
+                } else if ( id == 9 ) {
+                    title = 'Word of the Winner';
+                    html = '<div>Congratulations! You have conquered the last world. That\'s all there is for now. If you\'d like to start over, press F10 to enable Dev Mode, then press F7 to delete your save data.<br/><br/>Hope you had fun!</div>';
+                } 
 
                 game.BookDialog.setHtml(html);
                 game.BookDialog.setTitle(title);
