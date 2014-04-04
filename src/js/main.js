@@ -173,6 +173,7 @@
 
             game.GameStateManager.enterLoseState();
         });
+        $forfeit.button('disable');
 
         var $settingsDialog = $('#settingsDialog');
         $settingsDialog.dialog({
