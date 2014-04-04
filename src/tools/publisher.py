@@ -206,16 +206,17 @@ def findJsFilesToConsolidate() :
         match = re.match('.*<script\s+src="' + JS_DIRECTORY_NAME + '/(?P<filename>.*)"', line, re.IGNORECASE)
         if match :
             filename = match.groups('filename')[0]
+            writeLine = False
 
-            # If this was already minified, then just output it as-is.
+            # If this was already minified, then just output it but with the correct directory.
             if filename.lower().find('min.js') is not -1 :
+                correctFullPath = pathJoin(pathFromOutputToInput, 'js', filename)
+                outputHtmlFile.write(line.replace('js/' + filename, correctFullPath))
                 pass
             else :
                 jsFile = os.path.join(jsDir, filename)
                 jsFiles.append(jsFile)
                 print '[' + jsFile + ']'
-
-                writeLine = False
 
                 # Write out our minified JS script only once in place of one of
                 # the scripts we found.
