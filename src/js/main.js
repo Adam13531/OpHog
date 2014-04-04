@@ -355,7 +355,7 @@
             //
             // Ctrl+click will display the tile number, and if it's an overworld
             // map node, it will reveal fog as though you beat that map.
-            if ( keysDown[game.Key.DOM_VK_CONTROL] ) {
+            if ( keysDown[game.Key.DOM_VK_CONTROL] && game.devModeEnabled ) {
                 var tileStr = 'Tile: (' + tileX + ', ' + tileY + ')';
                 var textObj = new game.TextObj(worldX, worldY, tileStr, true, '#0f0', true);
                 game.TextManager.addTextObj(textObj);
@@ -722,12 +722,12 @@
 
         // 'G' - speed up the game. This is only a debug function, so it may
         // 'cause glitches.
-        if ( keysDown[game.Key.DOM_VK_G] ) {
+        if ( keysDown[game.Key.DOM_VK_G] && game.devModeEnabled ) {
             delta *= 2;
         }
 
         // 'V' - speed up the game (see 'G'). Can be combined with 'G'.
-        if ( keysDown[game.Key.DOM_VK_V] ) {
+        if ( keysDown[game.Key.DOM_VK_V] && game.devModeEnabled ) {
             delta *= 4;
         }
 
