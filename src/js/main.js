@@ -114,7 +114,6 @@
         var $toggleMinimapVisibility = $('#toggleMinimapVisibility');
         var $showInventory = $('#showInventory');
         var $showShop = $('#showShop');
-        var $grantMoney = $('#grantMoney');
         var $forfeit = $('#forfeit');
 
         $settingsButton.button({
@@ -154,18 +153,6 @@
             $settingsDialog.dialog('close');
             $('#shop-screen').dialog('open');
         });
-
-        $grantMoney.button();
-        $grantMoney.click(function() {
-            $settingsDialog.dialog('close');
-            game.Player.modifyCoins(9999999);
-            game.Player.modifyDiamonds(99999);
-        });
-
-        // Remove the grantMoney button and its corresponding <br/> for now. You
-        // can still press 'M' to get all the money you want.
-        $grantMoney.hide();
-        $('#grantMoney ~ br')[0].remove();
 
         $forfeit.button();
         $forfeit.click(function() {
