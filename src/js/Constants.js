@@ -194,7 +194,7 @@
      * Default that tells us if audio should be enabled
      * @type {Boolean}
      */
-    window.game.AUDIO_DEFAULT_ENABLED = false;
+    window.game.AUDIO_DEFAULT_ENABLED = true;
 
     /**
      * These values indicate where a puzzle piece can be used in the map
