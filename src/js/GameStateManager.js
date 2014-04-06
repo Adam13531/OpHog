@@ -644,6 +644,7 @@
          */
         update: function(delta) {
             this.timeSpentInCurrentState += delta;
+            var numSecondsInState = Math.floor(this.timeSpentInCurrentState / 1000.0);
 
             // If you're transitioning from the overworld to the normal map,
             // then check to see if all of your units made it to their
@@ -661,6 +662,35 @@
                 if ( this.autoSaveOnOverworldCountdown <= 0 ) {
                     this.autoSaveOnOverworldCountdown = game.SAVE_GAME_ON_OVERWORLD_INTERVAL;
                     game.GameDataManager.saveGame();
+                }
+
+                // If you're spending too long on the overworld, then you likely
+                // don't know what to do, so give some guidance to the player.
+                // 
+                // Don't stop the message until they've beaten the first world.
+                if ( (numSecondsInState == 2 || (numSecondsInState > 0 && (numSecondsInState % 20) == 0)) && !game.OverworldMapData.mapsBeaten[0] ) {
+                    var textX = game.canvasWidth / 2 - 200;
+                    var textY = game.canvasHeight / 2 - 100;
+                    var textBox = new game.TextBox(textX, textY, 'New to OpHog? Tap the book at the upper left for some information!', 400);
+                    game.TextManager.textBoxes.push(textBox);
+                }
+            } else if ( this.isNormalGameplay() ) {
+
+                if ( !game.OverworldMapData.mapsBeaten[0] ) {
+                    // Upon first entering a normal map, show a message about
+                    // placing units (they're guaranteed to have one at this
+                    // point). Keep showing the message until the player dips
+                    // below the starting coin amount.
+                    // 
+                    // If they ever rise ABOVE the starting coin amount again,
+                    // then the message will still spam them, but that's a small
+                    // price to pay for now.
+                    if ( (numSecondsInState == 2 || (numSecondsInState > 0 && (numSecondsInState % 5) == 0) && game.Player.coins >= game.currentMap.nodeOfMap.startingCoins ) ) {
+                        var textX = game.canvasWidth / 2 - 200;
+                        var textY = game.canvasHeight / 2 - 100;
+                        var textBox = new game.TextBox(textX, textY, 'Place units using the buttons at the bottom left - don\'t let enemies reach your castles!', 400);
+                        game.TextManager.textBoxes.push(textBox);
+                    }
                 }
             }
         },

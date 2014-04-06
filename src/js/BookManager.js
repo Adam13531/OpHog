@@ -188,7 +188,8 @@
                     }
 
                     html = warningString + 
-                    '<div>Use ' + diamondsString + ' ' + diamondImgTag + ' to purchase units' + purchaseString + ', then tap the ' + spawnerImgTag + ' to enter a world.</div><br/>' + 
+                    '<div>Use ' + diamondsString + ' ' + diamondImgTag + ' to purchase units at the bottom right' + purchaseString + ', then tap the ' + spawnerImgTag + ' to enter a world.</div><br/>' + 
+                    '<div>Once in the world, you need to place your units using the buttons at the bottom left. Without units to defend, enemies will rush your castles, and when your castles reach 0 life, you lose.</div><br/>' + 
                     '<div>These books can provide valuable information; make sure to read them all!</div>';
                     title = 'The Book of Beginnings';
                 } else if ( id == 1 ) {
