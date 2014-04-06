@@ -526,7 +526,11 @@
         },
 
         loadSettings: function() {
-            if ( localStorage.uiSettings === undefined ) return;
+            if ( localStorage.uiSettings === undefined ) {
+                // Set some default settings for new players.
+                game.displayLifeBarForPlayer = game.DisplayLifeBarFor.CASTLE;
+                return;
+            }
 
             // Use the settings that were saved if they exist
             var uiSettings = JSON.parse(localStorage.uiSettings);
