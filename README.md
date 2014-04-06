@@ -1,4 +1,4 @@
-OpHog
+OpHog (play [here](http://ophog.oenx.net/game)!)
 =====
 OpHog is an HTML5/JavaScript game resembling Tower Defense. You can play it here: http://ophog.oenx.net/game
 
