@@ -252,11 +252,8 @@
             if ( showForCastle === false ) game.displayLifeBarForPlayer &= ~game.DisplayLifeBarFor.CASTLE;
 
             $('#showLifebarPlayer').prop('checked', ((game.displayLifeBarForPlayer & game.DisplayLifeBarFor.PLAYER) != 0));
-            $('#showLifebarPlayer').button('refresh');
             $('#showLifebarEnemy').prop('checked', ((game.displayLifeBarForPlayer & game.DisplayLifeBarFor.ENEMY) != 0));
-            $('#showLifebarEnemy').button('refresh');
             $('#showLifebarCastle').prop('checked', ((game.displayLifeBarForPlayer & game.DisplayLifeBarFor.CASTLE) != 0));
-            $('#showLifebarCastle').button('refresh');
         },
 
         /**

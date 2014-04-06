@@ -93,7 +93,6 @@
 
             this.showLootNotifications = enabled;
             $('#showLootNotifications').prop('checked', enabled);
-            $('#showLootNotifications').button('refresh');
         },
 
         /**

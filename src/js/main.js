@@ -282,22 +282,18 @@
             game.Minimap.setPanelPosition(game.DirectionFlags.DOWN | game.DirectionFlags.RIGHT, true);
         });
 
-        $showLootNotifications.button();
         $showLootNotifications.click(function() {
             game.LootUI.setShowLootNotifications();
         });
 
-        $showLifebarPlayer.button();
         $showLifebarPlayer.click(function() {
             game.Player.setShowLifebars($showLifebarPlayer.prop('checked'), undefined, undefined);
         });
 
-        $showLifebarEnemy.button();
         $showLifebarEnemy.click(function() {
             game.Player.setShowLifebars(undefined, $showLifebarEnemy.prop('checked'), undefined);
         });
 
-        $showLifebarCastle.button();
         $showLifebarCastle.click(function() {
             game.Player.setShowLifebars(undefined, undefined, $showLifebarCastle.prop('checked'));
         });
