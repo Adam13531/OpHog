@@ -119,6 +119,123 @@ python publisher.py ..\index.html index.html "C:\UglifyJS-master\bin\uglifyjs" .
 
 Despite sucking, the script is relatively well commented, so I'm not going to explain the above args. You should probably find a better way than I used to publish. :|
 
+UPDATE (10/6/2017): wow, this took a stupidly long time to figure out again. Surprisingly though, I got it to work. I ran "publish.cmd" with a path pointing to a `git clone`'d UglifyJS's `UglifyJS\bin\uglifyjs\`. It produced a bunch of files that I manually copied so that the folder structure looked like this (focus on the JS and CSS folders):
+
+```
+│   index.html
+│
+├───res
+│   ├───img
+│   │   │   black_slot.png
+│   │   │   blue_slot.png
+│   │   │   char_24.png
+│   │   │   eff_24.png
+│   │   │   eff_32.png
+│   │   │   env_24.png
+│   │   │   green_slot.png
+│   │   │   icon_16.png
+│   │   │   img_trans.png
+│   │   │   item_32.png
+│   │   │   purple_slot.png
+│   │   │   red_slot.png
+│   │   │   reversed_creature_key.txt
+│   │   │   slot.png
+│   │   │   slot2.png
+│   │   │   trans-green.png
+│   │   │   trans-red.png
+│   │   │
+│   │   └───oryx_16-bit_fantasy_1.1
+│   │       │   creature_key.doc
+│   │       │   oryx_16bit_background.png
+│   │       │   oryx_16bit_background_trans.png
+│   │       │   oryx_16bit_fantasy_classes.png
+│   │       │   oryx_16bit_fantasy_classes_trans.png
+│   │       │   oryx_16bit_fantasy_creatures.png
+│   │       │   oryx_16bit_fantasy_creatures_trans.png
+│   │       │   oryx_16bit_fantasy_fx.png
+│   │       │   oryx_16bit_fantasy_fx_trans.png
+│   │       │   oryx_16bit_fantasy_items.png
+│   │       │   oryx_16bit_fantasy_items_trans.png
+│   │       │   oryx_16bit_fantasy_tiles.png
+│   │       │   oryx_16bit_fantasy_world.png
+│   │       │   oryx_16bit_fantasy_world_trans.png
+│   │       │   oryx_16bit_mockup.png
+│   │       │   oryx_license.txt
+│   │       │
+│   │       └───TMX Source
+│   │           │   oryx_creatures.png
+│   │           │   oryx_fx.png
+│   │           │   oryx_items.png
+│   │           │   oryx_tiles.png
+│   │           │   oryx_world.png
+│   │           │   oryx_world2.png
+│   │           │
+│   │           └───TMX
+│   │                   oryx_16-bit_fantasy_test.tmx
+│   │
+│   ├───music
+│   │       new3.mp3
+│   │
+│   ├───sound
+│   │       blip1.mp3
+│   │       explode1.mp3
+│   │       explode2.mp3
+│   │       explode3.mp3
+│   │       hit1.mp3
+│   │       pickup1.mp3
+│   │       powerup1.mp3
+│   │       powerup2.mp3
+│   │       rename_m4a_to_mp4.cmd
+│   │
+│   └───soundmanager2_swf
+│           soundmanager2.swf
+│           soundmanager2_debug.swf
+│           soundmanager2_flash9.swf
+│           soundmanager2_flash9_debug.swf
+│           soundmanager2_flash_xdomain.zip
+│
+└───src
+    ├───css
+    │   │   main.min.css
+    │   │   normalize.min.css
+    │   │
+    │   └───ui
+    │       └───le-frog
+    │           │   jquery-ui-1.10.2.custom.css
+    │           │   jquery-ui-1.10.2.custom.min.css
+    │           │
+    │           └───images
+    │                   animated-overlay.gif
+    │                   ui-bg_diagonals-small_0_aaaaaa_40x40.png
+    │                   ui-bg_diagonals-thick_15_444444_40x40.png
+    │                   ui-bg_diagonals-thick_95_ffdc2e_40x40.png
+    │                   ui-bg_glass_55_fbf5d0_1x400.png
+    │                   ui-bg_highlight-hard_30_285c00_1x100.png
+    │                   ui-bg_highlight-soft_33_3a8104_1x100.png
+    │                   ui-bg_highlight-soft_50_4eb305_1x100.png
+    │                   ui-bg_highlight-soft_60_4ca20b_1x100.png
+    │                   ui-bg_inset-soft_10_285c00_1x100.png
+    │                   ui-icons_4eb305_256x240.png
+    │                   ui-icons_72b42d_256x240.png
+    │                   ui-icons_cd0a0a_256x240.png
+    │                   ui-icons_ffffff_256x240.png
+    │
+    └───js
+        │   min.js
+        │
+        └───vendor
+            │   jgestures.js
+            │   jquery-1.8.3.min.js
+            │   jquery.mousewheel.js
+            │   jquery.ui.touch-punch.js
+            │   modernizr-2.6.2.min.js
+            │
+            └───ui
+                    jquery-ui-1.10.2.custom.js
+                    jquery.hammer.js
+                    jquery.specialevent.hammer.js
+```
+
 ## Anything else?
 
 Well, it's been a fun ride making all of this code (there are nearly 20K lines!), but I want to move on to other games now, so I likely won't be maintaining this much. If you have any questions whatsoever, please ask me at onaimada@gmail.com. Hope you can learn something from the code! :)
